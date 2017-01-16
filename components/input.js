@@ -12,11 +12,11 @@ function model({ defaultValue }) {
     };
 }
 
-export const Input = schema(model)(({ cursor }) => (
+export const Input = schema(model)(({ label, cursor }) => (
     <View>
-        <Text>{cursor.get()}</Text>
+        <Text>{label}</Text>
         <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 300 }}
             onChangeText={(text) => cursor.set(text)}
             value={cursor.get()}
         />

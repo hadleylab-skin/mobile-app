@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
 import {
+    Alert,
     AppRegistry,
+    Button,
     StyleSheet,
     Text,
-    View,
     TextInput,
+    View,
 } from 'react-native';
 import { Input } from 'components';
 import tree from 'libs/tree';
 
+function submit(){
+    Alert.alert(
+        'Login',
+        'wrong username or password');
+}
+
 export default class skiniq extends Component {
     render() {
         const loginCursor = tree.login;
+        const passwordCursor = tree.password;
 
         return (
             <View style={styles.container}>
-                <Input defaultValue="Enter your login" cursor={loginCursor} />
+                <Input label="Enter your login" cursor={loginCursor} />
+                <Input label="Enter your password" cursor={passwordCursor} />
+                <Button title="Login" onPress={submit} />
             </View>
         );
     }
