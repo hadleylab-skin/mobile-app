@@ -9,11 +9,10 @@ function compareProps(oldProps, newProps) {
         return false;
     }
     return _.some(oldProps, (oldProp, key) => {
-        if(oldProp instanceof Baobab.Cursor) {
-            return oldProp.path != newProps[key].path;
-        } else {
-            return !_.isEqual(oldProp, newProps[key]);
+        if (oldProp instanceof Baobab.Cursor) {
+            return oldProp.path !== newProps[key].path;
         }
+        return !_.isEqual(oldProp, newProps[key]);
     });
 }
 
