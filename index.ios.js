@@ -6,29 +6,40 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
+    AppRegistry,
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
 } from 'react-native';
+import tree from './libs/tree';
+import schema from './libs/state';
+
+const Input = schema({cursor:"hello"})(({ cursor }) => {
+    debugger;
+    return (
+        <View>
+            <Text>{cursor.get()}</Text>
+            <TextInput
+                style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                onChangeText={(text) => cursor.set(text)}
+                value={cursor.get()}
+            />
+        </View>
+    );
+});
 
 export default class skiniq extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
-    );
-  }
+    render() {
+        const loginCursor = tree.login;
+        const passwordCursor = tree.password;
+
+        return (
+            <View style={styles.container}>
+                <Input cursor={loginCursor}/>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
