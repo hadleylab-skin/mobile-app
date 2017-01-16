@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
     AppRegistry,
@@ -12,24 +6,8 @@ import {
     View,
     TextInput,
 } from 'react-native';
-import tree from './libs/tree';
-import schema from './libs/state';
-
-const model = {
-    cursor: 'hello',
-};
-
-
-const Input = schema(model)(({ cursor }) => (
-    <View>
-        <Text>{cursor.get()}</Text>
-        <TextInput
-            onChangeText={(text) => cursor.set(text)}
-            value={cursor.get()}
-        />
-    </View>
-    )
-);
+import { Input } from 'components';
+import tree from 'libs/tree';
 
 export default class skiniq extends Component {
     render() {
@@ -37,7 +15,7 @@ export default class skiniq extends Component {
 
         return (
             <View style={styles.container}>
-                <Input cursor={loginCursor} />
+                <Input defaultValue="Enter your login" cursor={loginCursor} />
             </View>
         );
     }

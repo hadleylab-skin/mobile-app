@@ -1,3 +1,9 @@
 {
-"presets": ["react-native"]
+"presets": ["react-native"],
+"plugins": [[
+    "module-alias", [
+      { "src": "../../../libs", "expose": "libs" },
+      { "src": "../../../components", "expose": "components" }
+      ]
+   ]]
 }
