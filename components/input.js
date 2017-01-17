@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    Text,
     View,
+    StyleSheet,
     TextInput,
 } from 'react-native';
 import schema from 'libs/state';
@@ -13,14 +13,28 @@ function model({ defaultValue }) {
 }
 
 export const Input = schema(model)(({ label, cursor }) => (
-    <View>
-        <Text>{label}</Text>
+    <View style={styles.container}>
         <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1, width: 300 }}
+            style={styles.input}
+            placeholder={label}
             onChangeText={(text) => cursor.set(text)}
+            placeholderTextColor="#fff"
             value={cursor.get()}
         />
     </View>
     )
 );
+
+const styles = StyleSheet.create({
+    container: {
+        borderBottomColor: '#fff',
+        borderBottomWidth: 1,
+        marginBottom: 35,
+    },
+    input: {
+        height: 30,
+        width: 250,
+        color: '#fff',
+    },
+});
 
