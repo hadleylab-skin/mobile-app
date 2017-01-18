@@ -9,6 +9,7 @@
 	"dependencies": {
 		"babel-plugin-module-alias": "^1.6.0",
 		"baobab": "^2.3.4",
+		"baobab-prop-types": "^1.0.1",
 		"lodash": "^4.17.4",
 		"react": "~15.4.0-rc.4",
 		"react-native": "0.40.0"

@@ -769,6 +769,10 @@ balanced-match@^0.4.1:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
 
+baobab-prop-types@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/baobab-prop-types/-/baobab-prop-types-1.0.1.tgz#ead8627991532aa158c86ec57c8232c841a0fdb6"
+
 baobab@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/baobab/-/baobab-2.3.4.tgz#6dfeb48fc11a6f92d91d5bb65de16ec324fcce64"
