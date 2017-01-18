@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 import {
     Alert,
     Text,
@@ -7,14 +8,33 @@ import {
 } from 'react-native';
 import { Input, Button, StartScreen, AppText } from 'components';
 import tree from 'libs/tree';
+import ResetPassword from './reset-password';
+import SignUp from './sign-up';
 
-function submit() {
-    Alert.alert(
-        'Login',
-        'Wrong email or password');
+const route = {
+    title: 'Login',
+    navigationBarHidden: true,
 }
 
 export default class SignIn extends Component {
+    static propTypes = {
+        navigator: PropTypes.object.isRequired,
+    }
+
+    submit = () => {
+        Alert.alert(
+            'Login',
+            'Wrong email or password');
+    }
+
+    goToSignUp = () => {
+        this.props.navigator.push(_.merge({}, route, { component: SignUp }));
+    }
+
+    goToResetPassword = () => {
+        this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
+    }
+
     render() {
         const emailCursor = tree.email;
         const passwordCursor = tree.password;
@@ -23,12 +43,12 @@ export default class SignIn extends Component {
             <StartScreen>
                 <Input label="Email" cursor={emailCursor} />
                 <Input label="Password" cursor={passwordCursor} />
-                <Button title="Login" onPress={submit} />
+                <Button title="Login" onPress={this.submit} />
                 <AppText style={[styles.text, { marginTop: 50 }]}>
-                    <Text onPress={() => console.log('To sign up screen')}>Sign Up</Text>
+                    <Text onPress={this.goToSignUp}>Sign Up</Text>
                 </AppText>
                 <AppText style={[styles.text, { marginTop: 15 }]}>
-                    <Text onPress={() => console.log('To reset password screen')}>Forgot you password?</Text>
+                    <Text onPress={this.goToResetPassword}>Forgot you password?</Text>
                 </AppText>
             </StartScreen>
         );

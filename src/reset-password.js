@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     Alert,
     Text,
@@ -13,7 +13,20 @@ function submit() {
         'Wrong email');
 }
 
+const route = {
+    title: 'Login',
+    navigationBarHidden: true,
+}
+
 export default class ResetPassword extends Component {
+    static propTypes = {
+        navigator: PropTypes.object.isRequired,
+    }
+
+    goBack = () => {
+        this.props.navigator.pop()
+    }
+
     render() {
         const emailCursor = tree.email;
 
@@ -22,7 +35,7 @@ export default class ResetPassword extends Component {
                 <Input label="Email" cursor={emailCursor} />
                 <Button title="Reset" onPress={submit} />
                 <AppText style={styles.text}>
-                    <Text onPress={() => console.log('Back to login screen')}>Back</Text>
+                    <Text onPress={this.goBack}>Back</Text>
                 </AppText>
             </StartScreen>
         );

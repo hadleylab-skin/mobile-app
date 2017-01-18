@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
     StyleSheet,
+    ScrollView,
     View,
     StatusBar,
 } from 'react-native';
@@ -9,11 +10,13 @@ import Logo from './components/logo';
 export class StartScreen extends Component {
     render() {
         return (
-            <View style={styles.container}>
-                <StatusBar hidden />
-                <Logo />
-                {this.props.children}
-            </View>
+            <ScrollView style={{ backgroundColor: '#FF3952' }}>
+                <View style={styles.container}>
+                    <StatusBar hidden />
+                    <Logo />
+                    {this.props.children}
+                </View>
+            </ScrollView>
         );
     }
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     Alert,
     Text,
@@ -14,6 +14,14 @@ function submit() {
 }
 
 export default class SignUp extends Component {
+    static propTypes = {
+        navigator: PropTypes.object.isRequired,
+    }
+
+    goBack = () => {
+        this.props.navigator.pop()
+    }
+
     render() {
         const firstNameCursor = tree.firstName;
         const lastNameCursor = tree.lastName;
@@ -22,15 +30,18 @@ export default class SignUp extends Component {
 
         return (
             <StartScreen>
-                <Input label="First Name" cursor={firstNameCursor} />
-                <Input label="Last Name" cursor={lastNameCursor} />
-                <Input label="Email" cursor={emailCursor} />
-                <Input label="Password" cursor={passwordCursor} />
+                <Input label="First Name" cursor={firstNameCursor} returnKeyType="next" />
+                <Input label="Last Name" cursor={lastNameCursor} returnKeyType="next" />
+                <Input label="Email" cursor={emailCursor} returnKeyType="next" />
+                <Input label="Password" cursor={passwordCursor} returnKeyType="done" />
                 <Button title="Sign Up" onPress={submit} />
-                <AppText style={styles.text}>
+                <AppText
+                    style={styles.text}
+                    onPress={this.goBack}
+                >
                     Already have an account?
                     {' '}
-                    <Text onPress={() => console.log('To login screen')}>Login</Text>
+                    Login
                 </AppText>
             </StartScreen>
         );

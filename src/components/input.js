@@ -12,7 +12,7 @@ function model({ defaultValue }) {
     };
 }
 
-export const Input = schema(model)(({ label, cursor }) => (
+export const Input = schema(model)(({ label, cursor, ...props }) => (
     <View style={styles.container}>
         <TextInput
             style={styles.input}
@@ -20,6 +20,7 @@ export const Input = schema(model)(({ label, cursor }) => (
             onChangeText={(text) => cursor.set(text)}
             placeholderTextColor="#fff"
             value={cursor.get()}
+            {...props}
         />
     </View>
     )

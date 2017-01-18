@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import {
     AppRegistry,
+    NavigatorIOS,
 } from 'react-native';
 import Login from './src/login';
-import ResetPassword from './src/reset-password';
-import SignUp from './src/sign-up';
 
 export default class skiniq extends Component {
     render() {
         return (
-            <Login />
+            <NavigatorIOS
+                initialRoute={{
+                    component: Login,
+                    title: 'Login',
+                    navigationBarHidden: true,
+                }}
+                style={{ flex: 1 }}
+            />
         );
     }
 }
