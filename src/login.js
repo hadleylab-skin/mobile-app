@@ -12,6 +12,7 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
+import TakePicture from './camera';
 
 const route = {
     title: 'Login',
@@ -51,9 +52,13 @@ const SignIn = React.createClass({
         };
         const result = await loginService(this.props.tokenCursor, data);
 
-        Alert.alert(
-            'Login',
-            JSON.stringify(result));
+        if (result.status === 'Failure') {
+            Alert.alert(
+                'Login',
+                JSON.stringify(result));
+        } else {
+            this.props.navigator.replace(_.merge({}, route, { component: TakePicture }));
+        }
     },
 
     goToSignUp() {
