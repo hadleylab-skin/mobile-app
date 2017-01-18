@@ -20,7 +20,7 @@ const route = {
 
 export default function (props) {
     const model = {
-        loginScreenCursor: {
+        tree: {
             email: '',
             password: '',
         },
@@ -36,7 +36,6 @@ export default function (props) {
         />
     );
 }
-
 
 const SignIn = React.createClass({
     propTypes: {
@@ -68,7 +67,6 @@ const SignIn = React.createClass({
     render() {
         const emailCursor = this.props.tree.email;
         const passwordCursor = this.props.tree.password;
-        console.log(tree.get());
 
         return (
             <StartScreen>
