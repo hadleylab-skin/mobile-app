@@ -12,7 +12,7 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
-import Patients from '../patients';
+import { PatientList } from '../patients';
 
 const route = {
     title: 'Login',
@@ -53,7 +53,7 @@ const SignIn = React.createClass({
                 'Login',
                 JSON.stringify(result));
         } else {
-            this.props.navigator.replace({ component: Patients, title: 'Patients', navigationBarHidden: false });
+            this.props.navigator.resetTo({ component: PatientList, title: 'Patients', navigationBarHidden: false });
         }
     },
 
