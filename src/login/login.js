@@ -3,10 +3,10 @@ import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
-    Text,
+    View,
     StyleSheet,
 } from 'react-native';
-import { Input, Button, StartScreen, AppText } from 'components';
+import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
 import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
@@ -74,12 +74,20 @@ const SignIn = React.createClass({
                 <Input label="Email" cursor={emailCursor} />
                 <Input label="Password" cursor={passwordCursor} />
                 <Button title="Login" onPress={this.submit} />
-                <AppText style={[styles.text, { marginTop: 50 }]}>
-                    <Text onPress={this.goToSignUp}>Sign Up</Text>
-                </AppText>
-                <AppText style={[styles.text, { marginTop: 15 }]}>
-                    <Text onPress={this.goToResetPassword}>Forgot you password?</Text>
-                </AppText>
+                <View style={{ marginTop: 42 }}>
+                    <ClickableText
+                        onPress={this.goToSignUp}
+                        text="Sign Up"
+                        style={styles.text}
+                        clickableAreaStyles={styles.clickableArea}
+                    />
+                    <ClickableText
+                        onPress={this.goToResetPassword}
+                        text="Forgot you password?"
+                        style={styles.text}
+                        clickableAreaStyles={styles.clickableArea}
+                    />
+                </View>
             </StartScreen>
         );
     },
@@ -90,5 +98,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 12,
         lineHeight: 12,
+        textAlign: 'center',
+    },
+    clickableArea: {
+        paddingTop: 8,
+        paddingLeft: 30,
+        paddingRight: 30,
+        paddingBottom: 7,
     },
 });

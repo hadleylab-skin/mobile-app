@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import {
     Alert,
-    Text,
+    View,
     StyleSheet,
 } from 'react-native';
-import { Input, Button, StartScreen, AppText } from 'components';
+import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
 
 function submit() {
@@ -35,14 +35,14 @@ export default class SignUp extends Component {
                 <Input label="Email" cursor={emailCursor} returnKeyType="next" />
                 <Input label="Password" cursor={passwordCursor} returnKeyType="done" />
                 <Button title="Sign Up" onPress={submit} />
-                <AppText
-                    style={styles.text}
-                    onPress={this.goBack}
-                >
-                    Already have an account?
-                    {' '}
-                    Login
-                </AppText>
+                <View style={{ marginTop: 42 }}>
+                    <ClickableText
+                        onPress={this.goBack}
+                        text="Already have an account? Login"
+                        style={styles.text}
+                        clickableAreaStyles={styles.clickableArea}
+                    />
+                </View>
             </StartScreen>
         );
     }
@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 12,
         lineHeight: 12,
-        marginTop: 50,
     },
+    clickableArea: {
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 30,
+        paddingRight: 30,
+    }
 });
