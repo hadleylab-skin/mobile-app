@@ -4,19 +4,22 @@ import {
     ScrollView,
     View,
     StatusBar,
+    Dimensions,
 } from 'react-native';
 import Logo from './components/logo';
 
 export class StartScreen extends Component {
     render() {
         return (
-            <ScrollView style={{ backgroundColor: '#FF3952' }}>
-                <View style={styles.container}>
-                    <StatusBar hidden />
-                    <Logo />
-                    {this.props.children}
-                </View>
-            </ScrollView>
+            <View style={styles.container}>
+                <ScrollView centerContent>
+                    <View style={styles.inner}>
+                        <StatusBar hidden />
+                        <Logo />
+                        {this.props.children}
+                    </View>
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -24,8 +27,12 @@ export class StartScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FF3952',
+    },
+    inner: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FF3952',
+        paddingTop: 50,
+        paddingBottom: 50,
     },
 });
