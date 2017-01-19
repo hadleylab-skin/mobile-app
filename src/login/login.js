@@ -12,18 +12,18 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
-import TakePicture from './camera';
+import Patients from '../patients';
 
 const route = {
     title: 'Login',
     navigationBarHidden: true,
 };
 
-export default function (props) {
+export function Login(props) {
     const model = {
         tree: {
-            email: '',
-            password: '',
+            email: 'ir4y.ix@gmail.com',
+            password: '123',
         },
     };
     const tokenCursor = tree.token;
@@ -46,18 +46,14 @@ const SignIn = React.createClass({
     },
 
     async submit() {
-        const data = {
-            email: this.props.tree.email.get(),
-            password: this.props.tree.password.get(),
-        };
-        const result = await loginService(this.props.tokenCursor, data);
+        const result = await loginService(this.props.tokenCursor, this.props.tree.get());
 
         if (result.status === 'Failure') {
             Alert.alert(
                 'Login',
                 JSON.stringify(result));
         } else {
-            this.props.navigator.replace(_.merge({}, route, { component: TakePicture }));
+            this.props.navigator.replace({ component: Patients, title: 'Patients', navigationBarHidden: false });
         }
     },
 

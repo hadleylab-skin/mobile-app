@@ -17,13 +17,16 @@ export const defaultHeaders = {
 };
 
 export const url = 'http://192.168.10.233:8000';
-export function buildGetService(path, dehydrate = _.identity) {
+export function buildGetService(path,
+                                dehydrate = _.identity,
+                                headers = defaultHeaders) {
     return async (cursor) => {
         cursor.set({ status: 'Loading' });
         let result = {};
 
         try {
-            let response = await fetch(`${url}${path}`).then(checkStatus);
+            let response = await fetch(`${url}${path}`,
+                                       { headers }).then(checkStatus);
             let data = await response.json();
             result = {
                 data: dehydrate(data),

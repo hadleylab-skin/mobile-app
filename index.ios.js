@@ -3,7 +3,7 @@ import {
     AppRegistry,
     NavigatorIOS,
 } from 'react-native';
-import Login from './src/login';
+import { Login } from './src/login';
 
 export default class skiniq extends Component {
     render() {
