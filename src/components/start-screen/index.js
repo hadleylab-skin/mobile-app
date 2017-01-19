@@ -4,7 +4,6 @@ import {
     ScrollView,
     View,
     StatusBar,
-    Dimensions,
 } from 'react-native';
 import Logo from './components/logo';
 
