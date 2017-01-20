@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
     Text,
+    View,
     StyleSheet,
     ListView,
     ScrollView,
@@ -12,7 +14,8 @@ import {
 import { getPatientList, createPatient, } from 'libs/services/patients';
 import tree from 'libs/tree';
 import schema from 'libs/state';
-import { AddPatient } from './add'; 
+import Patient from './patient';
+import { AddPatient } from '../add';
 
 export function PatientList(props) {
     const token = tree.token.data.token.get();
@@ -99,7 +102,7 @@ const Patients = React.createClass({
                       />
                   :
                       null
-                }
+                }{/*
                 <ListView
                     enableEmptySections
                     style={{ paddingTop: showLoader ? 0 : 70, paddingBottom: 50 }}
@@ -109,7 +112,12 @@ const Patients = React.createClass({
                             {`${rowData.firstname} ${rowData.lastname} ${rowData.mrn}`}
                         </Text>
                     )}
-                />
+                />*/}
+                <View style={{ marginTop: showLoader ? 0 : 70, marginBottom: 50 }}>
+                    {_.map(this.state.ds._dataBlob.s1, (item, index) => (
+                        <Patient data={item} key={index} />
+                    ))}
+                </View>
                 <Button
                     onPress={() =>
                         this.props.navigator.push({

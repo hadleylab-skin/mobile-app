@@ -22,8 +22,8 @@ const route = {
 export function Login(props) {
     const model = {
         tree: {
-            email: 'ir4y.ix@gmail.com',
-            password: '123',
+            email: 'demo@demo.com',
+            password: 'demopassword',
         },
     };
     const tokenCursor = tree.token;
