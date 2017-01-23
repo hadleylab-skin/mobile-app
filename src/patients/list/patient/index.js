@@ -14,7 +14,7 @@ export default class Patient extends React.Component {
             <View style={styles.container}>
                 <View style={styles.inner}>
                     <Image
-                        source={require('./images/default-user.png')}
+                        source={require('./images/shore.jpg')}
                         style={styles.img}
                     />
                     <View style={styles.info}>
@@ -37,7 +37,7 @@ export default class Patient extends React.Component {
 const styles = StyleSheet.create({
     container: {
         borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        borderBottomColor: '#eee',
         padding: 15,
     },
     inner: {

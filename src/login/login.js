@@ -53,7 +53,7 @@ const SignIn = React.createClass({
                 'Login',
                 JSON.stringify(result));
         } else {
-            this.props.navigator.resetTo({ component: PatientList, title: 'Patients', navigationBarHidden: false });
+            this.props.navigator.resetTo({ component: PatientList, title: 'Patients', navigationBarHidden: true });
         }
     },
 

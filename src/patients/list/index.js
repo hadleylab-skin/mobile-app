@@ -2,18 +2,15 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
-    Alert,
-    Text,
     View,
-    StyleSheet,
     ListView,
     ScrollView,
-    Button,
     ActivityIndicator,
 } from 'react-native';
-import { getPatientList, createPatient, } from 'libs/services/patients';
+import { getPatientList, createPatient } from 'libs/services/patients';
 import tree from 'libs/tree';
 import schema from 'libs/state';
+import { NavBar } from 'components';
 import Patient from './patient';
 import { AddPatient } from '../add';
 
@@ -60,7 +57,6 @@ const Patients = React.createClass({
         this.props.tree.patients.on('update', this.updateDataStore);
     },
 
-
     componentWillUnmount() {
         this.props.tree.patients.off('update', this.updateDataStore);
     },
@@ -76,9 +72,9 @@ const Patients = React.createClass({
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        if (offset < 0) {
+        if (offset >= 0) {
             this.setState({ needUpdate: true });
-        } else if (offset === 0 && this.state.needUpdate) {
+        } else if (offset < 0 && this.state.needUpdate) {
             this.setState({ needUpdate: false });
             if (this.props.tree.patients.status.get() !== 'Loading') {
                 this.props.patientsService(this.props.tree.patients);
@@ -89,49 +85,56 @@ const Patients = React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
+
         return (
-            <ScrollView
-                onScroll={this.onScroll}
-                scrollEventThrottle={200}
-            >
-                {
-                  showLoader
-                  ?
-                      <ActivityIndicator
-                          style={{ paddingTop: 50 }}
-                      />
-                  :
-                      null
-                }{/*
-                <ListView
-                    enableEmptySections
-                    style={{ paddingTop: showLoader ? 0 : 70, paddingBottom: 50 }}
-                    dataSource={this.state.ds}
-                    renderRow={(rowData) => (
-                        <Text>
-                            {`${rowData.firstname} ${rowData.lastname} ${rowData.mrn}`}
-                        </Text>
-                    )}
-                />*/}
-                <View style={{ marginTop: showLoader ? 0 : 70, marginBottom: 50 }}>
-                    {_.map(this.state.ds._dataBlob.s1, (item, index) => (
-                        <Patient data={item} key={index} />
-                    ))}
-                </View>
-                <Button
-                    onPress={() =>
+            <View style={{ flex: 1 }}>
+                <NavBar
+                    title="Patients"
+                    leftBtnTitle="Back"
+                    rightBtnTitle="Create"
+                    onRightBtnPress={() =>
                         this.props.navigator.push({
                             component: AddPatient,
-                            title: 'Add patient',
+                            leftButtonTitle: 'Cancel',
+                            onLeftButtonPress: () => this.props.navigator.pop(),
+                            title: 'Create patient',
+                            navigationBarHidden: true,
                             passProps: {
                                 tree: this.props.tree.newPatient,
                                 createPatientService: this.props.createPatientService,
                                 onPatientAdded: () => this.props.patientsService(this.props.tree.patients),
                             },
                         })}
-                    title="Add patient"
                 />
-            </ScrollView>
+                <ScrollView
+                    onScroll={this.onScroll}
+                    scrollEventThrottle={200}
+                    style={{ flex: 1 }}
+                >
+                    <ActivityIndicator
+                        animating={showLoader}
+                        size="large"
+                        color="#FF3952"
+                        style={{ marginTop: -35, zIndex: 0 }}
+                    />
+                    {/*
+                    <ListView
+                        enableEmptySections
+                        style={{ paddingTop: showLoader ? 0 : 70, paddingBottom: 50 }}
+                        dataSource={this.state.ds}
+                        renderRow={(rowData) => (
+                            <Text>
+                                {`${rowData.firstname} ${rowData.lastname} ${rowData.mrn}`}
+                            </Text>
+                        )}
+                    />*/}
+                    <View style={{ marginTop: 0 }}>
+                        {_.map(this.state.ds._dataBlob.s1, (item, index) => (
+                            <Patient data={item} key={index} />
+                        ))}
+                    </View>
+                </ScrollView>
+            </View>
         );
     },
 });

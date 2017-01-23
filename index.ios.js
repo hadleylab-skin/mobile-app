@@ -15,6 +15,8 @@ export default class skiniq extends Component {
                     navigationBarHidden: true,
                 }}
                 style={{ flex: 1 }}
+                tintColor="#FF3952"
+                titleTextColor="#FF3952"
             />
         );
     }

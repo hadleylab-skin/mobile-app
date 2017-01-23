@@ -13,17 +13,16 @@ function model({ defaultValue }) {
 }
 
 export const Input = schema(model)(({ label, cursor, ...props }) => (
-    <View style={styles.container}>
+    <View style={[styles.container, props.inputWrapperStyle || {}]}>
         <TextInput
-            style={styles.input}
+            style={[styles.input, props.inputStyle || {}]}
             placeholder={label}
             onChangeText={(text) => cursor.set(text)}
-            placeholderTextColor="#fff"
+            placeholderTextColor={props.placeholderTextColor || '#fff'}
             value={cursor.get()}
             {...props}
         />
-    </View>
-    )
+    </View>)
 );
 
 const styles = StyleSheet.create({

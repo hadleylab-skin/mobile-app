@@ -1,2 +1,2 @@
 export { PatientList } from './list';
-export { PatientAdd } from './add';
+export { AddPatient } from './add';

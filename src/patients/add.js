@@ -7,7 +7,7 @@ import {
     StyleSheet,
     View,
 } from 'react-native';
-import { Input } from 'components';
+import { Input, NavBar } from 'components';
 import schema from 'libs/state';
 
 const model = {
@@ -47,17 +47,39 @@ export const AddPatient = schema(model)(React.createClass({
         const lastNameCursor = this.props.tree.form.lastname;
         const status = this.props.tree.serverAnswer.status.get();
         const showLoader = status === 'Loading';
+
         return (
-            <View style={styles.container}>
-                <Input label="First Name" cursor={firstNameCursor} returnKeyType="next" />
-                <Input label="Last Name" cursor={lastNameCursor} returnKeyType="next" />
-                {
-                    showLoader
-                    ?
-                        <ActivityIndicator />
-                    :
-                        <Button title="Add patient" onPress={this.submit} />
-                }
+            <View>
+                <NavBar
+                    title="Create patient"
+                    leftBtnTitle="Cancel"
+                    rightBtnTitle="Create"
+                    onLeftBtnPress={() => this.props.navigator.pop()}
+                    onRightBtnPress={this.submit}
+                />
+                <View style={styles.container}>
+                    <Input
+                        label="First Name"
+                        cursor={firstNameCursor}
+                        inputWrapperStyle={styles.inputWrapperStyle}
+                        inputStyle={styles.inputStyle}
+                        placeholderTextColor="#ccc"
+                        returnKeyType="next"
+                    />
+                    <Input
+                        label="Last Name"
+                        cursor={lastNameCursor}
+                        inputWrapperStyle={styles.inputWrapperStyle}
+                        inputStyle={styles.inputStyle}
+                        placeholderTextColor="#ccc"
+                        returnKeyType="next"
+                    />
+                </View>
+                <ActivityIndicator
+                    animating={showLoader}
+                    size="large"
+                    color="#FF3952"
+                />
             </View>
         );
     },
@@ -65,12 +87,15 @@ export const AddPatient = schema(model)(React.createClass({
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#FF3952',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 50,
-        paddingBottom: 50,
+        paddingTop: 20,
+        paddingLeft: 30,
+    },
+    inputWrapperStyle: {
+        borderBottomColor: '#ccc',
+        marginBottom: 20,
+    },
+    inputStyle: {
+        color: '#333',
     },
 });
 
