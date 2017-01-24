@@ -53,7 +53,7 @@ const SignIn = React.createClass({
                 'Login',
                 JSON.stringify(result));
         } else {
-            this.props.navigator.resetTo({ component: Camera, navigationBarHidden: true });
+            this.props.navigator.push({ component: Camera, navigationBarHidden: true });
         }
     },
 

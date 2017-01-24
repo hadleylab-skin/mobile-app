@@ -6,6 +6,7 @@ import {
     View,
     TouchableOpacity,
     Image,
+    StatusBar,
 } from 'react-native';
 import Camera from 'react-native-camera';
 import Footer from '../footer';
@@ -20,6 +21,7 @@ export default React.createClass({
     render() {
         return (
             <View style={styles.container}>
+                <StatusBar hidden />
                 <Camera
                     ref={(cam) => {
                         this.camera = cam;

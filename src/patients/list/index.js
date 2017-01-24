@@ -6,6 +6,7 @@ import {
     ListView,
     ScrollView,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
 import { getPatientList, createPatient } from 'libs/services/patients';
 import tree from 'libs/tree';
@@ -89,6 +90,7 @@ const Patients = React.createClass({
 
         return (
             <View style={{ flex: 1 }}>
+                <StatusBar hidden={false} />
                 <NavBar
                     title="Patients"
                     leftBtnTitle="Back"
