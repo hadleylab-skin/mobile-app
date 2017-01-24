@@ -43,6 +43,10 @@ export const AddPatient = schema(model)(React.createClass({
         }
     },
 
+    onLeftBtnPress() {
+        this.props.navigator.pop();
+    },
+
     render() {
         const firstNameCursor = this.props.tree.form.firstname;
         const lastNameCursor = this.props.tree.form.lastname;
@@ -55,7 +59,7 @@ export const AddPatient = schema(model)(React.createClass({
                     title="Create patient"
                     leftBtnTitle="Cancel"
                     rightBtnTitle="Create"
-                    onLeftBtnPress={() => this.props.navigator.pop()}
+                    onLeftBtnPress={this.onLeftBtnPress}
                     onRightBtnPress={this.submit}
                 />
                 <View style={styles.container}>

@@ -116,7 +116,7 @@ const Patients = React.createClass({
                         animating={showLoader}
                         size="large"
                         color="#FF3952"
-                        style={{ marginTop: -35, zIndex: 0 }}
+                        style={{ marginTop: -56, zIndex: 0 }}
                     />
                     {/*
                     <ListView
@@ -135,7 +135,7 @@ const Patients = React.createClass({
                         ))}
                     </View>
                 </ScrollView>
-                <Footer navigator={this.props.navigator} />
+                <Footer navigator={this.props.navigator} currentTab="patients" />
             </View>
         );
     },

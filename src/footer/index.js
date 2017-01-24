@@ -5,35 +5,27 @@ import {
     Image,
     TouchableOpacity,
 } from 'react-native';
-import schema from 'libs/state';
 import { PatientList } from '../patients';
 import Camera from '../camera';
 
-const Footer = schema()(React.createClass({
+export default React.createClass({
     displayName: 'Footer',
 
     propTypes: {
         navigator: React.PropTypes.object,
-    },
-
-    getInitialState() {
-        return {
-            currentTab: 'camera',
-        };
+        currentTab: React.PropTypes.string,
     },
 
     toPatientsList() {
         this.props.navigator.push({ component: PatientList, navigationBarHidden: true });
-        this.setState({ currentTab: 'patients' });
     },
 
     toCamera() {
         this.props.navigator.push({ component: Camera, navigationBarHidden: true });
-        this.setState({ currentTab: 'camera' });
     },
 
     render() {
-        const { currentTab } = this.state;
+        const { currentTab } = this.props;
 
         return (
             <View style={styles.footerWrapper}>
@@ -56,9 +48,7 @@ const Footer = schema()(React.createClass({
             </View>
         );
     },
-}));
-
-export default Footer;
+});
 
 const styles = StyleSheet.create({
     footerWrapper: {

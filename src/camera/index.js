@@ -37,7 +37,7 @@ export default React.createClass({
                         />
                     </TouchableOpacity>
                 </Camera>
-                <Footer navigator={this.props.navigator} />
+                <Footer navigator={this.props.navigator} currentTab="camera" />
             </View>
         );
     },
