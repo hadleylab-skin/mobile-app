@@ -10,7 +10,8 @@ import {
 import { getPatientList, createPatient } from 'libs/services/patients';
 import tree from 'libs/tree';
 import schema from 'libs/state';
-import { NavBar } from 'components';
+import NavBar from 'components/nav-bar';
+import Footer from '../../footer';
 import Patient from './patient';
 import { AddPatient } from '../add';
 
@@ -128,12 +129,13 @@ const Patients = React.createClass({
                             </Text>
                         )}
                     />*/}
-                    <View style={{ marginTop: 0 }}>
+                    <View style={{ marginTop: 0, paddingBottom: 50 }}>
                         {_.map(this.state.ds._dataBlob.s1, (item, index) => (
                             <Patient data={item} key={index} />
                         ))}
                     </View>
                 </ScrollView>
+                <Footer navigator={this.props.navigator} />
             </View>
         );
     },

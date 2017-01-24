@@ -16,7 +16,7 @@ export const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
-export const url = 'http://192.168.10.169:8000';
+export const url = 'http://192.168.10.56:8000';
 export function buildGetService(path,
                                 dehydrate = _.identity,
                                 headers = defaultHeaders) {

@@ -7,7 +7,8 @@ import {
     StyleSheet,
     View,
 } from 'react-native';
-import { Input, NavBar } from 'components';
+import { Input } from 'components';
+import NavBar from 'components/nav-bar';
 import schema from 'libs/state';
 
 const model = {

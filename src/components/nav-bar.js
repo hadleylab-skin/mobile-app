@@ -5,17 +5,19 @@ import {
     StyleSheet,
 } from 'react-native';
 
-export class NavBar extends React.Component {
+export default React.createClass({
+    displayName: 'NavBar',
+
     propTypes: {
         title: React.PropTypes.string.isRequired,
         leftBtnTitle: React.PropTypes.string,
         rightBtnTitle: React.PropTypes.string,
         onLeftBtnPress: React.PropTypes.func,
         onRightBtnPress: React.PropTypes.func,
-    }
+    },
 
     render() {
-        const { title, leftBtnTitle, rightBtnTitle, onLeftBtnPress, onRightBtnPress  } = this.props;
+        const { title, leftBtnTitle, rightBtnTitle, onLeftBtnPress, onRightBtnPress } = this.props;
 
         return (
             <View style={styles.headerWrapper}>
@@ -30,8 +32,8 @@ export class NavBar extends React.Component {
                 >{rightBtnTitle}</Text>
             </View>
         );
-    }
-}
+    },
+});
 
 const styles = StyleSheet.create({
     headerWrapper: {
