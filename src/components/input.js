@@ -28,7 +28,7 @@ export const Input = schema(model)(({ label, cursor, ...props }) => (
 const styles = StyleSheet.create({
     container: {
         borderBottomColor: '#fff',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         marginBottom: 35,
     },
     input: {

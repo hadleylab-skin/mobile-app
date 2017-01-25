@@ -14,7 +14,7 @@ import schema from 'libs/state';
 import NavBar from 'components/nav-bar';
 import Footer from '../../footer';
 import Patient from './patient';
-import { AddPatient } from '../add';
+import { AddPatient, getRoute } from '../add';
 
 export function PatientList(props) {
     const token = tree.token.data.token.get();
@@ -96,18 +96,7 @@ const Patients = React.createClass({
                     leftBtnTitle="Back"
                     rightBtnTitle="Create"
                     onRightBtnPress={() =>
-                        this.props.navigator.push({
-                            component: AddPatient,
-                            leftButtonTitle: 'Cancel',
-                            onLeftButtonPress: () => this.props.navigator.pop(),
-                            title: 'Create patient',
-                            navigationBarHidden: true,
-                            passProps: {
-                                tree: this.props.tree.newPatient,
-                                createPatientService: this.props.createPatientService,
-                                onPatientAdded: () => this.props.patientsService(this.props.tree.patients),
-                            },
-                        })}
+                        this.props.navigator.push(getRoute(this.props))}
                 />
                 <ScrollView
                     onScroll={this.onScroll}
@@ -118,11 +107,11 @@ const Patients = React.createClass({
                         animating={showLoader}
                         size="large"
                         color="#FF3952"
-                        style={{ marginTop: -56, zIndex: 0 }}
+                        style={{ marginTop: -40, zIndex: 0 }}
                     />
                     <ListView
                         enableEmptySections
-                        style={{ marginTop: 0, paddingBottom: 50 }}
+                        style={{ marginTop: 0, paddingBottom: 49 }}
                         dataSource={this.state.ds}
                         renderRow={(rowData) => (
                             <Patient data={rowData} />

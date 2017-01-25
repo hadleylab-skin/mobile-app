@@ -56,7 +56,7 @@ export default React.createClass({
 
 const styles = StyleSheet.create({
     container: {
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         borderBottomColor: '#eee',
         flex: 1,
     },

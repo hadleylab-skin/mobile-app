@@ -38,10 +38,9 @@ export default React.createClass({
 const styles = StyleSheet.create({
     headerWrapper: {
         position: 'relative',
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
         paddingBottom: 15,
-        backgroundColor: 'rgba(0,0,0,0.02)',
         zIndex: 1,
     },
     header: {
