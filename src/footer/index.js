@@ -2,8 +2,7 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    Image,
-    TouchableOpacity,
+    TabBarIOS,
 } from 'react-native';
 import { PatientList } from '../patients';
 import Camera from '../camera';
@@ -28,24 +27,24 @@ export default React.createClass({
         const { currentTab } = this.props;
 
         return (
-            <View style={styles.footerWrapper}>
-                <TouchableOpacity onPress={this.toCamera}>
-                    <Image
-                        source={require('./images/camera.png')}
-                        style={[styles.image, {
-                            tintColor: currentTab === 'camera' ? '#FF3952' : '#333',
-                        }]}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.toPatientsList}>
-                    <Image
-                        source={require('./images/social.png')}
-                        style={[styles.image, {
-                            tintColor: currentTab === 'patients' ? '#FF3952' : '#333',
-                        }]}
-                    />
-                </TouchableOpacity>
-            </View>
+            <TabBarIOS
+                barTintColor="#fafafa"
+                tintColor="#FF3952"
+                unselectedItemTintColor="#333"
+                style={styles.footerWrapper}>
+                <TabBarIOS.Item
+                    title="Camera"
+                    icon={require('./images/camera.png')}
+                    selected={currentTab === 'camera'}
+                    onPress={this.toCamera}
+                ><View /></TabBarIOS.Item>
+                <TabBarIOS.Item
+                    title="Patients"
+                    icon={require('./images/social.png')}
+                    selected={currentTab === 'patients'}
+                    onPress={this.toPatientsList}
+                ><View /></TabBarIOS.Item>
+            </TabBarIOS>
         );
     },
 });
@@ -56,14 +55,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
         height: 50,
-        backgroundColor: '#fafafa',
         zIndex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
     },
     image: {
         marginLeft: 30,
