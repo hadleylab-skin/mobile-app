@@ -120,22 +120,14 @@ const Patients = React.createClass({
                         color="#FF3952"
                         style={{ marginTop: -56, zIndex: 0 }}
                     />
-                    {/*
                     <ListView
                         enableEmptySections
-                        style={{ paddingTop: showLoader ? 0 : 70, paddingBottom: 50 }}
+                        style={{ marginTop: 0, paddingBottom: 50 }}
                         dataSource={this.state.ds}
                         renderRow={(rowData) => (
-                            <Text>
-                                {`${rowData.firstname} ${rowData.lastname} ${rowData.mrn}`}
-                            </Text>
+                            <Patient data={rowData} />
                         )}
-                    />*/}
-                    <View style={{ marginTop: 0, paddingBottom: 50 }}>
-                        {_.map(this.state.ds._dataBlob.s1, (item, index) => (
-                            <Patient data={item} key={index} />
-                        ))}
-                    </View>
+                    />
                 </ScrollView>
                 <Footer navigator={this.props.navigator} currentTab="patients" />
             </View>

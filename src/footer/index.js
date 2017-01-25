@@ -16,11 +16,11 @@ export default React.createClass({
     },
 
     toPatientsList() {
-        this.props.navigator.push({ component: PatientList, navigationBarHidden: true });
+        this.props.navigator.replace({ component: PatientList, navigationBarHidden: true });
     },
 
     toCamera() {
-        this.props.navigator.push({ component: Camera, navigationBarHidden: true });
+        this.props.navigator.replace({ component: Camera, navigationBarHidden: true });
     },
 
     render() {
