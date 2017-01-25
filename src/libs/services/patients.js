@@ -20,9 +20,13 @@ export function createPatient(token) {
 }
 
 function hidrateImage(image) {
+    const photo = {
+        uri: image.path,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+    };
     let data = new FormData();
-    data.append('type', 'file');
-    data.append('file', image.url);
+    data.append('file', photo);
     return data;
 }
 

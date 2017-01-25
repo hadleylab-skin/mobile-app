@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     Dimensions,
     StyleSheet,
@@ -7,6 +8,7 @@ import {
     TouchableOpacity,
     Image,
     StatusBar,
+    ActivityIndicator,
 } from 'react-native';
 import tree from 'libs/tree';
 import { uploadClinicalPhoto } from 'libs/services/patients';
@@ -36,10 +38,23 @@ export function CameraScreen(props) {
 }
 
 const CameraComponent = React.createClass({
+    getInitialState() {
+        return {
+            photosInProgress: 0,
+        };
+    },
+
     async takePicture() {
         const data = await this.camera.capture();
-        const response = await this.props.clinicalPhotoService(this.props.tree.photoUploadResult, data);
-        console.log(response);
+        this.setState({ photosInProgress: this.state.photosInProgress + 1 });
+        try {
+            const response = await this.props.clinicalPhotoService(this.props.tree.photoUploadResult, data);
+            console.log(response);
+        } catch (e) {
+            console.log(e);
+        }
+
+        this.setState({ photosInProgress: this.state.photosInProgress - 1 });
     },
 
     render() {
@@ -52,7 +67,15 @@ const CameraComponent = React.createClass({
                     }}
                     style={styles.preview}
                     aspect={Camera.constants.Aspect.fill}
+                    captureTarget={Camera.constants.CaptureTarget.disk}
                 >
+                    <View style={styles.preloaders} >
+                        {_.map(_.range(this.state.photosInProgress), (index) => (
+                            <ActivityIndicator key={index} />)
+                         )}
+
+
+                    </View>
                     <View style={styles.textWrapper}>
                         <Text style={styles.name}>John Doe</Text>
                     </View>
@@ -86,6 +109,13 @@ const styles = StyleSheet.create({
         top: 70,
         left: 0,
         right: 0,
+    },
+    preloaders: {
+        position: 'absolute',
+        flexDirection: 'row',
+        top: 40,
+        left: 100,
+        right: 100,
     },
     name: {
         color: '#fff',
