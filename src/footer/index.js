@@ -5,7 +5,7 @@ import {
     TabBarIOS,
 } from 'react-native';
 import { PatientList } from '../patients';
-import Camera from '../camera';
+import { CameraScreen } from '../camera';
 
 export default React.createClass({
     displayName: 'Footer',
@@ -20,7 +20,7 @@ export default React.createClass({
     },
 
     toCamera() {
-        this.props.navigator.replace({ component: Camera, navigationBarHidden: true });
+        this.props.navigator.replace({ component: CameraScreen, navigationBarHidden: true });
     },
 
     render() {

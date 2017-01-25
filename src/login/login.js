@@ -12,7 +12,7 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
-import Camera from '../camera';
+import { CameraScreen } from '../camera';
 
 const route = {
     title: 'Login',
@@ -53,7 +53,7 @@ const SignIn = React.createClass({
                 'Login',
                 JSON.stringify(result));
         } else {
-            this.props.navigator.resetTo({ component: Camera, navigationBarHidden: true });
+            this.props.navigator.resetTo({ component: CameraScreen, navigationBarHidden: true });
         }
     },
 
