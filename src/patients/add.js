@@ -68,13 +68,6 @@ export const AddPatient = schema(model)(React.createClass({
 
         return (
             <View>
-                {/*<NavBar
-                    title="Create patient"
-                    leftBtnTitle="Cancel"
-                    rightBtnTitle="Create"
-                    onLeftBtnPress={this.onLeftBtnPress}
-                    onRightBtnPress={this.submit}
-                />*/}
                 <View style={styles.container}>
                     <Input
                         label="First Name"
