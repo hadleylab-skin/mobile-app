@@ -10,34 +10,17 @@ import {
     StatusBar,
     ActivityIndicator,
 } from 'react-native';
-import tree from 'libs/tree';
-import { uploadClinicalPhoto } from 'libs/services/patients';
 import schema from 'libs/state';
 import Camera from 'react-native-camera';
 import Footer from '../footer';
 
-export function CameraScreen(props) {
-    const token = tree.token.data.token.get();
-    const model = {
-        tree: {
-            currentPatient: null,
-            photoUploadResult: {},
-        },
-    };
-    const patientsScreenCursor = tree.patients;
-    const clinicalPhotoService = uploadClinicalPhoto(token, patientsScreenCursor.currentPatient.get('pk'));
-    const Component = schema(model)(CameraComponent);
+const model = {
+    tree: {
+        photoUploadResult: {},
+    },
+};
 
-    return (
-        <Component
-            {...props}
-            tree={patientsScreenCursor}
-            clinicalPhotoService={clinicalPhotoService}
-        />
-    );
-}
-
-const CameraComponent = React.createClass({
+export default schema(model)(React.createClass({
     getInitialState() {
         return {
             photosInProgress: 0,
@@ -73,11 +56,11 @@ const CameraComponent = React.createClass({
                         {_.map(_.range(this.state.photosInProgress), (index) => (
                             <ActivityIndicator key={index} />)
                          )}
-
-
                     </View>
                     <View style={styles.textWrapper}>
-                        <Text style={styles.name}>John Doe</Text>
+                        <Text style={styles.name}>
+                            { this.props.currentPatient.name}
+                        </Text>
                     </View>
                     <TouchableOpacity onPress={this.takePicture}>
                         <Image
@@ -90,7 +73,7 @@ const CameraComponent = React.createClass({
             </View>
         );
     },
-});
+}));
 
 const styles = StyleSheet.create({
     container: {

@@ -5,6 +5,8 @@ import {
     Alert,
     View,
     StyleSheet,
+    NavigatorIOS,
+    Text,
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
@@ -19,28 +21,8 @@ const route = {
     navigationBarHidden: true,
 };
 
-export function Login(props) {
-    const model = {
-        tree: {
-            email: 'demo@demo.com',
-            password: 'demopassword',
-        },
-    };
-    const tokenCursor = tree.token;
-    const loginScreenCursor = tree.login;
-    const Component = schema(model)(SignIn);
-    return (
-        <Component
-            {...props}
-            tree={loginScreenCursor}
-            tokenCursor={tokenCursor}
-        />
-    );
-}
-
-const SignIn = React.createClass({
+const SignInComponent = React.createClass({
     propTypes: {
-        navigator: PropTypes.object.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
@@ -52,8 +34,6 @@ const SignIn = React.createClass({
             Alert.alert(
                 'Login',
                 JSON.stringify(result));
-        } else {
-            this.props.navigator.resetTo({ component: CameraScreen, navigationBarHidden: true });
         }
     },
 
@@ -92,6 +72,43 @@ const SignIn = React.createClass({
         );
     },
 });
+
+function SignInScreen(props) {
+    const model = {
+        tree: {
+            email: 'demo@demo.com',
+            password: 'demopassword',
+        },
+    };
+    const loginScreenCursor = tree.login;
+    const Component = schema(model)(SignInComponent);
+    return (
+        <Component
+            {...props}
+            tree={loginScreenCursor}
+            tokenCursor={props.tokenCursor}
+        />
+    );
+}
+
+export class Login extends React.Component {
+    render() {
+        return (
+            <NavigatorIOS
+                initialRoute={{
+                    component: SignInScreen,
+                    title: 'Login',
+                    navigationBarHidden: true,
+                    passProps:{
+                        tree: this.props.tree,
+                        tokenCursor: this.props.tokenCursor,
+                    }
+                }}
+                style={{ flex: 1 }}
+            />
+        );
+    }
+}
 
 const styles = StyleSheet.create({
     text: {

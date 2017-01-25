@@ -1,25 +1,38 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
     AppRegistry,
-    NavigatorIOS,
 } from 'react-native';
+import schema from 'libs/state';
+import tree from 'libs/tree';
 import { Login } from './src/login';
+import Main from './src/main';
 
-export default class skiniq extends Component {
-    render() {
-        return (
-            <NavigatorIOS
-                initialRoute={{
-                    component: Login,
-                    title: 'Login',
-                    navigationBarHidden: true,
-                }}
-                style={{ flex: 1 }}
-                tintColor="#FF3952"
-                titleTextColor="#FF3952"
-            />
-        );
+const model = {
+    tree: {
+        token: '',
+        loginScreen: {},
+        mainScreen: {},
+    },
+};
+
+function App(props) {
+    const tokenCursor = props.tree.token;
+    const loginScreen = props.tree.loginScreen;
+    const mainScreen = props.tree.mainScreen;
+
+    if (tokenCursor.get('status') !== 'Succeed') {
+        return <Login tokenCursor={tokenCursor} tree={loginScreen} />;
     }
+
+    return <Main token={tokenCursor.get('data')} tree={mainScreen} />;
 }
+
+function skiniq() {
+    const Component = schema(model)(App);
+
+    return <Component tree={tree} />;
+}
+
+export default skiniq;
 
 AppRegistry.registerComponent('skiniq', () => skiniq);
