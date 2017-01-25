@@ -8,14 +8,38 @@ import {
     Image,
     StatusBar,
 } from 'react-native';
+import tree from 'libs/tree';
+import { uploadClinicalPhoto } from 'libs/services/patients';
+import schema from 'libs/state';
 import Camera from 'react-native-camera';
 import Footer from '../footer';
 
-export default React.createClass({
-    takePicture() {
-        this.camera.capture()
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
+export function CameraScreen(props) {
+    const token = tree.token.data.token.get();
+    const model = {
+        tree: {
+            currentPatient: null,
+            photoUploadResult: {},
+        },
+    };
+    const patientsScreenCursor = tree.patients;
+    const clinicalPhotoService = uploadClinicalPhoto(token, patientsScreenCursor.currentPatient.get('pk'));
+    const Component = schema(model)(CameraComponent);
+
+    return (
+        <Component
+            {...props}
+            tree={patientsScreenCursor}
+            clinicalPhotoService={clinicalPhotoService}
+        />
+    );
+}
+
+const CameraComponent = React.createClass({
+    async takePicture() {
+        const data = await this.camera.capture();
+        const response = await this.props.clinicalPhotoService(this.props.tree.photoUploadResult, data);
+        console.log(response);
     },
 
     render() {
