@@ -6,7 +6,6 @@ import {
     View,
     StyleSheet,
     NavigatorIOS,
-    Text,
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
@@ -14,7 +13,6 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
-import { CameraScreen } from '../camera';
 
 const route = {
     title: 'Login',
@@ -99,10 +97,10 @@ export class Login extends React.Component {
                     component: SignInScreen,
                     title: 'Login',
                     navigationBarHidden: true,
-                    passProps:{
+                    passProps: {
                         tree: this.props.tree,
                         tokenCursor: this.props.tokenCursor,
-                    }
+                    },
                 }}
                 style={{ flex: 1 }}
             />

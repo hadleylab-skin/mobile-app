@@ -1,37 +1,42 @@
 import React from 'react';
 import {
-    View,
-    StyleSheet,
     TabBarIOS,
+    NavigatorIOS,
 } from 'react-native';
 import { uploadClinicalPhoto } from 'libs/services/patients';
 import schema from 'libs/state';
+import { getPatientList, createPatient } from 'libs/services/patients';
 import CameraScreen from '../camera';
+import { PatientsList } from '../patients';
 
 const model = (props) => (
     {
         tree: {
             currentTab: 'camera',
             camera: {},
+            patients: {},
             currentPatient: props.defaultPatient,
         },
     }
 );
 
-export default schema(model)(React.createClass({
+const Main = schema(model)(React.createClass({
     displayName: 'Main',
 
     propTypes: {},
 
-
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const cameraCursor = this.props.tree.camera;
+        const patientsCursor = this.props.tree.patients;
         const currentPatient = this.props.tree.currentPatient.get();
+        const token = this.props.token;
 
         const clinicalPhotoService = uploadClinicalPhoto(
-            this.props.token,
+             token,
             currentPatient.pk);
+        const patientsService = getPatientList(token);
+        const createPatientService = createPatient(token);
 
         return (
             <TabBarIOS
@@ -57,16 +62,32 @@ export default schema(model)(React.createClass({
                     selected={currentTabCursor.get() === 'patients'}
                     onPress={() => currentTabCursor.set('patients')}
                 >
-                    <View style={{ flex: 1, backgroundColor: '#783E33' }} />
+                    <PatientsList
+                        tree={patientsCursor}
+                        patientsService={patientsService}
+                        createPatientService={createPatientService}
+                        mainNavigator={this.props.mainNavigator}
+                    />
                 </TabBarIOS.Item>
             </TabBarIOS>
         );
     },
 }));
 
-const styles = StyleSheet.create({
-    image: {
-        marginLeft: 30,
-        marginRight: 30,
+export default React.createClass({
+    displayName: 'MainNavigator',
+    render() {
+        return (
+            <NavigatorIOS
+                ref={(ref) => { this.navigator = ref; }}
+                initialRoute={{
+                    component: Main,
+                    title: 'Main',
+                    passProps: { ...this.props, mainNavigator: () => this.navigator },
+                    navigationBarHidden: true,
+                }}
+                style={{ flex: 1 }}
+            />
+        );
     },
 });

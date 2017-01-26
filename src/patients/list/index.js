@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -7,38 +6,23 @@ import {
     ScrollView,
     ActivityIndicator,
     StatusBar,
+    NavigatorIOS,
 } from 'react-native';
-import { getPatientList, createPatient } from 'libs/services/patients';
-import tree from 'libs/tree';
 import schema from 'libs/state';
-import NavBar from 'components/nav-bar';
 import Footer from '../../footer';
 import Patient from './patient';
-import { AddPatient, getRoute } from '../add';
+import { getRoute } from '../add';
 
-export function PatientList(props) {
-    const token = tree.token.data.token.get();
-    const patientsService = getPatientList(token);
-    const createPatientService = createPatient(token);
-    const model = {
+const model = (props) => (
+    {
         tree: {
-            patients: patientsService,
+            patients: props.patientsService,
             newPatient: {},
         },
-    };
-    const patientsScreenCursor = tree.patients;
-    const Component = schema(model)(Patients);
-    return (
-        <Component
-            {...props}
-            tree={patientsScreenCursor}
-            patientsService={patientsService}
-            createPatientService={createPatientService}
-        />
-    );
-}
+    }
+);
 
-const Patients = React.createClass({
+const PatientsListScreen = schema(model)(React.createClass({
     propTypes: {
         navigator: PropTypes.object.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
@@ -91,35 +75,51 @@ const Patients = React.createClass({
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar hidden={false} />
-                <NavBar
-                    title="Patients"
-                    leftBtnTitle="Back"
-                    rightBtnTitle="Create"
-                    onRightBtnPress={() =>
-                        this.props.navigator.push(getRoute(this.props))}
+                <ActivityIndicator
+                    animating={showLoader}
+                    size="large"
+                    color="#FF3952"
+                    style={{ marginTop: -35, zIndex: 0 }}
                 />
-                <ScrollView
+                <ListView
+                    enableEmptySections
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
-                    style={{ flex: 1 }}
-                >
-                    <ActivityIndicator
-                        animating={showLoader}
-                        size="large"
-                        color="#FF3952"
-                        style={{ marginTop: -40, zIndex: 0 }}
-                    />
-                    <ListView
-                        enableEmptySections
-                        style={{ marginTop: 0, paddingBottom: 49 }}
-                        dataSource={this.state.ds}
-                        renderRow={(rowData) => (
-                            <Patient data={rowData} />
-                        )}
-                    />
-                </ScrollView>
-                <Footer navigator={this.props.navigator} currentTab="patients" />
+                    style={{
+                        marginTop: 0,
+                        paddingBottom: 49,
+                        borderTopWidth: 0.5,
+                        borderTopColor: '#eee',
+                    }}
+                    dataSource={this.state.ds}
+                    renderRow={(rowData) => (
+                        <Patient data={rowData} />
+                    )}
+                />
             </View>
+        );
+    },
+}));
+
+
+export const PatientsList = React.createClass({
+    render() {
+        const mainNavigator = this.props.mainNavigator();
+
+        return (
+            <NavigatorIOS
+                ref={(ref) => { this.navigator = ref; }}
+                initialRoute={{
+                    component: PatientsListScreen,
+                    passProps: this.props,
+                    title: 'Patients',
+                    rightButtonTitle: 'Create',
+                    onRightButtonPress: () => mainNavigator.push(getRoute(this.props, mainNavigator)),
+                    navigationBarHidden: false,
+                    tintColor: '#FF3952',
+                }}
+                style={{ flex: 1 }}
+            />
         );
     },
 });

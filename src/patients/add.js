@@ -19,7 +19,7 @@ const model = {
     },
 };
 
-export function getRoute(props) {
+export function getRoute(props, navigator) {
     const passProps = {
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
@@ -29,10 +29,10 @@ export function getRoute(props) {
     return {
         component: AddPatient,
         leftButtonTitle: 'Cancel',
-        onLeftButtonPress: () => props.navigator.pop(),
+        onLeftButtonPress: () => navigator.pop(),
         title: 'Create patient',
         rightButtonTitle: 'Create',
-        onRightButtonPress: () => submit(passProps, props.navigator),
+        onRightButtonPress: () => submit(passProps, navigator),
         navigationBarHidden: false,
         passProps,
     };
