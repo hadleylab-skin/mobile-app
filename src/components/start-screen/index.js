@@ -26,7 +26,7 @@ export class StartScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FF3952',
+        backgroundColor: '#FF2D55',
     },
     inner: {
         justifyContent: 'center',

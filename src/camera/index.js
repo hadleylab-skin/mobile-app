@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import Camera from 'react-native-camera';
-import Footer from '../footer';
 
 function ImageLoader({ imageInfo }) {
     if (!imageInfo.data) {
@@ -95,7 +94,6 @@ export default schema(model)(React.createClass({
                         />
                     </TouchableOpacity>
                 </Camera>
-                <Footer navigator={this.props.navigator} currentTab="camera" />
             </View>
         );
     },

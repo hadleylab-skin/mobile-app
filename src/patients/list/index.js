@@ -3,13 +3,12 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     ListView,
-    ScrollView,
     ActivityIndicator,
     StatusBar,
     NavigatorIOS,
+    StyleSheet,
 } from 'react-native';
 import schema from 'libs/state';
-import Footer from '../../footer';
 import Patient from './patient';
 import { getRoute } from '../add';
 
@@ -35,7 +34,8 @@ const PatientsListScreen = schema(model)(React.createClass({
         const patients = this.props.tree.patients.data.get() || [];
         return {
             ds: ds.cloneWithRows(patients),
-            needUpdate: false,
+            canUpdate: true,
+            patientActive: 13,
         };
     },
 
@@ -56,15 +56,17 @@ const PatientsListScreen = schema(model)(React.createClass({
         }
     },
 
-    onScroll(e) {
+    activatePatient(id) {
+        this.setState({ patientActive: id });
+    },
+
+    async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        if (offset >= 0) {
-            this.setState({ needUpdate: true });
-        } else if (offset < 0 && this.state.needUpdate) {
-            this.setState({ needUpdate: false });
-            if (this.props.tree.patients.status.get() !== 'Loading') {
-                this.props.patientsService(this.props.tree.patients);
-            }
+        // console.log(offset, this.state.canUpdate, this.props.patientsService);
+        if (offset < 0 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
+            this.setState({ canUpdate: false });
+            await this.props.patientsService(this.props.tree.patients);
+            this.setState({ canUpdate: true });
         }
     },
 
@@ -75,25 +77,27 @@ const PatientsListScreen = schema(model)(React.createClass({
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar hidden={false} />
-                <ActivityIndicator
-                    animating={showLoader}
-                    size="large"
-                    color="#FF3952"
-                    style={{ marginTop: -35, zIndex: 0 }}
-                />
+                <View style={styles.activityIndicator}>
+                    <ActivityIndicator
+                        animating={showLoader}
+                        size="large"
+                        color="#FF2D55"
+                    />
+                </View>
                 <ListView
                     enableEmptySections
                     onScroll={this.onScroll}
-                    scrollEventThrottle={200}
+                    scrollEventThrottle={20}
                     style={{
-                        marginTop: 0,
                         paddingBottom: 49,
-                        borderTopWidth: 0.5,
-                        borderTopColor: '#eee',
                     }}
                     dataSource={this.state.ds}
                     renderRow={(rowData) => (
-                        <Patient data={rowData} />
+                        <Patient
+                            data={rowData}
+                            patientActive={this.state.patientActive}
+                            activatePatient={this.activatePatient}
+                        />
                     )}
                 />
             </View>
@@ -116,10 +120,20 @@ export const PatientsList = React.createClass({
                     rightButtonTitle: 'Create',
                     onRightButtonPress: () => mainNavigator.push(getRoute(this.props, mainNavigator)),
                     navigationBarHidden: false,
-                    tintColor: '#FF3952',
+                    tintColor: '#FF2D55',
                 }}
                 style={{ flex: 1 }}
             />
         );
+    },
+});
+
+const styles = StyleSheet.create({
+    activityIndicator: {
+        position: 'absolute',
+        top: 85,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
     },
 });

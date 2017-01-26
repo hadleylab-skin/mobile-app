@@ -31,9 +31,10 @@ export function getRoute(props, navigator) {
         leftButtonTitle: 'Cancel',
         onLeftButtonPress: () => navigator.pop(),
         title: 'Create patient',
-        rightButtonTitle: 'Create',
+        rightButtonTitle: 'Done',
         onRightButtonPress: () => submit(passProps, navigator),
         navigationBarHidden: false,
+        tintColor: '#FF2D55',
         passProps,
     };
 }
@@ -89,7 +90,7 @@ export const AddPatient = schema(model)(React.createClass({
                 <ActivityIndicator
                     animating={showLoader}
                     size="large"
-                    color="#FF3952"
+                    color="#FF2D55"
                 />
             </View>
         );

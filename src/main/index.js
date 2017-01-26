@@ -3,9 +3,8 @@ import {
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
-import { uploadClinicalPhoto } from 'libs/services/patients';
+import { uploadClinicalPhoto, getPatientList, createPatient } from 'libs/services/patients';
 import schema from 'libs/state';
-import { getPatientList, createPatient } from 'libs/services/patients';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
 
@@ -41,8 +40,8 @@ const Main = schema(model)(React.createClass({
         return (
             <TabBarIOS
                 barTintColor="#fafafa"
-                tintColor="#FF3952"
-                unselectedItemTintColor="#333"
+                tintColor="#FF2D55"
+                unselectedItemTintColor="#8E8E93"
             >
                 <TabBarIOS.Item
                     title="Camera"
