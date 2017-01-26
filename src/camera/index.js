@@ -14,34 +14,59 @@ import schema from 'libs/state';
 import Camera from 'react-native-camera';
 import Footer from '../footer';
 
+function ImageLoader({ imageInfo }) {
+    if (!imageInfo.data) {
+        return null;
+    } if (imageInfo.data.status === 'Loading') {
+        return (
+            <View>
+                <Image
+                    style={{ height: 75, width: 50 }}
+                    source={{ uri: imageInfo.photo.path }}
+                />
+                <ActivityIndicator
+                    size="large"
+                    style={{ position: 'absolute', top: 15, left: 10 }}
+                />
+            </View>
+        );
+    } else if (imageInfo.data.status === 'Succeed') {
+        return null;
+    }
+
+    return (
+        <View>
+            <Text>Error</Text>
+        </View>
+    );
+}
+
 const model = {
     tree: {
-        photoUploadResult: {},
+        imageUploadResults: [],
     },
 };
 
 export default schema(model)(React.createClass({
-    getInitialState() {
-        return {
-            photosInProgress: 0,
-        };
-    },
-
     async takePicture() {
-        const data = await this.camera.capture();
-        this.setState({ photosInProgress: this.state.photosInProgress + 1 });
+        const photo = await this.camera.capture();
+        const index = this.props.tree.imageUploadResults.get().length;
+        this.props.tree.imageUploadResults.push({
+            photo,
+            data: {},
+        });
+        const cursor = this.props.tree.imageUploadResults.select(index, 'data');
         try {
-            const response = await this.props.clinicalPhotoService(this.props.tree.photoUploadResult, data);
+            const response = await this.props.clinicalPhotoService(cursor, photo);
             console.log(response);
         } catch (e) {
             console.log(e);
         }
-
-        this.setState({ photosInProgress: this.state.photosInProgress - 1 });
     },
 
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
+        const images = this.props.tree.imageUploadResults.get();
         return (
             <View style={styles.container}>
                 <StatusBar hidden />
@@ -54,8 +79,8 @@ export default schema(model)(React.createClass({
                     captureTarget={Camera.constants.CaptureTarget.disk}
                 >
                     <View style={styles.preloaders} >
-                        {_.map(_.range(this.state.photosInProgress), (index) => (
-                            <ActivityIndicator key={index} />)
+                        {_.map(images, (imageInfo, index) =>
+                            <ImageLoader imageInfo={imageInfo} key={index} />
                          )}
                     </View>
                     <View style={styles.textWrapper}>
@@ -97,9 +122,8 @@ const styles = StyleSheet.create({
     preloaders: {
         position: 'absolute',
         flexDirection: 'row',
-        top: 40,
-        left: 100,
-        right: 100,
+        top: 0,
+        left: 10,
     },
     name: {
         color: '#fff',
