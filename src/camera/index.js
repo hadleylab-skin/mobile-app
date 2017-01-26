@@ -41,6 +41,7 @@ export default schema(model)(React.createClass({
     },
 
     render() {
+        const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         return (
             <View style={styles.container}>
                 <StatusBar hidden />
@@ -59,7 +60,7 @@ export default schema(model)(React.createClass({
                     </View>
                     <View style={styles.textWrapper}>
                         <Text style={styles.name}>
-                            { this.props.currentPatient.name}
+                            {patientName}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={this.takePicture}>

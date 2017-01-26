@@ -21,10 +21,17 @@ function App(props) {
     const mainScreen = props.tree.mainScreen;
 
     if (tokenCursor.get('status') !== 'Succeed') {
-        return <Login tokenCursor={tokenCursor} tree={loginScreen} />;
+        return (
+            <Login tokenCursor={tokenCursor} tree={loginScreen} />
+        );
     }
-
-    return <Main token={tokenCursor.get('data')} tree={mainScreen} />;
+    return (
+        <Main
+            tree={mainScreen}
+            defaultPatient={tokenCursor.get('data','patient')}
+            token={tokenCursor.get('data', 'token')}
+        />
+    );
 }
 
 function skiniq() {

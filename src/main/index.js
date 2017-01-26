@@ -4,20 +4,19 @@ import {
     StyleSheet,
     TabBarIOS,
 } from 'react-native';
-import CameraScreen from '../camera';
 import { uploadClinicalPhoto } from 'libs/services/patients';
 import schema from 'libs/state';
+import CameraScreen from '../camera';
 
-const model = {
-    tree: {
-        currentTab: 'camera',
-        camera: {},
-        currentPatient: {
-            pk: null,
-            name: 'Unknown',
+const model = (props) => (
+    {
+        tree: {
+            currentTab: 'camera',
+            camera: {},
+            currentPatient: props.defaultPatient,
         },
-    },
-};
+    }
+);
 
 export default schema(model)(React.createClass({
     displayName: 'Main',
