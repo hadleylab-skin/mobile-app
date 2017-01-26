@@ -37,7 +37,8 @@ export default schema(model)(React.createClass({
             <TabBarIOS
                 barTintColor="#fafafa"
                 tintColor="#FF3952"
-                unselectedItemTintColor="#333">
+                unselectedItemTintColor="#333"
+            >
                 <TabBarIOS.Item
                     title="Camera"
                     icon={require('./images/camera.png')}
