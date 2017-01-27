@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
+import _ from 'lodash';
 import {
     View,
     ListView,
@@ -9,7 +10,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import schema from 'libs/state';
-import Patient from './patient';
+import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
 
 const model = (props) => (
@@ -30,12 +31,11 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     getInitialState() {
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.id !== r2.id });
+        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => false });
         const patients = this.props.tree.patients.data.get() || [];
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
-            patientActive: 13,
         };
     },
 
@@ -57,7 +57,17 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     activatePatient(id) {
-        this.setState({ patientActive: id });
+        const data = this.props.tree.patients.data.get();
+        const newData = [];
+
+        _.map(data, (user) => {
+            const newUser = { ...user, isPatientActiveInListView: user.id === id };
+            newData.push(newUser);
+        });
+
+        this.setState({
+            ds: this.state.ds.cloneWithRows(newData),
+        });
     },
 
     async onScroll(e) {
@@ -93,9 +103,8 @@ const PatientsListScreen = schema(model)(React.createClass({
                     }}
                     dataSource={this.state.ds}
                     renderRow={(rowData) => (
-                        <Patient
+                        <PatientListItem
                             data={rowData}
-                            patientActive={this.state.patientActive}
                             activatePatient={this.activatePatient}
                         />
                     )}
@@ -104,7 +113,6 @@ const PatientsListScreen = schema(model)(React.createClass({
         );
     },
 }));
-
 
 export const PatientsList = React.createClass({
     render() {

@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 });
 
 export default React.createClass({
-    displayName: 'Patient',
+    displayName: 'PatientListItem',
 
     propTypes: {
         data: React.PropTypes.shape({
@@ -71,8 +71,8 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, total_images, profile_pic, id } = this.props.data;
-        const patientActive = this.props.patientActive === id;
+        const { firstname, lastname, total_images, profile_pic, id, isPatientActiveInListView } = this.props.data;
+        console.log(isPatientActiveInListView, id);
 
         return (
             <View style={styles.container}>
@@ -80,7 +80,7 @@ export default React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={{ x: patientActive ? 0 : 100 }}
+                    contentOffset={{ x: isPatientActiveInListView ? 0 : 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
@@ -113,4 +113,3 @@ export default React.createClass({
         );
     },
 });
-
