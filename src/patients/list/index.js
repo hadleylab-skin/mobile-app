@@ -31,11 +31,12 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     getInitialState() {
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => false });
+        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.id === r2.id });
         const patients = this.props.tree.patients.data.get() || [];
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
+            activePatientId: 0,
         };
     },
 
@@ -56,23 +57,12 @@ const PatientsListScreen = schema(model)(React.createClass({
         }
     },
 
-    activatePatient(id) {
-        const data = this.props.tree.patients.data.get();
-        const newData = [];
-
-        _.map(data, (user) => {
-            const newUser = { ...user, isPatientActiveInListView: user.id === id };
-            newData.push(newUser);
-        });
-
-        this.setState({
-            ds: this.state.ds.cloneWithRows(newData),
-        });
+    activatePatient(activePatientId) {
+        this.setState({ activePatientId });
     },
 
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        // console.log(offset, this.state.canUpdate, this.props.patientsService);
         if (offset < 0 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
             await this.props.patientsService(this.props.tree.patients);
@@ -105,6 +95,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                     renderRow={(rowData) => (
                         <PatientListItem
                             data={rowData}
+                            isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
                         />
                     )}

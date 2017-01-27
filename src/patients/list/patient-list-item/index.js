@@ -64,15 +64,14 @@ export default React.createClass({
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
-
-        if (offset < 50) {
+        if (offset < 0 && !this.props.isPatientActiveInListView) {
             this.props.activatePatient(this.props.data.id);
         }
     },
 
     render() {
-        const { firstname, lastname, total_images, profile_pic, id, isPatientActiveInListView } = this.props.data;
-        console.log(isPatientActiveInListView, id);
+        const { firstname, lastname, total_images, profile_pic, id } = this.props.data;
+        const { isPatientActiveInListView } = this.props;
 
         return (
             <View style={styles.container}>
@@ -80,7 +79,7 @@ export default React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={{ x: isPatientActiveInListView ? 0 : 100 }}
+                    contentOffset={isPatientActiveInListView ? {} : { x: 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
@@ -98,7 +97,7 @@ export default React.createClass({
                         />
                         <View style={styles.info}>
                             <Text style={[styles.text, { fontSize: 18 }]}>
-                                {`${firstname} ${lastname}`}
+                                {`${firstname} ${lastname} ${isPatientActiveInListView}`}
                             </Text>
                             <Text style={[styles.text, { opacity: 0.6 }]}>
                                 Images: {total_images}
