@@ -67,11 +67,13 @@ class TreeStateWrapper extends Component {
         });
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        const isPropsEqual = compareProps(this.props.parentProps, nextProps.parentProps);
-        const isStateEqual = _.isEqual(this.state, nextState);
-        return !(isPropsEqual && isStateEqual);
-    }
+    // TODO fix it
+    /* shouldComponentUpdate(nextProps, nextState) {
+     *     const isPropsEqual = compareProps(this.props.parentProps, nextProps.parentProps);
+     *     const isStateEqual = _.isEqual(this.state, nextState);
+     *     return !(isPropsEqual && isStateEqual);
+     *   }
+     */
 
     componentWillUnmount() {
         _.each(this.props.parentProps, (cursor) => {
