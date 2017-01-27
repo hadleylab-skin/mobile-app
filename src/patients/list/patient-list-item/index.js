@@ -7,7 +7,9 @@ import {
     ScrollView,
     Dimensions,
     TouchableHighlight,
+    TouchableWithoutFeedback,
 } from 'react-native';
+import Patient from '../../patient';
 
 const styles = StyleSheet.create({
     container: {
@@ -79,6 +81,7 @@ export default React.createClass({
     render() {
         const { firstname, lastname, total_images, profile_pic } = this.props.data;
         const { isPatientActiveInListView } = this.props;
+        const mainNavigator = this.props.mainNavigator();
 
         return (
             <View style={styles.container}>
@@ -100,23 +103,35 @@ export default React.createClass({
                     >
                         <Text style={styles.selectText}>Select</Text>
                     </TouchableHighlight>
-                    <View style={styles.inner}>
-                        <Image
-                            source={{ uri: profile_pic.thumbnail }}
-                            style={styles.img}
-                        />
-                        <View style={styles.info}>
-                            <Text style={[styles.text, { fontSize: 18 }]}>
-                                {`${firstname} ${lastname} ${isPatientActiveInListView}`}
-                            </Text>
-                            <Text style={[styles.text, { opacity: 0.6 }]}>
-                                Images: {total_images}
-                            </Text>
-                            <Text style={[styles.text, { opacity: 0.8 }]}>
-                                Last Upload: 2 months ago
-                            </Text>
+                    <TouchableWithoutFeedback
+                        onPress={() => mainNavigator.push({
+                            component: Patient,
+                            title: 'Patient',
+                            leftButtonTitle: 'Back',
+                            onLeftButtonPress: () => mainNavigator.pop(),
+                            rightButtonTitle: 'Edit',
+                            navigationBarHidden: false,
+                            tintColor: '#FF2D55',
+                        })}
+                    >
+                        <View style={styles.inner}>
+                            <Image
+                                source={{ uri: profile_pic.thumbnail }}
+                                style={styles.img}
+                            />
+                            <View style={styles.info}>
+                                <Text style={[styles.text, { fontSize: 18 }]}>
+                                    {`${firstname} ${lastname}`}
+                                </Text>
+                                <Text style={[styles.text, { opacity: 0.6 }]}>
+                                    Images: {total_images}
+                                </Text>
+                                <Text style={[styles.text, { opacity: 0.8 }]}>
+                                    Last Upload: 2 months ago
+                                </Text>
+                            </View>
                         </View>
-                    </View>
+                    </TouchableWithoutFeedback>
                 </ScrollView>
             </View>
         );

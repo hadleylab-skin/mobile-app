@@ -99,6 +99,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
                             changeCurrentPatient={this.props.changeCurrentPatient}
+                            mainNavigator={this.props.mainNavigator}
                         />
                     )}
                 />
