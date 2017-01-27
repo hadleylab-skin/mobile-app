@@ -56,10 +56,17 @@ export default React.createClass({
 
     propTypes: {
         data: React.PropTypes.shape({
+            id: React.PropTypes.int,
             firstname: React.PropTypes.string,
             lastname: React.PropTypes.string,
             total_images: React.PropTypes.number,
+            profile_pic: React.PropTypes.shape({
+                thumbnail: React.PropTypes.string,
+            }),
         }).isRequired,
+        changeCurrentPatient: React.PropTypes.func.isRequired,
+        activatePatient: React.PropTypes.func.isRequired,
+        isPatientActiveInListView: React.PropTypes.bool.isRequired,
     },
 
     onScroll(e) {
@@ -70,7 +77,7 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, total_images, profile_pic, id } = this.props.data;
+        const { firstname, lastname, total_images, profile_pic } = this.props.data;
         const { isPatientActiveInListView } = this.props;
 
         return (
@@ -86,13 +93,16 @@ export default React.createClass({
                     <TouchableHighlight
                         style={styles.select}
                         underlayColor="#FF2D55"
-                        onPress={() => console.log('toPatientScreen')}
+                        onPress={() => {
+                            this.setState({ activePatientId: 0 });
+                            this.props.changeCurrentPatient(this.props.data);
+                        }}
                     >
                         <Text style={styles.selectText}>Select</Text>
                     </TouchableHighlight>
                     <View style={styles.inner}>
                         <Image
-                            source={{uri: profile_pic.thumbnail }}
+                            source={{ uri: profile_pic.thumbnail }}
                             style={styles.img}
                         />
                         <View style={styles.info}>

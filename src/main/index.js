@@ -28,12 +28,12 @@ const Main = schema(model)(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         const cameraCursor = this.props.tree.camera;
         const patientsCursor = this.props.tree.patients;
-        const currentPatient = this.props.tree.currentPatient.get();
+        const currentPatientCursor = this.props.tree.currentPatient;
         const token = this.props.token;
 
         const clinicalPhotoService = uploadClinicalPhoto(
              token,
-            currentPatient.pk);
+            currentPatientCursor.get('pk'));
         const patientsService = getPatientList(token);
         const createPatientService = createPatient(token);
 
@@ -51,7 +51,7 @@ const Main = schema(model)(React.createClass({
                 >
                     <CameraScreen
                         tree={cameraCursor}
-                        currentPatient={currentPatient}
+                        currentPatient={currentPatientCursor.get()}
                         clinicalPhotoService={clinicalPhotoService}
                     />
                 </TabBarIOS.Item>
@@ -63,6 +63,10 @@ const Main = schema(model)(React.createClass({
                 >
                     <PatientsList
                         tree={patientsCursor}
+                        changeCurrentPatient={(patient) => {
+                            currentPatientCursor.set(patient);
+                            currentTabCursor.set('camera');
+                        }}
                         patientsService={patientsService}
                         createPatientService={createPatientService}
                         mainNavigator={this.props.mainNavigator}

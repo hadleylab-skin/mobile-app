@@ -26,6 +26,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     propTypes: {
         navigator: PropTypes.object.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
+        changeCurrentPatient: PropTypes.func.isRequired,
         patientsService: PropTypes.func.isRequired,
         createPatientService: PropTypes.func.isRequired,
     },
@@ -97,6 +98,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                             data={rowData}
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
+                            changeCurrentPatient={this.props.changeCurrentPatient}
                         />
                     )}
                 />
