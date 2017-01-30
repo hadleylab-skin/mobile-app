@@ -8,7 +8,10 @@ import {
     Dimensions,
     TouchableOpacity,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
+
+let styles = {};
 
 export default React.createClass({
     displayName: 'Patient',
@@ -34,10 +37,9 @@ export default React.createClass({
                             />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
+                            <View style={styles.withoutImg}>
+                                <Text style={styles.text}>{ `Upload error\n Click for details` }</Text>
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.photoWrapper}>
                             <Image
@@ -46,10 +48,15 @@ export default React.createClass({
                             />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
+                            <View style={styles.withoutImg}>
+                                <ActivityIndicator
+                                    animating
+                                    size="large"
+                                    color="#FF2D55"
+                                    style={{ marginBottom: 10 }}
+                                />
+                                <Text style={styles.text}>Uploading</Text>
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.photoWrapper}>
                             <Image
@@ -102,7 +109,7 @@ export default React.createClass({
 
 const photosContainerWidth = Dimensions.get('window').width + 2;
 
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
@@ -139,8 +146,21 @@ const styles = StyleSheet.create({
         width: photosContainerWidth / 3,
         height: photosContainerWidth / 3,
     },
+    withoutImg: {
+        backgroundColor: '#fafafa',
+        borderWidth: 0.5,
+        borderColor: '#ccc',
+        width: (photosContainerWidth / 3) - 2,
+        height: (photosContainerWidth / 3) - 2,
+        justifyContent: 'center',
+    },
     photo: {
         width: (photosContainerWidth / 3) - 2,
         height: (photosContainerWidth / 3) - 2,
+    },
+    text: {
+        textAlign: 'center',
+        fontSize: 16,
+        lineHeight: 16,
     },
 });
