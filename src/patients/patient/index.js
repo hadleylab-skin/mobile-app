@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     View,
     Text,
@@ -10,18 +11,71 @@ import {
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
+import schema from 'libs/state';
+import { getPatient } from 'libs/services/patients';
 
 let styles = {};
 
-export default React.createClass({
+const model = (props) => (
+    {
+        tree: {
+            patient: getPatient(props.token, props.id),
+        },
+    }
+);
+
+const Patient = schema(model)(React.createClass({
     displayName: 'Patient',
 
+    renderActivityIndicator() {
+        return (
+            <View style={styles.indicator}>
+                <ActivityIndicator
+                    animating
+                    size="large"
+                    color="#FF2D55"
+                />
+            </View>
+        );
+    },
+
+    renderError(index) {
+        return (
+            <TouchableOpacity style={styles.photoWrapper} key={index}>
+                <View style={styles.withoutImg}>
+                    <Text style={styles.text}>
+                        { `Upload error\n Click for details` }
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    },
+
+    renderUploading(index) {
+        return (
+            <TouchableOpacity style={styles.photoWrapper} key={index}>
+                <View style={styles.withoutImg}>
+                    <ActivityIndicator
+                        animating
+                        size="large"
+                        color="#FF2D55"
+                        style={{ marginBottom: 10 }}
+                    />
+                    <Text style={styles.text}>Uploading</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    },
+
     render() {
+        const { firstname, lastname } = this.props;
+        const data = this.props.tree.patient.data.get();
+
         return (
             <View style={styles.container}>
                 <StatusBar hidden={false} />
                 <ScrollView>
-                    <Text style={styles.name}>Suzanne Reed</Text>
+                    <Text style={styles.name}>{ `${firstname} ${lastname}` }</Text>
                     <View style={{ alignItems: 'center' }}>
                         <Image
                             source={require('./images/default-user.png')}
@@ -30,82 +84,40 @@ export default React.createClass({
                     </View>
                     <Text style={styles.subtitle}>San Francisco C.A.</Text>
                     <View style={styles.photos}>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <View style={styles.withoutImg}>
-                                <Text style={styles.text}>{ `Upload error\n Click for details` }</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <View style={styles.withoutImg}>
-                                <ActivityIndicator
-                                    animating
-                                    size="large"
-                                    color="#FF2D55"
-                                    style={{ marginBottom: 10 }}
-                                />
-                                <Text style={styles.text}>Uploading</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.photoWrapper}>
-                            <Image
-                                source={require('./images/shore.jpg')}
-                                style={styles.photo}
-                            />
-                        </TouchableOpacity>
+                        {_.map(data, (item, index) => {
+                            const error = false;
+                            const uploading = false;
+
+                            if (error) {
+                                return this.renderError(index);
+                            }
+
+                            if (uploading) {
+                                return this.renderUploading(index);
+                            }
+
+                            if (!error && !uploading) {
+                                return (
+                                    <TouchableOpacity style={styles.photoWrapper} key={index}>
+                                        {this.renderActivityIndicator()}
+                                        <Image
+                                            source={{ uri: item.clinical_photo.thumbnail }}
+                                            style={styles.photo}
+                                        />
+                                    </TouchableOpacity>
+                                );
+                            }
+
+                            return null;
+                        })}
                     </View>
                 </ScrollView>
             </View>
         );
     },
-});
+}));
+
+export default Patient;
 
 const photosContainerWidth = Dimensions.get('window').width + 2;
 
@@ -162,5 +174,13 @@ styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         lineHeight: 16,
+    },
+    indicator: {
+        position: 'absolute',
+        left: 2,
+        top: 2,
+        right: 2,
+        bottom: 2,
+        justifyContent: 'center',
     },
 });

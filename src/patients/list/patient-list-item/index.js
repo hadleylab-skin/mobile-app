@@ -11,7 +11,102 @@ import {
 } from 'react-native';
 import Patient from '../../patient';
 
-const styles = StyleSheet.create({
+let styles = {};
+
+export default React.createClass({
+    displayName: 'PatientListItem',
+
+    propTypes: {
+        data: React.PropTypes.shape({
+            id: React.PropTypes.int,
+            firstname: React.PropTypes.string,
+            lastname: React.PropTypes.string,
+            total_images: React.PropTypes.number,
+            profile_pic: React.PropTypes.shape({
+                thumbnail: React.PropTypes.string,
+            }),
+            last_visit: React.PropTypes.string,
+        }).isRequired,
+        changeCurrentPatient: React.PropTypes.func.isRequired,
+        activatePatient: React.PropTypes.func.isRequired,
+        isPatientActiveInListView: React.PropTypes.bool.isRequired,
+    },
+
+    onScroll(e) {
+        const offset = e.nativeEvent.contentOffset.x;
+        if (offset < 0 && !this.props.isPatientActiveInListView) {
+            this.props.activatePatient(this.props.data.id);
+        }
+    },
+
+    render() {
+        const { firstname, lastname, total_images, profile_pic, last_visit } = this.props.data;
+        const { isPatientActiveInListView } = this.props;
+        const mainNavigator = this.props.mainNavigator();
+
+        return (
+            <View style={styles.container}>
+                <ScrollView
+                    showsHorizontalScrollIndicator={false}
+                    scrollEventThrottle={16}
+                    style={{ flex: 1 }}
+                    contentOffset={isPatientActiveInListView ? {} : { x: 100 }}
+                    onScroll={this.onScroll}
+                    horizontal
+                >
+                    <TouchableHighlight
+                        style={styles.select}
+                        underlayColor="#FF2D55"
+                        onPress={() => {
+                            this.setState({ activePatientId: 0 });
+                            this.props.changeCurrentPatient(this.props.data);
+                        }}
+                    >
+                        <Text style={styles.selectText}>Select</Text>
+                    </TouchableHighlight>
+                    <TouchableWithoutFeedback
+                        onPress={() => mainNavigator.push({
+                            component: Patient,
+                            title: 'Patient',
+                            leftButtonTitle: 'Back',
+                            onLeftButtonPress: () => mainNavigator.pop(),
+                            rightButtonTitle: 'Edit',
+                            navigationBarHidden: false,
+                            tintColor: '#FF2D55',
+                            passProps: {
+                                tree: this.props.tree,
+                                token: this.props.token,
+                                id: this.props.data.id,
+                                firstname: firstname,
+                                lastname: lastname,
+                            },
+                        })}
+                    >
+                        <View style={styles.inner}>
+                            <Image
+                                source={{ uri: profile_pic.thumbnail }}
+                                style={styles.img}
+                            />
+                            <View style={styles.info}>
+                                <Text style={[styles.text, { fontSize: 18 }]}>
+                                    {`${firstname} ${lastname}`}
+                                </Text>
+                                <Text style={[styles.text, { opacity: 0.6 }]}>
+                                    Images: {total_images}
+                                </Text>
+                                <Text style={[styles.text, { opacity: 0.8 }]}>
+                                    Last Upload: {last_visit}
+                                </Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
+            </View>
+        );
+    },
+});
+
+styles = StyleSheet.create({
     container: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#eee',
@@ -50,90 +145,5 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 5,
         fontSize: 14,
-    },
-});
-
-export default React.createClass({
-    displayName: 'PatientListItem',
-
-    propTypes: {
-        data: React.PropTypes.shape({
-            id: React.PropTypes.int,
-            firstname: React.PropTypes.string,
-            lastname: React.PropTypes.string,
-            total_images: React.PropTypes.number,
-            profile_pic: React.PropTypes.shape({
-                thumbnail: React.PropTypes.string,
-            }),
-        }).isRequired,
-        changeCurrentPatient: React.PropTypes.func.isRequired,
-        activatePatient: React.PropTypes.func.isRequired,
-        isPatientActiveInListView: React.PropTypes.bool.isRequired,
-    },
-
-    onScroll(e) {
-        const offset = e.nativeEvent.contentOffset.x;
-        if (offset < 0 && !this.props.isPatientActiveInListView) {
-            this.props.activatePatient(this.props.data.id);
-        }
-    },
-
-    render() {
-        const { firstname, lastname, total_images, profile_pic } = this.props.data;
-        const { isPatientActiveInListView } = this.props;
-        const mainNavigator = this.props.mainNavigator();
-
-        return (
-            <View style={styles.container}>
-                <ScrollView
-                    showsHorizontalScrollIndicator={false}
-                    scrollEventThrottle={16}
-                    style={{ flex: 1 }}
-                    contentOffset={isPatientActiveInListView ? {} : { x: 100 }}
-                    onScroll={this.onScroll}
-                    horizontal
-                >
-                    <TouchableHighlight
-                        style={styles.select}
-                        underlayColor="#FF2D55"
-                        onPress={() => {
-                            this.setState({ activePatientId: 0 });
-                            this.props.changeCurrentPatient(this.props.data);
-                        }}
-                    >
-                        <Text style={styles.selectText}>Select</Text>
-                    </TouchableHighlight>
-                    <TouchableWithoutFeedback
-                        onPress={() => mainNavigator.push({
-                            component: Patient,
-                            title: 'Patient',
-                            leftButtonTitle: 'Back',
-                            onLeftButtonPress: () => mainNavigator.pop(),
-                            rightButtonTitle: 'Edit',
-                            navigationBarHidden: false,
-                            tintColor: '#FF2D55',
-                        })}
-                    >
-                        <View style={styles.inner}>
-                            <Image
-                                source={{ uri: profile_pic.thumbnail }}
-                                style={styles.img}
-                            />
-                            <View style={styles.info}>
-                                <Text style={[styles.text, { fontSize: 18 }]}>
-                                    {`${firstname} ${lastname}`}
-                                </Text>
-                                <Text style={[styles.text, { opacity: 0.6 }]}>
-                                    Images: {total_images}
-                                </Text>
-                                <Text style={[styles.text, { opacity: 0.8 }]}>
-                                    Last Upload: 2 months ago
-                                </Text>
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </ScrollView>
-            </View>
-        );
     },
 });

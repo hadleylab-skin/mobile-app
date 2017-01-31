@@ -70,6 +70,7 @@ const Main = schema(model)(React.createClass({
                         patientsService={patientsService}
                         createPatientService={createPatientService}
                         mainNavigator={this.props.mainNavigator}
+                        token={this.props.token}
                     />
                 </TabBarIOS.Item>
             </TabBarIOS>

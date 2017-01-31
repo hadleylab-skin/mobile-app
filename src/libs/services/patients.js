@@ -8,6 +8,15 @@ export function getPatientList(token) {
     return buildGetService('/api/v1/patients/', _.identity, _.merge({}, defaultHeaders, headers));
 }
 
+export function getPatient(token, patientPk) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+    return buildGetService(`/api/v1/patients/${patientPk}/skin_images/`,
+        _.identity,
+        _.merge({}, defaultHeaders, headers));
+}
+
 export function createPatient(token) {
     const headers = {
         Authorization: `JWT ${token}`,
