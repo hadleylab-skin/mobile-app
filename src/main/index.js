@@ -86,7 +86,7 @@ export default React.createClass({
                 ref={(ref) => { this.navigator = ref; }}
                 initialRoute={{
                     component: Main,
-                    title: 'Main',
+                    title: 'Patients',
                     passProps: { ...this.props, mainNavigator: () => this.navigator },
                     navigationBarHidden: true,
                 }}

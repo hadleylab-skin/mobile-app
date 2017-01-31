@@ -68,7 +68,6 @@ export default React.createClass({
                         onPress={() => mainNavigator.push({
                             component: Patient,
                             title: 'Patient',
-                            leftButtonTitle: 'Back',
                             onLeftButtonPress: () => mainNavigator.pop(),
                             rightButtonTitle: 'Edit',
                             navigationBarHidden: false,

@@ -106,7 +106,6 @@ const Patient = schema(model)(React.createClass({
                                         onPress={() => mainNavigator.push({
                                             component: ImageInfo,
                                             title: `${firstname} ${lastname}`,
-                                            leftButtonTitle: 'Back',
                                             onLeftButtonPress: () => mainNavigator.pop(),
                                             navigationBarHidden: false,
                                             tintColor: '#FF2D55',
