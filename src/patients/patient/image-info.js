@@ -16,7 +16,8 @@ const ImageInfo = React.createClass({
     displayName: 'ImageInfo',
 
     render() {
-        const { date_created, clinical_diagnosis, prediction_accuracy, prediction, clinical_photo } = this.props.data;
+        const { date_created, clinical_diagnosis,
+            prediction_accuracy, prediction, clinical_photo } = this.props.data;
 
         return (
             <View style={styles.container}>

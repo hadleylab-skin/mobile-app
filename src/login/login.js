@@ -50,7 +50,7 @@ const SignInComponent = React.createClass({
         return (
             <StartScreen>
                 <Input label="Email" cursor={emailCursor} />
-                <Input label="Password" cursor={passwordCursor} />
+                <Input label="Password" cursor={passwordCursor} secureTextEntry />
                 <Button title="Login" onPress={this.submit} />
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
