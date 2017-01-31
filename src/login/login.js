@@ -36,11 +36,11 @@ const SignInComponent = React.createClass({
     },
 
     goToSignUp() {
-        this.props.navigator.push(_.merge({}, route, { component: SignUp }));
+        // this.props.navigator.push(_.merge({}, route, { component: SignUp }));
     },
 
     goToResetPassword() {
-        this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
+        // this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
     },
 
     render() {
