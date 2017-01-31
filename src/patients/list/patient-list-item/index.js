@@ -40,7 +40,7 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, total_images, profile_pic, last_visit } = this.props.data;
+        const { firstname, lastname, total_images, profile_pic, last_visit, id } = this.props.data;
         const { isPatientActiveInListView } = this.props;
         const mainNavigator = this.props.mainNavigator();
 
@@ -76,9 +76,10 @@ export default React.createClass({
                             passProps: {
                                 tree: this.props.tree,
                                 token: this.props.token,
-                                id: this.props.data.id,
-                                firstname: firstname,
-                                lastname: lastname,
+                                id,
+                                firstname,
+                                lastname,
+                                mainNavigator: this.props.mainNavigator,
                             },
                         })}
                     >

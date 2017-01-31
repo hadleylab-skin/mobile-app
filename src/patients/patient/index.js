@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { getPatient } from 'libs/services/patients';
+import ImageInfo from './image-info';
 
 let styles = {};
 
@@ -70,6 +71,7 @@ const Patient = schema(model)(React.createClass({
     render() {
         const { firstname, lastname } = this.props;
         const data = this.props.tree.patient.data.get();
+        const mainNavigator = this.props.mainNavigator();
 
         return (
             <View style={styles.container}>
@@ -98,7 +100,21 @@ const Patient = schema(model)(React.createClass({
 
                             if (!error && !uploading) {
                                 return (
-                                    <TouchableOpacity style={styles.photoWrapper} key={index}>
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={styles.photoWrapper}
+                                        onPress={() => mainNavigator.push({
+                                            component: ImageInfo,
+                                            title: `${firstname} ${lastname}`,
+                                            leftButtonTitle: 'Back',
+                                            onLeftButtonPress: () => mainNavigator.pop(),
+                                            navigationBarHidden: false,
+                                            tintColor: '#FF2D55',
+                                            passProps: {
+                                                data: data[index],
+                                            },
+                                        })}
+                                    >
                                         {this.renderActivityIndicator()}
                                         <Image
                                             source={{ uri: item.clinical_photo.thumbnail }}
