@@ -94,7 +94,7 @@ export default React.createClass({
                     >
                         <View style={styles.inner}>
                             <Image
-                                source={{ uri: profile_pic.thumbnail }}
+                                source={require('./images/default-user.png')}
                                 style={styles.img}
                             />
                             <View style={styles.info}>
