@@ -9,6 +9,7 @@ import {
     TouchableHighlight,
     TouchableWithoutFeedback,
 } from 'react-native';
+import moment from 'moment';
 import Patient from '../../patient';
 
 let styles = {};
@@ -37,6 +38,14 @@ export default React.createClass({
         if (offset < 0 && !this.props.isPatientActiveInListView) {
             this.props.activatePatient(this.props.data.id);
         }
+    },
+
+    renderDate(date) {
+        const year = moment(date).format('YYYY');
+        const month = moment(date).format('M') - 1;
+        const day = moment(date).format('DD');
+
+        return moment([year, month, day]).fromNow();
     },
 
     render() {
@@ -95,7 +104,7 @@ export default React.createClass({
                                     Images: {total_images}
                                 </Text>
                                 <Text style={[styles.text, { opacity: 0.8 }]}>
-                                    Last Upload: {last_visit}
+                                    Last Upload: {this.renderDate(last_visit)}
                                 </Text>
                             </View>
                         </View>

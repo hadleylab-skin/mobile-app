@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import _ from 'lodash';
 import {
     View,
     ListView,

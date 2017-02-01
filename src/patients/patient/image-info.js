@@ -9,6 +9,7 @@ import {
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
+import moment from 'moment';
 
 let styles = {};
 
@@ -23,7 +24,7 @@ const ImageInfo = React.createClass({
             <View style={styles.container}>
                 <StatusBar hidden={false} />
                 <ScrollView>
-                    <Text style={styles.date}>Uploaded on {date_created}</Text>
+                    <Text style={styles.date}>Uploaded on {moment(date_created).format('DD MMM YYYY')}</Text>
                     <View style={styles.imageWrapper}>
                         <View style={styles.indicator}>
                             <ActivityIndicator
