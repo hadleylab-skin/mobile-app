@@ -40,12 +40,13 @@ export default React.createClass({
         }
     },
 
-    renderDate(date) {
+    formatDate(date) {
         const year = moment(date).format('YYYY');
         const month = moment(date).format('M') - 1;
         const day = moment(date).format('DD');
+        const formatedDate = moment([year, month, day]).fromNow();
 
-        return moment([year, month, day]).fromNow();
+        return formatedDate;
     },
 
     render() {
@@ -104,7 +105,7 @@ export default React.createClass({
                                     Images: {total_images}
                                 </Text>
                                 <Text style={[styles.text, { opacity: 0.8 }]}>
-                                    Last Upload: {this.renderDate(last_visit)}
+                                    Last Upload: {this.formatDate(last_visit)}
                                 </Text>
                             </View>
                         </View>
