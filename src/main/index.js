@@ -35,7 +35,7 @@ const Main = schema(model)(React.createClass({
 
         const clinicalPhotoService = uploadClinicalPhoto(
              token,
-            currentPatientCursor.get('pk'));
+            currentPatientCursor.get('id'));
         const patientsService = getPatientList(token);
         const createPatientService = createPatient(token);
 
@@ -94,6 +94,7 @@ export default React.createClass({
                     title: 'Patients',
                     passProps: { ...this.props, mainNavigator: () => this.navigator },
                     navigationBarHidden: true,
+                    tintColor: '#FF2D55',
                 }}
                 style={{ flex: 1 }}
             />

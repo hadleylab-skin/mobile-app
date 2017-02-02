@@ -17,14 +17,15 @@ function ImageLoader({ imageInfo }) {
         return null;
     } if (imageInfo.data.status === 'Loading') {
         return (
-            <View>
+            <View style={{ position: 'relative', zIndex: 1 }}>
                 <Image
                     style={{ height: 75, width: 50 }}
                     source={{ uri: imageInfo.photo.path }}
                 />
                 <ActivityIndicator
                     size="large"
-                    style={{ position: 'absolute', top: 15, left: 10 }}
+                    color="#FF2D55"
+                    style={{ position: 'absolute', top: 20, left: 10 }}
                 />
             </View>
         );
@@ -34,7 +35,13 @@ function ImageLoader({ imageInfo }) {
 
     return (
         <View>
-            <Text>Error</Text>
+            <Image
+                style={{ height: 75, width: 50 }}
+                source={{ uri: imageInfo.photo.path }}
+            />
+            <View style={styles.error}>
+                <Text style={{ color: '#fff' }}>Error</Text>
+            </View>
         </View>
     );
 }
@@ -71,7 +78,7 @@ export default schema(model)(React.createClass({
                     ref={(cam) => {
                         this.camera = cam;
                     }}
-                    style={styles.preview}
+                    style={styles.camera}
                     aspect={Camera.constants.Aspect.fill}
                     captureTarget={Camera.constants.CaptureTarget.disk}
                 >
@@ -102,7 +109,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingBottom: 49,
     },
-    preview: {
+    camera: {
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
@@ -118,8 +125,9 @@ const styles = StyleSheet.create({
     preloaders: {
         position: 'absolute',
         flexDirection: 'row',
-        top: 0,
+        top: 10,
         left: 10,
+        right: 10,
     },
     name: {
         color: '#fff',
@@ -131,5 +139,15 @@ const styles = StyleSheet.create({
         flex: 0,
         padding: 10,
         margin: 40,
+    },
+    error: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255,45,85,0.4)',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
