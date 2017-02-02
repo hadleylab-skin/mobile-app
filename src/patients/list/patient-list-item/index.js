@@ -44,7 +44,10 @@ export default React.createClass({
         const year = moment(date).format('YYYY');
         const month = moment(date).format('M') - 1;
         const day = moment(date).format('DD');
-        const formatedDate = moment([year, month, day]).fromNow();
+        const hours = moment(date).format('H');
+        const minutes = moment(date).format('m');
+        const seconds = moment(date).format('s');
+        const formatedDate = moment([year, month, day, hours, minutes, seconds]).fromNow();
 
         return formatedDate;
     },
