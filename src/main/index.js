@@ -35,7 +35,7 @@ const Main = schema(model)(React.createClass({
 
         const clinicalPhotoService = uploadClinicalPhoto(
              token,
-            currentPatientCursor.get('id'));
+             currentPatientCursor.get('id'));
         const patientsService = getPatientList(token);
         const createPatientService = createPatient(token);
 
