@@ -17,16 +17,19 @@ import ImageInfo from './image-info';
 
 let styles = {};
 
-const model = (props) => (
-    {
-        tree: {
-            patient: getPatient(props.token, props.id),
-        },
-    }
-);
+const model = {
+    tree: {
+        patient: {},
+    },
+};
 
 const Patient = schema(model)(React.createClass({
     displayName: 'Patient',
+
+    componentDidMount() {
+        const { token, id, tree } = this.props;
+        getPatient(token, id)(tree.patient);
+    },
 
     renderActivityIndicator() {
         return (
@@ -39,7 +42,6 @@ const Patient = schema(model)(React.createClass({
             </View>
         );
     },
-
     renderError(index) {
         return (
             <TouchableOpacity style={styles.photoWrapper} key={index}>
