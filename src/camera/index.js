@@ -7,7 +7,6 @@ import {
     View,
     TouchableOpacity,
     Image,
-    StatusBar,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
@@ -68,7 +67,6 @@ export default schema(model)(React.createClass({
         const images = this.props.tree.imageUploadResults.get();
         return (
             <View style={styles.container}>
-                <StatusBar hidden />
                 <Camera
                     ref={(cam) => {
                         this.camera = cam;

@@ -77,7 +77,6 @@ const PatientsListScreen = schema(model)(React.createClass({
 
         return (
             <View style={{ flex: 1 }}>
-                <StatusBar hidden={false} />
                 <View style={styles.activityIndicator}>
                     <ActivityIndicator
                         animating={showLoader}

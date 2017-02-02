@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+    View,
+    StatusBar,
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
@@ -38,42 +40,45 @@ const Main = schema(model)(React.createClass({
         const createPatientService = createPatient(token);
 
         return (
-            <TabBarIOS
-                barTintColor="#fafafa"
-                tintColor="#FF2D55"
-                unselectedItemTintColor="#8E8E93"
-            >
-                <TabBarIOS.Item
-                    title="Camera"
-                    icon={require('./images/camera.png')}
-                    selected={currentTabCursor.get() === 'camera'}
-                    onPress={() => currentTabCursor.set('camera')}
+            <View style={{ flex: 1 }}>
+                <StatusBar hidden={currentTabCursor.get() === 'camera'} />
+                <TabBarIOS
+                    barTintColor="#fafafa"
+                    tintColor="#FF2D55"
+                    unselectedItemTintColor="#8E8E93"
                 >
-                    <CameraScreen
-                        tree={cameraCursor}
-                        currentPatient={currentPatientCursor.get()}
-                        clinicalPhotoService={clinicalPhotoService}
-                    />
-                </TabBarIOS.Item>
-                <TabBarIOS.Item
-                    title="Patients"
-                    icon={require('./images/social.png')}
-                    selected={currentTabCursor.get() === 'patients'}
-                    onPress={() => currentTabCursor.set('patients')}
-                >
-                    <PatientsList
-                        tree={patientsCursor}
-                        changeCurrentPatient={(patient) => {
-                            currentPatientCursor.set(patient);
-                            currentTabCursor.set('camera');
-                        }}
-                        patientsService={patientsService}
-                        createPatientService={createPatientService}
-                        mainNavigator={this.props.mainNavigator}
-                        token={this.props.token}
-                    />
-                </TabBarIOS.Item>
-            </TabBarIOS>
+                    <TabBarIOS.Item
+                        title="Camera"
+                        icon={require('./images/camera.png')}
+                        selected={currentTabCursor.get() === 'camera'}
+                        onPress={() => currentTabCursor.set('camera')}
+                    >
+                        <CameraScreen
+                            tree={cameraCursor}
+                            currentPatient={currentPatientCursor.get()}
+                            clinicalPhotoService={clinicalPhotoService}
+                        />
+                    </TabBarIOS.Item>
+                    <TabBarIOS.Item
+                        title="Patients"
+                        icon={require('./images/social.png')}
+                        selected={currentTabCursor.get() === 'patients'}
+                        onPress={() => currentTabCursor.set('patients')}
+                    >
+                        <PatientsList
+                            tree={patientsCursor}
+                            changeCurrentPatient={(patient) => {
+                                currentPatientCursor.set(patient);
+                                currentTabCursor.set('camera');
+                            }}
+                            patientsService={patientsService}
+                            createPatientService={createPatientService}
+                            mainNavigator={this.props.mainNavigator}
+                            token={this.props.token}
+                        />
+                    </TabBarIOS.Item>
+                </TabBarIOS>
+            </View>
         );
     },
 }));

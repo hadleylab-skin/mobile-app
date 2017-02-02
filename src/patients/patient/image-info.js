@@ -24,7 +24,6 @@ const ImageInfo = React.createClass({
             <View style={styles.container}>
                 <StatusBar hidden={false} />
                 <ScrollView>
-                    <Text style={styles.date}>Uploaded on {moment(date_created).format('DD MMM YYYY')}</Text>
                     <View style={styles.imageWrapper}>
                         <View style={styles.indicator}>
                             <ActivityIndicator
@@ -37,6 +36,10 @@ const ImageInfo = React.createClass({
                             source={{ uri: clinical_photo.full_size }}
                             style={styles.photo}
                         />
+                    </View>
+                    <View style={styles.table}>
+                        <Text style={[styles.text, styles.textRight]}>Uploaded on:</Text>
+                        <Text style={styles.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
                     </View>
                     <View style={styles.table}>
                         <Text style={[styles.text, styles.textRight]}>Clinical diagnosis:</Text>
@@ -62,12 +65,6 @@ styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-    },
-    date: {
-        margin: 15,
-        fontSize: 18,
-        lineHeight: 22,
-        textAlign: 'center',
     },
     imageWrapper: {
         width: Dimensions.get('window').width,
