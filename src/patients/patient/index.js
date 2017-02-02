@@ -71,7 +71,6 @@ const Patient = schema(model)(React.createClass({
     render() {
         const { firstname, lastname } = this.props;
         const data = this.props.tree.patient.data.get();
-        const mainNavigator = this.props.mainNavigator();
 
         return (
             <View style={styles.container}>
@@ -103,10 +102,10 @@ const Patient = schema(model)(React.createClass({
                                     <TouchableOpacity
                                         key={index}
                                         style={styles.photoWrapper}
-                                        onPress={() => mainNavigator.push({
+                                        onPress={() => this.props.navigator.push({
                                             component: ImageInfo,
                                             title: `${firstname} ${lastname}`,
-                                            onLeftButtonPress: () => mainNavigator.pop(),
+                                            onLeftButtonPress: () => this.props.navigator.pop(),
                                             navigationBarHidden: false,
                                             tintColor: '#FF2D55',
                                             passProps: {

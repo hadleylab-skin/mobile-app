@@ -55,7 +55,6 @@ export default React.createClass({
     render() {
         const { firstname, lastname, total_images, profile_pic, last_visit, id } = this.props.data;
         const { isPatientActiveInListView } = this.props;
-        const mainNavigator = this.props.mainNavigator();
 
         return (
             <View style={styles.container}>
@@ -78,10 +77,10 @@ export default React.createClass({
                         <Text style={styles.selectText}>Select</Text>
                     </TouchableHighlight>
                     <TouchableWithoutFeedback
-                        onPress={() => mainNavigator.push({
+                        onPress={() => this.props.navigator.push({
                             component: Patient,
                             title: 'Patient',
-                            onLeftButtonPress: () => mainNavigator.pop(),
+                            onLeftButtonPress: () => this.props.navigator.pop(),
                             rightButtonTitle: 'Edit',
                             navigationBarHidden: false,
                             tintColor: '#FF2D55',
@@ -91,7 +90,7 @@ export default React.createClass({
                                 id,
                                 firstname,
                                 lastname,
-                                mainNavigator: this.props.mainNavigator,
+                                navigator: this.props.navigator,
                             },
                         })}
                     >

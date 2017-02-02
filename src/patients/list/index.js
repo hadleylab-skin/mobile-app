@@ -99,7 +99,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
                             changeCurrentPatient={this.props.changeCurrentPatient}
-                            mainNavigator={this.props.mainNavigator}
+                            navigator={this.props.navigator}
                             token={this.props.token}
                         />
                     )}
@@ -138,5 +138,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         justifyContent: 'center',
+        zIndex: 1,
     },
 });
