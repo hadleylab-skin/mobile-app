@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -32,7 +33,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     getInitialState() {
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1.id === r2.id });
+        const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return p1.id !== p2.id; }});
         const patients = this.props.tree.patients.data.get() || [];
         return {
             ds: ds.cloneWithRows(patients),
@@ -52,8 +53,9 @@ const PatientsListScreen = schema(model)(React.createClass({
     updateDataStore(event) {
         const data = event.data.currentData;
         if (data.status === 'Succeed') {
+            const patients = data.data;
             this.setState({
-                ds: this.state.ds.cloneWithRows(event.data.currentData.data),
+                ds: this.state.ds.cloneWithRows(patients),
             });
         }
     },
@@ -98,7 +100,10 @@ const PatientsListScreen = schema(model)(React.createClass({
                             data={rowData}
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
-                            changeCurrentPatient={this.props.changeCurrentPatient}
+                            changeCurrentPatient={(patient, switchTab) => {
+                                this.props.changeCurrentPatient(patient, switchTab);
+                                this.activatePatient(undefined);
+                            }}
                             navigator={this.props.navigator}
                             token={this.props.token}
                         />

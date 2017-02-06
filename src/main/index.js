@@ -67,9 +67,11 @@ const Main = schema(model)(React.createClass({
                     >
                         <PatientsList
                             tree={patientsCursor}
-                            changeCurrentPatient={(patient) => {
+                            changeCurrentPatient={(patient, switchTab = true) => {
                                 currentPatientCursor.set(patient);
-                                currentTabCursor.set('camera');
+                                if (switchTab) {
+                                    currentTabCursor.set('camera');
+                                }
                             }}
                             patientsService={patientsService}
                             createPatientService={createPatientService}

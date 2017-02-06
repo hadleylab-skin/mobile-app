@@ -71,28 +71,31 @@ export default React.createClass({
                         underlayColor="#FF2D55"
                         onPress={() => {
                             this.setState({ activePatientId: 0 });
-                            this.props.changeCurrentPatient(this.props.data);
+                            this.props.changeCurrentPatient(this.props.data, true);
                         }}
                     >
                         <Text style={styles.selectText}>Select</Text>
                     </TouchableHighlight>
                     <TouchableWithoutFeedback
-                        onPress={() => this.props.navigator.push({
-                            component: Patient,
-                            title: 'Patient',
-                            onLeftButtonPress: () => this.props.navigator.pop(),
-                            rightButtonTitle: 'Edit',
-                            navigationBarHidden: false,
-                            tintColor: '#FF2D55',
-                            passProps: {
-                                tree: this.props.tree,
-                                token: this.props.token,
-                                id,
-                                firstname,
-                                lastname,
-                                navigator: this.props.navigator,
-                            },
-                        })}
+                        onPress={() => {
+                            this.props.changeCurrentPatient(this.props.data, false);
+                            this.props.navigator.push({
+                                component: Patient,
+                                title: 'Patient',
+                                onLeftButtonPress: () => this.props.navigator.pop(),
+                                rightButtonTitle: 'Edit',
+                                navigationBarHidden: false,
+                                tintColor: '#FF2D55',
+                                passProps: {
+                                    tree: this.props.tree,
+                                    token: this.props.token,
+                                    id,
+                                    firstname,
+                                    lastname,
+                                    navigator: this.props.navigator,
+                                    },
+                            });
+                        }}
                     >
                         <View style={styles.inner}>
                             <Image
