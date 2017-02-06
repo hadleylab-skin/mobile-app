@@ -16,9 +16,9 @@ const model = (props) => (
     {
         tree: {
             patients: props.patientsService,
-            patientsImages: {},
             newPatient: {},
         },
+        patientsImages: {},
     }
 );
 
@@ -95,7 +95,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                     dataSource={this.state.ds}
                     renderRow={(rowData) => (
                         <PatientListItem
-                            tree={this.props.tree.patientsImages.select(rowData.id)}
+                            tree={this.props.patientsImages.select(rowData.id)}
                             data={rowData}
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}

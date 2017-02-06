@@ -18,9 +18,7 @@ import ImageInfo from './image-info';
 let styles = {};
 
 const model = {
-    tree: {
-        patient: {},
-    },
+    tree: {},
 };
 
 const Patient = schema(model)(React.createClass({
@@ -28,7 +26,7 @@ const Patient = schema(model)(React.createClass({
 
     componentDidMount() {
         const { token, id, tree } = this.props;
-        getPatient(token, id)(tree.patient);
+        getPatient(token, id)(tree);
     },
 
     renderActivityIndicator() {
@@ -72,7 +70,7 @@ const Patient = schema(model)(React.createClass({
 
     render() {
         const { firstname, lastname } = this.props;
-        const data = this.props.tree.patient.data.get();
+        const data = this.props.tree.data.get();
 
         return (
             <View style={styles.container}>

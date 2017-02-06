@@ -64,6 +64,7 @@ export default schema(model)(React.createClass({
         try {
             const response = await this.props.clinicalPhotoService(cursor, photo);
             console.log(response);
+            this.props.updatePatients();
         } catch (e) {
             console.log(e);
         }

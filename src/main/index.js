@@ -5,7 +5,7 @@ import {
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
-import { uploadClinicalPhoto, getPatientList, createPatient } from 'libs/services/patients';
+import { uploadClinicalPhoto, getPatientList, createPatient, getPatient } from 'libs/services/patients';
 import schema from 'libs/state';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
@@ -16,6 +16,7 @@ const model = (props) => (
             currentTab: 'camera',
             camera: {},
             patients: {},
+            patientsImages: {},
             currentPatient: props.defaultPatient,
         },
     }
@@ -30,6 +31,7 @@ const Main = schema(model)(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         const cameraCursor = this.props.tree.camera;
         const patientsCursor = this.props.tree.patients;
+        const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
         const token = this.props.token;
 
@@ -57,6 +59,11 @@ const Main = schema(model)(React.createClass({
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
                             clinicalPhotoService={clinicalPhotoService}
+                            updatePatients={() => {
+                                const id = currentPatientCursor.get('id');
+                                patientsService(patientsCursor.patients);
+                                getPatient(token, id)(patientsImagesCursor.select(id));
+                            }}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
@@ -67,6 +74,7 @@ const Main = schema(model)(React.createClass({
                     >
                         <PatientsList
                             tree={patientsCursor}
+                            patientsImages={patientsImagesCursor}
                             changeCurrentPatient={(patient, switchTab = true) => {
                                 currentPatientCursor.set(patient);
                                 if (switchTab) {
