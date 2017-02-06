@@ -61,7 +61,7 @@ class TreeStateWrapper extends Component {
                 const oldProp = this.props.parentProps[propName];
                 if (oldProp.path !== prop.path) {
                     oldProp.off('update', this.updateGenerationIndex);
-                    handleNewCursor(prop, propName);
+                    this.handleNewCursor(prop, propName);
                 }
             }
         });
