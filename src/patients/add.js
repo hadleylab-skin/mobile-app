@@ -8,6 +8,25 @@ import {
 } from 'react-native';
 import { Input } from 'components';
 import schema from 'libs/state';
+import tv4 from 'tv4';
+
+
+const createPatientSchema = {
+    title: 'Create patient form',
+    type: 'object',
+    properties: {
+        firstname: {
+            type: 'string',
+            minLength: 2,
+        },
+        lastName: {
+            type: 'string',
+            minLength: 2,
+        },
+    },
+    required: ['firstname', 'lastname'],
+};
+
 
 const model = {
     tree: {
@@ -23,7 +42,10 @@ export function getRoute(props, navigator) {
     const passProps = {
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
-        onPatientAdded: () => props.patientsService(props.tree.patients),
+        onPatientAdded: (patient) => {
+            props.changeCurrentPatient(patient);
+            props.patientsService(props.tree.patients);
+        },
     };
 
     return {
@@ -40,9 +62,18 @@ export function getRoute(props, navigator) {
 }
 
 async function submit(props, navigator) {
+    const formData = props.tree.form.get();
+    const validationResult = tv4.validateResult(formData, createPatientSchema);
+    if (!validationResult.valid) {
+        Alert.alert(
+            'Create Patient Error',
+            validationResult.error.message);
+        return;
+    }
+
     const result = await props.createPatientService(
         props.tree.serverAnswer,
-        props.tree.form.get());
+        formData);
 
     if (result.status === 'Failure') {
         Alert.alert(
@@ -50,7 +81,8 @@ async function submit(props, navigator) {
             JSON.stringify(result));
     } else {
         navigator.pop();
-        props.onPatientAdded();
+        props.tree.form.set(model.tree);
+        props.onPatientAdded(result.data);
     }
 }
 
