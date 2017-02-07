@@ -82,6 +82,8 @@ export default schema(model)(React.createClass({
                     style={styles.camera}
                     aspect={Camera.constants.Aspect.fill}
                     captureTarget={Camera.constants.CaptureTarget.disk}
+                    defaultOnFocusComponent={true}
+                    onFocusChanged={() => true}
                 >
                     <View style={styles.preloaders} >
                         {_.map(images, (imageInfo, index) =>
