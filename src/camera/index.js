@@ -1,8 +1,7 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
 import {
-    Dimensions,
-    StyleSheet,
     Text,
     View,
     TouchableOpacity,
@@ -11,6 +10,8 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import Camera from 'react-native-camera';
+import s from './styles';
+import captureIcon from './images/capture.png';
 
 function ImageLoader({ imageInfo }) {
     if (!imageInfo.data) {
@@ -39,12 +40,23 @@ function ImageLoader({ imageInfo }) {
                 style={{ height: 75, width: 50 }}
                 source={{ uri: imageInfo.photo.path }}
             />
-            <View style={styles.error}>
+            <View style={s.error}>
                 <Text style={{ color: '#fff' }}>Error</Text>
             </View>
         </View>
     );
 }
+
+ImageLoader.propTypes = {
+    imageInfo: React.PropTypes.shape({
+        photo: React.PropTypes.shape({
+            path: React.PropTypes.string.isRequired,
+        }),
+        data: React.PropTypes.shape({
+            status: React.PropTypes.string.isRequired,
+        }),
+    }).isRequired,
+};
 
 const model = {
     tree: {
@@ -53,6 +65,16 @@ const model = {
 };
 
 export default schema(model)(React.createClass({
+    propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        updatePatients: React.PropTypes.func.isRequired,
+        currentPatient: React.PropTypes.shape({
+            id: React.PropTypes.number.isRequired,
+            firstname: React.PropTypes.string.isRequired,
+            lastname: React.PropTypes.string.isRequired,
+        }).isRequired,
+
+    },
     async takePicture() {
         const photo = await this.camera.capture();
         const index = this.props.tree.imageUploadResults.get().length;
@@ -61,43 +83,39 @@ export default schema(model)(React.createClass({
             data: {},
         });
         const cursor = this.props.tree.imageUploadResults.select(index, 'data');
-        try {
-            const response = await this.props.clinicalPhotoService(cursor, photo);
-            this.props.updatePatients();
-        } catch (e) {
-            console.log(e);
-        }
+        await this.props.clinicalPhotoService(cursor, photo);
+        this.props.updatePatients();
     },
 
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         const images = this.props.tree.imageUploadResults.get();
         return (
-            <View style={styles.container}>
+            <View style={s.container}>
                 <Camera
                     ref={(cam) => {
                         this.camera = cam;
                     }}
-                    style={styles.camera}
+                    style={s.camera}
                     aspect={Camera.constants.Aspect.fill}
                     captureTarget={Camera.constants.CaptureTarget.disk}
-                    defaultOnFocusComponent={true}
                     onFocusChanged={() => true}
+                    defaultOnFocusComponent
                 >
-                    <View style={styles.preloaders} >
+                    <View style={s.preloaders} >
                         {_.map(images, (imageInfo, index) =>
                             <ImageLoader imageInfo={imageInfo} key={index} />
                          )}
                     </View>
-                    <View style={styles.textWrapper}>
-                        <Text style={styles.name}>
+                    <View style={s.textWrapper}>
+                        <Text style={s.name}>
                             {patientName}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={this.takePicture}>
                         <Image
-                            source={require('./images/capture.png')}
-                            style={styles.capture}
+                            source={captureIcon}
+                            style={s.capture}
                         />
                     </TouchableOpacity>
                 </Camera>
@@ -105,51 +123,3 @@ export default schema(model)(React.createClass({
         );
     },
 }));
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingBottom: 49,
-    },
-    camera: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        height: Dimensions.get('window').height,
-        width: Dimensions.get('window').width,
-    },
-    textWrapper: {
-        position: 'absolute',
-        top: 70,
-        left: 0,
-        right: 0,
-    },
-    preloaders: {
-        position: 'absolute',
-        flexDirection: 'row',
-        top: 10,
-        left: 10,
-        right: 10,
-    },
-    name: {
-        color: '#fff',
-        fontSize: 30,
-        textAlign: 'center',
-        backgroundColor: 'transparent',
-    },
-    capture: {
-        flex: 0,
-        padding: 10,
-        margin: 40,
-    },
-    error: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(255,45,85,0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-});

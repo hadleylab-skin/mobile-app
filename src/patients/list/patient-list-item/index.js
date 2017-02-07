@@ -1,23 +1,22 @@
 import React from 'react';
 import {
-    StyleSheet,
     Text,
     View,
     Image,
     ScrollView,
-    Dimensions,
     TouchableHighlight,
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
 import Patient from '../../patient';
-
-let styles = {};
+import s from './styles';
+import defaultUserImage from './images/default-user.png';
 
 export default React.createClass({
     displayName: 'PatientListItem',
 
     propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         data: React.PropTypes.shape({
             id: React.PropTypes.int,
             firstname: React.PropTypes.string,
@@ -31,6 +30,8 @@ export default React.createClass({
         changeCurrentPatient: React.PropTypes.func.isRequired,
         activatePatient: React.PropTypes.func.isRequired,
         isPatientActiveInListView: React.PropTypes.bool.isRequired,
+        patientService: React.PropTypes.func.isRequired,
+        imageService: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
@@ -53,11 +54,11 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, total_images, profile_pic, last_visit, id } = this.props.data;
+        const { firstname, lastname, total_images, last_visit, id } = this.props.data;
         const { isPatientActiveInListView } = this.props;
 
         return (
-            <View style={styles.container}>
+            <View style={s.container}>
                 <ScrollView
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
@@ -67,14 +68,14 @@ export default React.createClass({
                     horizontal
                 >
                     <TouchableHighlight
-                        style={styles.select}
+                        style={s.select}
                         underlayColor="#FF2D55"
                         onPress={() => {
                             this.setState({ activePatientId: 0 });
                             this.props.changeCurrentPatient(this.props.data, true);
                         }}
                     >
-                        <Text style={styles.selectText}>Select</Text>
+                        <Text style={s.selectText}>Select</Text>
                     </TouchableHighlight>
                     <TouchableWithoutFeedback
                         onPress={() => {
@@ -94,23 +95,23 @@ export default React.createClass({
                                     navigator: this.props.navigator,
                                     patientService: this.props.patientService,
                                     imageService: this.props.imageService,
-                                    },
+                                },
                             });
                         }}
                     >
-                        <View style={styles.inner}>
+                        <View style={s.inner}>
                             <Image
-                                source={require('./images/default-user.png')}
-                                style={styles.img}
+                                source={defaultUserImage}
+                                style={s.img}
                             />
-                            <View style={styles.info}>
-                                <Text style={[styles.text, { fontSize: 18 }]}>
+                            <View style={s.info}>
+                                <Text style={[s.text, { fontSize: 18 }]}>
                                     {`${firstname} ${lastname}`}
                                 </Text>
-                                <Text style={[styles.text, { opacity: 0.6 }]}>
+                                <Text style={[s.text, { opacity: 0.6 }]}>
                                     Images: {total_images}
                                 </Text>
-                                <Text style={[styles.text, { opacity: 0.8 }]}>
+                                <Text style={[s.text, { opacity: 0.8 }]}>
                                     Last Upload: {this.formatDate(last_visit)}
                                 </Text>
                             </View>
@@ -119,47 +120,5 @@ export default React.createClass({
                 </ScrollView>
             </View>
         );
-    },
-});
-
-styles = StyleSheet.create({
-    container: {
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#eee',
-        flex: 1,
-    },
-    select: {
-        width: 100,
-        flex: 0,
-        backgroundColor: 'rgba(255,45,85, 0.8)',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    selectText: {
-        color: '#fff',
-        fontSize: 22,
-        fontWeight: '500',
-    },
-    inner: {
-        flex: 1,
-        width: Dimensions.get('window').width,
-        padding: 15,
-        alignItems: 'stretch',
-        flexWrap: 'nowrap',
-        flexDirection: 'row',
-    },
-    img: {
-        width: 70,
-        height: 70,
-        borderRadius: 35,
-    },
-    info: {
-        flex: 1,
-        paddingLeft: 15,
-    },
-    text: {
-        color: '#333',
-        marginBottom: 5,
-        fontSize: 14,
     },
 });

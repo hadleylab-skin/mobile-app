@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     StatusBar,
@@ -10,6 +11,8 @@ import { uploadClinicalPhoto, getPatientList,
 import schema from 'libs/state';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
+import cameraIcon from './images/camera.png';
+import patientsIcon from './images/patients.png';
 
 const model = (props) => (
     {
@@ -26,7 +29,16 @@ const model = (props) => (
 const Main = schema(model)(React.createClass({
     displayName: 'Main',
 
-    propTypes: {},
+    propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        token: React.PropTypes.string.isRequired,
+        defaultPatient: React.PropTypes.shape({ // eslint-disable-line
+            id: React.PropTypes.number.isRequired,
+            firstname: React.PropTypes.string.isRequired,
+            lastname: React.PropTypes.string.isRequired,
+        }).isRequired,
+        mainNavigator: React.PropTypes.func.isRequired, // eslint-disable-line
+    },
 
     render() {
         const currentTabCursor = this.props.tree.currentTab;
@@ -54,7 +66,7 @@ const Main = schema(model)(React.createClass({
                 >
                     <TabBarIOS.Item
                         title="Camera"
-                        icon={require('./images/camera.png')}
+                        icon={cameraIcon}
                         selected={currentTabCursor.get() === 'camera'}
                         onPress={() => currentTabCursor.set('camera')}
                     >
@@ -71,25 +83,24 @@ const Main = schema(model)(React.createClass({
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         title="Patients"
-                        icon={require('./images/social.png')}
+                        icon={patientsIcon}
                         selected={currentTabCursor.get() === 'patients'}
                         onPress={() => currentTabCursor.set('patients')}
                     >
                         <PatientsList
                             tree={patientsCursor}
-                            patientsImages={patientsImagesCursor}
+                            patientsImagesCursor={patientsImagesCursor}
                             changeCurrentPatient={(patient, switchTab = true) => {
                                 currentPatientCursor.set(patient);
                                 if (switchTab) {
                                     currentTabCursor.set('camera');
                                 }
                             }}
+                            mainNavigator={this.props.mainNavigator}
+                            createPatientService={createPatientService}
                             patientsService={patientsService}
                             patientService={patientService}
                             imageService={imageService}
-                            createPatientService={createPatientService}
-                            mainNavigator={this.props.mainNavigator}
-                            token={this.props.token}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

@@ -1,14 +1,14 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     ActivityIndicator,
     Alert,
-    StyleSheet,
     View,
 } from 'react-native';
 import { Input } from 'components';
 import schema from 'libs/state';
 import tv4 from 'tv4';
+import s from './styles';
 
 
 const createPatientSchema = {
@@ -38,29 +38,6 @@ const model = {
     },
 };
 
-export function getRoute(props, navigator) {
-    const passProps = {
-        tree: props.tree.newPatient,
-        createPatientService: props.createPatientService,
-        onPatientAdded: (patient) => {
-            props.changeCurrentPatient(patient);
-            props.patientsService(props.tree.patients);
-        },
-    };
-
-    return {
-        component: AddPatient,
-        leftButtonTitle: 'Cancel',
-        onLeftButtonPress: () => navigator.pop(),
-        title: 'Create patient',
-        rightButtonTitle: 'Done',
-        onRightButtonPress: () => submit(passProps, navigator),
-        navigationBarHidden: false,
-        tintColor: '#FF2D55',
-        passProps,
-    };
-}
-
 async function submit(props, navigator) {
     const formData = props.tree.form.get();
     const validationResult = tv4.validateResult(formData, createPatientSchema);
@@ -88,9 +65,9 @@ async function submit(props, navigator) {
 
 export const AddPatient = schema(model)(React.createClass({
     propTypes: {
-        navigator: PropTypes.object.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
-        onPatientAdded: PropTypes.func.isRequired,
+        onPatientAdded: React.PropTypes.func.isRequired, // eslint-disable-line
     },
 
     render() {
@@ -101,20 +78,20 @@ export const AddPatient = schema(model)(React.createClass({
 
         return (
             <View>
-                <View style={styles.container}>
+                <View style={s.container}>
                     <Input
                         label="First Name"
                         cursor={firstNameCursor}
-                        inputWrapperStyle={styles.inputWrapperStyle}
-                        inputStyle={styles.inputStyle}
+                        inputWrapperStyle={s.inputWrapperStyle}
+                        inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="next"
                     />
                     <Input
                         label="Last Name"
                         cursor={lastNameCursor}
-                        inputWrapperStyle={styles.inputWrapperStyle}
-                        inputStyle={styles.inputStyle}
+                        inputWrapperStyle={s.inputWrapperStyle}
+                        inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="next"
                     />
@@ -129,17 +106,25 @@ export const AddPatient = schema(model)(React.createClass({
     },
 }));
 
-const styles = StyleSheet.create({
-    container: {
-        paddingTop: 84,
-        paddingLeft: 30,
-    },
-    inputWrapperStyle: {
-        borderBottomColor: '#ccc',
-        marginBottom: 20,
-    },
-    inputStyle: {
-        color: '#333',
-    },
-});
+export function getRoute(props, navigator) {
+    const passProps = {
+        tree: props.tree.newPatient,
+        createPatientService: props.createPatientService,
+        onPatientAdded: (patient) => {
+            props.changeCurrentPatient(patient);
+            props.patientsService(props.tree.patients);
+        },
+    };
 
+    return {
+        component: AddPatient,
+        leftButtonTitle: 'Cancel',
+        onLeftButtonPress: () => navigator.pop(),
+        title: 'Create patient',
+        rightButtonTitle: 'Done',
+        onRightButtonPress: () => submit(passProps, navigator),
+        navigationBarHidden: false,
+        tintColor: '#FF2D55',
+        passProps,
+    };
+}

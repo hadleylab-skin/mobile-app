@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -11,11 +12,16 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import schema from 'libs/state';
-
-let styles = {};
+import s from './styles';
 
 const ImageInfo = schema({})(React.createClass({
     displayName: 'ImageInfo',
+
+    propTypes: {
+        cursor: BaobabPropTypes.cursor.isRequired,
+        patientPk: React.PropTypes.number.isRequired,
+        imageService: React.PropTypes.func.isRequired,
+    },
 
     getInitialState() {
         return {
@@ -50,10 +56,10 @@ const ImageInfo = schema({})(React.createClass({
         const showLoader = this.props.cursor.status.get() === 'Loading';
 
         return (
-            <View style={styles.container}>
+            <View style={s.container}>
                 <StatusBar hidden={false} />
                 { showLoader ?
-                    <View style={styles.activityIndicator}>
+                    <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating={showLoader}
                             size="large"
@@ -67,8 +73,8 @@ const ImageInfo = schema({})(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                 >
-                    <View style={styles.imageWrapper}>
-                        <View style={styles.indicator}>
+                    <View style={s.imageWrapper}>
+                        <View style={s.indicator}>
                             <ActivityIndicator
                                 animating
                                 size="large"
@@ -77,24 +83,24 @@ const ImageInfo = schema({})(React.createClass({
                         </View>
                         <Image
                             source={{ uri: clinical_photo.full_size }}
-                            style={styles.photo}
+                            style={s.photo}
                         />
                     </View>
-                    <View style={styles.table}>
-                        <Text style={[styles.text, styles.textRight]}>Uploaded on:</Text>
-                        <Text style={styles.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
+                    <View style={s.table}>
+                        <Text style={[s.text, s.textRight]}>Uploaded on:</Text>
+                        <Text style={s.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
                     </View>
-                    <View style={styles.table}>
-                        <Text style={[styles.text, styles.textRight]}>Clinical diagnosis:</Text>
-                        <Text style={styles.text}>{clinical_diagnosis}</Text>
+                    <View style={s.table}>
+                        <Text style={[s.text, s.textRight]}>Clinical diagnosis:</Text>
+                        <Text style={s.text}>{clinical_diagnosis}</Text>
                     </View>
-                    <View style={styles.table}>
-                        <Text style={[styles.text, styles.textRight]}>Prediction accuracy:</Text>
-                        <Text style={styles.text}>{prediction_accuracy}</Text>
+                    <View style={s.table}>
+                        <Text style={[s.text, s.textRight]}>Prediction accuracy:</Text>
+                        <Text style={s.text}>{prediction_accuracy}</Text>
                     </View>
-                    <View style={styles.table}>
-                        <Text style={[styles.text, styles.textRight]}>Prediction:</Text>
-                        <Text style={styles.text}>{prediction}</Text>
+                    <View style={s.table}>
+                        <Text style={[s.text, s.textRight]}>Prediction:</Text>
+                        <Text style={s.text}>{prediction}</Text>
                     </View>
                 </ScrollView>
             </View>
@@ -103,50 +109,3 @@ const ImageInfo = schema({})(React.createClass({
 }));
 
 export default ImageInfo;
-
-styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    imageWrapper: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width,
-        backgroundColor: '#efefef',
-        justifyContent: 'center',
-        position: 'relative',
-    },
-    photo: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width,
-    },
-    indicator: {
-        position: 'absolute',
-        left: 2,
-        top: 2,
-        right: 2,
-        bottom: 2,
-        justifyContent: 'center',
-    },
-    table: {
-        flexDirection: 'row',
-    },
-    text: {
-        flex: 1,
-        marginTop: 3,
-        marginBottom: 3,
-        fontWeight: '300',
-    },
-    textRight: {
-        textAlign: 'right',
-        paddingRight: 30,
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 85,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        zIndex: 1,
-    },
-});

@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     AppRegistry,
 } from 'react-native';
@@ -28,11 +29,15 @@ function App(props) {
     return (
         <Main
             tree={mainScreen}
-            defaultPatient={tokenCursor.get('data','patient')}
             token={tokenCursor.get('data', 'token')}
+            defaultPatient={tokenCursor.get('data', 'patient')}
         />
     );
 }
+
+App.propTypes = {
+    tree: BaobabPropTypes.cursor.isRequired,
+};
 
 function skiniq() {
     const Component = schema(model)(App);
