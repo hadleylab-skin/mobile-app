@@ -28,6 +28,8 @@ const PatientsListScreen = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         changeCurrentPatient: PropTypes.func.isRequired,
         patientsService: PropTypes.func.isRequired,
+        patientService: PropTypes.func.isRequired,
+        imageService: PropTypes.func.isRequired,
         createPatientService: PropTypes.func.isRequired,
     },
 
@@ -65,9 +67,11 @@ const PatientsListScreen = schema(model)(React.createClass({
 
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        if (offset < 0 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
+        if (offset < -100 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
             await this.props.patientsService(this.props.tree.patients);
+        }
+        if (offset > -70) {
             this.setState({ canUpdate: true });
         }
     },
@@ -78,13 +82,17 @@ const PatientsListScreen = schema(model)(React.createClass({
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={styles.activityIndicator}>
-                    <ActivityIndicator
-                        animating={showLoader}
-                        size="large"
-                        color="#FF2D55"
-                    />
-                </View>
+                { showLoader ?
+                    <View style={styles.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                :
+                    null
+                }
                 <ListView
                     enableEmptySections
                     onScroll={this.onScroll}
@@ -104,7 +112,8 @@ const PatientsListScreen = schema(model)(React.createClass({
                                 this.activatePatient(undefined);
                             }}
                             navigator={this.props.navigator}
-                            token={this.props.token}
+                            patientService={this.props.patientService}
+                            imageService={this.props.imageService}
                         />
                     )}
                 />

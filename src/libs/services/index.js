@@ -22,7 +22,7 @@ export function buildGetService(path,
                                 dehydrate = _.identity,
                                 headers = defaultHeaders) {
     return async (cursor) => {
-        cursor.set({ status: 'Loading' });
+        cursor.set('status', 'Loading');
         let result = {};
 
         try {

@@ -10,20 +10,63 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import moment from 'moment';
+import schema from 'libs/state';
 
 let styles = {};
 
-const ImageInfo = React.createClass({
+const ImageInfo = schema({})(React.createClass({
     displayName: 'ImageInfo',
 
+    getInitialState() {
+        return {
+            canUpdate: true,
+        };
+    },
+
+    updateImage() {
+        return this.props.imageService(
+            this.props.patientPk,
+            this.props.cursor.get('data', 'id'),
+            this.props.cursor);
+    },
+
+    async onScroll(e) {
+        const offset = e.nativeEvent.contentOffset.y;
+        if (offset < -130 && this.state.canUpdate && this.props.cursor.status.get() !== 'Loading') {
+            this.setState({ canUpdate: false });
+            await this.updateImage();
+        }
+        if (offset > -70) {
+            this.setState({ canUpdate: true });
+        }
+    },
+
     render() {
-        const { date_created, clinical_diagnosis,
-            prediction_accuracy, prediction, clinical_photo } = this.props.data;
+        const {
+            date_created, clinical_diagnosis,
+            prediction_accuracy, prediction,
+            clinical_photo,
+        } = this.props.cursor.get('data');
+        const showLoader = this.props.cursor.status.get() === 'Loading';
 
         return (
             <View style={styles.container}>
                 <StatusBar hidden={false} />
-                <ScrollView>
+                { showLoader ?
+                    <View style={styles.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                :
+                    null
+                }
+                <ScrollView
+                    onScroll={this.onScroll}
+                    scrollEventThrottle={200}
+                >
                     <View style={styles.imageWrapper}>
                         <View style={styles.indicator}>
                             <ActivityIndicator
@@ -57,7 +100,7 @@ const ImageInfo = React.createClass({
             </View>
         );
     },
-});
+}));
 
 export default ImageInfo;
 
@@ -97,5 +140,13 @@ styles = StyleSheet.create({
     textRight: {
         textAlign: 'right',
         paddingRight: 30,
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: 85,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        zIndex: 1,
     },
 });
