@@ -88,11 +88,12 @@ export default React.createClass({
                                 tintColor: '#FF2D55',
                                 passProps: {
                                     tree: this.props.tree,
-                                    token: this.props.token,
                                     id,
                                     firstname,
                                     lastname,
                                     navigator: this.props.navigator,
+                                    patientService: this.props.patientService,
+                                    imageService: this.props.imageService,
                                     },
                             });
                         }}

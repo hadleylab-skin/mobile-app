@@ -12,21 +12,40 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import { getPatient } from 'libs/services/patients';
 import ImageInfo from './image-info';
 
 let styles = {};
 
-const model = {
-    tree: {},
-};
+const model = (props) => (
+    {
+        tree: (cursor) => props.patientService(props.id, cursor),
+    }
+);
 
 const Patient = schema(model)(React.createClass({
     displayName: 'Patient',
 
-    componentDidMount() {
-        const { token, id, tree } = this.props;
-        getPatient(token, id)(tree);
+    getInitialState() {
+        return {
+            canUpdate: true,
+        };
+    },
+
+    async onScroll(e) {
+        const offset = e.nativeEvent.contentOffset.y;
+        console.log(offset);
+        if (offset < -130 && this.state.canUpdate && this.props.tree.status.get() !== 'Loading') {
+            this.setState({ canUpdate: false });
+            await this.updatePatient();
+        }
+        if (offset > -70) {
+            this.setState({ canUpdate: true });
+        }
+    },
+
+    updatePatient() {
+        const { id, tree } = this.props;
+        return this.props.patientService(id, tree);
     },
 
     renderActivityIndicator() {
@@ -70,12 +89,27 @@ const Patient = schema(model)(React.createClass({
 
     render() {
         const { firstname, lastname } = this.props;
-        const data = this.props.tree.data.get();
+        const data = this.props.tree.data;
+        const showLoader = this.props.tree.status.get() === 'Loading';
 
         return (
             <View style={styles.container}>
                 <StatusBar hidden={false} />
-                <ScrollView>
+                { showLoader ?
+                    <View style={styles.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                :
+                    null
+                }
+                <ScrollView
+                    onScroll={this.onScroll}
+                    scrollEventThrottle={200}
+                >
                     <Text style={styles.name}>{ `${firstname} ${lastname}` }</Text>
                     <View style={{ alignItems: 'center' }}>
                         <Image
@@ -85,7 +119,7 @@ const Patient = schema(model)(React.createClass({
                     </View>
                     <Text style={styles.subtitle}>San Francisco C.A.</Text>
                     <View style={styles.photos}>
-                        {_.map(data, (item, index) => {
+                        {data.get() && data.map((cursor) => {
                             const error = false;
                             const uploading = false;
 
@@ -100,7 +134,7 @@ const Patient = schema(model)(React.createClass({
                             if (!error && !uploading) {
                                 return (
                                     <TouchableOpacity
-                                        key={index}
+                                        key={cursor.get('data', 'id')}
                                         style={styles.photoWrapper}
                                         onPress={() => this.props.navigator.push({
                                             component: ImageInfo,
@@ -109,13 +143,15 @@ const Patient = schema(model)(React.createClass({
                                             navigationBarHidden: false,
                                             tintColor: '#FF2D55',
                                             passProps: {
-                                                data: data[index],
+                                                cursor,
+                                                patientPk: this.props.id,
+                                                imageService: this.props.imageService,
                                             },
                                         })}
                                     >
                                         {this.renderActivityIndicator()}
                                         <Image
-                                            source={{ uri: item.clinical_photo.thumbnail }}
+                                            source={{ uri: cursor.get('data').clinical_photo.thumbnail }}
                                             style={styles.photo}
                                         />
                                     </TouchableOpacity>
@@ -196,5 +232,13 @@ styles = StyleSheet.create({
         right: 2,
         bottom: 2,
         justifyContent: 'center',
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: 85,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        zIndex: 1,
     },
 });
