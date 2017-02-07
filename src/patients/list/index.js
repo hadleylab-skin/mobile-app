@@ -1,16 +1,15 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     ListView,
     ActivityIndicator,
-    StatusBar,
     NavigatorIOS,
-    StyleSheet,
 } from 'react-native';
 import schema from 'libs/state';
 import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
+import s from './styles';
 
 const model = (props) => (
     {
@@ -18,19 +17,19 @@ const model = (props) => (
             patients: props.patientsService,
             newPatient: {},
         },
-        patientsImages: {},
+        patientsImagesCursor: {},
     }
 );
 
 const PatientsListScreen = schema(model)(React.createClass({
     propTypes: {
-        navigator: PropTypes.object.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        changeCurrentPatient: React.PropTypes.func.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
-        changeCurrentPatient: PropTypes.func.isRequired,
-        patientsService: PropTypes.func.isRequired,
-        patientService: PropTypes.func.isRequired,
-        imageService: PropTypes.func.isRequired,
-        createPatientService: PropTypes.func.isRequired,
+        patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
+        patientsService: React.PropTypes.func.isRequired,
+        patientService: React.PropTypes.func.isRequired,
+        imageService: React.PropTypes.func.isRequired,
     },
 
     getInitialState() {
@@ -83,7 +82,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         return (
             <View style={{ flex: 1 }}>
                 { showLoader ?
-                    <View style={styles.activityIndicator}>
+                    <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating={showLoader}
                             size="large"
@@ -103,7 +102,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                     dataSource={this.state.ds}
                     renderRow={(rowData) => (
                         <PatientListItem
-                            tree={this.props.patientsImages.select(rowData.id)}
+                            tree={this.props.patientsImagesCursor.select(rowData.id)}
                             data={rowData}
                             isPatientActiveInListView={this.state.activePatientId === rowData.id}
                             activatePatient={this.activatePatient}
@@ -123,6 +122,10 @@ const PatientsListScreen = schema(model)(React.createClass({
 }));
 
 export const PatientsList = React.createClass({
+    propTypes: {
+        mainNavigator: React.PropTypes.func.isRequired,
+    },
+
     render() {
         const mainNavigator = this.props.mainNavigator();
 
@@ -141,16 +144,5 @@ export const PatientsList = React.createClass({
                 style={{ flex: 1 }}
             />
         );
-    },
-});
-
-const styles = StyleSheet.create({
-    activityIndicator: {
-        position: 'absolute',
-        top: 85,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        zIndex: 1,
     },
 });

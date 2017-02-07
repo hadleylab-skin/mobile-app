@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import ImageInfo from './image-info';
+import defaultUserImage from './images/default-user.png';
 
 let styles = {};
 
@@ -25,6 +26,16 @@ const model = (props) => (
 const Patient = schema(model)(React.createClass({
     displayName: 'Patient',
 
+    propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        tree: BaobabPropTypes.cursor.isRequired,
+        id: React.PropTypes.number.isRequired,
+        firstname: React.PropTypes.string.isRequired,
+        lastname: React.PropTypes.string.isRequired,
+        patientService: React.PropTypes.func.isRequired,
+        imageService: React.PropTypes.func.isRequired,
+    },
+
     getInitialState() {
         return {
             canUpdate: true,
@@ -33,7 +44,6 @@ const Patient = schema(model)(React.createClass({
 
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        console.log(offset);
         if (offset < -130 && this.state.canUpdate && this.props.tree.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
             await this.updatePatient();
@@ -59,21 +69,21 @@ const Patient = schema(model)(React.createClass({
             </View>
         );
     },
-    renderError(index) {
+    renderError() {
         return (
-            <TouchableOpacity style={styles.photoWrapper} key={index}>
+            <TouchableOpacity style={styles.photoWrapper}>
                 <View style={styles.withoutImg}>
                     <Text style={styles.text}>
-                        { `Upload error\n Click for details` }
+                        { 'Upload error\n Click for details' }
                     </Text>
                 </View>
             </TouchableOpacity>
         );
     },
 
-    renderUploading(index) {
+    renderUploading() {
         return (
-            <TouchableOpacity style={styles.photoWrapper} key={index}>
+            <TouchableOpacity style={styles.photoWrapper}>
                 <View style={styles.withoutImg}>
                     <ActivityIndicator
                         animating
@@ -113,7 +123,7 @@ const Patient = schema(model)(React.createClass({
                     <Text style={styles.name}>{ `${firstname} ${lastname}` }</Text>
                     <View style={{ alignItems: 'center' }}>
                         <Image
-                            source={require('./images/default-user.png')}
+                            source={defaultUserImage}
                             style={styles.mainPhoto}
                         />
                     </View>
@@ -124,11 +134,11 @@ const Patient = schema(model)(React.createClass({
                             const uploading = false;
 
                             if (error) {
-                                return this.renderError(index);
+                                return this.renderError();
                             }
 
                             if (uploading) {
-                                return this.renderUploading(index);
+                                return this.renderUploading();
                             }
 
                             if (!error && !uploading) {

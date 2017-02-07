@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -16,6 +17,12 @@ let styles = {};
 
 const ImageInfo = schema({})(React.createClass({
     displayName: 'ImageInfo',
+
+    propTypes: {
+        cursor: BaobabPropTypes.cursor.isRequired,
+        patientPk: React.PropTypes.number.isRequired,
+        imageService: React.PropTypes.func.isRequired,
+    },
 
     getInitialState() {
         return {
