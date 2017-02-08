@@ -4,9 +4,7 @@ import {
     View,
     Text,
     StatusBar,
-    StyleSheet,
     Image,
-    Dimensions,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
@@ -14,8 +12,7 @@ import {
 import schema from 'libs/state';
 import ImageInfo from './image-info';
 import defaultUserImage from './images/default-user.png';
-
-let styles = {};
+import s from './styles';
 
 const model = (props) => (
     {
@@ -60,7 +57,7 @@ const Patient = schema(model)(React.createClass({
 
     renderActivityIndicator() {
         return (
-            <View style={styles.indicator}>
+            <View style={s.indicator}>
                 <ActivityIndicator
                     animating
                     size="large"
@@ -71,9 +68,9 @@ const Patient = schema(model)(React.createClass({
     },
     renderError() {
         return (
-            <TouchableOpacity style={styles.photoWrapper}>
-                <View style={styles.withoutImg}>
-                    <Text style={styles.text}>
+            <TouchableOpacity style={s.photoWrapper}>
+                <View style={s.withoutImg}>
+                    <Text style={s.text}>
                         { 'Upload error\n Click for details' }
                     </Text>
                 </View>
@@ -83,15 +80,15 @@ const Patient = schema(model)(React.createClass({
 
     renderUploading() {
         return (
-            <TouchableOpacity style={styles.photoWrapper}>
-                <View style={styles.withoutImg}>
+            <TouchableOpacity style={s.photoWrapper}>
+                <View style={s.withoutImg}>
                     <ActivityIndicator
                         animating
                         size="large"
                         color="#FF2D55"
                         style={{ marginBottom: 10 }}
                     />
-                    <Text style={styles.text}>Uploading</Text>
+                    <Text style={s.text}>Uploading</Text>
                 </View>
             </TouchableOpacity>
         );
@@ -103,10 +100,10 @@ const Patient = schema(model)(React.createClass({
         const showLoader = this.props.tree.status.get() === 'Loading';
 
         return (
-            <View style={styles.container}>
+            <View style={s.container}>
                 <StatusBar hidden={false} />
                 { showLoader ?
-                    <View style={styles.activityIndicator}>
+                    <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating={showLoader}
                             size="large"
@@ -120,15 +117,15 @@ const Patient = schema(model)(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                 >
-                    <Text style={styles.name}>{ `${firstname} ${lastname}` }</Text>
+                    <Text style={s.name}>{ `${firstname} ${lastname}` }</Text>
                     <View style={{ alignItems: 'center' }}>
                         <Image
                             source={defaultUserImage}
-                            style={styles.mainPhoto}
+                            style={s.mainPhoto}
                         />
                     </View>
-                    <Text style={styles.subtitle}>San Francisco C.A.</Text>
-                    <View style={styles.photos}>
+                    <Text style={s.subtitle}>San Francisco C.A.</Text>
+                    <View style={s.photos}>
                         {data.get() && data.map((cursor) => {
                             const error = false;
                             const uploading = false;
@@ -145,7 +142,7 @@ const Patient = schema(model)(React.createClass({
                                 return (
                                     <TouchableOpacity
                                         key={cursor.get('data', 'id')}
-                                        style={styles.photoWrapper}
+                                        style={s.photoWrapper}
                                         onPress={() => this.props.navigator.push({
                                             component: ImageInfo,
                                             title: `${firstname} ${lastname}`,
@@ -164,7 +161,7 @@ const Patient = schema(model)(React.createClass({
                                         {this.renderActivityIndicator()}
                                         <Image
                                             source={{ uri: cursor.get('data').clinical_photo.thumbnail }}
-                                            style={styles.photo}
+                                            style={s.photo}
                                         />
                                     </TouchableOpacity>
                                 );
@@ -180,77 +177,3 @@ const Patient = schema(model)(React.createClass({
 }));
 
 export default Patient;
-
-const photosContainerWidth = Dimensions.get('window').width + 2;
-
-styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 10,
-        alignItems: 'center',
-    },
-    name: {
-        fontSize: 24,
-        lineHeight: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    mainPhoto: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        marginTop: 15,
-        marginBottom: 15,
-    },
-    subtitle: {
-        fontSize: 18,
-        lineHeight: 18,
-        fontWeight: '300',
-        textAlign: 'center',
-    },
-    photos: {
-        flexDirection: 'row',
-        width: photosContainerWidth,
-        marginRight: -2,
-        marginBottom: -3,
-        marginTop: 15,
-        flexWrap: 'wrap',
-    },
-    photoWrapper: {
-        width: photosContainerWidth / 3,
-        height: photosContainerWidth / 3,
-    },
-    withoutImg: {
-        backgroundColor: '#fafafa',
-        borderWidth: 0.5,
-        borderColor: '#ccc',
-        width: (photosContainerWidth / 3) - 2,
-        height: (photosContainerWidth / 3) - 2,
-        justifyContent: 'center',
-    },
-    photo: {
-        width: (photosContainerWidth / 3) - 2,
-        height: (photosContainerWidth / 3) - 2,
-    },
-    text: {
-        textAlign: 'center',
-        fontSize: 16,
-        lineHeight: 16,
-    },
-    indicator: {
-        position: 'absolute',
-        left: 2,
-        top: 2,
-        right: 2,
-        bottom: 2,
-        justifyContent: 'center',
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 85,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        zIndex: 1,
-    },
-});

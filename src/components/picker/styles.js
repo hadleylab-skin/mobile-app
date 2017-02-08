@@ -6,24 +6,27 @@ export default StyleSheet.create({
         borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
         marginLeft: 15,
+    },
+    picker: {
         marginRight: 15,
     },
-    groupTitle: {
+    title: {
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
         flex: 1,
     },
-    groupText: {
+    text: {
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
     },
-    inputWrapperStyle: {
+    wrapper: {
         marginTop: 8,
         marginBottom: 0,
         paddingBottom: 7,
         flexDirection: 'row',
         alignItems: 'center',
+        marginRight: 15,
     },
 });

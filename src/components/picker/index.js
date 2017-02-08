@@ -23,6 +23,7 @@ export const Picker = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         items: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         title: React.PropTypes.string.isRequired,
+        onPress: React.PropTypes.func,
     },
 
     onPress() {
@@ -44,24 +45,26 @@ export const Picker = schema(model)(React.createClass({
                 <TouchableWithoutFeedback
                     onPress={this.onPress}
                 >
-                    <View style={s.inputWrapperStyle}>
-                        <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>{title}:</Text>
-                        <Text style={s.groupText}>{items[cursor.get()]}</Text>
+                    <View style={s.wrapper}>
+                        <Text style={[s.title, { paddingTop: 7, paddingBottom: 8 }]}>{title}:</Text>
+                        <Text style={s.text}>{items[cursor.get()]}</Text>
                     </View>
                 </TouchableWithoutFeedback>
                 {isOpen.get() ? (
-                    <PickerIOS
-                        selectedValue={cursor.get()}
-                        onValueChange={(index) => cursor.set(index)}
-                    >
-                        {_.map(items, (label, index) => (
-                            <PickerIOS.Item
-                                key={index}
-                                value={index}
-                                label={label}
-                            />
-                        ))}
-                    </PickerIOS>
+                    <View style={s.picker}>
+                        <PickerIOS
+                            selectedValue={cursor.get()}
+                            onValueChange={(index) => cursor.set(index)}
+                        >
+                            {_.map(items, (label, index) => (
+                                <PickerIOS.Item
+                                    key={index}
+                                    value={index}
+                                    label={label}
+                                />
+                            ))}
+                        </PickerIOS>
+                    </View>
                 ) : null}
             </View>
         );

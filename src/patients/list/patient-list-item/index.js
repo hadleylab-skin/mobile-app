@@ -8,9 +8,10 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
+import { getRoute } from '../../patient/edit-patient';
 import Patient from '../../patient';
-import s from './styles';
 import defaultUserImage from './images/default-user.png';
+import s from './styles';
 
 export default React.createClass({
     displayName: 'PatientListItem',
@@ -85,6 +86,7 @@ export default React.createClass({
                                 title: 'Patient',
                                 onLeftButtonPress: () => this.props.navigator.pop(),
                                 rightButtonTitle: 'Edit',
+                                onRightButtonPress: () => this.props.navigator.push(getRoute(this.props, this.props.navigator)),
                                 navigationBarHidden: false,
                                 tintColor: '#FF2D55',
                                 passProps: {

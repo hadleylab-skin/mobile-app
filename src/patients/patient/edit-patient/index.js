@@ -1,0 +1,126 @@
+import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
+import {
+    View,
+    Text,
+    StatusBar,
+    ScrollView,
+    ActivityIndicator,
+} from 'react-native';
+import schema from 'libs/state';
+import { getRacesList } from 'libs/services/patients';
+import { Input, Picker } from 'components';
+import s from './styles';
+
+const model = (props) => {
+    const { data } = props;
+
+    return {
+        tree: {
+            form: {
+                firstname: data.firstname,
+                lastname: data.lastname,
+                medicalRecordNumber: '012345',
+                race: 'Race 1',
+            },
+            offsetY: 0,
+            racesList: getRacesList(),
+        },
+    };
+};
+const EditPatient = schema(model)(React.createClass({
+    displayName: 'EditPatient',
+
+    onScroll(e) {
+        const offset = e.nativeEvent.contentOffset.y;
+        this.props.tree.offsetY.set(offset);
+    },
+
+    render() {
+        const firstnameCursor = this.props.tree.form.firstname;
+        const lastnameCursor = this.props.tree.form.lastname;
+        const medicalRecordNumberCursor = this.props.tree.form.medicalRecordNumber;
+        const raceCursor = this.props.tree.form.race;
+        const racesList = this.props.tree.racesList.get();
+        const offsetY = this.props.tree.offsetY.get();
+
+        return (
+            <View style={s.container}>
+                <StatusBar hidden={false} />
+                <ScrollView
+                    onScroll={this.onScroll}
+                    scrollEventThrottle={200}
+                    ref={(ref) => { this.scrollView = ref; }}
+                >
+                    <View style={{ marginBottom: 40 }}>
+                        <View style={s.group}>
+                            <View style={s.groupTitleWrapper}>
+                                <Text style={s.groupTitle}>Patient name</Text>
+                            </View>
+                            <Input
+                                label="First Name"
+                                cursor={firstnameCursor}
+                                inputWrapperStyle={s.wrapper}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                            />
+                            <Input
+                                label="Last Name"
+                                cursor={lastnameCursor}
+                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                            />
+                        </View>
+                        <View style={s.group}>
+                            <View style={s.groupTitleWrapper}>
+                                <Text style={s.groupTitle}>Medical record number</Text>
+                            </View>
+                            <Input
+                                label=""
+                                cursor={medicalRecordNumberCursor}
+                                inputWrapperStyle={s.wrapper}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                            />
+                        </View>
+                        <View style={s.group}>
+                            <View style={s.groupTitleWrapper}>
+                                <Text style={s.groupTitle}>Patient Information</Text>
+                            </View>
+                            <Picker
+                                tree={this.props.tree}
+                                cursor={raceCursor}
+                                items={racesList}
+                                title="Anatomical Site"
+                                onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                            />
+                        </View>
+                    </View>
+                </ScrollView>
+            </View>
+        );
+    },
+}));
+
+export default EditPatient;
+
+export function getRoute(props, navigator) {
+    const passProps = {
+        tree: props.tree,
+        data: props.data,
+    };
+
+    const { firstname, lastname } = props.data;
+
+    return {
+        component: EditPatient,
+        leftButtonTitle: 'Cancel',
+        onLeftButtonPress: () => navigator.pop(),
+        title: `${firstname} ${lastname}`,
+        rightButtonTitle: 'Update',
+        navigationBarHidden: false,
+        tintColor: '#FF2D55',
+        passProps,
+    };
+}

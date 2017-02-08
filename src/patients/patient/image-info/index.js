@@ -134,8 +134,8 @@ const ImageInfo = schema(model)(React.createClass({
                             <Input
                                 label=""
                                 cursor={diagnosisCursor}
-                                inputWrapperStyle={[s.inputWrapperStyle, s.inputWrapperStyleFull]}
-                                inputStyle={s.inputStyle}
+                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                inputStyle={s.input}
                                 placeholderTextColor="#ccc"
                             />
                         </View>
@@ -150,7 +150,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 title="Anatomical Site"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
-                            <View style={s.inputWrapperStyle}>
+                            <View style={s.wrapper}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
                                 <Switch
                                     onValueChange={(value) => biopsyCursor.set(value)}
