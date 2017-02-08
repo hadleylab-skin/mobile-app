@@ -151,9 +151,11 @@ const Patient = schema(model)(React.createClass({
                                             title: `${firstname} ${lastname}`,
                                             onLeftButtonPress: () => this.props.navigator.pop(),
                                             navigationBarHidden: false,
+                                            rightButtonTitle: 'Update',
                                             tintColor: '#FF2D55',
                                             passProps: {
                                                 cursor,
+                                                tree: this.props.tree,
                                                 patientPk: this.props.id,
                                                 imageService: this.props.imageService,
                                             },

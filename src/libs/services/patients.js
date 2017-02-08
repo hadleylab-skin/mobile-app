@@ -73,3 +73,9 @@ export function uploadClinicalPhoto(token, patientPk) {
                             _.identity,
                             _.merge({}, defaultHeaders, headers));
 }
+
+export function getAnatomicalSites() {
+    const anatomicalSites = ['Left Arm', 'Left Leg', 'Right Arm', 'Right Leg', 'Stomach', 'Back', 'Neck'];
+
+    return anatomicalSites;
+}
