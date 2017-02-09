@@ -6,6 +6,7 @@ import {
     TextInput,
 } from 'react-native';
 import s from './styles';
+import { Form } from '../form';
 
 export const Input = schema({})(React.createClass({
     propTypes: {
@@ -14,7 +15,10 @@ export const Input = schema({})(React.createClass({
         inputWrapperStyle: View.propTypes.style,
         inputStyle: TextInput.propTypes.style,
         placeholderTextColor: React.PropTypes.string,
+        returnKeyType: React.PropTypes.string,
     },
+
+    contextTypes: Form.childContextTypes,
 
     getDefaultProps() {
         return {
@@ -37,14 +41,33 @@ export const Input = schema({})(React.createClass({
         }
 
         if (this.props.cursor.get() !== prevState.value) {
-            this.setState({
+            this.setState({ // eslint-disable-line
                 value: this.props.cursor.get(),
             });
         }
     },
 
     componentWillUnmount() {
+        this.nextInputIndex = undefined;
         this.clearDeferredSyncTimer();
+    },
+
+    register(ref) {
+        if (typeof this.nextInputIndex === 'undefined' && this.context.register) {
+            this.nextInputIndex = this.context.register(ref);
+        }
+    },
+
+    onSubmitEditing() {
+        this.syncCursor();
+        const { returnKeyType } = this.props;
+        if (this.context.next && returnKeyType === 'next') {
+            this.context.next(this.nextInputIndex);
+        }
+
+        if (this.context.submit && returnKeyType === 'done') {
+            this.context.submit();
+        }
     },
 
     deferredSyncTimer: null,
@@ -81,12 +104,14 @@ export const Input = schema({})(React.createClass({
         return (
             <View style={[s.container, inputWrapperStyle]}>
                 <TextInput
+                    ref={this.register}
                     style={[s.input, inputStyle]}
                     placeholder={label}
                     onChangeText={this.onChangeText}
                     onBlur={this.syncCursor}
                     placeholderTextColor={placeholderTextColor}
                     value={this.state.value}
+                    onSubmitEditing={this.onSubmitEditing}
                     {...props}
                 />
             </View>

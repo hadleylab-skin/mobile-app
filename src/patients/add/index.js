@@ -5,7 +5,7 @@ import {
     Alert,
     View,
 } from 'react-native';
-import { Input } from 'components';
+import { Input, Form } from 'components';
 import schema from 'libs/state';
 import tv4 from 'tv4';
 import s from './styles';
@@ -68,6 +68,7 @@ export const AddPatient = schema(model)(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired, // eslint-disable-line
+        submit: React.PropTypes.func.isRequired,
     },
 
     render() {
@@ -78,7 +79,10 @@ export const AddPatient = schema(model)(React.createClass({
 
         return (
             <View>
-                <View style={s.container}>
+                <Form
+                    style={s.container}
+                    onSubmit={this.props.submit}
+                >
                     <Input
                         label="First Name"
                         cursor={firstNameCursor}
@@ -93,9 +97,9 @@ export const AddPatient = schema(model)(React.createClass({
                         inputWrapperStyle={s.inputWrapperStyle}
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
-                        returnKeyType="next"
+                        returnKeyType="done"
                     />
-                </View>
+                </Form>
                 <ActivityIndicator
                     animating={showLoader}
                     size="large"
@@ -107,7 +111,7 @@ export const AddPatient = schema(model)(React.createClass({
 }));
 
 export function getRoute(props, navigator) {
-    const passProps = {
+    let passProps = {
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
@@ -116,13 +120,17 @@ export function getRoute(props, navigator) {
         },
     };
 
+    const doSubmit = () => submit(passProps, navigator);
+
+    passProps.submit = doSubmit;
+
     return {
         component: AddPatient,
         leftButtonTitle: 'Cancel',
         onLeftButtonPress: () => navigator.pop(),
         title: 'Create patient',
         rightButtonTitle: 'Done',
-        onRightButtonPress: () => submit(passProps, navigator),
+        onRightButtonPress: doSubmit,
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps,
