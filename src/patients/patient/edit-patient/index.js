@@ -2,7 +2,6 @@ import React from 'react';
 import {
     View,
     Text,
-    StatusBar,
     ScrollView,
     TouchableWithoutFeedback,
 } from 'react-native';
@@ -66,7 +65,6 @@ const EditPatient = schema(model)(React.createClass({
 
         return (
             <View style={s.container}>
-                <StatusBar hidden={false} />
                 <ScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}

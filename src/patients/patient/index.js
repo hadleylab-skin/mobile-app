@@ -3,7 +3,6 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
-    StatusBar,
     Image,
     TouchableOpacity,
     ScrollView,
@@ -101,7 +100,6 @@ const Patient = schema(model)(React.createClass({
 
         return (
             <View style={s.container}>
-                <StatusBar hidden={false} />
                 { showLoader ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
