@@ -100,19 +100,21 @@ const PatientsListScreen = schema(model)(React.createClass({
                         paddingBottom: 49,
                     }}
                     dataSource={this.state.ds}
-                    renderRow={(rowData) => (
+                    renderRow={(rowData, sectionId, rowId) => (
                         <PatientListItem
-                            tree={this.props.patientsImagesCursor.select(rowData.id)}
-                            data={rowData}
-                            isPatientActiveInListView={this.state.activePatientId === rowData.id}
+                            tree={this.props.patientsImagesCursor.select(rowData.data.id)}
+                            data={rowData.data}
+                            isPatientActiveInListView={this.state.activePatientId === rowData.data.id}
                             activatePatient={this.activatePatient}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
                                 this.activatePatient(undefined);
                             }}
+                            currentPatientCursor={this.props.tree.patients.data.select(rowId)}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
                             imageService={this.props.imageService}
+                            updatePatientService={this.props.updatePatientService}
                         />
                     )}
                 />

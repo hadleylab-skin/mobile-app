@@ -46,13 +46,15 @@ export const DatePicker = schema(model)(React.createClass({
                 >
                     <View style={s.wrapper}>
                         <Text style={s.title}>{title}:</Text>
-                        <Text style={s.text}>{moment(cursor.get()).format('DD MMM YYYY')}</Text>
+                        <Text style={s.text}>
+                            {cursor.get() ? moment(cursor.get()).format('DD MMM YYYY') : null}
+                        </Text>
                     </View>
                 </TouchableWithoutFeedback>
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <DatePickerIOS
-                            date={cursor.get()}
+                            date={cursor.get() ? cursor.get() : new Date()}
                             mode="date"
                             onDateChange={(date) => cursor.set(date)}
                         />

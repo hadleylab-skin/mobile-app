@@ -1,11 +1,20 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders } from '.';
 
+function wrapItemsAsRemoteData(items) {
+    return _.map(items, (data) => (
+        {
+            data,
+            status: 'Succeed',
+        })
+    );
+}
+
 export function getPatientList(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-    return buildGetService('/api/v1/patients/', _.identity, _.merge({}, defaultHeaders, headers));
+    return buildGetService('/api/v1/patients/', wrapItemsAsRemoteData, _.merge({}, defaultHeaders, headers));
 }
 
 export function getPatientImages(token) {
@@ -15,11 +24,7 @@ export function getPatientImages(token) {
     return (patientPk, cursor) => {
         const _getPatientImages = buildGetService(
             `/api/v1/patients/${patientPk}/skin_images/`,
-            (items) => _.map(items, (data) => (
-                {
-                    data,
-                    status: 'Succeed',
-                })),
+            wrapItemsAsRemoteData,
             _.merge({}, defaultHeaders, headers));
         return _getPatientImages(cursor);
     };
@@ -71,6 +76,21 @@ export function uploadClinicalPhoto(token, patientPk) {
                             hidrateImage,
                             _.identity,
                             _.merge({}, defaultHeaders, headers));
+}
+
+export function updatePatient(token) {
+    return (patientPk) => {
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
+            Authorization: `JWT ${token}`,
+        };
+        return buildPostService(`/api/v1/patients/${patientPk}/`,
+                                'POST',
+                                JSON.stringify,
+                                _.identity,
+                                _.merge({}, defaultHeaders, headers));
+    };
 }
 
 export function getAnatomicalSites() {

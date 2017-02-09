@@ -4,6 +4,7 @@ import {
     Text,
     ScrollView,
     TouchableWithoutFeedback,
+    Alert,
 } from 'react-native';
 import schema from 'libs/state';
 import { getRacesList } from 'libs/services/patients';
@@ -11,17 +12,17 @@ import { Form, Input, Picker, DatePicker } from 'components';
 import s from './styles';
 
 const model = (props) => {
-    const { data } = props;
+    const { firstname, lastname, mrn, sex, dob, race } = props.currentPatientCursor.data.get();
 
     return {
         tree: {
             form: {
-                firstname: data.firstname,
-                lastname: data.lastname,
-                medicalRecordNumber: '012345',
-                date: new Date(),
-                sex: 'Male',
-                race: null,
+                firstname,
+                lastname,
+                mrn,
+                dob,
+                sex,
+                race,
             },
             offsetY: 0,
             racesList: getRacesList(),
@@ -58,9 +59,9 @@ const EditPatient = schema(model)(React.createClass({
     render() {
         const firstnameCursor = this.props.tree.form.firstname;
         const lastnameCursor = this.props.tree.form.lastname;
-        const medicalRecordNumberCursor = this.props.tree.form.medicalRecordNumber;
+        const mrnCursor = this.props.tree.form.mrn;
         const raceCursor = this.props.tree.form.race;
-        const dateCursor = this.props.tree.form.date;
+        const dobCursor = this.props.tree.form.dob;
         const racesList = this.props.tree.racesList.get();
         const offsetY = this.props.tree.offsetY.get();
 
@@ -100,7 +101,7 @@ const EditPatient = schema(model)(React.createClass({
                                 </View>
                                 <Input
                                     label=""
-                                    cursor={medicalRecordNumberCursor}
+                                    cursor={mrnCursor}
                                     inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                     inputStyle={s.input}
                                     placeholderTextColor="#ccc"
@@ -113,7 +114,7 @@ const EditPatient = schema(model)(React.createClass({
                             </View>
                             <DatePicker
                                 tree={this.props.tree.datePickerCursor}
-                                cursor={dateCursor}
+                                cursor={dobCursor}
                                 title="Date of Birth"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
@@ -135,13 +136,32 @@ const EditPatient = schema(model)(React.createClass({
 
 export default EditPatient;
 
+async function submit(props, navigator) {
+    const patientPk = props.currentPatientCursor.get('id');
+    const cursor = props.currentPatientCursor;
+    const formData = props.tree.form.get();
+
+    const result = await props.updatePatientService(patientPk)(
+        cursor,
+        formData);
+
+    if (result.status === 'Failure') {
+        Alert.alert(
+            'Update Patient Error',
+            result.error.data.detail);
+    } else {
+        navigator.pop();
+    }
+}
+
 export function getRoute(props, navigator) {
     const passProps = {
         tree: props.tree,
-        data: props.data,
+        currentPatientCursor: props.currentPatientCursor,
+        updatePatientService: props.updatePatientService,
     };
 
-    const { firstname, lastname } = props.data;
+    const { firstname, lastname } = props.currentPatientCursor.data.get();
 
     return {
         component: EditPatient,
@@ -149,6 +169,7 @@ export function getRoute(props, navigator) {
         onLeftButtonPress: () => navigator.pop(),
         title: `${firstname} ${lastname}`,
         rightButtonTitle: 'Update',
+        onRightButtonPress: () => submit(passProps, navigator),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps,
