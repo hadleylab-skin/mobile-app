@@ -30,6 +30,7 @@ const Patient = schema(model)(React.createClass({
         lastname: React.PropTypes.string.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         imageService: React.PropTypes.func.isRequired,
+        anatomicalSites: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
     getInitialState() {
@@ -153,6 +154,7 @@ const Patient = schema(model)(React.createClass({
                                                 tree: this.props.tree,
                                                 patientPk: this.props.id,
                                                 imageService: this.props.imageService,
+                                                anatomicalSites: this.props.anatomicalSites,
                                             },
                                         })}
                                     >

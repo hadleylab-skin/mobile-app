@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import schema from 'libs/state';
-import { getAnatomicalSites } from 'libs/services/patients';
 import { Input, Picker } from 'components';
 import s from './styles';
 
@@ -25,7 +24,6 @@ const model = (props) => {
                 biopsy: data.get('biopsy'),
             },
             offsetY: 0,
-            anatomicalSites: getAnatomicalSites(),
             anatomicalSitePickerCursor: {},
         },
     };
@@ -37,6 +35,7 @@ const ImageInfo = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         patientPk: React.PropTypes.number.isRequired,
         imageService: React.PropTypes.func.isRequired,
+        anatomicalSites: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
     getInitialState() {
@@ -75,7 +74,6 @@ const ImageInfo = schema(model)(React.createClass({
         const diagnosisCursor = this.props.tree.form.diagnosis;
         const anatomicalSiteCursor = this.props.tree.form.anatomicalSite;
         const biopsyCursor = this.props.tree.form.biopsy;
-        const anatomicalSites = this.props.tree.anatomicalSites.get();
         const offsetY = this.props.tree.offsetY.get();
 
         return (
@@ -145,7 +143,7 @@ const ImageInfo = schema(model)(React.createClass({
                             <Picker
                                 tree={this.props.tree.anatomicalSitePickerCursor}
                                 cursor={anatomicalSiteCursor}
-                                items={anatomicalSites}
+                                items={this.props.anatomicalSites}
                                 title="Anatomical Site"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />

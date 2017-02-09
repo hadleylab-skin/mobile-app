@@ -6,8 +6,9 @@ import {
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
-import { uploadClinicalPhoto, getPatientList,
-         createPatient, getPatientImages, getImage, updatePatient } from 'libs/services/patients';
+import { uploadClinicalPhoto, getPatientList, createPatient,
+    getPatientImages, getImage, updatePatient,
+    getRacesList, getAnatomicalSites } from 'libs/services/patients';
 import schema from 'libs/state';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
@@ -58,6 +59,9 @@ const Main = schema(model)(React.createClass({
         const createPatientService = createPatient(token);
         const updatePatientService = updatePatient(token);
 
+        const racesList = getRacesList();
+        const anatomicalSites = getAnatomicalSites();
+
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar hidden={currentTabCursor.get() === 'camera'} />
@@ -104,6 +108,8 @@ const Main = schema(model)(React.createClass({
                             patientImagesService={patientImagesService}
                             imageService={imageService}
                             updatePatientService={updatePatientService}
+                            racesList={racesList}
+                            anatomicalSites={anatomicalSites}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

@@ -33,6 +33,7 @@ export default React.createClass({
         isPatientActiveInListView: React.PropTypes.bool.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         imageService: React.PropTypes.func.isRequired,
+        anatomicalSites: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
     onScroll(e) {
@@ -97,6 +98,7 @@ export default React.createClass({
                                     navigator: this.props.navigator,
                                     patientImagesService: this.props.patientImagesService,
                                     imageService: this.props.imageService,
+                                    anatomicalSites: this.props.anatomicalSites,
                                 },
                             });
                         }}

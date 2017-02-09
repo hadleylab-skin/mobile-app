@@ -7,7 +7,6 @@ import {
     Alert,
 } from 'react-native';
 import schema from 'libs/state';
-import { getRacesList } from 'libs/services/patients';
 import { Form, Input, Picker, DatePicker } from 'components';
 import s from './styles';
 
@@ -25,7 +24,6 @@ const model = (props) => {
                 race,
             },
             offsetY: 0,
-            racesList: getRacesList(),
             datePickerCursor: {},
             racePickerCursor: {},
         },
@@ -34,6 +32,10 @@ const model = (props) => {
 
 const EditPatient = schema(model)(React.createClass({
     displayName: 'EditPatient',
+
+    propTypes: {
+        racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    },
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
@@ -62,7 +64,6 @@ const EditPatient = schema(model)(React.createClass({
         const mrnCursor = this.props.tree.form.mrn;
         const raceCursor = this.props.tree.form.race;
         const dobCursor = this.props.tree.form.dob;
-        const racesList = this.props.tree.racesList.get();
         const offsetY = this.props.tree.offsetY.get();
 
         return (
@@ -122,7 +123,7 @@ const EditPatient = schema(model)(React.createClass({
                             <Picker
                                 tree={this.props.tree.racePickerCursor}
                                 cursor={raceCursor}
-                                items={racesList}
+                                items={this.props.racesList}
                                 title="Race"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
@@ -159,6 +160,7 @@ export function getRoute(props, navigator) {
         tree: props.tree,
         currentPatientCursor: props.currentPatientCursor,
         updatePatientService: props.updatePatientService,
+        racesList: props.racesList,
     };
 
     const { firstname, lastname } = props.currentPatientCursor.data.get();
