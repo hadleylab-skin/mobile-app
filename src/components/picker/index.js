@@ -54,7 +54,7 @@ export const Picker = schema(model)(React.createClass({
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <PickerIOS
-                            selectedValue={cursor.get() ? cursor.get() : middleItemsValue}
+                            selectedValue={cursor.get() || cursor.get() === 0 ? cursor.get() : middleItemsValue}
                             onValueChange={(index) => cursor.set(index)}
                         >
                             {_.map(items, (label, index) => (
