@@ -19,9 +19,11 @@ export default StyleSheet.create({
         paddingBottom: 8,
     },
     text: {
+        flex: 1,
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
+        paddingLeft: 15,
     },
     wrapper: {
         marginTop: 8,
