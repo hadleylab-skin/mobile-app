@@ -4,6 +4,7 @@ import {
     Text,
     StatusBar,
     ScrollView,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
 import { getRacesList } from 'libs/services/patients';
@@ -19,8 +20,9 @@ const model = (props) => {
                 firstname: data.firstname,
                 lastname: data.lastname,
                 medicalRecordNumber: '012345',
-                race: null,
                 date: new Date(),
+                sex: 'Male',
+                race: null,
             },
             offsetY: 0,
             racesList: getRacesList(),
@@ -35,6 +37,22 @@ const EditPatient = schema(model)(React.createClass({
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
         this.props.tree.offsetY.set(offset);
+    },
+
+    renderSex() {
+        const sexCursor = this.props.tree.form.sex;
+        const sex = sexCursor.get();
+
+        return (
+            <TouchableWithoutFeedback
+                onPress={() => sexCursor.set(sex === 'Male' ? 'Female' : 'Male')}
+            >
+                <View style={s.wrapper}>
+                    <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
+                    <Text style={s.groupText}>{sex}</Text>
+                </View>
+            </TouchableWithoutFeedback>
+        );
     },
 
     render() {
@@ -96,6 +114,7 @@ const EditPatient = schema(model)(React.createClass({
                                 title="Date of Birth"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
+                            {this.renderSex()}
                             <Picker
                                 tree={this.props.tree.racesPickerCursor}
                                 cursor={raceCursor}
