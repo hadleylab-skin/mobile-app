@@ -24,6 +24,7 @@ export default StyleSheet.create({
         lineHeight: 16,
         fontWeight: '300',
         paddingLeft: 15,
+        textAlign: 'right',
     },
     wrapper: {
         marginTop: 8,
