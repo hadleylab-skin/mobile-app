@@ -27,6 +27,7 @@ const model = (props) => {
             },
             offsetY: 0,
             anatomicalSites: getAnatomicalSites(),
+            anatomicalSitePickerCursor: {},
         },
     };
 };
@@ -144,7 +145,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 <Text style={s.groupTitle}>Image Information</Text>
                             </View>
                             <Picker
-                                tree={this.props.tree}
+                                tree={this.props.tree.anatomicalSitePickerCursor}
                                 cursor={anatomicalSiteCursor}
                                 items={anatomicalSites}
                                 title="Anatomical Site"

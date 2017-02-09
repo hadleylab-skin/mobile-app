@@ -1,15 +1,13 @@
 import React from 'react';
-import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
     StatusBar,
     ScrollView,
-    ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { getRacesList } from 'libs/services/patients';
-import { Input, Picker } from 'components';
+import { Input, Picker, DatePicker } from 'components';
 import s from './styles';
 
 const model = (props) => {
@@ -21,10 +19,13 @@ const model = (props) => {
                 firstname: data.firstname,
                 lastname: data.lastname,
                 medicalRecordNumber: '012345',
-                race: 'Race 1',
+                race: null,
+                date: new Date(),
             },
             offsetY: 0,
             racesList: getRacesList(),
+            datePickerCursor: {},
+            racesPickerCursor: {},
         },
     };
 };
@@ -41,6 +42,7 @@ const EditPatient = schema(model)(React.createClass({
         const lastnameCursor = this.props.tree.form.lastname;
         const medicalRecordNumberCursor = this.props.tree.form.medicalRecordNumber;
         const raceCursor = this.props.tree.form.race;
+        const dateCursor = this.props.tree.form.date;
         const racesList = this.props.tree.racesList.get();
         const offsetY = this.props.tree.offsetY.get();
 
@@ -79,7 +81,7 @@ const EditPatient = schema(model)(React.createClass({
                             <Input
                                 label=""
                                 cursor={medicalRecordNumberCursor}
-                                inputWrapperStyle={s.wrapper}
+                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
                                 placeholderTextColor="#ccc"
                             />
@@ -88,8 +90,14 @@ const EditPatient = schema(model)(React.createClass({
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient Information</Text>
                             </View>
+                            <DatePicker
+                                tree={this.props.tree.datePickerCursor}
+                                cursor={dateCursor}
+                                title="Date of Birth"
+                                onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                            />
                             <Picker
-                                tree={this.props.tree}
+                                tree={this.props.tree.racesPickerCursor}
                                 cursor={raceCursor}
                                 items={racesList}
                                 title="Anatomical Site"
