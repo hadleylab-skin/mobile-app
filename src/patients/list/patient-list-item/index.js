@@ -31,7 +31,7 @@ export default React.createClass({
         changeCurrentPatient: React.PropTypes.func.isRequired,
         activatePatient: React.PropTypes.func.isRequired,
         isPatientActiveInListView: React.PropTypes.bool.isRequired,
-        patientService: React.PropTypes.func.isRequired,
+        patientImagesService: React.PropTypes.func.isRequired,
         imageService: React.PropTypes.func.isRequired,
     },
 
@@ -95,7 +95,7 @@ export default React.createClass({
                                     firstname,
                                     lastname,
                                     navigator: this.props.navigator,
-                                    patientService: this.props.patientService,
+                                    patientImagesService: this.props.patientImagesService,
                                     imageService: this.props.imageService,
                                 },
                             });

@@ -7,7 +7,7 @@ import {
     NavigatorIOS,
 } from 'react-native';
 import { uploadClinicalPhoto, getPatientList,
-         createPatient, getPatient, getImage } from 'libs/services/patients';
+         createPatient, getPatientImages, getImage } from 'libs/services/patients';
 import schema from 'libs/state';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
@@ -52,7 +52,7 @@ const Main = schema(model)(React.createClass({
              token,
              currentPatientCursor.get('id'));
         const patientsService = getPatientList(token);
-        const patientService = getPatient(token);
+        const patientImagesService = getPatientImages(token);
         const imageService = getImage(token);
         const createPatientService = createPatient(token);
 
@@ -77,7 +77,7 @@ const Main = schema(model)(React.createClass({
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');
                                 patientsService(patientsCursor.patients);
-                                patientService(id, patientsImagesCursor.select(id));
+                                patientImagesService(id, patientsImagesCursor.select(id));
                             }}
                         />
                     </TabBarIOS.Item>
@@ -99,7 +99,7 @@ const Main = schema(model)(React.createClass({
                             mainNavigator={this.props.mainNavigator}
                             createPatientService={createPatientService}
                             patientsService={patientsService}
-                            patientService={patientService}
+                            patientImagesService={patientImagesService}
                             imageService={imageService}
                         />
                     </TabBarIOS.Item>

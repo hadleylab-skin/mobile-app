@@ -8,12 +8,12 @@ export function getPatientList(token) {
     return buildGetService('/api/v1/patients/', _.identity, _.merge({}, defaultHeaders, headers));
 }
 
-export function getPatient(token) {
+export function getPatientImages(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
     return (patientPk, cursor) => {
-        const _getPatient = buildGetService(
+        const _getPatientImages = buildGetService(
             `/api/v1/patients/${patientPk}/skin_images/`,
             (items) => _.map(items, (data) => (
                 {
@@ -21,7 +21,7 @@ export function getPatient(token) {
                     status: 'Succeed',
                 })),
             _.merge({}, defaultHeaders, headers));
-        return _getPatient(cursor);
+        return _getPatientImages(cursor);
     };
 }
 
@@ -37,7 +37,6 @@ export function getImage(token) {
         return _getImage(cursor);
     };
 }
-
 
 export function createPatient(token) {
     const headers = {

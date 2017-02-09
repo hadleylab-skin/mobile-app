@@ -15,7 +15,7 @@ import s from './styles';
 
 const model = (props) => (
     {
-        tree: (cursor) => props.patientService(props.id, cursor),
+        tree: (cursor) => props.patientImagesService(props.id, cursor),
     }
 );
 
@@ -28,7 +28,7 @@ const Patient = schema(model)(React.createClass({
         id: React.PropTypes.number.isRequired,
         firstname: React.PropTypes.string.isRequired,
         lastname: React.PropTypes.string.isRequired,
-        patientService: React.PropTypes.func.isRequired,
+        patientImagesService: React.PropTypes.func.isRequired,
         imageService: React.PropTypes.func.isRequired,
     },
 
@@ -51,7 +51,7 @@ const Patient = schema(model)(React.createClass({
 
     updatePatient() {
         const { id, tree } = this.props;
-        return this.props.patientService(id, tree);
+        return this.props.patientImagesService(id, tree);
     },
 
     renderActivityIndicator() {

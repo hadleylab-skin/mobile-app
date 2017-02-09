@@ -28,7 +28,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
         patientsService: React.PropTypes.func.isRequired,
-        patientService: React.PropTypes.func.isRequired,
+        patientImagesService: React.PropTypes.func.isRequired,
         imageService: React.PropTypes.func.isRequired,
     },
 
@@ -111,7 +111,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                                 this.activatePatient(undefined);
                             }}
                             navigator={this.props.navigator}
-                            patientService={this.props.patientService}
+                            patientImagesService={this.props.patientImagesService}
                             imageService={this.props.imageService}
                         />
                     )}

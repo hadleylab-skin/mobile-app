@@ -26,7 +26,7 @@ const model = (props) => {
             offsetY: 0,
             racesList: getRacesList(),
             datePickerCursor: {},
-            racesPickerCursor: {},
+            racePickerCursor: {},
         },
     };
 };
@@ -44,7 +44,7 @@ const EditPatient = schema(model)(React.createClass({
 
         return (
             <TouchableWithoutFeedback
-                onPress={() => sexCursor.set(sex === 'Male' ? 'Female' : 'Male')}
+                onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
             >
                 <View style={s.wrapper}>
                     <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
@@ -114,10 +114,10 @@ const EditPatient = schema(model)(React.createClass({
                             />
                             {this.renderSex()}
                             <Picker
-                                tree={this.props.tree.racesPickerCursor}
+                                tree={this.props.tree.racePickerCursor}
                                 cursor={raceCursor}
                                 items={racesList}
-                                title="Anatomical Site"
+                                title="Race"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
                         </View>
