@@ -15,6 +15,8 @@ export default StyleSheet.create({
         lineHeight: 16,
         fontWeight: '300',
         flex: 1,
+        paddingTop: 7,
+        paddingBottom: 8,
     },
     text: {
         fontSize: 16,

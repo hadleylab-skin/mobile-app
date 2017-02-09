@@ -39,6 +39,7 @@ export const Picker = schema(model)(React.createClass({
     render() {
         const { cursor, items, title } = this.props;
         const { isOpen } = this.props.tree;
+        const middleItemsValue = Math.floor(items.length / 2);
 
         return (
             <View style={s.container}>
@@ -46,14 +47,14 @@ export const Picker = schema(model)(React.createClass({
                     onPress={this.onPress}
                 >
                     <View style={s.wrapper}>
-                        <Text style={[s.title, { paddingTop: 7, paddingBottom: 8 }]}>{title}:</Text>
+                        <Text style={s.title}>{title}:</Text>
                         <Text style={s.text}>{items[cursor.get()]}</Text>
                     </View>
                 </TouchableWithoutFeedback>
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <PickerIOS
-                            selectedValue={cursor.get()}
+                            selectedValue={cursor.get() ? cursor.get() : middleItemsValue}
                             onValueChange={(index) => cursor.set(index)}
                         >
                             {_.map(items, (label, index) => (
