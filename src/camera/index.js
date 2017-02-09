@@ -7,56 +7,85 @@ import {
     TouchableOpacity,
     Image,
     ActivityIndicator,
+    Alert,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
 import Camera from 'react-native-camera';
 import s from './styles';
 import captureIcon from './images/capture.png';
 
-function ImageLoader({ imageInfo }) {
-    if (!imageInfo.data) {
-        return null;
-    } if (imageInfo.data.status === 'Loading') {
-        return (
-            <View style={{ position: 'relative', zIndex: 1 }}>
-                <Image
-                    style={{ height: 75, width: 50 }}
-                    source={{ uri: imageInfo.photo.path }}
-                />
-                <ActivityIndicator
-                    size="large"
-                    color="#FF2D55"
-                    style={{ position: 'absolute', top: 20, left: 10 }}
-                />
-            </View>
-        );
-    } else if (imageInfo.data.status === 'Succeed') {
-        return null;
-    }
-
-    return (
-        <View>
-            <Image
-                style={{ height: 75, width: 50 }}
-                source={{ uri: imageInfo.photo.path }}
-            />
-            <View style={s.error}>
-                <Text style={{ color: '#fff' }}>Error</Text>
-            </View>
-        </View>
-    );
-}
-
-ImageLoader.propTypes = {
-    imageInfo: React.PropTypes.shape({
-        photo: React.PropTypes.shape({
-            path: React.PropTypes.string.isRequired,
-        }),
-        data: React.PropTypes.shape({
-            status: React.PropTypes.string.isRequired,
-        }),
-    }).isRequired,
+const imageLoaderModel = {
+    tree: {
+        errorConfirmed: false,
+    },
 };
+
+const ImageLoader = schema(imageLoaderModel)(React.createClass({
+    propTypes: {
+        imageInfo: React.PropTypes.shape({
+            photo: React.PropTypes.shape({
+                path: React.PropTypes.string.isRequired,
+            }),
+            data: React.PropTypes.shape({
+                status: React.PropTypes.string.isRequired,
+            }),
+        }).isRequired,
+    },
+
+    render() {
+        const { imageInfo } = this.props;
+        const errorConfirmedCursor = this.props.tree.errorConfirmed;
+
+        if (!imageInfo.data) {
+            return null;
+        }
+
+        if (imageInfo.data.status === 'Loading') {
+            return (
+                <View style={{ position: 'relative', zIndex: 1 }}>
+                    <Image
+                        style={{ height: 75, width: 50 }}
+                        source={{ uri: imageInfo.photo.path }}
+                    />
+                    <ActivityIndicator
+                        size="large"
+                        color="#FF2D55"
+                        style={{ position: 'absolute', top: 20, left: 10 }}
+                    />
+                </View>
+            );
+        } else if (imageInfo.data.status === 'Succeed') {
+            return null;
+        }
+
+        if (errorConfirmedCursor.get()) {
+            return null;
+        }
+
+        return (
+            <TouchableWithoutFeedback
+                onPress={() => Alert.alert(
+                    'Loading Image Error',
+                    JSON.stringify(imageInfo.data),
+                    [
+                        { text: 'OK', onPress: () => errorConfirmedCursor.set(true) },
+                    ]
+                )}
+            >
+                <View>
+                    <Image
+                        style={{ height: 75, width: 50 }}
+                        source={{ uri: imageInfo.photo.path }}
+                    />
+                    <View style={s.error}>
+                        <Text style={{ color: '#fff' }}>Error</Text>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        );
+    },
+}));
 
 const model = {
     tree: {
@@ -73,8 +102,8 @@ export default schema(model)(React.createClass({
             firstname: React.PropTypes.string.isRequired,
             lastname: React.PropTypes.string.isRequired,
         }).isRequired,
-
     },
+
     async takePicture() {
         const photo = await this.camera.capture();
         const index = this.props.tree.imageUploadResults.get().length;
@@ -90,6 +119,7 @@ export default schema(model)(React.createClass({
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         const images = this.props.tree.imageUploadResults.get();
+
         return (
             <View style={s.container}>
                 <Camera
@@ -104,8 +134,12 @@ export default schema(model)(React.createClass({
                 >
                     <View style={s.preloaders} >
                         {_.map(images, (imageInfo, index) =>
-                            <ImageLoader imageInfo={imageInfo} key={index} />
-                         )}
+                            <ImageLoader
+                                tree={this.props.tree.imageUploadResults.select(index)}
+                                imageInfo={imageInfo}
+                                key={index}
+                            />
+                        )}
                     </View>
                     <View style={s.textWrapper}>
                         <Text style={s.name}>
