@@ -10,7 +10,6 @@ import schema from 'libs/state';
 import tv4 from 'tv4';
 import s from './styles';
 
-
 const createPatientSchema = {
     title: 'Create patient form',
     type: 'object',
@@ -26,7 +25,6 @@ const createPatientSchema = {
     },
     required: ['firstname', 'lastname'],
 };
-
 
 const model = {
     tree: {

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { getRacesList } from 'libs/services/patients';
-import { Input, Picker, DatePicker } from 'components';
+import { Form, Input, Picker, DatePicker } from 'components';
 import s from './styles';
 
 const model = (props) => {
@@ -30,6 +30,7 @@ const model = (props) => {
         },
     };
 };
+
 const EditPatient = schema(model)(React.createClass({
     displayName: 'EditPatient',
 
@@ -71,37 +72,41 @@ const EditPatient = schema(model)(React.createClass({
                     ref={(ref) => { this.scrollView = ref; }}
                 >
                     <View style={{ marginBottom: 40 }}>
-                        <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Patient name</Text>
+                        <Form onSubmit={() => console.log('submit')}>
+                            <View style={s.group}>
+                                <View style={s.groupTitleWrapper}>
+                                    <Text style={s.groupTitle}>Patient name</Text>
+                                </View>
+                                <Input
+                                    label="First Name"
+                                    cursor={firstnameCursor}
+                                    inputWrapperStyle={s.wrapper}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                    returnKeyType="next"
+                                />
+                                <Input
+                                    label="Last Name"
+                                    cursor={lastnameCursor}
+                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                    returnKeyType="next"
+                                />
                             </View>
-                            <Input
-                                label="First Name"
-                                cursor={firstnameCursor}
-                                inputWrapperStyle={s.wrapper}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                            />
-                            <Input
-                                label="Last Name"
-                                cursor={lastnameCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                            />
-                        </View>
-                        <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Medical record number</Text>
+                            <View style={s.group}>
+                                <View style={s.groupTitleWrapper}>
+                                    <Text style={s.groupTitle}>Medical record number</Text>
+                                </View>
+                                <Input
+                                    label=""
+                                    cursor={medicalRecordNumberCursor}
+                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                />
                             </View>
-                            <Input
-                                label=""
-                                cursor={medicalRecordNumberCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                            />
-                        </View>
+                        </Form>
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient Information</Text>
