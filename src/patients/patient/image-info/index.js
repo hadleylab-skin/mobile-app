@@ -94,7 +94,7 @@ const ImageInfo = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    <Form style={{ marginBottom: 40 }}>
+                    <Form style={{ marginBottom: 40 }} onSubmit={() => console.log('submit')}>
                         <View style={s.imageWrapper}>
                             <View style={s.indicator}>
                                 <ActivityIndicator
@@ -134,6 +134,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
                                 placeholderTextColor="#ccc"
+                                onFocus={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                                 returnKeyType="next"
                             />
                         </View>
