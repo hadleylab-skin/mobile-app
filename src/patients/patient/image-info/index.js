@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import schema from 'libs/state';
-import { Input, Picker } from 'components';
+import { Form, Input, Picker } from 'components';
 import s from './styles';
 
 const model = (props) => {
@@ -35,7 +35,7 @@ const ImageInfo = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         patientPk: React.PropTypes.number.isRequired,
         imageService: React.PropTypes.func.isRequired,
-        anatomicalSites: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
     getInitialState() {
@@ -94,7 +94,7 @@ const ImageInfo = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    <View style={{ marginBottom: 40 }}>
+                    <Form style={{ marginBottom: 40 }} onSubmit={() => console.log('submit')}>
                         <View style={s.imageWrapper}>
                             <View style={s.indicator}>
                                 <ActivityIndicator
@@ -134,6 +134,8 @@ const ImageInfo = schema(model)(React.createClass({
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
                                 placeholderTextColor="#ccc"
+                                onFocus={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                                returnKeyType="next"
                             />
                         </View>
                         <View style={s.group}>
@@ -143,7 +145,7 @@ const ImageInfo = schema(model)(React.createClass({
                             <Picker
                                 tree={this.props.tree.anatomicalSitePickerCursor}
                                 cursor={anatomicalSiteCursor}
-                                items={this.props.anatomicalSites}
+                                items={this.props.anatomicalSiteList}
                                 title="Anatomical Site"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
@@ -155,7 +157,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 />
                             </View>
                         </View>
-                    </View>
+                    </Form>
                 </ScrollView>
             </View>
         );

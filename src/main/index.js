@@ -6,9 +6,10 @@ import {
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
-import { uploadClinicalPhoto, getPatientList, createPatient,
-    getPatientImages, getImage, updatePatient,
-    getRacesList, getAnatomicalSites } from 'libs/services/patients';
+import { getPatientList, createPatient,
+    getPatientImages, updatePatient } from 'libs/services/patients';
+import { uploadClinicalPhoto, getImage } from 'libs/services/image';
+import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
 import schema from 'libs/state';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
@@ -23,7 +24,8 @@ const model = (props) => (
             patients: {},
             patientsImages: {},
             currentPatient: props.defaultPatient,
-            patient: {}, // REVIEW it seems that it is not using anyehere else
+            racesList: getRacesList(props.token),
+            anatomicalSiteList: getAnatomicalSiteList(props.token),
         },
     }
 );
@@ -58,10 +60,6 @@ const Main = schema(model)(React.createClass({
         const imageService = getImage(token);
         const createPatientService = createPatient(token);
         const updatePatientService = updatePatient(token);
-
-        // REVIEW both items are lists why did they name differently?
-        const racesList = getRacesList();
-        const anatomicalSites = getAnatomicalSites();
 
         return (
             <View style={{ flex: 1 }}>
@@ -109,8 +107,8 @@ const Main = schema(model)(React.createClass({
                             patientImagesService={patientImagesService}
                             imageService={imageService}
                             updatePatientService={updatePatientService}
-                            racesList={racesList}
-                            anatomicalSites={anatomicalSites}
+                            racesList={this.props.tree.racesList.get('data') || []}
+                            anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

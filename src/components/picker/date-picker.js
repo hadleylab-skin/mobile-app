@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import moment from 'moment';
+import { Form } from '../form';
 import s from './styles';
 
 const model = {
@@ -25,6 +26,14 @@ export const DatePicker = schema(model)(React.createClass({
         onPress: React.PropTypes.func,
     },
 
+    contextTypes: Form.childContextTypes,
+
+    componentDidMount() {
+        if (this.context.register) {
+            this.context.register(this);
+        }
+    },
+
     onPress() {
         const { isOpen } = this.props.tree;
 
@@ -35,15 +44,18 @@ export const DatePicker = schema(model)(React.createClass({
         isOpen.apply((x) => !x);
     },
 
+    focus() {
+        this.props.tree.isOpen.set(true);
+        this.props.onPress();
+    },
+
     render() {
         const { cursor, title } = this.props;
         const { isOpen } = this.props.tree;
 
         return (
             <View style={s.container}>
-                <TouchableWithoutFeedback
-                    onPress={this.onPress}
-                >
+                <TouchableWithoutFeedback onPress={this.onPress}>
                     <View style={s.wrapper}>
                         <Text style={s.title}>{title}:</Text>
                         <Text style={s.text}>

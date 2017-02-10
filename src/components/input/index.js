@@ -16,6 +16,7 @@ export const Input = schema({})(React.createClass({
         inputStyle: TextInput.propTypes.style,
         placeholderTextColor: React.PropTypes.string,
         returnKeyType: React.PropTypes.string,
+        onFocus: React.PropTypes.func,
     },
 
     contextTypes: Form.childContextTypes,
@@ -98,9 +99,16 @@ export const Input = schema({})(React.createClass({
         this.deferredSyncValue();
     },
 
+    onFocus() {
+        if (this.props.onFocus) {
+            this.props.onFocus();
+        }
+    },
+
     render() {
         const { label, inputWrapperStyle, inputStyle,
                 placeholderTextColor, ...props } = this.props;
+
         return (
             <View style={[s.container, inputWrapperStyle]}>
                 <TextInput
@@ -109,6 +117,7 @@ export const Input = schema({})(React.createClass({
                     placeholder={label}
                     onChangeText={this.onChangeText}
                     onBlur={this.syncCursor}
+                    onFocus={this.onFocus}
                     placeholderTextColor={placeholderTextColor}
                     value={this.state.value}
                     onSubmitEditing={this.onSubmitEditing}
