@@ -1,15 +1,25 @@
-export function getAnatomicalSiteList() {
-    // REVIEW it is not syncromious function.
+export function getAnatomicalSiteList(token) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+
     const anatomicalSites = ['Left Arm', 'Left Leg', 'Right Arm', 'Right Leg',
         'Stomach', 'Back', 'Neck'];
 
-    return anatomicalSites;
+    return (cursor) => {
+        cursor.set({ data: anatomicalSites, status: 'Succed' });
+    };
 }
 
-export function getRacesList() {
-    // REVIEW it is not syncromious function.
+export function getRacesList(token) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+
     const races = ['Native Hawaiian', 'Pacific Islander', 'Native Hawaiian/Pacific Islander',
         'Race 4', 'Race 5', 'Race 6', 'Race 7'];
 
-    return races;
+    return (cursor) => {
+        cursor.set({ data: races, status: 'Succed' });
+    };
 }

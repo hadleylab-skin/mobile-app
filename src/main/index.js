@@ -24,6 +24,8 @@ const model = (props) => (
             patients: {},
             patientsImages: {},
             currentPatient: props.defaultPatient,
+            racesList: getRacesList(props.token),
+            anatomicalSiteList: getAnatomicalSiteList(props.token),
         },
     }
 );
@@ -58,9 +60,6 @@ const Main = schema(model)(React.createClass({
         const imageService = getImage(token);
         const createPatientService = createPatient(token);
         const updatePatientService = updatePatient(token);
-
-        const racesList = getRacesList();
-        const anatomicalSiteList = getAnatomicalSiteList();
 
         return (
             <View style={{ flex: 1 }}>
@@ -108,8 +107,8 @@ const Main = schema(model)(React.createClass({
                             patientImagesService={patientImagesService}
                             imageService={imageService}
                             updatePatientService={updatePatientService}
-                            racesList={racesList}
-                            anatomicalSiteList={anatomicalSiteList}
+                            racesList={this.props.tree.racesList.get('data') || []}
+                            anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
