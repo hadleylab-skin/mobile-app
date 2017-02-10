@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
+import { Form } from '../form';
 import s from './styles';
 
 const model = {
@@ -26,6 +27,14 @@ export const Picker = schema(model)(React.createClass({
         onPress: React.PropTypes.func,
     },
 
+    contextTypes: Form.childContextTypes,
+
+    componentDidMount() {
+        if (this.context.register) {
+            this.context.register(this);
+        }
+    },
+
     onPress() {
         const { isOpen } = this.props.tree;
 
@@ -34,6 +43,11 @@ export const Picker = schema(model)(React.createClass({
         }
 
         isOpen.apply((x) => !x);
+    },
+
+    focus() {
+        this.props.tree.isOpen.set(true);
+        this.props.onPress();
     },
 
     render() {

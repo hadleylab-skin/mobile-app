@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import schema from 'libs/state';
-import { Input, Picker } from 'components';
+import { Form, Input, Picker } from 'components';
 import s from './styles';
 
 const model = (props) => {
@@ -94,7 +94,7 @@ const ImageInfo = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    <View style={{ marginBottom: 40 }}>
+                    <Form style={{ marginBottom: 40 }}>
                         <View style={s.imageWrapper}>
                             <View style={s.indicator}>
                                 <ActivityIndicator
@@ -134,6 +134,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
                                 placeholderTextColor="#ccc"
+                                returnKeyType="next"
                             />
                         </View>
                         <View style={s.group}>
@@ -155,7 +156,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 />
                             </View>
                         </View>
-                    </View>
+                    </Form>
                 </ScrollView>
             </View>
         );
