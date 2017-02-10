@@ -87,7 +87,8 @@ export default React.createClass({
                                 title: 'Patient',
                                 onLeftButtonPress: () => this.props.navigator.pop(),
                                 rightButtonTitle: 'Edit',
-                                onRightButtonPress: () => this.props.navigator.push(getRoute(this.props, this.props.navigator)),
+                                onRightButtonPress: () => this.props.navigator.push(
+                                    getRoute(this.props, this.props.navigator)),
                                 navigationBarHidden: false,
                                 tintColor: '#FF2D55',
                                 passProps: {

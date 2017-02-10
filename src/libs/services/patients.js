@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders } from '.';
 
+// REVIEW move to index.js
 function wrapItemsAsRemoteData(items) {
     return _.map(items, (data) => (
         {
@@ -30,6 +31,7 @@ export function getPatientImages(token) {
     };
 }
 
+// REVIEW move to image.js
 export function getImage(token) {
     const headers = {
         Authorization: `JWT ${token}`,
@@ -54,6 +56,7 @@ export function createPatient(token) {
                             _.merge({}, defaultHeaders, headers));
 }
 
+// REVIEW move to image.js
 function hidrateImage(image) {
     const photo = {
         uri: image.path,
@@ -65,6 +68,7 @@ function hidrateImage(image) {
     return data;
 }
 
+// REVIEW move to image.js
 export function uploadClinicalPhoto(token, patientPk) {
     const headers = {
         'Content-Type': 'multipart/form-data',
@@ -93,14 +97,19 @@ export function updatePatient(token) {
     };
 }
 
+// REVIEW move to constants.js
 export function getAnatomicalSites() {
+    // REVIEW it is not syncromious function.
     const anatomicalSites = ['Left Arm', 'Left Leg', 'Right Arm', 'Right Leg',
         'Stomach', 'Back', 'Neck'];
 
     return anatomicalSites;
 }
 
+
+// REVIEW move to constants.js
 export function getRacesList() {
+    // REVIEW it is not syncromious function.
     const races = ['Native Hawaiian', 'Pacific Islander', 'Native Hawaiian/Pacific Islander',
         'Race 4', 'Race 5', 'Race 6', 'Race 7'];
 

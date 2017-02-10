@@ -23,7 +23,7 @@ const model = (props) => (
             patients: {},
             patientsImages: {},
             currentPatient: props.defaultPatient,
-            patient: {},
+            patient: {}, // REVIEW it seems that it is not using anyehere else
         },
     }
 );
@@ -59,6 +59,7 @@ const Main = schema(model)(React.createClass({
         const createPatientService = createPatient(token);
         const updatePatientService = updatePatient(token);
 
+        // REVIEW both items are lists why did they name differently?
         const racesList = getRacesList();
         const anatomicalSites = getAnatomicalSites();
 

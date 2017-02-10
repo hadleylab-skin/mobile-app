@@ -107,8 +107,10 @@ const EditPatient = schema(model)(React.createClass({
                                     inputStyle={s.input}
                                     placeholderTextColor="#ccc"
                                 />
+                                {/* REVIEW Input shoudl have returnKeyType="next" */}
                             </View>
                         </Form>
+                        {/* REVIEW Form should wrap all items, not only text inputs  */}
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient Information</Text>
@@ -119,6 +121,8 @@ const EditPatient = schema(model)(React.createClass({
                                 title="Date of Birth"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
+                            {/* REVIEW DatePicker should be compatible with Form component */
+                             /*        The focus method should be implemented */ }
                             {this.renderSex()}
                             <Picker
                                 tree={this.props.tree.racePickerCursor}
@@ -144,7 +148,7 @@ async function submit(props, navigator) {
 
     const result = await props.updatePatientService(patientPk)(
         cursor,
-        formData);
+        formData); // REVIEW uncurry this fucntion
 
     if (result.status === 'Failure') {
         Alert.alert(
