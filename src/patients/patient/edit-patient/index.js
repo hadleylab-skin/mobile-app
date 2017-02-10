@@ -147,9 +147,7 @@ async function submit(props, navigator) {
     const cursor = props.currentPatientCursor;
     const formData = props.tree.form.get();
 
-    const result = await props.updatePatientService(patientPk)(
-        cursor,
-        formData); // REVIEW uncurry this fucntion
+    const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
         Alert.alert(

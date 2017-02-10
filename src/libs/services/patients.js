@@ -34,15 +34,17 @@ export function createPatient(token) {
 }
 
 export function updatePatient(token) {
-    return (patientPk) => {
-        const headers = {
-            Accept: 'application/json',
-            Authorization: `JWT ${token}`,
-        };
-        return buildPostService(`/api/v1/patients/${patientPk}/`,
-                                'PUT',
-                                JSON.stringify, // REVIEW The data is in a wrong format it should be fixed
-                                _.identity,
-                                _.merge({}, defaultHeaders, headers));
+    const headers = {
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, cursor, data) => {
+        const _getPatient = buildPostService(`/api/v1/patients/${patientPk}/`,
+            'PUT',
+            JSON.stringify,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _getPatient(cursor, data);
     };
 }
