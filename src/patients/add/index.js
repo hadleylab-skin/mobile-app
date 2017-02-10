@@ -18,7 +18,7 @@ const createPatientSchema = {
             type: 'string',
             minLength: 2,
         },
-        lastName: {
+        lastname: {
             type: 'string',
             minLength: 2,
         },
@@ -36,13 +36,15 @@ const model = {
     },
 };
 
-async function submit(props, navigator) {
+async function submit(props, navigator, getForm) {
     const formData = props.tree.form.get();
     const validationResult = tv4.validateResult(formData, createPatientSchema);
+
     if (!validationResult.valid) {
-        Alert.alert(
-            'Create Patient Error',
-            validationResult.error.message);
+        const mapping = { '/firstname': 0, '/lastname': 1 };
+        getForm().formItems[mapping[validationResult.error.dataPath]].animate();
+        getForm().formItems[mapping[validationResult.error.dataPath]].focus();
+
         return;
     }
 
@@ -67,6 +69,7 @@ export const AddPatient = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired, // eslint-disable-line
         submit: React.PropTypes.func.isRequired,
+        register: React.PropTypes.func.isRequired,
     },
 
     render() {
@@ -78,6 +81,7 @@ export const AddPatient = schema(model)(React.createClass({
         return (
             <View>
                 <Form
+                    ref={this.props.register}
                     style={s.container}
                     onSubmit={this.props.submit}
                 >
@@ -109,7 +113,9 @@ export const AddPatient = schema(model)(React.createClass({
 }));
 
 export function getRoute(props, navigator) {
+    let form;
     let passProps = {
+        register: (ref) => { form = ref; },
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
@@ -118,7 +124,7 @@ export function getRoute(props, navigator) {
         },
     };
 
-    const doSubmit = () => submit(passProps, navigator);
+    const doSubmit = async () => submit(passProps, navigator, () => form);
 
     passProps.submit = doSubmit;
 

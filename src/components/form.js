@@ -5,6 +5,7 @@ export class Form extends React.Component {
     constructor(props) {
         super(props);
         this.formItems = [];
+        this.namedItems = {};
     }
 
     getChildContext() {
@@ -15,7 +16,11 @@ export class Form extends React.Component {
         };
     }
 
-    register(ref) {
+    register(ref, name) {
+        if (name) {
+            this.namedItems[name] = ref;
+        }
+
         return this.formItems.push(ref);
     }
 
