@@ -142,8 +142,7 @@ const EditPatient = schema(model)(React.createClass({
 export default EditPatient;
 
 async function submit(props, navigator) {
-    const patientPk = props.currentPatientCursor.get('id');
-    // REVIEW there is a bug in the prev line, fix it
+    const patientPk = props.currentPatientCursor.data.get('id');
     const cursor = props.currentPatientCursor;
     const formData = props.tree.form.get();
 
