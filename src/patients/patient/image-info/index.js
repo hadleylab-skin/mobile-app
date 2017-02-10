@@ -35,7 +35,7 @@ const ImageInfo = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         patientPk: React.PropTypes.number.isRequired,
         imageService: React.PropTypes.func.isRequired,
-        anatomicalSites: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
     getInitialState() {
@@ -143,7 +143,7 @@ const ImageInfo = schema(model)(React.createClass({
                             <Picker
                                 tree={this.props.tree.anatomicalSitePickerCursor}
                                 cursor={anatomicalSiteCursor}
-                                items={this.props.anatomicalSites}
+                                items={this.props.anatomicalSiteList}
                                 title="Anatomical Site"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />

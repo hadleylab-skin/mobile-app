@@ -78,3 +78,12 @@ export function buildPostService(path,
         return result;
     };
 }
+
+export function wrapItemsAsRemoteData(items) {
+    return _.map(items, (data) => (
+        {
+            data,
+            status: 'Succeed',
+        })
+    );
+}
