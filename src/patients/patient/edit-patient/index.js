@@ -143,6 +143,7 @@ export default EditPatient;
 
 async function submit(props, navigator) {
     const patientPk = props.currentPatientCursor.get('id');
+    // REVIEW there is a bug in the prev line, fix it
     const cursor = props.currentPatientCursor;
     const formData = props.tree.form.get();
 
@@ -153,7 +154,7 @@ async function submit(props, navigator) {
     if (result.status === 'Failure') {
         Alert.alert(
             'Update Patient Error',
-            result.error.data.detail);
+            JSON.stringify(result));
     } else {
         navigator.pop();
     }

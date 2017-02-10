@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -36,7 +37,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     getInitialState() {
-        const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return p1.id !== p2.id; } });
+        const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
         const patients = this.props.tree.patients.data.get() || [];
         return {
             ds: ds.cloneWithRows(patients),

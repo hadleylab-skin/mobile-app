@@ -50,7 +50,7 @@ export function buildPostService(path,
                                  dehydrate = _.identity,
                                  headers = defaultHeaders) {
     return async (cursor, data) => {
-        cursor.set({ status: 'Loading' });
+        cursor.set('status', 'Loading');
         let result = {};
 
         const payload = {
@@ -66,13 +66,15 @@ export function buildPostService(path,
                 data: dehydrate(respData),
                 status: 'Succeed',
             };
+            cursor.set(result);
         } catch (error) {
             result = {
                 error,
                 status: 'Failure',
             };
+            cursor.set('error', result.error);
+            cursor.set('status', result.status);
         }
-        cursor.set(result);
         return result;
     };
 }

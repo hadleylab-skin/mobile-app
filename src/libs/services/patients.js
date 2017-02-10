@@ -85,13 +85,12 @@ export function uploadClinicalPhoto(token, patientPk) {
 export function updatePatient(token) {
     return (patientPk) => {
         const headers = {
-            'Content-Type': 'multipart/form-data',
             Accept: 'application/json',
             Authorization: `JWT ${token}`,
         };
         return buildPostService(`/api/v1/patients/${patientPk}/`,
-                                'POST',
-                                JSON.stringify,
+                                'PUT',
+                                JSON.stringify, // REVIEW The data is in a wrong format it should be fixed
                                 _.identity,
                                 _.merge({}, defaultHeaders, headers));
     };
