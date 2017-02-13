@@ -20,6 +20,7 @@ export const Input = schema({})(React.createClass({
         placeholderTextColor: React.PropTypes.string,
         returnKeyType: React.PropTypes.string,
         onFocus: React.PropTypes.func,
+        name: React.PropTypes.string,
     },
 
     contextTypes: Form.childContextTypes,
@@ -45,7 +46,7 @@ export const Input = schema({})(React.createClass({
 
     componentDidMount() {
         if (this.context.register) {
-            this.nextInputIndex = this.context.register(this);
+            this.nextInputIndex = this.context.register(this, this.props.name);
         }
     },
 

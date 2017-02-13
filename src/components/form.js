@@ -24,6 +24,10 @@ export class Form extends React.Component {
         return this.formItems.push(ref);
     }
 
+    getInput(name) {
+        return this.namedItems[name];
+    }
+
     next(index) {
         this.formItems[index].focus();
     }

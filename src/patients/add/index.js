@@ -36,16 +36,16 @@ const model = {
     },
 };
 
-async function submit(props, navigator, getForm) {
+async function submit(props, navigator, form) {
     const formData = props.tree.form.get();
     const validationResult = tv4.validateResult(formData, createPatientSchema);
 
     if (!validationResult.valid) {
-        const mapping = { '/firstname': 0, '/lastname': 1 };
+        const errorPath = validationResult.error.dataPath;
         const errorMessage = validationResult.error.message;
 
-        getForm().formItems[mapping[validationResult.error.dataPath]].showError(errorMessage);
-        getForm().formItems[mapping[validationResult.error.dataPath]].focus();
+        const fieldName = errorPath.substr(1);
+        form.getInput(fieldName).showError(errorMessage);
 
         return;
     }
@@ -94,6 +94,7 @@ export const AddPatient = schema(model)(React.createClass({
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="next"
+                        name="firstname"
                     />
                     <Input
                         label="Last Name"
@@ -102,6 +103,7 @@ export const AddPatient = schema(model)(React.createClass({
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="done"
+                        name="lastname"
                     />
                 </Form>
                 <ActivityIndicator
@@ -126,7 +128,7 @@ export function getRoute(props, navigator) {
         },
     };
 
-    const doSubmit = async () => submit(passProps, navigator, () => form);
+    const doSubmit = async () => submit(passProps, navigator, form);
 
     passProps.submit = doSubmit;
 
