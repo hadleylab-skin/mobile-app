@@ -46,7 +46,6 @@ async function submit(props, navigator, form) {
 
         const fieldName = errorPath.substr(1);
         form.getInput(fieldName).showError(errorMessage);
-        form.getInput(fieldName).focus();
 
         return;
     }

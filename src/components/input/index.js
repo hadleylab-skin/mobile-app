@@ -104,6 +104,7 @@ export const Input = schema({})(React.createClass({
 
     onChangeText(text) {
         this.setState({ value: text });
+        this.setState({ errorMessage: '' });
         this.deferredSyncValue();
     },
 
@@ -125,6 +126,8 @@ export const Input = schema({})(React.createClass({
                 easing: Easing.linear,
             }
         ).start();
+
+        this.focus();
     },
 
     focus() {
