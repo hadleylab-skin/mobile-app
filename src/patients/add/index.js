@@ -42,7 +42,9 @@ async function submit(props, navigator, getForm) {
 
     if (!validationResult.valid) {
         const mapping = { '/firstname': 0, '/lastname': 1 };
-        getForm().formItems[mapping[validationResult.error.dataPath]].animate();
+        const errorMessage = validationResult.error.message;
+
+        getForm().formItems[mapping[validationResult.error.dataPath]].showError(errorMessage);
         getForm().formItems[mapping[validationResult.error.dataPath]].focus();
 
         return;

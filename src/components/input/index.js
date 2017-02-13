@@ -3,6 +3,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
 import {
     View,
+    Text,
     TextInput,
     Easing,
     Animated,
@@ -34,6 +35,7 @@ export const Input = schema({})(React.createClass({
     getInitialState() {
         return {
             value: this.props.cursor.get(),
+            errorMessage: '',
         };
     },
 
@@ -110,8 +112,10 @@ export const Input = schema({})(React.createClass({
         }
     },
 
-    animate() {
+    showError(errorMessage) {
         this.animatedValue.setValue(0);
+        this.setState({ errorMessage });
+
         Animated.timing(
             this.animatedValue,
             {
@@ -136,24 +140,29 @@ export const Input = schema({})(React.createClass({
         });
 
         return (
-            <Animated.View
-                style={{ transform: [{ translateX: movingMargin }] }}
-            >
-                <View style={[s.container, inputWrapperStyle]}>
-                    <TextInput
-                        ref={(ref) => (this.input = ref)}
-                        style={[s.input, inputStyle]}
-                        placeholder={label}
-                        onChangeText={this.onChangeText}
-                        onBlur={this.syncCursor}
-                        onFocus={this.onFocus}
-                        placeholderTextColor={placeholderTextColor}
-                        value={this.state.value}
-                        onSubmitEditing={this.onSubmitEditing}
-                        {...props}
-                    />
-                </View>
-            </Animated.View>
+            <View>
+                {this.state.errorMessage ? (
+                    <Text style={s.error}>{this.state.errorMessage}</Text>
+                ) : null}
+                <Animated.View
+                    style={{ transform: [{ translateX: movingMargin }] }}
+                >
+                    <View style={[s.container, inputWrapperStyle]}>
+                        <TextInput
+                            ref={(ref) => (this.input = ref)}
+                            style={[s.input, inputStyle]}
+                            placeholder={label}
+                            onChangeText={this.onChangeText}
+                            onBlur={this.syncCursor}
+                            onFocus={this.onFocus}
+                            placeholderTextColor={placeholderTextColor}
+                            value={this.state.value}
+                            onSubmitEditing={this.onSubmitEditing}
+                            {...props}
+                        />
+                    </View>
+                </Animated.View>
+            </View>
         );
     },
 }));
