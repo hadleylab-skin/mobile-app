@@ -30,7 +30,8 @@ const PatientsListScreen = schema(model)(React.createClass({
         patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
         patientsService: React.PropTypes.func.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
-        imageService: React.PropTypes.func.isRequired,
+        getImageService: React.PropTypes.func.isRequired,
+        updateImageService: React.PropTypes.func.isRequired,
         updatePatientService: React.PropTypes.func.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
@@ -117,7 +118,8 @@ const PatientsListScreen = schema(model)(React.createClass({
                             currentPatientCursor={this.props.tree.patients.data.select(rowId)}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
-                            imageService={this.props.imageService}
+                            getImageService={this.props.getImageService}
+                            updateImageService={this.props.updateImageService}
                             updatePatientService={this.props.updatePatientService}
                             racesList={this.props.racesList}
                             anatomicalSiteList={this.props.anatomicalSiteList}

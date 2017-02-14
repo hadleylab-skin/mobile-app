@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import ImageInfo from './image-info';
+import ImageInfo, { submit } from './image-info';
 import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
@@ -29,7 +29,8 @@ const Patient = schema(model)(React.createClass({
         firstname: React.PropTypes.string.isRequired,
         lastname: React.PropTypes.string.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
-        imageService: React.PropTypes.func.isRequired,
+        getImageService: React.PropTypes.func.isRequired,
+        updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     },
 
@@ -95,7 +96,7 @@ const Patient = schema(model)(React.createClass({
     },
 
     render() {
-        const { firstname, lastname } = this.props;
+        const { firstname, lastname, id } = this.props;
         const data = this.props.tree.data;
         const showLoader = this.props.tree.status.get() === 'Loading';
 
@@ -137,25 +138,39 @@ const Patient = schema(model)(React.createClass({
                                 return this.renderUploading();
                             }
 
+                            let form;
+
                             if (!error && !uploading) {
+                                const patientPk = id;
+                                const imagePk = cursor.get('data', 'id');
+                                const updateImageService = this.props.updateImageService;
+                                const navigator = this.props.navigator;
+                                const tree = this.props.tree;
+
+                                const passProps = {
+                                    register: (ref) => { form = ref; },
+                                    cursor,
+                                    patientPk,
+                                    tree,
+                                    getImageService: this.props.getImageService,
+                                    anatomicalSiteList: this.props.anatomicalSiteList,
+                                };
+
                                 return (
                                     <TouchableOpacity
-                                        key={cursor.get('data', 'id')}
+                                        key={imagePk}
                                         style={s.photoWrapper}
-                                        onPress={() => this.props.navigator.push({
+                                        onPress={() => navigator.push({
                                             component: ImageInfo,
                                             title: `${firstname} ${lastname}`,
-                                            onLeftButtonPress: () => this.props.navigator.pop(),
+                                            onLeftButtonPress: () => navigator.pop(),
                                             navigationBarHidden: false,
                                             rightButtonTitle: 'Update',
+                                            onRightButtonPress: async () =>
+                                                submit(patientPk, imagePk, cursor,
+                                                    updateImageService, navigator, form, tree),
                                             tintColor: '#FF2D55',
-                                            passProps: {
-                                                cursor,
-                                                tree: this.props.tree,
-                                                patientPk: this.props.id,
-                                                imageService: this.props.imageService,
-                                                anatomicalSiteList: this.props.anatomicalSiteList,
-                                            },
+                                            passProps,
                                         })}
                                     >
                                         {this.renderActivityIndicator()}

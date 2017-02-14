@@ -77,4 +77,9 @@ export default StyleSheet.create({
         fontWeight: '300',
         height: 30,
     },
+    error: {
+        marginTop: 10,
+        paddingLeft: 15,
+        marginBottom: -8,
+    },
 });
