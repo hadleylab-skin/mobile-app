@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
+import s from './styles';
 
 function submit() {
     Alert.alert(
@@ -30,34 +31,44 @@ export default class SignUp extends Component {
 
         return (
             <StartScreen>
-                <Input label="First Name" cursor={firstNameCursor} returnKeyType="next" />
-                <Input label="Last Name" cursor={lastNameCursor} returnKeyType="next" />
-                <Input label="Email" cursor={emailCursor} returnKeyType="next" />
-                <Input label="Password" cursor={passwordCursor} returnKeyType="done" />
+                <Input
+                    label="First Name"
+                    cursor={firstNameCursor}
+                    returnKeyType="next"
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
+                <Input
+                    label="Last Name"
+                    cursor={lastNameCursor}
+                    returnKeyType="next"
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
+                <Input
+                    label="Email"
+                    cursor={emailCursor}
+                    returnKeyType="next"
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
+                <Input
+                    label="Password"
+                    cursor={passwordCursor}
+                    returnKeyType="done"
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
                 <Button title="Sign Up" onPress={submit} />
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goBack}
                         text="Already have an account? Login"
-                        style={styles.text}
-                        clickableAreaStyles={styles.clickableArea}
+                        style={s.text}
+                        clickableAreaStyles={s.clickableArea}
                     />
                 </View>
             </StartScreen>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    text: {
-        color: '#fff',
-        fontSize: 12,
-        lineHeight: 12,
-    },
-    clickableArea: {
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingLeft: 30,
-        paddingRight: 30,
-    }
-});

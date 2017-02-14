@@ -8,7 +8,24 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { Form, Input, Picker, DatePicker } from 'components';
+import tv4 from 'tv4';
 import s from './styles';
+
+const updatePatientSchema = {
+    title: 'Update patient form',
+    type: 'object',
+    properties: {
+        firstname: {
+            type: 'string',
+            minLength: 2,
+        },
+        lastname: {
+            type: 'string',
+            minLength: 2,
+        },
+    },
+    required: ['firstname', 'lastname'],
+};
 
 const model = (props) => {
     const { firstname, lastname, mrn, sex, dob, race } = props.currentPatientCursor.data.get();
@@ -73,40 +90,49 @@ const EditPatient = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    <Form onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}>
+                    <Form
+                        ref={this.props.register}
+                        onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
+                    >
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient name</Text>
                             </View>
-                            <Input
-                                label="First Name"
-                                cursor={firstnameCursor}
-                                inputWrapperStyle={s.wrapper}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                                returnKeyType="next"
-                            />
-                            <Input
-                                label="Last Name"
-                                cursor={lastnameCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                                returnKeyType="next"
-                            />
+                            <View style={s.inputsWrapper}>
+                                <Input
+                                    label="First Name"
+                                    cursor={firstnameCursor}
+                                    inputWrapperStyle={s.wrapper}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                    returnKeyType="next"
+                                    name="firstname"
+                                />
+                                <Input
+                                    label="Last Name"
+                                    cursor={lastnameCursor}
+                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                    returnKeyType="next"
+                                    name="lastname"
+                                />
+                            </View>
                         </View>
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Medical record number</Text>
                             </View>
-                            <Input
-                                label=""
-                                cursor={mrnCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                placeholderTextColor="#ccc"
-                                returnKeyType="next"
-                            />
+                            <View style={s.inputsWrapper}>
+                                <Input
+                                    label=""
+                                    cursor={mrnCursor}
+                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                    inputStyle={s.input}
+                                    placeholderTextColor="#ccc"
+                                    returnKeyType="next"
+                                />
+                            </View>
                         </View>
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
@@ -136,10 +162,21 @@ const EditPatient = schema(model)(React.createClass({
 
 export default EditPatient;
 
-async function submit(props, navigator) {
+async function submit(props, navigator, form) {
     const patientPk = props.currentPatientCursor.data.get('id');
     const cursor = props.currentPatientCursor;
     const formData = props.tree.form.get();
+    const validationResult = tv4.validateResult(formData, updatePatientSchema);
+
+    if (!validationResult.valid) {
+        const errorPath = validationResult.error.dataPath;
+        const errorMessage = validationResult.error.message;
+
+        const fieldName = errorPath.substr(1);
+        form.getInput(fieldName).showError(errorMessage);
+
+        return;
+    }
 
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
@@ -153,7 +190,9 @@ async function submit(props, navigator) {
 }
 
 export function getRoute(props, navigator) {
+    let form;
     const passProps = {
+        register: (ref) => { form = ref; },
         tree: props.tree,
         currentPatientCursor: props.currentPatientCursor,
         updatePatientService: props.updatePatientService,
@@ -168,7 +207,7 @@ export function getRoute(props, navigator) {
         onLeftButtonPress: () => navigator.pop(),
         title: `${firstname} ${lastname}`,
         rightButtonTitle: 'Update',
-        onRightButtonPress: () => submit(passProps, navigator),
+        onRightButtonPress: () => submit(passProps, navigator, form),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps,

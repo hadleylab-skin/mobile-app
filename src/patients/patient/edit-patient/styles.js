@@ -44,6 +44,7 @@ export default StyleSheet.create({
         marginLeft: 0,
         paddingLeft: 15,
     },
+    inputsWrapper: {},
     input: {
         color: '#000',
         fontSize: 16,

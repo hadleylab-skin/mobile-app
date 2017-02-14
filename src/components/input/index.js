@@ -151,10 +151,10 @@ export const Input = schema({})(React.createClass({
                     <Animated.View
                         style={{ transform: [{ translateX: movingMargin }] }}
                     >
-                        <View style={[s.container, inputWrapperStyle]}>
+                        <View style={inputWrapperStyle}>
                             <TextInput
                                 ref={(ref) => (this.input = ref)}
-                                style={[s.input, inputStyle]}
+                                style={inputStyle}
                                 placeholder={label}
                                 onChangeText={this.onChangeText}
                                 onBlur={this.syncCursor}

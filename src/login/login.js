@@ -13,6 +13,7 @@ import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
+import s from './styles';
 
 const route = {
     title: 'Login',
@@ -49,21 +50,32 @@ const SignInComponent = React.createClass({
 
         return (
             <StartScreen>
-                <Input label="Email" cursor={emailCursor} />
-                <Input label="Password" cursor={passwordCursor} secureTextEntry />
+                <Input
+                    label="Email"
+                    cursor={emailCursor}
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
+                <Input
+                    label="Password"
+                    cursor={passwordCursor}
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                    secureTextEntry
+                />
                 <Button title="Login" onPress={this.submit} />
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goToSignUp}
                         text="Sign Up"
-                        style={styles.text}
-                        clickableAreaStyles={styles.clickableArea}
+                        style={s.text}
+                        clickableAreaStyles={s.clickableArea}
                     />
                     <ClickableText
                         onPress={this.goToResetPassword}
                         text="Forgot you password?"
-                        style={styles.text}
-                        clickableAreaStyles={styles.clickableArea}
+                        style={s.text}
+                        clickableAreaStyles={s.clickableArea}
                     />
                 </View>
             </StartScreen>
@@ -107,18 +119,3 @@ export class Login extends React.Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    text: {
-        color: '#fff',
-        fontSize: 12,
-        lineHeight: 12,
-        textAlign: 'center',
-    },
-    clickableArea: {
-        paddingTop: 8,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingBottom: 7,
-    },
-});
