@@ -5,6 +5,7 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Alert,
+    ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { Form, Input, Picker, DatePicker } from 'components';
@@ -23,12 +24,16 @@ const updatePatientSchema = {
             type: 'string',
             minLength: 2,
         },
+        mrn: {
+            maxLength: 10,
+        },
     },
     required: ['firstname', 'lastname'],
 };
 
 const model = (props) => {
     const { firstname, lastname, mrn, sex, dob, race } = props.currentPatientCursor.data.get();
+    const { status } = props.currentPatientCursor.get();
 
     return {
         tree: {
@@ -39,6 +44,7 @@ const model = (props) => {
                 dob,
                 sex,
                 race,
+                status,
             },
             offsetY: 0,
             datePickerCursor: {},
@@ -52,6 +58,7 @@ const EditPatient = schema(model)(React.createClass({
 
     propTypes: {
         racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        register: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
@@ -83,6 +90,9 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
+        const status = this.props.tree.form.get('status');
+        const showLoader = status === 'Loading';
+
         return (
             <View style={s.container}>
                 <ScrollView
@@ -90,6 +100,15 @@ const EditPatient = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
+                    {showLoader ? (
+                        <View style={s.activityIndicator}>
+                            <ActivityIndicator
+                                animating={showLoader}
+                                size="large"
+                                color="#FF2D55"
+                            />
+                        </View>
+                    ) : null}
                     <Form
                         ref={this.props.register}
                         onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
@@ -103,6 +122,7 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={firstnameCursor}
                                 inputWrapperStyle={s.wrapper}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="firstname"
@@ -112,9 +132,11 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={lastnameCursor}
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="lastname"
+
                             />
                         </View>
                         <View style={s.group}>
@@ -126,8 +148,10 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={mrnCursor}
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
+                                name="mrn"
                             />
                         </View>
                         <View style={s.group}>

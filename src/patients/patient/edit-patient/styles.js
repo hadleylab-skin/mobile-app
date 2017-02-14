@@ -4,6 +4,14 @@ export default StyleSheet.create({
     container: {
         flex: 1,
     },
+    activityIndicator: {
+        position: 'absolute',
+        left: 0,
+        top: 15,
+        right: 0,
+        zIndex: 1,
+        justifyContent: 'center',
+    },
     groupTitleWrapper: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
@@ -25,7 +33,6 @@ export default StyleSheet.create({
         borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
         marginTop: 8,
-        marginBottom: 0,
         marginLeft: 15,
         paddingBottom: 7,
         paddingRight: 15,
@@ -37,8 +44,13 @@ export default StyleSheet.create({
     input: {
         color: '#000',
         fontSize: 16,
-        lineHeight: 16,
+        lineHeight: 20,
         fontWeight: '300',
         height: 30,
+    },
+    error: {
+        marginTop: 10,
+        paddingLeft: 15,
+        marginBottom: -8,
     },
 });
