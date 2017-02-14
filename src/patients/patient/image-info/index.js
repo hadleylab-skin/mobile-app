@@ -149,7 +149,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 title="Anatomical Site"
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
-                            <View style={s.wrapper}>
+                            <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
                                 <Switch
                                     onValueChange={(value) => biopsyCursor.set(value)}

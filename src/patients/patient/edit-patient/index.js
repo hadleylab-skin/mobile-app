@@ -67,7 +67,7 @@ const EditPatient = schema(model)(React.createClass({
             <TouchableWithoutFeedback
                 onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
             >
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                     <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
                     <Text style={s.groupText}>{sex}</Text>
                 </View>
@@ -98,41 +98,37 @@ const EditPatient = schema(model)(React.createClass({
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient name</Text>
                             </View>
-                            <View style={s.inputsWrapper}>
-                                <Input
-                                    label="First Name"
-                                    cursor={firstnameCursor}
-                                    inputWrapperStyle={s.wrapper}
-                                    inputStyle={s.input}
-                                    placeholderTextColor="#ccc"
-                                    returnKeyType="next"
-                                    name="firstname"
-                                />
-                                <Input
-                                    label="Last Name"
-                                    cursor={lastnameCursor}
-                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                    inputStyle={s.input}
-                                    placeholderTextColor="#ccc"
-                                    returnKeyType="next"
-                                    name="lastname"
-                                />
-                            </View>
+                            <Input
+                                label="First Name"
+                                cursor={firstnameCursor}
+                                inputWrapperStyle={s.wrapper}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                                returnKeyType="next"
+                                name="firstname"
+                            />
+                            <Input
+                                label="Last Name"
+                                cursor={lastnameCursor}
+                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                                returnKeyType="next"
+                                name="lastname"
+                            />
                         </View>
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Medical record number</Text>
                             </View>
-                            <View style={s.inputsWrapper}>
-                                <Input
-                                    label=""
-                                    cursor={mrnCursor}
-                                    inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                    inputStyle={s.input}
-                                    placeholderTextColor="#ccc"
-                                    returnKeyType="next"
-                                />
-                            </View>
+                            <Input
+                                label=""
+                                cursor={mrnCursor}
+                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
+                                inputStyle={s.input}
+                                placeholderTextColor="#ccc"
+                                returnKeyType="next"
+                            />
                         </View>
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>

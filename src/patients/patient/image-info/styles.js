@@ -57,11 +57,6 @@ export default StyleSheet.create({
         fontWeight: '300',
         flex: 1,
     },
-    groupText: {
-        fontSize: 16,
-        lineHeight: 16,
-        fontWeight: '300',
-    },
     wrapper: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
@@ -70,8 +65,6 @@ export default StyleSheet.create({
         marginLeft: 15,
         paddingBottom: 7,
         paddingRight: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
     },
     wrapperFull: {
         marginLeft: 0,
@@ -82,5 +75,6 @@ export default StyleSheet.create({
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
+        height: 30,
     },
 });

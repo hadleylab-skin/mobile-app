@@ -4,14 +4,6 @@ export default StyleSheet.create({
     container: {
         flex: 1,
     },
-    activityIndicator: {
-        position: 'absolute',
-        top: 85,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        zIndex: 1,
-    },
     groupTitleWrapper: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#ccc',
@@ -37,18 +29,16 @@ export default StyleSheet.create({
         marginLeft: 15,
         paddingBottom: 7,
         paddingRight: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
     },
     wrapperFull: {
         marginLeft: 0,
         paddingLeft: 15,
     },
-    inputsWrapper: {},
     input: {
         color: '#000',
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
+        height: 30,
     },
 });
