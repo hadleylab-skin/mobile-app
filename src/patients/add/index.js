@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     ActivityIndicator,
@@ -36,17 +37,20 @@ const model = {
     },
 };
 
-async function submit(props, navigator, form) {
+async function submit(props, navigator, getInput) {
     const formData = props.tree.form.get();
-    const validationResult = tv4.validateResult(formData, createPatientSchema);
+    const validationResult = tv4.validateMultiple(formData, createPatientSchema);
 
     if (!validationResult.valid) {
-        const errorPath = validationResult.error.dataPath;
-        const errorMessage = validationResult.error.message;
+        _.each(
+            validationResult.errors,
+            (error) => {
+                const errorPath = error.dataPath;
+                const errorMessage = error.message;
+                const fieldName = errorPath.substr(1);
 
-        const fieldName = errorPath.substr(1);
-        form.getInput(fieldName).showError(errorMessage);
-
+                getInput(fieldName).showError(errorMessage);
+            });
         return;
     }
 
@@ -71,7 +75,11 @@ export const AddPatient = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired, // eslint-disable-line
         submit: React.PropTypes.func.isRequired,
-        register: React.PropTypes.func.isRequired,
+        registerGetInput: React.PropTypes.func.isRequired,
+    },
+
+    registerGetInput(ref) {
+        this.props.registerGetInput(ref.getInput.bind(ref));
     },
 
     render() {
@@ -83,7 +91,7 @@ export const AddPatient = schema(model)(React.createClass({
         return (
             <View>
                 <Form
-                    ref={this.props.register}
+                    ref={this.registerGetInput}
                     style={s.container}
                     onSubmit={this.props.submit}
                 >
@@ -117,9 +125,9 @@ export const AddPatient = schema(model)(React.createClass({
 }));
 
 export function getRoute(props, navigator) {
-    let form;
+    let getInput;
     let passProps = {
-        register: (ref) => { form = ref; },
+        registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
@@ -128,7 +136,7 @@ export function getRoute(props, navigator) {
         },
     };
 
-    const doSubmit = async () => submit(passProps, navigator, form);
+    const doSubmit = async () => submit(passProps, navigator, getInput);
 
     passProps.submit = doSubmit;
 

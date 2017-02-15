@@ -126,8 +126,6 @@ export const Input = schema({})(React.createClass({
                 easing: Easing.linear,
             }
         ).start();
-
-        this.focus();
     },
 
     focus() {
