@@ -40,11 +40,11 @@ export function updatePatient(token) {
     };
 
     return (patientPk, cursor, data) => {
-        const _getPatient = buildPostService(`/api/v1/patients/${patientPk}/`,
+        const _updatePatient = buildPostService(`/api/v1/patients/${patientPk}/`,
             'PUT',
             JSON.stringify,
             _.identity,
             _.merge({}, defaultHeaders, headers));
-        return _getPatient(cursor, data);
+        return _updatePatient(cursor, data);
     };
 }

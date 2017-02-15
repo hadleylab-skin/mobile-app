@@ -22,6 +22,7 @@ export const Input = schema({})(React.createClass({
         returnKeyType: React.PropTypes.string,
         onFocus: React.PropTypes.func,
         name: React.PropTypes.string,
+        errorStyle: Text.propTypes.style,
     },
 
     contextTypes: Form.childContextTypes,
@@ -104,7 +105,7 @@ export const Input = schema({})(React.createClass({
     },
 
     onChangeText(text) {
-        this.setState({ value: text });
+        this.setState({ value: `${text}` });
         this.setState({ errorMessage: '' });
         this.deferredSyncValue();
     },
@@ -135,7 +136,7 @@ export const Input = schema({})(React.createClass({
 
     render() {
         const { label, inputWrapperStyle, inputStyle,
-                placeholderTextColor, ...props } = this.props;
+                placeholderTextColor, errorStyle, ...props } = this.props;
 
         const movingMargin = this.animatedValue.interpolate({
             inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
@@ -146,15 +147,15 @@ export const Input = schema({})(React.createClass({
             <TouchableWithoutFeedback onPress={this.focus}>
                 <View>
                     {this.state.errorMessage ? (
-                        <Text style={s.error}>{this.state.errorMessage}</Text>
+                        <Text style={[s.error, errorStyle || {}]}>{this.state.errorMessage}</Text>
                     ) : null}
                     <Animated.View
                         style={{ transform: [{ translateX: movingMargin }] }}
                     >
-                        <View style={[s.container, inputWrapperStyle]}>
+                        <View style={inputWrapperStyle}>
                             <TextInput
                                 ref={(ref) => (this.input = ref)}
-                                style={[s.input, inputStyle]}
+                                style={inputStyle}
                                 placeholder={label}
                                 onChangeText={this.onChangeText}
                                 onBlur={this.syncCursor}

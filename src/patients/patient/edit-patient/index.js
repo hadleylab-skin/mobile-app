@@ -5,13 +5,36 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Alert,
+    ActivityIndicator,
 } from 'react-native';
+import _ from 'lodash';
 import schema from 'libs/state';
 import { Form, Input, Picker, DatePicker } from 'components';
+import tv4 from 'tv4';
 import s from './styles';
+
+const updatePatientSchema = {
+    title: 'Update patient form',
+    type: 'object',
+    properties: {
+        firstname: {
+            type: 'string',
+            minLength: 2,
+        },
+        lastname: {
+            type: 'string',
+            minLength: 2,
+        },
+        mrn: {
+            maxLength: 10,
+        },
+    },
+    required: ['firstname', 'lastname'],
+};
 
 const model = (props) => {
     const { firstname, lastname, mrn, sex, dob, race } = props.currentPatientCursor.data.get();
+    const { status } = props.currentPatientCursor.get();
 
     return {
         tree: {
@@ -22,6 +45,7 @@ const model = (props) => {
                 dob,
                 sex,
                 race,
+                status,
             },
             offsetY: 0,
             datePickerCursor: {},
@@ -35,11 +59,18 @@ const EditPatient = schema(model)(React.createClass({
 
     propTypes: {
         racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        registerGetInput: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
         this.props.tree.offsetY.set(offset);
+    },
+
+    registerGetInput(ref) {
+        if (ref) {
+            this.props.registerGetInput(ref.getInput.bind(ref));
+        }
     },
 
     renderSex() {
@@ -50,7 +81,7 @@ const EditPatient = schema(model)(React.createClass({
             <TouchableWithoutFeedback
                 onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
             >
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                     <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
                     <Text style={s.groupText}>{sex}</Text>
                 </View>
@@ -66,6 +97,9 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
+        const status = this.props.tree.form.get('status');
+        const showLoader = status === 'Loading';
+
         return (
             <View style={s.container}>
                 <ScrollView
@@ -73,7 +107,19 @@ const EditPatient = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    <Form onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}>
+                    {showLoader ? (
+                        <View style={s.activityIndicator}>
+                            <ActivityIndicator
+                                animating={showLoader}
+                                size="large"
+                                color="#FF2D55"
+                            />
+                        </View>
+                    ) : null}
+                    <Form
+                        ref={this.registerGetInput}
+                        onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
+                    >
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Patient name</Text>
@@ -83,16 +129,21 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={firstnameCursor}
                                 inputWrapperStyle={s.wrapper}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
+                                name="firstname"
                             />
                             <Input
                                 label="Last Name"
                                 cursor={lastnameCursor}
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
+                                name="lastname"
+
                             />
                         </View>
                         <View style={s.group}>
@@ -104,8 +155,10 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={mrnCursor}
                                 inputWrapperStyle={[s.wrapper, s.wrapperFull]}
                                 inputStyle={s.input}
+                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
+                                name="mrn"
                             />
                         </View>
                         <View style={s.group}>
@@ -136,11 +189,25 @@ const EditPatient = schema(model)(React.createClass({
 
 export default EditPatient;
 
-async function submit(props, navigator) {
+async function submit(props, navigator, getInput) {
+    const formData = props.tree.form.get();
+    const validationResult = tv4.validateMultiple(formData, updatePatientSchema);
+
+    if (!validationResult.valid) {
+        _.each(
+            validationResult.errors,
+            (error) => {
+                const errorPath = error.dataPath;
+                const errorMessage = error.message;
+                const fieldName = errorPath.substr(1);
+
+                getInput(fieldName).showError(errorMessage);
+            });
+        return;
+    }
+
     const patientPk = props.currentPatientCursor.data.get('id');
     const cursor = props.currentPatientCursor;
-    const formData = props.tree.form.get();
-
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
@@ -153,7 +220,9 @@ async function submit(props, navigator) {
 }
 
 export function getRoute(props, navigator) {
+    let getInput;
     const passProps = {
+        registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
         currentPatientCursor: props.currentPatientCursor,
         updatePatientService: props.updatePatientService,
@@ -168,7 +237,7 @@ export function getRoute(props, navigator) {
         onLeftButtonPress: () => navigator.pop(),
         title: `${firstname} ${lastname}`,
         rightButtonTitle: 'Update',
-        onRightButtonPress: () => submit(passProps, navigator),
+        onRightButtonPress: () => submit(passProps, navigator, getInput),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps,

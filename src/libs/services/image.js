@@ -14,6 +14,23 @@ export function getImage(token) {
     };
 }
 
+export function updateImage(token) {
+    const headers = {
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, imagePk, cursor, data) => {
+        const _updateImage = buildPostService(
+            `/api/v1/patients/${patientPk}/skin_images/${imagePk}/`,
+            'PUT',
+            JSON.stringify,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _updateImage(cursor, data);
+    };
+}
+
 function hidrateImage(image) {
     const photo = {
         uri: image.path,

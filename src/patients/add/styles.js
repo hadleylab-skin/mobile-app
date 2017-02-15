@@ -8,9 +8,11 @@ export default StyleSheet.create({
     inputWrapperStyle: {
         borderBottomColor: '#ccc',
         marginBottom: 20,
+        borderBottomWidth: 0.5,
     },
     inputStyle: {
         color: '#333',
+        height: 30,
     },
 });
 

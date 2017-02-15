@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { getPatientList, createPatient,
     getPatientImages, updatePatient } from 'libs/services/patients';
-import { uploadClinicalPhoto, getImage } from 'libs/services/image';
+import { uploadClinicalPhoto, getImage, updateImage } from 'libs/services/image';
 import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
 import schema from 'libs/state';
 import CameraScreen from '../camera';
@@ -57,7 +57,8 @@ const Main = schema(model)(React.createClass({
              currentPatientCursor.get('id'));
         const patientsService = getPatientList(token);
         const patientImagesService = getPatientImages(token);
-        const imageService = getImage(token);
+        const getImageService = getImage(token);
+        const updateImageService = updateImage(token);
         const createPatientService = createPatient(token);
         const updatePatientService = updatePatient(token);
 
@@ -105,7 +106,8 @@ const Main = schema(model)(React.createClass({
                             createPatientService={createPatientService}
                             patientsService={patientsService}
                             patientImagesService={patientImagesService}
-                            imageService={imageService}
+                            getImageService={getImageService}
+                            updateImageService={updateImageService}
                             updatePatientService={updatePatientService}
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}

@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
+import s from './styles';
 
 function submit() {
     Alert.alert(
@@ -32,31 +33,22 @@ export default class ResetPassword extends Component {
 
         return (
             <StartScreen>
-                <Input label="Email" cursor={emailCursor} />
+                <Input
+                    label="Email"
+                    cursor={emailCursor}
+                    inputWrapperStyle={s.inputWrapper}
+                    inputStyle={s.input}
+                />
                 <Button title="Reset" onPress={submit} />
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goBack}
                         text="Back"
-                        style={styles.text}
-                        clickableAreaStyles={styles.clickableArea}
+                        style={s.text}
+                        clickableAreaStyles={s.clickableArea}
                     />
                 </View>
             </StartScreen>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    text: {
-        color: '#fff',
-        fontSize: 12,
-        lineHeight: 12,
-    },
-    clickableArea: {
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingLeft: 30,
-        paddingRight: 30,
-    }
-});
