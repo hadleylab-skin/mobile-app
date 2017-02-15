@@ -3,7 +3,11 @@ import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
 import {
     View,
+    Text,
     TextInput,
+    Easing,
+    Animated,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import s from './styles';
 import { Form } from '../form';
@@ -17,6 +21,7 @@ export const Input = schema({})(React.createClass({
         placeholderTextColor: React.PropTypes.string,
         returnKeyType: React.PropTypes.string,
         onFocus: React.PropTypes.func,
+        name: React.PropTypes.string,
     },
 
     contextTypes: Form.childContextTypes,
@@ -32,7 +37,18 @@ export const Input = schema({})(React.createClass({
     getInitialState() {
         return {
             value: this.props.cursor.get(),
+            errorMessage: '',
         };
+    },
+
+    componentWillMount() {
+        this.animatedValue = new Animated.Value(0);
+    },
+
+    componentDidMount() {
+        if (this.context.register) {
+            this.nextInputIndex = this.context.register(this, this.props.name);
+        }
     },
 
     componentDidUpdate(prevProps, prevState) {
@@ -49,14 +65,7 @@ export const Input = schema({})(React.createClass({
     },
 
     componentWillUnmount() {
-        this.nextInputIndex = undefined;
         this.clearDeferredSyncTimer();
-    },
-
-    register(ref) {
-        if (typeof this.nextInputIndex === 'undefined' && this.context.register) {
-            this.nextInputIndex = this.context.register(ref);
-        }
     },
 
     onSubmitEditing() {
@@ -96,6 +105,7 @@ export const Input = schema({})(React.createClass({
 
     onChangeText(text) {
         this.setState({ value: text });
+        this.setState({ errorMessage: '' });
         this.deferredSyncValue();
     },
 
@@ -105,25 +115,59 @@ export const Input = schema({})(React.createClass({
         }
     },
 
+    showError(errorMessage) {
+        this.animatedValue.setValue(0);
+        this.setState({ errorMessage });
+
+        Animated.timing(
+            this.animatedValue,
+            {
+                toValue: 1,
+                duration: 1000,
+                easing: Easing.linear,
+            }
+        ).start();
+    },
+
+    focus() {
+        this.input.focus();
+    },
+
     render() {
         const { label, inputWrapperStyle, inputStyle,
                 placeholderTextColor, ...props } = this.props;
 
+        const movingMargin = this.animatedValue.interpolate({
+            inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+            outputRange: [0, -5, 5, -5, 5, -5, 5, -5, 5, -5, 0],
+        });
+
         return (
-            <View style={[s.container, inputWrapperStyle]}>
-                <TextInput
-                    ref={this.register}
-                    style={[s.input, inputStyle]}
-                    placeholder={label}
-                    onChangeText={this.onChangeText}
-                    onBlur={this.syncCursor}
-                    onFocus={this.onFocus}
-                    placeholderTextColor={placeholderTextColor}
-                    value={this.state.value}
-                    onSubmitEditing={this.onSubmitEditing}
-                    {...props}
-                />
-            </View>
+            <TouchableWithoutFeedback onPress={this.focus}>
+                <View>
+                    {this.state.errorMessage ? (
+                        <Text style={s.error}>{this.state.errorMessage}</Text>
+                    ) : null}
+                    <Animated.View
+                        style={{ transform: [{ translateX: movingMargin }] }}
+                    >
+                        <View style={[s.container, inputWrapperStyle]}>
+                            <TextInput
+                                ref={(ref) => (this.input = ref)}
+                                style={[s.input, inputStyle]}
+                                placeholder={label}
+                                onChangeText={this.onChangeText}
+                                onBlur={this.syncCursor}
+                                onFocus={this.onFocus}
+                                placeholderTextColor={placeholderTextColor}
+                                value={this.state.value}
+                                onSubmitEditing={this.onSubmitEditing}
+                                {...props}
+                            />
+                        </View>
+                    </Animated.View>
+                </View>
+            </TouchableWithoutFeedback>
         );
     },
 }));

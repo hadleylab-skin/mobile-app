@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     ActivityIndicator,
@@ -18,7 +19,7 @@ const createPatientSchema = {
             type: 'string',
             minLength: 2,
         },
-        lastName: {
+        lastname: {
             type: 'string',
             minLength: 2,
         },
@@ -36,13 +37,20 @@ const model = {
     },
 };
 
-async function submit(props, navigator) {
+async function submit(props, navigator, getInput) {
     const formData = props.tree.form.get();
-    const validationResult = tv4.validateResult(formData, createPatientSchema);
+    const validationResult = tv4.validateMultiple(formData, createPatientSchema);
+
     if (!validationResult.valid) {
-        Alert.alert(
-            'Create Patient Error',
-            validationResult.error.message);
+        _.each(
+            validationResult.errors,
+            (error) => {
+                const errorPath = error.dataPath;
+                const errorMessage = error.message;
+                const fieldName = errorPath.substr(1);
+
+                getInput(fieldName).showError(errorMessage);
+            });
         return;
     }
 
@@ -67,6 +75,13 @@ export const AddPatient = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired, // eslint-disable-line
         submit: React.PropTypes.func.isRequired,
+        registerGetInput: React.PropTypes.func.isRequired,
+    },
+
+    registerGetInput(ref) {
+        if (ref) {
+            this.props.registerGetInput(ref.getInput.bind(ref));
+        }
     },
 
     render() {
@@ -78,6 +93,7 @@ export const AddPatient = schema(model)(React.createClass({
         return (
             <View>
                 <Form
+                    ref={this.registerGetInput}
                     style={s.container}
                     onSubmit={this.props.submit}
                 >
@@ -88,6 +104,7 @@ export const AddPatient = schema(model)(React.createClass({
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="next"
+                        name="firstname"
                     />
                     <Input
                         label="Last Name"
@@ -96,6 +113,7 @@ export const AddPatient = schema(model)(React.createClass({
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
                         returnKeyType="done"
+                        name="lastname"
                     />
                 </Form>
                 <ActivityIndicator
@@ -109,7 +127,9 @@ export const AddPatient = schema(model)(React.createClass({
 }));
 
 export function getRoute(props, navigator) {
+    let getInput;
     let passProps = {
+        registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree.newPatient,
         createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
@@ -118,7 +138,7 @@ export function getRoute(props, navigator) {
         },
     };
 
-    const doSubmit = () => submit(passProps, navigator);
+    const doSubmit = async () => submit(passProps, navigator, getInput);
 
     passProps.submit = doSubmit;
 
