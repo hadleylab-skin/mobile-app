@@ -79,7 +79,9 @@ export const AddPatient = schema(model)(React.createClass({
     },
 
     registerGetInput(ref) {
-        this.props.registerGetInput(ref.getInput.bind(ref));
+        if (ref) {
+            this.props.registerGetInput(ref.getInput.bind(ref));
+        }
     },
 
     render() {

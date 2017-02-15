@@ -7,6 +7,7 @@ import {
     TextInput,
     Easing,
     Animated,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import s from './styles';
 import { Form } from '../form';
@@ -141,32 +142,32 @@ export const Input = schema({})(React.createClass({
             outputRange: [0, -5, 5, -5, 5, -5, 5, -5, 5, -5, 0],
         });
 
-        // TODO wrap error message text with touchableWithoutFeedback
-        // click on message should focus input
         return (
-            <View>
-                {this.state.errorMessage ? (
-                    <Text style={s.error}>{this.state.errorMessage}</Text>
-                ) : null}
-                <Animated.View
-                    style={{ transform: [{ translateX: movingMargin }] }}
-                >
-                    <View style={[s.container, inputWrapperStyle]}>
-                        <TextInput
-                            ref={(ref) => (this.input = ref)}
-                            style={[s.input, inputStyle]}
-                            placeholder={label}
-                            onChangeText={this.onChangeText}
-                            onBlur={this.syncCursor}
-                            onFocus={this.onFocus}
-                            placeholderTextColor={placeholderTextColor}
-                            value={this.state.value}
-                            onSubmitEditing={this.onSubmitEditing}
-                            {...props}
-                        />
-                    </View>
-                </Animated.View>
-            </View>
+            <TouchableWithoutFeedback onPress={() => this.input.focus()}>
+                <View>
+                    {this.state.errorMessage ? (
+                        <Text style={s.error}>{this.state.errorMessage}</Text>
+                    ) : null}
+                    <Animated.View
+                        style={{ transform: [{ translateX: movingMargin }] }}
+                    >
+                        <View style={[s.container, inputWrapperStyle]}>
+                            <TextInput
+                                ref={(ref) => (this.input = ref)}
+                                style={[s.input, inputStyle]}
+                                placeholder={label}
+                                onChangeText={this.onChangeText}
+                                onBlur={this.syncCursor}
+                                onFocus={this.onFocus}
+                                placeholderTextColor={placeholderTextColor}
+                                value={this.state.value}
+                                onSubmitEditing={this.onSubmitEditing}
+                                {...props}
+                            />
+                        </View>
+                    </Animated.View>
+                </View>
+            </TouchableWithoutFeedback>
         );
     },
 }));
