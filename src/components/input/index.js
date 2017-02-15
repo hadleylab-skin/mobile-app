@@ -141,6 +141,8 @@ export const Input = schema({})(React.createClass({
             outputRange: [0, -5, 5, -5, 5, -5, 5, -5, 5, -5, 0],
         });
 
+        // TODO wrap error message text with touchableWithoutFeedback
+        // click on message should focus input
         return (
             <View>
                 {this.state.errorMessage ? (
