@@ -26,12 +26,11 @@ const Patient = schema(model)(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         id: React.PropTypes.number.isRequired,
-        firstname: React.PropTypes.string.isRequired,
-        lastname: React.PropTypes.string.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
@@ -96,7 +95,7 @@ const Patient = schema(model)(React.createClass({
     },
 
     render() {
-        const { firstname, lastname, id } = this.props;
+        const { firstname, lastname, id } = this.props.currentPatientCursor.get('data');
         const data = this.props.tree.data;
         const showLoader = this.props.tree.status.get() === 'Loading';
 

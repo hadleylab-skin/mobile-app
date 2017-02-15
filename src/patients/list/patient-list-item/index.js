@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     Text,
     View,
@@ -35,6 +36,7 @@ export default React.createClass({
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     onScroll(e) {
@@ -57,7 +59,8 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, total_images, last_visit, id } = this.props.data;
+        const { firstname, lastname, last_visit, id } = this.props.data;
+        const totalImages = this.props.data.total_images;
         const { isPatientActiveInListView } = this.props;
 
         return (
@@ -102,6 +105,7 @@ export default React.createClass({
                                     getImageService: this.props.getImageService,
                                     updateImageService: this.props.updateImageService,
                                     anatomicalSiteList: this.props.anatomicalSiteList,
+                                    currentPatientCursor: this.props.currentPatientCursor,
                                 },
                             });
                         }}
@@ -116,7 +120,7 @@ export default React.createClass({
                                     {`${firstname} ${lastname}`}
                                 </Text>
                                 <Text style={[s.text, { opacity: 0.6 }]}>
-                                    Images: {total_images}
+                                    Images: {totalImages}
                                 </Text>
                                 <Text style={[s.text, { opacity: 0.8 }]}>
                                     Last Upload: {this.formatDate(last_visit)}

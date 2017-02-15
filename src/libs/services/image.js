@@ -21,13 +21,13 @@ export function updateImage(token) {
     };
 
     return (patientPk, imagePk, cursor, data) => {
-        const _getImage = buildPostService(
+        const _updateImage = buildPostService(
             `/api/v1/patients/${patientPk}/skin_images/${imagePk}/`,
             'PUT',
             JSON.stringify,
             _.identity,
             _.merge({}, defaultHeaders, headers));
-        return _getImage(cursor, data);
+        return _updateImage(cursor, data);
     };
 }
 
