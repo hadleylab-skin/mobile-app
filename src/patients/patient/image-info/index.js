@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     Alert,
 } from 'react-native';
+import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
 import { Form, Input, Picker } from 'components';
@@ -50,7 +51,7 @@ const ImageInfo = schema(model)(React.createClass({
         patientPk: React.PropTypes.number.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        register: React.PropTypes.func.isRequired,
+        registerGetInput: React.PropTypes.func.isRequired,
     },
 
     getInitialState() {
@@ -64,6 +65,12 @@ const ImageInfo = schema(model)(React.createClass({
             this.props.patientPk,
             this.props.cursor.get('data', 'id'),
             this.props.cursor);
+    },
+
+    registerGetInput(ref) {
+        if (ref) {
+            this.props.registerGetInput(ref.getInput.bind(ref));
+        }
     },
 
     async onScroll(e) {
@@ -81,7 +88,6 @@ const ImageInfo = schema(model)(React.createClass({
 
     render() {
         const { date_created, prediction, clinical_photo } = this.props.cursor.get('data');
-        const clinicalDiagnosis = this.props.cursor.get('data', 'clinical_diagnosis');
         const predictionAccuracy = this.props.cursor.get('data', 'prediction_accuracy');
 
         const clinicalDiagnosisCursor = this.props.tree.form.clinical_diagnosis;
@@ -112,7 +118,7 @@ const ImageInfo = schema(model)(React.createClass({
                     <Form
                         style={{ marginBottom: 40 }}
                         onSubmit={() => console.log('submit')}
-                        ref={this.props.register}
+                        ref={this.registerGetInput}
                     >
                         <View style={s.imageWrapper}>
                             <View style={s.indicator}>
@@ -183,17 +189,20 @@ const ImageInfo = schema(model)(React.createClass({
 
 export default ImageInfo;
 
-export async function submit(patientPk, imagePk, cursor, updateImageService, navigator, form, tree) {
+export async function submit(patientPk, imagePk, cursor, updateImageService, navigator, getInput, tree) {
     const formData = tree.form.get();
-    const validationResult = tv4.validateResult(formData, updateImageSchema);
+    const validationResult = tv4.validateMultiple(formData, updateImageSchema);
 
     if (!validationResult.valid) {
-        const errorPath = validationResult.error.dataPath;
-        const errorMessage = validationResult.error.message;
+        _.each(
+            validationResult.errors,
+            (error) => {
+                const errorPath = error.dataPath;
+                const errorMessage = error.message;
+                const fieldName = errorPath.substr(1);
 
-        const fieldName = errorPath.substr(1);
-        form.getInput(fieldName).showError(errorMessage);
-
+                getInput(fieldName).showError(errorMessage);
+            });
         return;
     }
 

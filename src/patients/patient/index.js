@@ -137,17 +137,16 @@ const Patient = schema(model)(React.createClass({
                                 return this.renderUploading();
                             }
 
-                            let form;
-
                             if (!error && !uploading) {
                                 const patientPk = id;
                                 const imagePk = cursor.get('data', 'id');
                                 const updateImageService = this.props.updateImageService;
                                 const navigator = this.props.navigator;
                                 const tree = this.props.tree;
+                                let getInput;
 
                                 const passProps = {
-                                    register: (ref) => { form = ref; },
+                                    registerGetInput: (_getInput) => { getInput = _getInput; },
                                     cursor,
                                     patientPk,
                                     tree,
@@ -167,7 +166,7 @@ const Patient = schema(model)(React.createClass({
                                             rightButtonTitle: 'Update',
                                             onRightButtonPress: async () =>
                                                 submit(patientPk, imagePk, cursor,
-                                                    updateImageService, navigator, form, tree),
+                                                    updateImageService, navigator, getInput, tree),
                                             tintColor: '#FF2D55',
                                             passProps,
                                         })}

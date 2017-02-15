@@ -7,6 +7,7 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
+import _ from 'lodash';
 import schema from 'libs/state';
 import { Form, Input, Picker, DatePicker } from 'components';
 import tv4 from 'tv4';
@@ -58,12 +59,18 @@ const EditPatient = schema(model)(React.createClass({
 
     propTypes: {
         racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        register: React.PropTypes.func.isRequired,
+        registerGetInput: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
         this.props.tree.offsetY.set(offset);
+    },
+
+    registerGetInput(ref) {
+        if (ref) {
+            this.props.registerGetInput(ref.getInput.bind(ref));
+        }
     },
 
     renderSex() {
@@ -110,7 +117,7 @@ const EditPatient = schema(model)(React.createClass({
                         </View>
                     ) : null}
                     <Form
-                        ref={this.props.register}
+                        ref={this.registerGetInput}
                         onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
                     >
                         <View style={s.group}>
@@ -182,22 +189,25 @@ const EditPatient = schema(model)(React.createClass({
 
 export default EditPatient;
 
-async function submit(props, navigator, form) {
-    const patientPk = props.currentPatientCursor.data.get('id');
-    const cursor = props.currentPatientCursor;
+async function submit(props, navigator, getInput) {
     const formData = props.tree.form.get();
-    const validationResult = tv4.validateResult(formData, updatePatientSchema);
+    const validationResult = tv4.validateMultiple(formData, updatePatientSchema);
 
     if (!validationResult.valid) {
-        const errorPath = validationResult.error.dataPath;
-        const errorMessage = validationResult.error.message;
+        _.each(
+            validationResult.errors,
+            (error) => {
+                const errorPath = error.dataPath;
+                const errorMessage = error.message;
+                const fieldName = errorPath.substr(1);
 
-        const fieldName = errorPath.substr(1);
-        form.getInput(fieldName).showError(errorMessage);
-
+                getInput(fieldName).showError(errorMessage);
+            });
         return;
     }
 
+    const patientPk = props.currentPatientCursor.data.get('id');
+    const cursor = props.currentPatientCursor;
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
@@ -210,9 +220,9 @@ async function submit(props, navigator, form) {
 }
 
 export function getRoute(props, navigator) {
-    let form;
+    let getInput;
     const passProps = {
-        register: (ref) => { form = ref; },
+        registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
         currentPatientCursor: props.currentPatientCursor,
         updatePatientService: props.updatePatientService,
@@ -227,7 +237,7 @@ export function getRoute(props, navigator) {
         onLeftButtonPress: () => navigator.pop(),
         title: `${firstname} ${lastname}`,
         rightButtonTitle: 'Update',
-        onRightButtonPress: () => submit(passProps, navigator, form),
+        onRightButtonPress: () => submit(passProps, navigator, getInput),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps,
