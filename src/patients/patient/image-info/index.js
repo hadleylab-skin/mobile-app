@@ -132,10 +132,6 @@ const ImageInfo = schema(model)(React.createClass({
                             <Text style={s.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
                         </View>
                         <View style={s.table}>
-                            <Text style={[s.text, s.textRight]}>Clinical diagnosis:</Text>
-                            <Text style={s.text}>{clinicalDiagnosis}</Text>
-                        </View>
-                        <View style={s.table}>
                             <Text style={[s.text, s.textRight]}>Prediction accuracy:</Text>
                             <Text style={s.text}>{predictionAccuracy}</Text>
                         </View>
