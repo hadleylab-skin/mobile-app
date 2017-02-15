@@ -143,7 +143,7 @@ export const Input = schema({})(React.createClass({
         });
 
         return (
-            <TouchableWithoutFeedback onPress={() => this.input.focus()}>
+            <TouchableWithoutFeedback onPress={this.focus}>
                 <View>
                     {this.state.errorMessage ? (
                         <Text style={s.error}>{this.state.errorMessage}</Text>
