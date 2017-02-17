@@ -61,7 +61,7 @@ const EditPatient = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         currentPatientCursor: BaobabPropTypes.cursor.isRequired,
-        racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
     },
 

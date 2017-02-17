@@ -22,16 +22,33 @@ export const Picker = schema(model)(React.createClass({
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        items: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         title: React.PropTypes.string.isRequired,
         onPress: React.PropTypes.func,
     },
 
     contextTypes: Form.childContextTypes,
 
+    getInitialState() {
+        const middleItemsValue = Math.floor(this.props.items.length / 2);
+        const selectedValue = this.props.cursor.get() || this.props.items[middleItemsValue][0];
+
+        return {
+            value: selectedValue,
+        };
+    },
+
     componentDidMount() {
         if (this.context.register) {
             this.context.register(this);
+        }
+    },
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.cursor.get() && this.props.cursor.get() !== prevState.value) {
+            this.setState({ // eslint-disable-line
+                value: this.props.cursor.get(),
+            });
         }
     },
 
@@ -50,10 +67,14 @@ export const Picker = schema(model)(React.createClass({
         this.props.onPress();
     },
 
+    onValueChange(value) {
+        this.setState({ value });
+        this.props.cursor.set(value);
+    },
+
     render() {
         const { cursor, items, title } = this.props;
         const { isOpen } = this.props.tree;
-        const middleItemsValue = Math.floor(items.length / 2);
 
         return (
             <View style={s.container}>
@@ -62,20 +83,20 @@ export const Picker = schema(model)(React.createClass({
                 >
                     <View style={s.wrapper}>
                         <Text style={s.title}>{title}:</Text>
-                        <Text style={s.text}>{items[cursor.get()]}</Text>
+                        <Text style={s.text}>{cursor.get()}</Text>
                     </View>
                 </TouchableWithoutFeedback>
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <PickerIOS
-                            selectedValue={cursor.get() || cursor.get() === 0 ? cursor.get() : middleItemsValue}
-                            onValueChange={(index) => cursor.set(index)}
+                            selectedValue={this.state.value}
+                            onValueChange={this.onValueChange}
                         >
-                            {_.map(items, (label, index) => (
+                            {_.map(items, (label) => (
                                 <PickerIOS.Item
-                                    key={index}
-                                    value={index}
-                                    label={label}
+                                    key={label[0]}
+                                    value={label[0]}
+                                    label={label[1]}
                                 />
                             ))}
                         </PickerIOS>

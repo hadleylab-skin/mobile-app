@@ -35,7 +35,7 @@ export default React.createClass({
         patientImagesService: React.PropTypes.func.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 

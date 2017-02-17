@@ -33,8 +33,8 @@ const PatientsListScreen = schema(model)(React.createClass({
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         updatePatientService: React.PropTypes.func.isRequired,
-        racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
     },
 
     getInitialState() {

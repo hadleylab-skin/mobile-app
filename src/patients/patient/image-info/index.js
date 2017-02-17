@@ -27,21 +27,18 @@ const updateImageSchema = {
     required: ['clinical_diagnosis'],
 };
 
-const model = (props) => {
-    const data = props.cursor.data;
-
-    return {
-        tree: {
-            form: {
-                clinical_diagnosis: data.get('clinical_diagnosis'),
-                anatomical_site: data.get('anatomical_site'),
-                biopsy: data.get('biopsy'),
-            },
-            offsetY: 0,
-            anatomicalSitePickerCursor: {},
+const model = {
+    tree: {
+        form: {
+            clinical_diagnosis: '',
+            anatomical_site: '',
+            biopsy: '',
         },
-    };
+        offsetY: 0,
+        anatomicalSitePickerCursor: {},
+    },
 };
+
 const ImageInfo = schema(model)(React.createClass({
     displayName: 'ImageInfo',
 
@@ -49,7 +46,7 @@ const ImageInfo = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         patientPk: React.PropTypes.number.isRequired,
         getImageService: React.PropTypes.func.isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
@@ -57,6 +54,18 @@ const ImageInfo = schema(model)(React.createClass({
         return {
             canUpdate: true,
         };
+    },
+
+    componentWillMount() {
+        const data = this.props.cursor.data;
+        const tree = this.props.tree;
+
+        tree.form.set({
+            clinical_diagnosis: data.get('clinical_diagnosis'),
+            anatomical_site: data.get('anatomical_site'),
+            biopsy: data.get('biopsy'),
+        });
+        tree.anatomicalSitePickerCursor.isOpen.set(false);
     },
 
     updateImage() {

@@ -1,25 +1,16 @@
+import _ from 'lodash';
+import { buildGetService, defaultHeaders } from '.';
+
 export function getAnatomicalSiteList(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-
-    const anatomicalSites = ['Left Arm', 'Left Leg', 'Right Arm', 'Right Leg',
-        'Stomach', 'Back', 'Neck'];
-
-    return (cursor) => {
-        cursor.set({ data: anatomicalSites, status: 'Succed' });
-    };
+    return buildGetService('/api/v1/constants/anatomical_sites/', _.identity, _.merge({}, defaultHeaders, headers));
 }
 
 export function getRacesList(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-
-    const races = ['Native Hawaiian', 'Pacific Islander', 'Native Hawaiian/Pacific Islander',
-        'Race 4', 'Race 5', 'Race 6', 'Race 7'];
-
-    return (cursor) => {
-        cursor.set({ data: races, status: 'Succed' });
-    };
+    return buildGetService('/api/v1/constants/races/', _.identity, _.merge({}, defaultHeaders, headers));
 }
