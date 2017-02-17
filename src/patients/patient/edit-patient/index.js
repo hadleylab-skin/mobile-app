@@ -68,6 +68,8 @@ const EditPatient = schema(model)(React.createClass({
     componentWillMount() {
         const { firstname, lastname, mrn,
                 sex, dob, race, status } = this.props.currentPatientCursor.data.get();
+        this.props.tree.datePickerCursor.isOpen.set(false);
+        this.props.tree.racePickerCursor.isOpen.set(false);
         this.props.tree.form.set({
             firstname,
             lastname,

@@ -28,10 +28,30 @@ export const DatePicker = schema(model)(React.createClass({
 
     contextTypes: Form.childContextTypes,
 
+    getInitialState() {
+        return {
+            value: new Date(this.props.cursor.get()),
+        };
+    },
+
     componentDidMount() {
         if (this.context.register) {
             this.context.register(this);
         }
+    },
+
+    componentDidUpdate(prevProps, prevState) {
+        const newDate = new Date(this.props.cursor.get());
+        if (!moment(newDate).isSame(moment(prevState.value))) {
+            this.setState({ // eslint-disable-line
+                value: newDate,
+            });
+        }
+    },
+
+    onValueChange(value) {
+        this.setState({ value });
+        this.props.cursor.set(moment(value).format('YYYY-MM-DD'));
     },
 
     onPress() {
@@ -66,9 +86,9 @@ export const DatePicker = schema(model)(React.createClass({
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <DatePickerIOS
-                            date={cursor.get() ? cursor.get() : new Date()}
+                            date={this.state.value}
                             mode="date"
-                            onDateChange={(date) => cursor.set(date)}
+                            onDateChange={this.onValueChange}
                         />
                     </View>
                 ) : null}
