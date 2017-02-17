@@ -105,8 +105,7 @@ export const Input = schema({})(React.createClass({
     },
 
     onChangeText(text) {
-        this.setState({ value: `${text}` });
-        this.setState({ errorMessage: '' });
+        this.setState({ value: text, errorMessage: '' });
         this.deferredSyncValue();
     },
 

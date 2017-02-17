@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -13,6 +14,8 @@ import { Form, Input, Picker, DatePicker } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
 
+tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
+
 const updatePatientSchema = {
     title: 'Update patient form',
     type: 'object',
@@ -26,40 +29,54 @@ const updatePatientSchema = {
             minLength: 2,
         },
         mrn: {
+            type: 'string',
+            pattern: '^\\d+$',
+            message: 'MRN should be an integer number',
             maxLength: 10,
         },
     },
     required: ['firstname', 'lastname'],
 };
 
-const model = (props) => {
-    const { firstname, lastname, mrn, sex, dob, race } = props.currentPatientCursor.data.get();
-    const { status } = props.currentPatientCursor.get();
-
-    return {
-        tree: {
-            form: {
-                firstname,
-                lastname,
-                mrn,
-                dob,
-                sex,
-                race,
-                status,
-            },
-            offsetY: 0,
-            datePickerCursor: {},
-            racePickerCursor: {},
+const model = {
+    tree: {
+        form: {
+            firstname: '',
+            lastname: '',
+            mrn: '',
+            dob: '',
+            sex: '',
+            race: '',
+            status: '',
         },
-    };
+        offsetY: 0,
+        datePickerCursor: {},
+        racePickerCursor: {},
+    },
 };
 
 const EditPatient = schema(model)(React.createClass({
     displayName: 'EditPatient',
 
     propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
+    },
+
+    componentWillMount() {
+        const { firstname, lastname, mrn,
+                sex, dob, race, status } = this.props.currentPatientCursor.data.get();
+        this.props.tree.form.set({
+            firstname,
+            lastname,
+            mrn,
+            dob,
+            sex,
+            race,
+            status,
+        });
     },
 
     onScroll(e) {
@@ -158,6 +175,7 @@ const EditPatient = schema(model)(React.createClass({
                                 errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
+                                keyboardType="numeric"
                                 name="mrn"
                             />
                         </View>

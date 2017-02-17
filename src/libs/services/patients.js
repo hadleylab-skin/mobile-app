@@ -2,11 +2,18 @@ import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from '.';
 
 
+function dehydratePatients(patients) {
+    const data = _.map(
+        patients,
+        (item) => _.merge({}, item, { mrn: `${item.mrn || ''}` }));
+    return wrapItemsAsRemoteData(data);
+}
+
 export function getPatientList(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-    return buildGetService('/api/v1/patients/', wrapItemsAsRemoteData, _.merge({}, defaultHeaders, headers));
+    return buildGetService('/api/v1/patients/', dehydratePatients, _.merge({}, defaultHeaders, headers));
 }
 
 export function getPatientImages(token) {
@@ -43,7 +50,7 @@ export function updatePatient(token) {
         const _updatePatient = buildPostService(`/api/v1/patients/${patientPk}/`,
             'PUT',
             JSON.stringify,
-            _.identity,
+            (item) => _.merge({}, item, { mrn: `${item.mrn || ''}` }),
             _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
     };
