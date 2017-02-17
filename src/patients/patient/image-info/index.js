@@ -4,7 +4,6 @@ import {
     View,
     Text,
     Image,
-    Switch,
     ScrollView,
     ActivityIndicator,
     Alert,
@@ -12,7 +11,7 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
-import { Form, Input, Picker } from 'components';
+import { Form, Input, Picker, Switch } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
 
@@ -175,8 +174,7 @@ const ImageInfo = schema(model)(React.createClass({
                             <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
                                 <Switch
-                                    onValueChange={(value) => biopsyCursor.set(value)}
-                                    value={biopsyCursor.get()}
+                                    cursor={biopsyCursor}
                                 />
                             </View>
                         </View>

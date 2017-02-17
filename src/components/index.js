@@ -5,3 +5,4 @@ export { StartScreen } from './start-screen';
 export { Picker } from './picker';
 export { DatePicker } from './picker/date-picker';
 export { Form } from './form';
+export { Switch } from './switch';
