@@ -11,6 +11,7 @@ import { Input, Button, StartScreen, ClickableText } from 'components';
 import tree from 'libs/tree';
 import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
+import { Form } from 'components';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
 import s from './styles';
@@ -32,16 +33,16 @@ const SignInComponent = React.createClass({
         if (result.status === 'Failure') {
             Alert.alert(
                 'Login',
-                JSON.stringify(result));
+                'Wrong email or password');
         }
     },
 
     goToSignUp() {
-        // this.props.navigator.push(_.merge({}, route, { component: SignUp }));
+        this.props.navigator.push(_.merge({}, route, { component: SignUp }));
     },
 
     goToResetPassword() {
-        // this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
+        this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
     },
 
     render() {
@@ -50,20 +51,27 @@ const SignInComponent = React.createClass({
 
         return (
             <StartScreen>
-                <Input
-                    label="Email"
-                    cursor={emailCursor}
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Input
-                    label="Password"
-                    cursor={passwordCursor}
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                    secureTextEntry
-                />
+                <Form onSubmit={this.submit}>
+                    <Input
+                        label="Email"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        returnKeyType="next"
+                        cursor={emailCursor}
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                    />
+                    <Input
+                        label="Password"
+                        returnKeyType="done"
+                        cursor={passwordCursor}
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        secureTextEntry
+                    />
+                </Form>
                 <Button title="Login" onPress={this.submit} />
+                {/*
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goToSignUp}
@@ -78,6 +86,7 @@ const SignInComponent = React.createClass({
                         clickableAreaStyles={s.clickableArea}
                     />
                 </View>
+                */}
             </StartScreen>
         );
     },
@@ -86,8 +95,8 @@ const SignInComponent = React.createClass({
 function SignInScreen(props) {
     const model = {
         tree: {
-            email: 'demo@demo.com',
-            password: 'demopassword',
+            email: '',
+            password: '',
         },
     };
     const loginScreenCursor = tree.login;
