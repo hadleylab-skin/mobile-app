@@ -231,6 +231,11 @@ async function submit(props, navigator, getInput) {
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
+        if (result.error.data.mrn) {
+            getInput('mrn').showError(result.error.data.mrn);
+            return;
+        }
+
         Alert.alert(
             'Update Patient Error',
             JSON.stringify(result));
