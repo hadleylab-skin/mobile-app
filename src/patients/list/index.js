@@ -35,6 +35,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         updatePatientService: React.PropTypes.func.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
@@ -59,6 +60,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         const data = event.data.currentData;
         if (data.status === 'Succeed') {
             const patients = data.data;
+
             this.setState({
                 ds: this.state.ds.cloneWithRows(patients),
             });
@@ -115,7 +117,8 @@ const PatientsListScreen = schema(model)(React.createClass({
                                 this.props.changeCurrentPatient(patient, switchTab);
                                 this.activatePatient(undefined);
                             }}
-                            currentPatientCursor={this.props.tree.patients.data.select(rowId)}
+                            listPatientCursor={this.props.tree.patients.data.select(rowId)}
+                            currentPatientCursor={this.props.currentPatientCursor}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
                             getImageService={this.props.getImageService}

@@ -37,6 +37,7 @@ export default React.createClass({
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+        listPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     onScroll(e) {
@@ -59,6 +60,7 @@ export default React.createClass({
     },
 
     render() {
+        const currentPatientPk = this.props.currentPatientCursor.get('id');
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
         const { isPatientActiveInListView } = this.props;
@@ -105,7 +107,7 @@ export default React.createClass({
                                     getImageService: this.props.getImageService,
                                     updateImageService: this.props.updateImageService,
                                     anatomicalSiteList: this.props.anatomicalSiteList,
-                                    currentPatientCursor: this.props.currentPatientCursor,
+                                    listPatientCursor: this.props.listPatientCursor,
                                 },
                             });
                         }}
@@ -116,7 +118,12 @@ export default React.createClass({
                                 style={s.img}
                             />
                             <View style={s.info}>
-                                <Text style={[s.text, { fontSize: 18 }]}>
+                                <Text
+                                    style={[s.text, {
+                                        fontSize: 18,
+                                        fontWeight: currentPatientPk === id ? '700' : '400',
+                                    }]}
+                                >
                                     {`${firstname} ${lastname}`}
                                 </Text>
                                 <Text style={[s.text, { opacity: 0.6 }]}>
