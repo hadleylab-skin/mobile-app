@@ -18,6 +18,7 @@ import captureIcon from './images/capture.png';
 const imageLoaderModel = {
     tree: {
         errorConfirmed: false,
+        successfullyLoadedImageHidden: false,
     },
 };
 
@@ -33,21 +34,36 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
         }).isRequired,
     },
 
+    renderImage(path) {
+        return (
+            <Image
+                style={{ height: 75, width: 50 }}
+                source={{ uri: path }}
+            />
+        );
+    },
+
     render() {
         const { imageInfo } = this.props;
         const errorConfirmedCursor = this.props.tree.errorConfirmed;
+        const successfullyLoadedImageHiddenCursor = this.props.tree.successfullyLoadedImageHidden;
 
         if (!imageInfo.data) {
             return null;
         }
 
+        if (errorConfirmedCursor.get()) {
+            return null;
+        }
+
+        if (successfullyLoadedImageHiddenCursor.get()) {
+            return null;
+        }
+
         if (imageInfo.data.status === 'Loading') {
             return (
-                <View style={{ position: 'relative', zIndex: 1 }}>
-                    <Image
-                        style={{ height: 75, width: 50 }}
-                        source={{ uri: imageInfo.photo.path }}
-                    />
+                <View style={s.wrapper}>
+                    {this.renderImage(imageInfo.photo.path)}
                     <ActivityIndicator
                         size="large"
                         color="#FF2D55"
@@ -56,11 +72,14 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            return null;
-        }
+            setTimeout(() => successfullyLoadedImageHiddenCursor.set(true), 10000);
 
-        if (errorConfirmedCursor.get()) {
-            return null;
+            return (
+                <View style={s.wrapper}>
+                    {this.renderImage(imageInfo.photo.path)}
+                    <View style={s.success} />
+                </View>
+            );
         }
 
         return (
@@ -73,11 +92,8 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                     ]
                 )}
             >
-                <View>
-                    <Image
-                        style={{ height: 75, width: 50 }}
-                        source={{ uri: imageInfo.photo.path }}
-                    />
+                <View style={s.wrapper}>
+                    {this.renderImage(imageInfo.photo.path)}
                     <View style={s.error}>
                         <Text style={{ color: '#fff' }}>Error</Text>
                     </View>
