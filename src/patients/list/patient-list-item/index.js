@@ -36,8 +36,8 @@ export default React.createClass({
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
-        listPatientCursor: BaobabPropTypes.cursor.isRequired,
+        selectedPatientPk: React.PropTypes.number.isRequired,
+        patientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     onScroll(e) {
@@ -60,7 +60,6 @@ export default React.createClass({
     },
 
     render() {
-        const currentPatientPk = this.props.currentPatientCursor.get('id');
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
         const { isPatientActiveInListView } = this.props;
@@ -107,7 +106,7 @@ export default React.createClass({
                                     getImageService: this.props.getImageService,
                                     updateImageService: this.props.updateImageService,
                                     anatomicalSiteList: this.props.anatomicalSiteList,
-                                    listPatientCursor: this.props.listPatientCursor,
+                                    patientCursor: this.props.patientCursor,
                                 },
                             });
                         }}
@@ -121,7 +120,7 @@ export default React.createClass({
                                 <Text
                                     style={[s.text, {
                                         fontSize: 18,
-                                        fontWeight: currentPatientPk === id ? '700' : '400',
+                                        fontWeight: this.props.selectedPatientPk === id ? '700' : '400',
                                     }]}
                                 >
                                     {`${firstname} ${lastname}`}

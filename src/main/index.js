@@ -79,6 +79,7 @@ const Main = schema(model)(React.createClass({
                         <CameraScreen
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
+                            switchTab={() => currentTabCursor.set('patients')}
                             clinicalPhotoService={clinicalPhotoService}
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');

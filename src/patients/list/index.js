@@ -85,6 +85,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
+        const selectedPatientPk = this.props.currentPatientCursor.get('id');
 
         return (
             <View style={{ flex: 1 }}>
@@ -117,8 +118,9 @@ const PatientsListScreen = schema(model)(React.createClass({
                                 this.props.changeCurrentPatient(patient, switchTab);
                                 this.activatePatient(undefined);
                             }}
-                            listPatientCursor={this.props.tree.patients.data.select(rowId)}
+                            patientCursor={this.props.tree.patients.data.select(rowId)}
                             currentPatientCursor={this.props.currentPatientCursor}
+                            selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
                             getImageService={this.props.getImageService}

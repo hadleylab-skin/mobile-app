@@ -103,6 +103,7 @@ export default schema(model)(React.createClass({
             firstname: React.PropTypes.string.isRequired,
             lastname: React.PropTypes.string.isRequired,
         }).isRequired,
+        switchTab: React.PropTypes.func.isRequired,
     },
 
     async takePicture() {
@@ -148,11 +149,13 @@ export default schema(model)(React.createClass({
                             />
                         )}
                     </View>
-                    <View style={s.textWrapper}>
-                        <Text style={s.name}>
-                            {patientName}
-                        </Text>
-                    </View>
+                    <TouchableWithoutFeedback onPress={this.props.switchTab}>
+                        <View style={s.textWrapper}>
+                            <Text style={s.name}>
+                                {patientName}
+                            </Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                     <TouchableOpacity onPress={this.takePicture}>
                         <Image
                             source={captureIcon}

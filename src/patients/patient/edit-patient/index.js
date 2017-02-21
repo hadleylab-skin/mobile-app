@@ -224,7 +224,7 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const patientPk = props.currentPatientCursor.data.get('id');
+    const patientPk = props.currentPatientCursor.get('id');
     const cursor = props.currentPatientCursor;
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
@@ -252,7 +252,7 @@ export function getRoute(props, navigator) {
         racesList: props.racesList,
     };
 
-    const { firstname, lastname } = props.currentPatientCursor.data.get();
+    const { firstname, lastname } = props.currentPatientCursor.get();
 
     return {
         component: EditPatient,
