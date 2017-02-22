@@ -59,7 +59,7 @@ const EditPatient = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+        patientCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
     },
@@ -224,8 +224,8 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const patientPk = props.currentPatientCursor.get('id');
-    const cursor = props.currentPatientCursor;
+    const patientPk = props.patientCursor.data.get('id');
+    const cursor = props.patientCursor;
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
@@ -247,12 +247,12 @@ export function getRoute(props, navigator) {
     const passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
-        currentPatientCursor: props.currentPatientCursor,
+        patientCursor: props.patientCursor,
         updatePatientService: props.updatePatientService,
         racesList: props.racesList,
     };
 
-    const { firstname, lastname } = props.currentPatientCursor.get();
+    const { firstname, lastname } = props.patientCursor.data.get();
 
     return {
         component: EditPatient,

@@ -112,7 +112,7 @@ const Main = schema(model)(React.createClass({
                             updatePatientService={updatePatientService}
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
-                            currentPatientCursor={currentPatientCursor}
+                            selectedPatientPk={currentPatientCursor.get('id')}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
