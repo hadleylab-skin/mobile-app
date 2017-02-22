@@ -89,6 +89,7 @@ export const DatePicker = schema(model)(React.createClass({
                             date={this.state.value}
                             mode="date"
                             onDateChange={this.onValueChange}
+                            maximumDate={new Date()}
                         />
                     </View>
                 ) : null}
