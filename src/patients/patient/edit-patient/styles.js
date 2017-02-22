@@ -14,8 +14,8 @@ export default StyleSheet.create({
     },
     groupTitleWrapper: {
         borderBottomWidth: 0.5,
-        borderBottomColor: '#ccc',
-        backgroundColor: 'rgba(204, 204, 204, 0.1)',
+        borderBottomColor: '#D1D1D6',
+        backgroundColor: '#E5E5EA',
         padding: 15,
     },
     groupTitle: {
@@ -31,7 +31,7 @@ export default StyleSheet.create({
     },
     wrapper: {
         borderBottomWidth: 0.5,
-        borderBottomColor: '#ccc',
+        borderBottomColor: '#D1D1D6',
         marginTop: 8,
         marginLeft: 15,
         paddingBottom: 7,
