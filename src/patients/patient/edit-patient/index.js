@@ -121,20 +121,20 @@ const EditPatient = schema(model)(React.createClass({
 
         return (
             <View style={s.container}>
+                {showLoader ? (
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                ) : null}
                 <ScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    {showLoader ? (
-                        <View style={s.activityIndicator}>
-                            <ActivityIndicator
-                                animating={showLoader}
-                                size="large"
-                                color="#FF2D55"
-                            />
-                        </View>
-                    ) : null}
                     <Form
                         ref={this.registerGetInput}
                         onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
@@ -210,6 +210,7 @@ const EditPatient = schema(model)(React.createClass({
 export default EditPatient;
 
 async function submit(props, navigator, getInput) {
+    props.tree.form.status.set('Loading');
     const formData = props.tree.form.get();
     const validationResult = tv4.validateMultiple(formData, updatePatientSchema);
 
@@ -240,6 +241,7 @@ async function submit(props, navigator, getInput) {
             'Update Patient Error',
             JSON.stringify(result));
     } else {
+        props.tree.form.status.set('Success');
         navigator.pop();
     }
 }
