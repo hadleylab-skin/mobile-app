@@ -17,8 +17,7 @@ import captureIcon from './images/capture.png';
 
 const imageLoaderModel = {
     tree: {
-        errorConfirmed: false,
-        successfullyLoadedImageHidden: false,
+        isImageVisible: true,
     },
 };
 
@@ -45,18 +44,13 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
 
     render() {
         const { imageInfo } = this.props;
-        const errorConfirmedCursor = this.props.tree.errorConfirmed;
-        const successfullyLoadedImageHiddenCursor = this.props.tree.successfullyLoadedImageHidden;
+        const imageVisibilityCursor = this.props.tree.isImageVisible;
 
         if (!imageInfo.data) {
             return null;
         }
 
-        if (errorConfirmedCursor.get()) {
-            return null;
-        }
-
-        if (successfullyLoadedImageHiddenCursor.get()) {
+        if (!imageVisibilityCursor.get()) {
             return null;
         }
 
@@ -72,7 +66,7 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => successfullyLoadedImageHiddenCursor.set(true), 10000);
+            setTimeout(() => imageVisibilityCursor.set(false), 10000);
 
             return (
                 <View style={s.wrapper}>
@@ -88,7 +82,7 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                     'Loading Image Error',
                     JSON.stringify(imageInfo.data),
                     [
-                        { text: 'OK', onPress: () => errorConfirmedCursor.set(true) },
+                        { text: 'OK', onPress: () => imageVisibilityCursor.set(false) },
                     ]
                 )}
             >
