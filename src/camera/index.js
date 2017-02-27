@@ -15,7 +15,7 @@ import Camera from 'react-native-camera';
 import s from './styles';
 import captureIcon from './images/capture.png';
 
-const ImageLoader = schema({})(React.createClass({
+const ImageLoader = React.createClass({
     propTypes: {
         imageInfo: React.PropTypes.shape({
             photo: React.PropTypes.shape({
@@ -25,6 +25,7 @@ const ImageLoader = schema({})(React.createClass({
                 status: React.PropTypes.string.isRequired,
             }),
         }).isRequired,
+        index: React.PropTypes.number.isRequired,
         deleteImage: React.PropTypes.func.isRequired,
     },
 
@@ -38,7 +39,7 @@ const ImageLoader = schema({})(React.createClass({
     },
 
     render() {
-        const { imageInfo, deleteImage } = this.props;
+        const { imageInfo, deleteImage, index } = this.props;
 
         if (!imageInfo.data) {
             return null;
@@ -56,7 +57,7 @@ const ImageLoader = schema({})(React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => deleteImage(imageInfo.photo), 10000);
+            setTimeout(() => deleteImage(index), 10000);
 
             return (
                 <View style={s.wrapper}>
@@ -72,7 +73,7 @@ const ImageLoader = schema({})(React.createClass({
                     'Loading Image Error',
                     JSON.stringify(imageInfo.data),
                     [
-                        { text: 'OK', onPress: () => deleteImage(imageInfo.photo) },
+                        { text: 'OK', onPress: () => deleteImage(index) },
                     ]
                 )}
             >
@@ -85,7 +86,7 @@ const ImageLoader = schema({})(React.createClass({
             </TouchableWithoutFeedback>
         );
     },
-}));
+});
 
 const model = {
     tree: {
@@ -116,13 +117,8 @@ export default schema(model)(React.createClass({
         this.props.updatePatients();
     },
 
-    deleteImage(photo) {
-        const imageUploadResultsCursor = this.props.tree.imageUploadResults;
-        const results = _.filter(imageUploadResultsCursor.get(),
-            (result) => result.photo !== photo
-        );
-
-        imageUploadResultsCursor.set(results);
+    deleteImage(index) {
+        this.props.tree.imageUploadResults.splice([index, 1]);
     },
 
     render() {
@@ -146,7 +142,8 @@ export default schema(model)(React.createClass({
                             <ImageLoader
                                 tree={this.props.tree.imageUploadResults.select(index)}
                                 imageInfo={imageInfo}
-                                key={index}
+                                key={imageInfo.photo.path}
+                                index={index}
                                 deleteImage={this.deleteImage}
                             />
                         )}
