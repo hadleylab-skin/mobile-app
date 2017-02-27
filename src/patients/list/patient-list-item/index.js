@@ -28,10 +28,10 @@ export default React.createClass({
                 thumbnail: React.PropTypes.string,
             }),
             last_visit: React.PropTypes.string,
+            isActive: React.PropTypes.bool,
         }).isRequired,
         changeCurrentPatient: React.PropTypes.func.isRequired,
         activatePatient: React.PropTypes.func.isRequired,
-        isPatientActiveInListView: React.PropTypes.bool.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
@@ -42,7 +42,7 @@ export default React.createClass({
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
-        if (offset < 0 && !this.props.isPatientActiveInListView) {
+        if (offset < 0 && !this.props.data.isActive) {
             this.props.activatePatient(this.props.data.id);
         }
     },
@@ -60,9 +60,8 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, last_visit, id } = this.props.data;
+        const { firstname, lastname, last_visit, id, isActive } = this.props.data;
         const totalImages = this.props.data.total_images;
-        const { isPatientActiveInListView } = this.props;
 
         return (
             <View style={s.container}>
@@ -70,17 +69,14 @@ export default React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={isPatientActiveInListView ? {} : { x: 100 }}
+                    contentOffset={isActive ? {} : { x: 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
                     <TouchableHighlight
                         style={s.select}
                         underlayColor="#FF2D55"
-                        onPress={() => {
-                            this.setState({ activePatientId: 0 });
-                            this.props.changeCurrentPatient(this.props.data, true);
-                        }}
+                        onPress={() => this.props.changeCurrentPatient(this.props.data, true)}
                     >
                         <Text style={s.selectText}>Select</Text>
                     </TouchableHighlight>
@@ -120,7 +116,7 @@ export default React.createClass({
                                 <Text
                                     style={[s.text, {
                                         fontSize: 18,
-                                        fontWeight: this.props.selectedPatientPk === id ? '700' : '400',
+                                        fontWeight: isActive ? '700' : '400',
                                     }]}
                                 >
                                     {`${firstname} ${lastname}`}

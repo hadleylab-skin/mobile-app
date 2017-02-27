@@ -44,7 +44,6 @@ const PatientsListScreen = schema(model)(React.createClass({
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
-            activePatientId: 0,
         };
     },
 
@@ -68,7 +67,10 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     activatePatient(activePatientId) {
-        this.setState({ activePatientId });
+        this.props.tree.patients.data.map((patient) => {
+            const patientId = patient.get('data', 'id');
+            return { ...patient.get(), isActive: patientId === activePatientId };
+        });
     },
 
     async onScroll(e) {
@@ -111,11 +113,10 @@ const PatientsListScreen = schema(model)(React.createClass({
                         <PatientListItem
                             tree={this.props.patientsImagesCursor.select(rowData.data.id)}
                             data={rowData.data}
-                            isPatientActiveInListView={this.state.activePatientId === rowData.data.id}
                             activatePatient={this.activatePatient}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
-                                this.activatePatient(undefined);
+                                this.activatePatient(rowData.data.id);
                             }}
                             patientCursor={this.props.tree.patients.data.select(rowId)}
                             selectedPatientPk={this.props.selectedPatientPk}
