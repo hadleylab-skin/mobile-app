@@ -15,13 +15,7 @@ import Camera from 'react-native-camera';
 import s from './styles';
 import captureIcon from './images/capture.png';
 
-const imageLoaderModel = {
-    tree: {
-        isImageVisible: true,
-    },
-};
-
-const ImageLoader = schema(imageLoaderModel)(React.createClass({
+const ImageLoader = schema({})(React.createClass({
     propTypes: {
         imageInfo: React.PropTypes.shape({
             photo: React.PropTypes.shape({
@@ -31,6 +25,7 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                 status: React.PropTypes.string.isRequired,
             }),
         }).isRequired,
+        deleteImage: React.PropTypes.func.isRequired,
     },
 
     renderImage(path) {
@@ -43,14 +38,9 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
     },
 
     render() {
-        const { imageInfo } = this.props;
-        const imageVisibilityCursor = this.props.tree.isImageVisible;
+        const { imageInfo, deleteImage } = this.props;
 
         if (!imageInfo.data) {
-            return null;
-        }
-
-        if (!imageVisibilityCursor.get()) {
             return null;
         }
 
@@ -66,7 +56,7 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => imageVisibilityCursor.set(false), 10000);
+            setTimeout(() => deleteImage(imageInfo.photo), 10000);
 
             return (
                 <View style={s.wrapper}>
@@ -82,7 +72,7 @@ const ImageLoader = schema(imageLoaderModel)(React.createClass({
                     'Loading Image Error',
                     JSON.stringify(imageInfo.data),
                     [
-                        { text: 'OK', onPress: () => imageVisibilityCursor.set(false) },
+                        { text: 'OK', onPress: () => deleteImage(imageInfo.photo) },
                     ]
                 )}
             >
@@ -126,6 +116,15 @@ export default schema(model)(React.createClass({
         this.props.updatePatients();
     },
 
+    deleteImage(photo) {
+        const imageUploadResultsCursor = this.props.tree.imageUploadResults;
+        const results = _.filter(imageUploadResultsCursor.get(),
+            (result) => result.photo !== photo
+        );
+
+        imageUploadResultsCursor.set(results);
+    },
+
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         const images = this.props.tree.imageUploadResults.get();
@@ -148,6 +147,7 @@ export default schema(model)(React.createClass({
                                 tree={this.props.tree.imageUploadResults.select(index)}
                                 imageInfo={imageInfo}
                                 key={index}
+                                deleteImage={this.deleteImage}
                             />
                         )}
                     </View>
