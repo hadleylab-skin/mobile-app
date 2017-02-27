@@ -116,7 +116,7 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.tree.form.get('status');
+        const status = this.props.currentPatientCursor.get('data', 'status');
         const showLoader = status === 'Loading';
 
         return (
@@ -210,7 +210,6 @@ const EditPatient = schema(model)(React.createClass({
 export default EditPatient;
 
 async function submit(props, navigator, getInput) {
-    props.tree.form.status.set('Loading');
     const formData = props.tree.form.get();
     const validationResult = tv4.validateMultiple(formData, updatePatientSchema);
 
@@ -241,7 +240,6 @@ async function submit(props, navigator, getInput) {
             'Update Patient Error',
             JSON.stringify(result));
     } else {
-        props.tree.form.status.set('Success');
         navigator.pop();
     }
 }
