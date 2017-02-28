@@ -9,19 +9,12 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
-import schema from 'libs/state';
 import { getRoute } from '../../patient/edit-patient';
 import Patient from '../../patient';
 import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
-const model = {
-    tree: {
-        isAdditionalMenuOpen: false,
-    },
-};
-
-const PatientListItem = schema(model)(React.createClass({
+const PatientListItem = React.createClass({
     displayName: 'PatientListItem',
 
     propTypes: {
@@ -37,27 +30,21 @@ const PatientListItem = schema(model)(React.createClass({
             last_visit: React.PropTypes.string,
         }).isRequired,
         isActive: React.PropTypes.bool,
+        isSelected: React.PropTypes.bool,
         changeCurrentPatient: React.PropTypes.func.isRequired,
-        activatePatient: React.PropTypes.func.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         selectedPatientPk: React.PropTypes.number.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-    },
-
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.isActive) {
-            this.props.tree.isAdditionalMenuOpen.set(false);
-        }
+        showPatientOptions: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
         if (offset < 0) {
-            this.props.activatePatient(this.props.data.id);
-            this.props.changeCurrentPatient(this.props.data, false);
+            this.props.showPatientOptions(this.props.data.id);
             this.props.tree.isAdditionalMenuOpen.set(true);
         }
     },
@@ -78,7 +65,6 @@ const PatientListItem = schema(model)(React.createClass({
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
         const { isActive, selectedPatientPk } = this.props;
-        const { isAdditionalMenuOpen } = this.props.tree;
 
         return (
             <View style={s.container}>
@@ -86,7 +72,7 @@ const PatientListItem = schema(model)(React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={isAdditionalMenuOpen.get() ? {} : { x: 100 }}
+                    contentOffset={this.props.isSelected ? { x: 0 } : { x: 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
@@ -95,7 +81,7 @@ const PatientListItem = schema(model)(React.createClass({
                         underlayColor="#FF2D55"
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, true);
-                            this.props.tree.isAdditionalMenuOpen.set(false);
+                            this.props.showPatientOptions(null);
                         }}
                     >
                         <Text style={s.selectText}>Select</Text>
@@ -103,7 +89,7 @@ const PatientListItem = schema(model)(React.createClass({
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, false);
-                            this.props.tree.isAdditionalMenuOpen.set(false);
+                            this.props.showPatientOptions(null);
                             this.props.navigator.push({
                                 component: Patient,
                                 title: 'Patient',
@@ -155,6 +141,6 @@ const PatientListItem = schema(model)(React.createClass({
             </View>
         );
     },
-}));
+});
 
 export default PatientListItem;

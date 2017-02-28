@@ -72,9 +72,16 @@ const PatientsListScreen = schema(model)(React.createClass({
             return { ...patient.get(), isActive: patientId === activePatientId };
         });
 
-        this.setState({
-            ds: this.state.ds.cloneWithRows(patients),
+        this.props.tree.patients.data.set(patients);
+    },
+
+    showPatientOptions(selectedPatientId) {
+        const patients = this.props.tree.patients.data.map((patient) => {
+            const patientId = patient.get('data', 'id');
+            return { ...patient.get(), isSelected: patientId === selectedPatientId };
         });
+
+        this.props.tree.patients.data.set(patients);
     },
 
     async onScroll(e) {
@@ -91,6 +98,9 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
+
+        // currentPatientCursor.get('id') can't be recieved properly from parent.
+        // It won't be updated in this case.
         const selectedPatientPk = this.props.currentPatientCursor.get('id');
 
         return (
@@ -119,11 +129,12 @@ const PatientsListScreen = schema(model)(React.createClass({
                             tree={this.props.patientsImagesCursor.select(rowData.data.id)}
                             data={rowData.data}
                             isActive={rowData.isActive || false}
-                            activatePatient={this.activatePatient}
+                            isSelected={rowData.isSelected || false}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
                                 this.activatePatient(rowData.data.id);
                             }}
+                            showPatientOptions={this.showPatientOptions}
                             patientCursor={this.props.tree.patients.data.select(rowId)}
                             selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
