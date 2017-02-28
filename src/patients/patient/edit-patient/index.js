@@ -59,14 +59,14 @@ const EditPatient = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+        patientCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
     componentWillMount() {
         const { firstname, lastname, mrn,
-                sex, dob, race } = this.props.currentPatientCursor.data.get();
+                sex, dob, race } = this.props.patientCursor.data.get();
         this.props.tree.datePickerCursor.isOpen.set(false);
         this.props.tree.racePickerCursor.isOpen.set(false);
         this.props.tree.form.set({
@@ -114,7 +114,7 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.currentPatientCursor.get('status');
+        const status = this.props.patientCursor.get('status');
         const showLoader = status === 'Loading';
 
         return (
@@ -224,8 +224,8 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const patientPk = props.currentPatientCursor.data.get('id');
-    const cursor = props.currentPatientCursor;
+    const patientPk = props.patientCursor.data.get('id');
+    const cursor = props.patientCursor;
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
     if (result.status === 'Failure') {
@@ -247,12 +247,12 @@ export function getRoute(props, navigator) {
     const passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
-        currentPatientCursor: props.currentPatientCursor,
+        patientCursor: props.patientCursor,
         updatePatientService: props.updatePatientService,
         racesList: props.racesList,
     };
 
-    const { firstname, lastname } = props.currentPatientCursor.data.get();
+    const { firstname, lastname } = props.patientCursor.data.get();
 
     return {
         component: EditPatient,

@@ -79,6 +79,7 @@ const Main = schema(model)(React.createClass({
                         <CameraScreen
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
+                            switchTab={() => currentTabCursor.set('patients')}
                             clinicalPhotoService={clinicalPhotoService}
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');
@@ -111,6 +112,7 @@ const Main = schema(model)(React.createClass({
                             updatePatientService={updatePatientService}
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
+                            currentPatientCursor={currentPatientCursor}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

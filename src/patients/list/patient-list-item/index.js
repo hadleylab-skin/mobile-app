@@ -14,7 +14,7 @@ import Patient from '../../patient';
 import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
-export default React.createClass({
+const PatientListItem = React.createClass({
     displayName: 'PatientListItem',
 
     propTypes: {
@@ -29,20 +29,23 @@ export default React.createClass({
             }),
             last_visit: React.PropTypes.string,
         }).isRequired,
+        isActive: React.PropTypes.bool,
+        isSelected: React.PropTypes.bool,
         changeCurrentPatient: React.PropTypes.func.isRequired,
-        activatePatient: React.PropTypes.func.isRequired,
-        isPatientActiveInListView: React.PropTypes.bool.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
         getImageService: React.PropTypes.func.isRequired,
         updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+        selectedPatientPk: React.PropTypes.number.isRequired,
+        patientCursor: BaobabPropTypes.cursor.isRequired,
+        showPatientOptions: React.PropTypes.func.isRequired,
     },
 
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
-        if (offset < 0 && !this.props.isPatientActiveInListView) {
-            this.props.activatePatient(this.props.data.id);
+        if (offset < 0) {
+            this.props.showPatientOptions(this.props.data.id);
+            this.props.tree.isAdditionalMenuOpen.set(true);
         }
     },
 
@@ -61,7 +64,7 @@ export default React.createClass({
     render() {
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
-        const { isPatientActiveInListView } = this.props;
+        const { isActive, selectedPatientPk } = this.props;
 
         return (
             <View style={s.container}>
@@ -69,7 +72,7 @@ export default React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={isPatientActiveInListView ? {} : { x: 100 }}
+                    contentOffset={this.props.isSelected ? { x: 0 } : { x: 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
@@ -77,8 +80,8 @@ export default React.createClass({
                         style={s.select}
                         underlayColor="#FF2D55"
                         onPress={() => {
-                            this.setState({ activePatientId: 0 });
                             this.props.changeCurrentPatient(this.props.data, true);
+                            this.props.showPatientOptions(null);
                         }}
                     >
                         <Text style={s.selectText}>Select</Text>
@@ -86,6 +89,7 @@ export default React.createClass({
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, false);
+                            this.props.showPatientOptions(null);
                             this.props.navigator.push({
                                 component: Patient,
                                 title: 'Patient',
@@ -105,7 +109,7 @@ export default React.createClass({
                                     getImageService: this.props.getImageService,
                                     updateImageService: this.props.updateImageService,
                                     anatomicalSiteList: this.props.anatomicalSiteList,
-                                    currentPatientCursor: this.props.currentPatientCursor,
+                                    patientCursor: this.props.patientCursor,
                                 },
                             });
                         }}
@@ -116,7 +120,12 @@ export default React.createClass({
                                 style={s.img}
                             />
                             <View style={s.info}>
-                                <Text style={[s.text, { fontSize: 18 }]}>
+                                <Text
+                                    style={[s.text, {
+                                        fontSize: 18,
+                                        fontWeight: isActive || selectedPatientPk === id ? '700' : '400',
+                                    }]}
+                                >
                                     {`${firstname} ${lastname}`}
                                 </Text>
                                 <Text style={[s.text, { opacity: 0.6 }]}>
@@ -133,3 +142,5 @@ export default React.createClass({
         );
     },
 });
+
+export default PatientListItem;

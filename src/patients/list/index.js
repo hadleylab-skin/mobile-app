@@ -35,6 +35,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         updatePatientService: React.PropTypes.func.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
@@ -43,7 +44,6 @@ const PatientsListScreen = schema(model)(React.createClass({
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
-            activePatientId: 0,
         };
     },
 
@@ -59,6 +59,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         const data = event.data.currentData;
         if (data.status === 'Succeed') {
             const patients = data.data;
+
             this.setState({
                 ds: this.state.ds.cloneWithRows(patients),
             });
@@ -66,7 +67,21 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     activatePatient(activePatientId) {
-        this.setState({ activePatientId });
+        const patients = this.props.tree.patients.data.get().map((patient) => {
+            const patientId = patient.data.id;
+            return { ...patient, isActive: patientId === activePatientId };
+        });
+
+        this.props.tree.patients.data.set(patients);
+    },
+
+    showPatientOptions(selectedPatientId) {
+        const patients = this.props.tree.patients.data.get().map((patient) => {
+            const patientId = patient.data.id;
+            return { ...patient, isSelected: patientId === selectedPatientId };
+        });
+
+        this.props.tree.patients.data.set(patients);
     },
 
     async onScroll(e) {
@@ -83,6 +98,10 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
+
+        // currentPatientCursor.get('id') can't be recieved properly from parent.
+        // It won't be updated in this case.
+        const selectedPatientPk = this.props.currentPatientCursor.get('id');
 
         return (
             <View style={{ flex: 1 }}>
@@ -109,13 +128,15 @@ const PatientsListScreen = schema(model)(React.createClass({
                         <PatientListItem
                             tree={this.props.patientsImagesCursor.select(rowData.data.id)}
                             data={rowData.data}
-                            isPatientActiveInListView={this.state.activePatientId === rowData.data.id}
-                            activatePatient={this.activatePatient}
+                            isActive={rowData.isActive || false}
+                            isSelected={rowData.isSelected || false}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
-                                this.activatePatient(undefined);
+                                this.activatePatient(rowData.data.id);
                             }}
-                            currentPatientCursor={this.props.tree.patients.data.select(rowId)}
+                            showPatientOptions={this.showPatientOptions}
+                            patientCursor={this.props.tree.patients.data.select(rowId)}
+                            selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
                             getImageService={this.props.getImageService}
