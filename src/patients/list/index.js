@@ -67,18 +67,18 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     activatePatient(activePatientId) {
-        const patients = this.props.tree.patients.data.map((patient) => {
-            const patientId = patient.get('data', 'id');
-            return { ...patient.get(), isActive: patientId === activePatientId };
+        const patients = this.props.tree.patients.data.get().map((patient) => {
+            const patientId = patient.data.id;
+            return { ...patient, isActive: patientId === activePatientId };
         });
 
         this.props.tree.patients.data.set(patients);
     },
 
     showPatientOptions(selectedPatientId) {
-        const patients = this.props.tree.patients.data.map((patient) => {
-            const patientId = patient.get('data', 'id');
-            return { ...patient.get(), isSelected: patientId === selectedPatientId };
+        const patients = this.props.tree.patients.data.get().map((patient) => {
+            const patientId = patient.data.id;
+            return { ...patient, isSelected: patientId === selectedPatientId };
         });
 
         this.props.tree.patients.data.set(patients);
