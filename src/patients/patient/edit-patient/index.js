@@ -47,7 +47,6 @@ const model = {
             dob: '',
             sex: '',
             race: '',
-            status: '',
         },
         offsetY: 0,
         datePickerCursor: {},
@@ -67,7 +66,7 @@ const EditPatient = schema(model)(React.createClass({
 
     componentWillMount() {
         const { firstname, lastname, mrn,
-                sex, dob, race, status } = this.props.currentPatientCursor.data.get();
+                sex, dob, race } = this.props.currentPatientCursor.data.get();
         this.props.tree.datePickerCursor.isOpen.set(false);
         this.props.tree.racePickerCursor.isOpen.set(false);
         this.props.tree.form.set({
@@ -77,7 +76,6 @@ const EditPatient = schema(model)(React.createClass({
             dob,
             sex,
             race,
-            status,
         });
     },
 
@@ -116,25 +114,25 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.tree.form.get('status');
+        const status = this.props.currentPatientCursor.get('status');
         const showLoader = status === 'Loading';
 
         return (
             <View style={s.container}>
+                {showLoader ? (
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                ) : null}
                 <ScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
-                    {showLoader ? (
-                        <View style={s.activityIndicator}>
-                            <ActivityIndicator
-                                animating={showLoader}
-                                size="large"
-                                color="#FF2D55"
-                            />
-                        </View>
-                    ) : null}
                     <Form
                         ref={this.registerGetInput}
                         onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
