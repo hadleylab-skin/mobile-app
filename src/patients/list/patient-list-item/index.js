@@ -9,12 +9,19 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
+import schema from 'libs/state';
 import { getRoute } from '../../patient/edit-patient';
 import Patient from '../../patient';
 import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
-export default React.createClass({
+const model = {
+    tree: {
+        isAdditionalMenuOpen: false,
+    },
+};
+
+const PatientListItem = schema(model)(React.createClass({
     displayName: 'PatientListItem',
 
     propTypes: {
@@ -28,8 +35,8 @@ export default React.createClass({
                 thumbnail: React.PropTypes.string,
             }),
             last_visit: React.PropTypes.string,
-            isActive: React.PropTypes.bool,
         }).isRequired,
+        isActive: React.PropTypes.bool,
         changeCurrentPatient: React.PropTypes.func.isRequired,
         activatePatient: React.PropTypes.func.isRequired,
         patientImagesService: React.PropTypes.func.isRequired,
@@ -40,10 +47,18 @@ export default React.createClass({
         patientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
+    componentWillReceiveProps(nextProps) {
+        if (!nextProps.isActive) {
+            this.props.tree.isAdditionalMenuOpen.set(false);
+        }
+    },
+
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
-        if (offset < 0 && !this.props.data.isActive) {
+        if (offset < 0) {
             this.props.activatePatient(this.props.data.id);
+            this.props.changeCurrentPatient(this.props.data, false);
+            this.props.tree.isAdditionalMenuOpen.set(true);
         }
     },
 
@@ -60,8 +75,10 @@ export default React.createClass({
     },
 
     render() {
-        const { firstname, lastname, last_visit, id, isActive } = this.props.data;
+        const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
+        const { isActive, selectedPatientPk } = this.props;
+        const { isAdditionalMenuOpen } = this.props.tree;
 
         return (
             <View style={s.container}>
@@ -69,20 +86,24 @@ export default React.createClass({
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={16}
                     style={{ flex: 1 }}
-                    contentOffset={isActive ? {} : { x: 100 }}
+                    contentOffset={isAdditionalMenuOpen.get() ? {} : { x: 100 }}
                     onScroll={this.onScroll}
                     horizontal
                 >
                     <TouchableHighlight
                         style={s.select}
                         underlayColor="#FF2D55"
-                        onPress={() => this.props.changeCurrentPatient(this.props.data, true)}
+                        onPress={() => {
+                            this.props.changeCurrentPatient(this.props.data, true);
+                            this.props.tree.isAdditionalMenuOpen.set(false);
+                        }}
                     >
                         <Text style={s.selectText}>Select</Text>
                     </TouchableHighlight>
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, false);
+                            this.props.tree.isAdditionalMenuOpen.set(false);
                             this.props.navigator.push({
                                 component: Patient,
                                 title: 'Patient',
@@ -116,7 +137,7 @@ export default React.createClass({
                                 <Text
                                     style={[s.text, {
                                         fontSize: 18,
-                                        fontWeight: isActive ? '700' : '400',
+                                        fontWeight: isActive || selectedPatientPk === id ? '700' : '400',
                                     }]}
                                 >
                                     {`${firstname} ${lastname}`}
@@ -134,4 +155,6 @@ export default React.createClass({
             </View>
         );
     },
-});
+}));
+
+export default PatientListItem;

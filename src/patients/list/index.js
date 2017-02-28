@@ -35,7 +35,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         updatePatientService: React.PropTypes.func.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        selectedPatientPk: React.PropTypes.number.isRequired,
+        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
@@ -67,9 +67,13 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     activatePatient(activePatientId) {
-        this.props.tree.patients.data.map((patient) => {
+        const patients = this.props.tree.patients.data.map((patient) => {
             const patientId = patient.get('data', 'id');
             return { ...patient.get(), isActive: patientId === activePatientId };
+        });
+
+        this.setState({
+            ds: this.state.ds.cloneWithRows(patients),
         });
     },
 
@@ -87,6 +91,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
+        const selectedPatientPk = this.props.currentPatientCursor.get('id');
 
         return (
             <View style={{ flex: 1 }}>
@@ -113,13 +118,14 @@ const PatientsListScreen = schema(model)(React.createClass({
                         <PatientListItem
                             tree={this.props.patientsImagesCursor.select(rowData.data.id)}
                             data={rowData.data}
+                            isActive={rowData.isActive || false}
                             activatePatient={this.activatePatient}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
                                 this.activatePatient(rowData.data.id);
                             }}
                             patientCursor={this.props.tree.patients.data.select(rowId)}
-                            selectedPatientPk={this.props.selectedPatientPk}
+                            selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
                             patientImagesService={this.props.patientImagesService}
                             getImageService={this.props.getImageService}
