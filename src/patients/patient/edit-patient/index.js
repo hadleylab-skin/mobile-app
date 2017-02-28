@@ -66,7 +66,7 @@ const EditPatient = schema(model)(React.createClass({
 
     componentWillMount() {
         const { firstname, lastname, mrn,
-                sex, dob, race } = this.props.currentPatientCursor.data.get();
+                sex, dob, race } = this.props.patientCursor.data.get();
         this.props.tree.datePickerCursor.isOpen.set(false);
         this.props.tree.racePickerCursor.isOpen.set(false);
         this.props.tree.form.set({
@@ -114,7 +114,7 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.currentPatientCursor.get('status');
+        const status = this.props.patientCursor.get('status');
         const showLoader = status === 'Loading';
 
         return (
