@@ -36,6 +36,10 @@ export default StyleSheet.create({
         padding: 10,
         margin: 40,
     },
+    wrapper: {
+        position: 'relative',
+        zIndex: 1,
+    },
     error: {
         position: 'absolute',
         top: 0,
@@ -45,5 +49,14 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(255,45,85,0.4)',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    success: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderWidth: 2,
+        borderColor: '#0f0',
     },
 });
