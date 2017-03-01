@@ -34,7 +34,7 @@ const TouchableArea = React.createClass({
 
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s[className], s.siteWrapper, { opacity: cursor.get() === label ? 0.5 : 0 }]}>
+                <View style={[s[className], s.siteWrapper, { opacity: cursor.get() === label ? 1 : 0 }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>
