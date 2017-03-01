@@ -31,7 +31,7 @@ export function updateImage(token) {
     };
 }
 
-function hidrateImage(image) {
+function hydrateImage(image) {
     const photo = {
         uri: image.path,
         type: 'image/jpeg',
@@ -50,7 +50,7 @@ export function uploadClinicalPhoto(token, patientPk) {
     };
     return buildPostService(`/api/v1/patients/${patientPk}/upload_clinical_photo/`,
                             'POST',
-                            hidrateImage,
+                            hydrateImage,
                             _.identity,
                             _.merge({}, defaultHeaders, headers));
 }
