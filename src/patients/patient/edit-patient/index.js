@@ -31,7 +31,7 @@ const updatePatientSchema = {
         mrn: {
             type: 'string',
             pattern: '^\\d+$',
-            message: 'MRN should be an integer number',
+            message: 'MRN should be an integer number, less than 10 digits',
             maxLength: 10,
         },
     },
