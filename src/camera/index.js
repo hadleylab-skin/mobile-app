@@ -25,7 +25,6 @@ const ImageLoader = React.createClass({
                 status: React.PropTypes.string.isRequired,
             }),
         }).isRequired,
-        index: React.PropTypes.number.isRequired,
         deleteImage: React.PropTypes.func.isRequired,
     },
 
@@ -39,7 +38,7 @@ const ImageLoader = React.createClass({
     },
 
     render() {
-        const { imageInfo, deleteImage, index } = this.props;
+        const { imageInfo, deleteImage } = this.props;
 
         if (!imageInfo.data) {
             return null;
@@ -57,7 +56,7 @@ const ImageLoader = React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => deleteImage(index), 10000);
+            setTimeout(() => deleteImage(imageInfo.photo.path), 5000);
 
             return (
                 <View style={s.wrapper}>
@@ -73,7 +72,7 @@ const ImageLoader = React.createClass({
                     'Loading Image Error',
                     JSON.stringify(imageInfo.data),
                     [
-                        { text: 'OK', onPress: () => deleteImage(index) },
+                        { text: 'OK', onPress: () => deleteImage(imageInfo.photo.path) },
                     ]
                 )}
             >
@@ -90,7 +89,7 @@ const ImageLoader = React.createClass({
 
 const model = {
     tree: {
-        imageUploadResults: [],
+        imageUploadResults: {},
     },
 };
 
@@ -108,23 +107,24 @@ export default schema(model)(React.createClass({
 
     async takePicture() {
         const photo = await this.camera.capture();
-        const index = this.props.tree.imageUploadResults.get().length;
-        this.props.tree.imageUploadResults.push({
+        const path = photo.path;
+        this.props.tree.imageUploadResults.set(path, {
             photo,
             data: {},
         });
-        const cursor = this.props.tree.imageUploadResults.select(index, 'data');
+        const cursor = this.props.tree.imageUploadResults.select(path, 'data');
         await this.props.clinicalPhotoService(cursor, photo);
         this.props.updatePatients();
     },
 
-    deleteImage(index) {
-        this.props.tree.imageUploadResults.splice([index, 1]);
+    deleteImage(photoPath) {
+        this.props.tree.imageUploadResults.unset(photoPath);
     },
 
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         const images = this.props.tree.imageUploadResults.get();
+        console.log(images);
 
         return (
             <View style={s.container}>
@@ -139,15 +139,20 @@ export default schema(model)(React.createClass({
                     defaultOnFocusComponent
                 >
                     <View style={s.preloaders} >
-                        {_.map(images, (imageInfo, index) =>
-                            <ImageLoader
-                                tree={this.props.tree.imageUploadResults.select(index)}
-                                imageInfo={imageInfo}
-                                key={imageInfo.photo.path}
-                                index={index}
-                                deleteImage={this.deleteImage}
-                            />
-                        )}
+                        {
+                            _.map(images, (imageInfo) => {
+                                if (typeof imageInfo === 'undefined') {
+                                    return null;
+                                }
+                                return (
+                                    <ImageLoader
+                                        imageInfo={imageInfo}
+                                        key={imageInfo.photo.path}
+                                        deleteImage={this.deleteImage}
+                                    />
+                                );
+                            })
+                        }
                     </View>
                     <TouchableWithoutFeedback onPress={this.props.switchTab}>
                         <View style={s.textWrapper}>
