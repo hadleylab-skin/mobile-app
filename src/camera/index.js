@@ -124,7 +124,6 @@ export default schema(model)(React.createClass({
     render() {
         const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
         const images = this.props.tree.imageUploadResults.get();
-        console.log(images);
 
         return (
             <View style={s.container}>
