@@ -1,11 +1,17 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from '.';
 
+function dehydrateMrn(item) {
+    return _.merge(
+        {},
+        item,
+        { mrn: `${typeof item.mrn === 'number' ? item.mrn : ''}` });
+}
 
 function dehydratePatients(patients) {
     const data = _.map(
         patients,
-        (item) => _.merge({}, item, { mrn: `${item.mrn || ''}` }));
+        dehydrateMrn);
     return wrapItemsAsRemoteData(data);
 }
 
@@ -50,7 +56,7 @@ export function updatePatient(token) {
         const _updatePatient = buildPostService(`/api/v1/patients/${patientPk}/`,
             'PUT',
             JSON.stringify,
-            (item) => _.merge({}, item, { mrn: `${item.mrn || ''}` }),
+            dehydrateMrn,
             _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
     };
