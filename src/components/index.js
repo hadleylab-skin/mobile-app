@@ -6,3 +6,4 @@ export { Picker } from './picker';
 export { DatePicker } from './picker/date-picker';
 export { Form } from './form';
 export { Switch } from './switch';
+export { ScanMrnRecord } from './scan-mrn-record';

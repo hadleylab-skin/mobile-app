@@ -7,10 +7,11 @@ import {
     TouchableWithoutFeedback,
     Alert,
     ActivityIndicator,
+    Button,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
-import { Form, Input, Picker, DatePicker } from 'components';
+import { Form, Input, Picker, DatePicker, ScanMrnRecord } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
 
@@ -58,6 +59,7 @@ const EditPatient = schema(model)(React.createClass({
     displayName: 'EditPatient',
 
     propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
@@ -88,6 +90,12 @@ const EditPatient = schema(model)(React.createClass({
         if (ref) {
             this.props.registerGetInput(ref.getInput.bind(ref));
         }
+    },
+
+    setupData(data) {
+        Alert.alert(
+            'recognition result',
+            JSON.stringify(data));
     },
 
     renderSex() {
@@ -199,6 +207,20 @@ const EditPatient = schema(model)(React.createClass({
                             />
                         </View>
                     </Form>
+                    <Button
+                        onPress={() => this.props.navigator.push({
+                            component: ScanMrnRecord,
+                            leftButtonTitle: 'Back',
+                            onLeftButtonPress: () => this.props.navigator.pop(),
+                            title: 'Scan MRN Record',
+                            navigationBarHidden: false,
+                            tintColor: '#FF2D55',
+                            passProps: {
+                                setupData: this.setupData,
+                            },
+                        })}
+                        title="Scan mrn label"
+                    />
                 </ScrollView>
             </View>
         );
