@@ -9,3 +9,4 @@ export { Form } from './form';
 export { Switch } from './switch';
 export { ServiceProvider } from './service-provider';
 export { ScanMrnButton } from './scan-mrn-button';
+export { AnatomicalSiteWidget } from './anatomical-site-widget';

@@ -11,7 +11,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
-import { Form, Input, Picker, Switch } from 'components';
+import { Form, Input, Picker, Switch, AnatomicalSiteWidget } from 'components';
 import tv4 from 'tv4';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import s from './styles';
@@ -207,6 +207,10 @@ const ImageInfo = schema(model)(React.createClass({
                                     cursor={biopsyCursor}
                                 />
                             </View>
+                        </View>
+
+                        <View style={s.group}>
+                            <AnatomicalSiteWidget cursor={anatomicalSiteCursor} />
                         </View>
                     </Form>
                 </KeyboardAwareScrollView>
