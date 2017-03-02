@@ -66,6 +66,10 @@ const EditPatient = schema(model)(React.createClass({
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
+
     componentWillMount() {
         const { firstname, lastname, mrn,
                 sex, dob, race } = this.props.patientCursor.data.get();
@@ -208,10 +212,10 @@ const EditPatient = schema(model)(React.createClass({
                         </View>
                     </Form>
                     <Button
-                        onPress={() => this.props.navigator.push({
+                        onPress={() => this.context.mainNavigator.push({
                             component: ScanMrnRecord,
                             leftButtonTitle: 'Back',
-                            onLeftButtonPress: () => this.props.navigator.pop(),
+                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
                             title: 'Scan MRN Record',
                             navigationBarHidden: false,
                             tintColor: '#FF2D55',

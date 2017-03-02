@@ -5,17 +5,16 @@ import {
   View,
 } from 'react-native';
 import Camera from 'react-native-camera';
-import { mrnScanerService } from 'libs/services/mrn-scaner';
 import s from '../camera/styles';
 import captureIcon from '../camera/images/capture.png';
 
 
-export function ScanMrnRecord({ setupData }) {
+export function ScanMrnRecord({ setupData }, context) {
     let camera;
 
     async function takePicture() {
         const photo = await camera.capture();
-        const data = await mrnScanerService(photo);
+        const data = await context.services.mrnScanerService(photo);
         setupData(data);
     }
 
@@ -41,3 +40,13 @@ export function ScanMrnRecord({ setupData }) {
         </View>
     );
 }
+
+ScanMrnRecord.contextTypes = {
+    services: React.PropTypes.shape({
+        mrnScanerService: React.PropTypes.func.isRequired,
+    }),
+};
+
+ScanMrnRecord.propTypes = {
+    setupData: React.PropTypes.func.isRequired,
+};
