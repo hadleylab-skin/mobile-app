@@ -61,6 +61,9 @@ export default StyleSheet.create({
         fontSize: 16,
         lineHeight: 16,
         fontWeight: '300',
+        paddingLeft: 15,
+        flex: 1,
+        textAlign: 'right',
     },
     wrapper: {
         borderBottomWidth: 0.5,

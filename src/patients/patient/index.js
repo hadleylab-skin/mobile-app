@@ -71,6 +71,7 @@ const Patient = schema(model)(React.createClass({
             </View>
         );
     },
+    
     renderError() {
         return (
             <TouchableOpacity style={s.photoWrapper}>

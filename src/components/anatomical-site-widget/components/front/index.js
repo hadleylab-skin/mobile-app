@@ -30,7 +30,68 @@ import leftWrist from './images/arms/left-wrist/left-wrist.png';
 import rightHand from './images/arms/right-hand/right-hand.png';
 import leftHand from './images/arms/left-hand/left-hand.png';
 
+import rightThigh from './images/legs/right-thigh/right-thigh.png';
+import leftThigh from './images/legs/left-thigh/left-thigh.png';
+import rightKnee from './images/legs/right-knee/right-knee.png';
+import leftKnee from './images/legs/left-knee/left-knee.png';
+import rightShin from './images/legs/right-shin/right-shin.png';
+import leftShin from './images/legs/left-shin/left-shin.png';
+import rightAnkle from './images/legs/right-ankle/right-ankle.png';
+import leftAnkle from './images/legs/left-ankle/left-ankle.png';
+import rightFoot from './images/legs/right-foot/right-foot.png';
+import leftFoot from './images/legs/left-foot/left-foot.png';
+
 const sites = [
+    {
+        label: 'Right Foot',
+        styles: s.rightFoot,
+        source: rightFoot,
+    },
+    {
+        label: 'Left Foot',
+        styles: s.leftFoot,
+        source: leftFoot,
+    },
+    {
+        label: 'Right Ankle',
+        styles: s.rightAnkle,
+        source: rightAnkle,
+    },
+    {
+        label: 'Left Ankle',
+        styles: s.leftAnkle,
+        source: leftAnkle,
+    },
+    {
+        label: 'Right Shin',
+        styles: s.rightShin,
+        source: rightShin,
+    },
+    {
+        label: 'Left Shin',
+        styles: s.leftShin,
+        source: leftShin,
+    },
+    {
+        label: 'Right Thigh',
+        styles: s.rightThigh,
+        source: rightThigh,
+    },
+    {
+        label: 'Left Thigh',
+        styles: s.leftThigh,
+        source: leftThigh,
+    },
+    {
+        label: 'Right Knee',
+        styles: s.rightKnee,
+        source: rightKnee,
+    },
+    {
+        label: 'Left Knee',
+        styles: s.leftKnee,
+        source: leftKnee,
+    },
     {
         label: 'Head',
         styles: s.head,

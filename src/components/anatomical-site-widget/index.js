@@ -34,6 +34,12 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         };
     },
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.tree.currentSite !== this.props.tree.currentSite) {
+            this.props.cursor.set(this.props.tree.currentSite.get());
+        }
+    },
+
     flipImage() {
         const wasFlipped = !this.state.wasFlipped;
         this.setState({ wasFlipped });
@@ -46,10 +52,10 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         return (
             <ScrollView>
                 <View style={s.container}>
+                    <TouchableOpacity onPress={this.flipImage} style={s.flip}>
+                        <Image source={flip} />
+                    </TouchableOpacity>
                     <View style={s.widget}>
-                        <TouchableOpacity onPress={this.flipImage} style={s.flip}>
-                            <Image source={flip} />
-                        </TouchableOpacity>
                         {wasFlipped ?
                             <HumanBackSide cursor={currentSite} />
                         :

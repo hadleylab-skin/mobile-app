@@ -16,7 +16,7 @@ export default StyleSheet.create({
         width: 70,
         position: 'absolute',
         right: 15,
-        top: 5,
+        top: 15,
         alignItems: 'flex-end',
         zIndex: 1,
     },

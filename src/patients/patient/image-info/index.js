@@ -38,6 +38,7 @@ const model = {
         },
         offsetY: 0,
         anatomicalSitePickerCursor: {},
+        currentAnatomicalSite: '',
     },
 };
 
@@ -77,6 +78,7 @@ const ImageInfo = schema(model)(React.createClass({
             biopsy: data.get('biopsy'),
         });
         tree.anatomicalSitePickerCursor.isOpen.set(false);
+        tree.currentAnatomicalSite.set(data.get('anatomical_site'));
     },
 
     updateImage() {
@@ -106,7 +108,7 @@ const ImageInfo = schema(model)(React.createClass({
     },
 
     renderAnatomicalSite() {
-        const anatomicalSiteCursor = this.props.tree.form.anatomical_site;
+        const anatomicalSiteCursor = this.props.tree.currentAnatomicalSite;
         const { navigator } = this.props;
 
         return (
@@ -116,6 +118,10 @@ const ImageInfo = schema(model)(React.createClass({
                     title: 'Anatomical site',
                     leftButtonTitle: 'Cancel',
                     onLeftButtonPress: () => navigator.pop(),
+                    onRightButtonPress: () => {
+                        this.props.tree.form.anatomical_site.set(anatomicalSiteCursor.get());
+                        navigator.pop();
+                    },
                     navigationBarHidden: false,
                     rightButtonTitle: 'Update',
                     tintColor: '#FF2D55',
