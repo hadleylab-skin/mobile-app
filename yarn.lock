@@ -2945,6 +2945,10 @@ react-native-camera@0.6:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-0.6.0.tgz#dd2760b7857d660761c78f2da575b494fdc8dcb5"
 
+react-native-image-picker@^0.25.7:
+  version "0.25.7"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.25.7.tgz#1475fd72111a74f434598f2c99453998ac21b599"
+
 react-native@0.40.0:
   version "0.40.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.40.0.tgz#ca7b86a8e8fbc7653634ad47ca2ffd69fdf18ad5"

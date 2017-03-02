@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
-import { Form, Input, Picker, DatePicker, ScanMrnRecord } from 'components';
+import { Form, Input, Picker, DatePicker } from 'components';
+import ImagePicker from 'react-native-image-picker';
 import tv4 from 'tv4';
 import s from './styles';
 
@@ -67,7 +68,9 @@ const EditPatient = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        services: React.PropTypes.shape({
+            mrnScanerService: React.PropTypes.func.isRequired,
+        }),
     },
 
     componentWillMount() {
@@ -96,10 +99,23 @@ const EditPatient = schema(model)(React.createClass({
         }
     },
 
-    setupData(data) {
-        Alert.alert(
-            'recognition result',
-            JSON.stringify(data));
+    async setupData(response) {
+        if (!response.uri) {
+            return;
+        }
+
+        const data = await this.context.services.mrnScanerService(response.uri);
+        if (data.status === 'Failure') {
+            Alert.alert(
+                'Error at image recognition',
+                'We cant recognize patient\'s data, please try one more time');
+        } else {
+            _.each(data.data, (value, key) => {
+                if (value) {
+                    this.props.tree.form.select(key).set(value);
+                }
+            });
+        }
     },
 
     renderSex() {
@@ -212,17 +228,7 @@ const EditPatient = schema(model)(React.createClass({
                         </View>
                     </Form>
                     <Button
-                        onPress={() => this.context.mainNavigator.push({
-                            component: ScanMrnRecord,
-                            leftButtonTitle: 'Back',
-                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
-                            title: 'Scan MRN Record',
-                            navigationBarHidden: false,
-                            tintColor: '#FF2D55',
-                            passProps: {
-                                setupData: this.setupData,
-                            },
-                        })}
+                        onPress={() => ImagePicker.launchCamera({}, this.setupData)}
                         title="Scan mrn label"
                     />
                 </ScrollView>

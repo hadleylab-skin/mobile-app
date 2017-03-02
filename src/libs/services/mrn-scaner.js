@@ -1,8 +1,8 @@
 import { checkStatus, url } from './base';
 
-function hydrateImage(image) {
+function hydrateImage(uri) {
     const photo = {
-        uri: image.path,
+        uri,
         type: 'image/jpeg',
         name: 'photo.jpg',
     };
@@ -12,7 +12,7 @@ function hydrateImage(image) {
 }
 
 export function mrnScanerService(token) {
-    return async (photo) => {
+    return async (uri) => {
         const headers = {
             Authorization: `JWT ${token}`,
             'Content-Type': 'multipart/form-data',
@@ -22,7 +22,7 @@ export function mrnScanerService(token) {
         let result = {};
 
         const payload = {
-            body: hydrateImage(photo),
+            body: hydrateImage(uri),
             method: 'POST',
             headers,
         };
