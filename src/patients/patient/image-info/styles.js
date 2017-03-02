@@ -57,11 +57,15 @@ export default StyleSheet.create({
         fontWeight: '300',
         flex: 1,
     },
+    groupText: {
+        fontSize: 16,
+        lineHeight: 16,
+        fontWeight: '300',
+    },
     wrapper: {
         borderBottomWidth: 0.5,
         borderBottomColor: '#D1D1D6',
         marginTop: 8,
-        marginBottom: 0,
         marginLeft: 15,
         paddingBottom: 7,
         paddingRight: 15,

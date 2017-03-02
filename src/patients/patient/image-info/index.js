@@ -6,12 +6,13 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
-import { Form, Input, Picker, Switch, AnatomicalSiteWidget } from 'components';
+import { Form, Input, Switch, AnatomicalSiteWidget } from 'components';
 import tv4 from 'tv4';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import s from './styles';
@@ -50,6 +51,7 @@ const ImageInfo = schema(model)(React.createClass({
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
         doSubmit: React.PropTypes.func.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
@@ -103,12 +105,39 @@ const ImageInfo = schema(model)(React.createClass({
         }
     },
 
+    renderAnatomicalSite() {
+        const anatomicalSiteCursor = this.props.tree.form.anatomical_site;
+        const { navigator } = this.props;
+
+        return (
+            <TouchableWithoutFeedback
+                onPress={() => navigator.push({
+                    component: AnatomicalSiteWidget,
+                    title: 'Anatomical site',
+                    leftButtonTitle: 'Cancel',
+                    onLeftButtonPress: () => navigator.pop(),
+                    navigationBarHidden: false,
+                    rightButtonTitle: 'Update',
+                    tintColor: '#FF2D55',
+                    passProps: {
+                        tree: this.props.tree,
+                        cursor: anatomicalSiteCursor,
+                    },
+                })}
+            >
+                <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
+                    <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Anatomical Site:</Text>
+                    <Text style={s.groupText}>{anatomicalSiteCursor.get()}</Text>
+                </View>
+            </TouchableWithoutFeedback>
+        );
+    },
+
     render() {
         const { date_created, prediction, clinical_photo } = this.props.cursor.get('data');
         const predictionAccuracy = this.props.cursor.get('data', 'prediction_accuracy');
 
         const clinicalDiagnosisCursor = this.props.tree.form.clinical_diagnosis;
-        const anatomicalSiteCursor = this.props.tree.form.anatomical_site;
         const biopsyCursor = this.props.tree.form.biopsy;
 
         const showLoader = this.props.cursor.status.get() === 'Loading';
@@ -194,23 +223,15 @@ const ImageInfo = schema(model)(React.createClass({
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Image Information</Text>
                             </View>
-                            <Picker
-                                tree={this.props.tree.anatomicalSitePickerCursor}
-                                cursor={anatomicalSiteCursor}
-                                items={this.props.anatomicalSiteList}
-                                title="Anatomical Site"
-                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
-                            />
+
+                            {this.renderAnatomicalSite()}
+
                             <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
                                 <Switch
                                     cursor={biopsyCursor}
                                 />
                             </View>
-                        </View>
-
-                        <View style={s.group}>
-                            <AnatomicalSiteWidget cursor={anatomicalSiteCursor} />
                         </View>
                     </Form>
                 </KeyboardAwareScrollView>

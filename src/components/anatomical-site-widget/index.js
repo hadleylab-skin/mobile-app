@@ -2,67 +2,62 @@ import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
-    Text,
-    TouchableWithoutFeedback,
+    TouchableOpacity,
     Image,
+    ScrollView,
 } from 'react-native';
+import schema from 'libs/state';
+import HumanFrontSide from './components/front';
+import HumanBackSide from './components/back';
 import s from './styles';
 
-import front from './images/front.png';
-import head from './images/head/head.png';
-import neck from './images/neck/neck.png';
-import rightShoulder from './images/right-shoulder/right-shoulder.png';
-import rightChest from './images/right-chest/right-chest.png';
+import flip from './images/flip/flip.png';
 
-const TouchableArea = React.createClass({
-    displayName: 'AnatomicalSiteWidget',
+const model = (props) => (
+    {
+        tree: {
+            currentSite: props.cursor.get(),
+        },
+    }
+);
 
-    propTypes: {
-        cursor: BaobabPropTypes.cursor.isRequired,
-        label: React.PropTypes.string.isRequired,
-        className: React.PropTypes.string.isRequired,
-        source: React.PropTypes.number.isRequired,
-    },
-
-    onPress() {
-        const { cursor, label } = this.props;
-        cursor.set(label);
-    },
-
-    render() {
-        const { cursor, label, className, source } = this.props;
-
-        return (
-            <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s[className], s.siteWrapper, { opacity: cursor.get() === label ? 1 : 0 }]}>
-                    <Image source={source} />
-                </View>
-            </TouchableWithoutFeedback>
-        );
-    },
-});
-
-export const AnatomicalSiteWidget = React.createClass({
+export const AnatomicalSiteWidget = schema(model)(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
     },
 
+    getInitialState() {
+        return {
+            wasFlipped: false,
+        };
+    },
+
+    flipImage() {
+        const wasFlipped = !this.state.wasFlipped;
+        this.setState({ wasFlipped });
+    },
+
     render() {
-        const { cursor } = this.props;
+        const { currentSite } = this.props.tree;
+        const { wasFlipped } = this.state;
 
         return (
-            <View style={s.container}>
-                <Text>Site: {cursor.get()}</Text>
-                <View style={s.widget}>
-                    <Image source={front} style={{ opacity: 0.5 }} />
-                    <TouchableArea cursor={cursor} label="Head" className="head" source={head} />
-                    <TouchableArea cursor={cursor} label="Right Shoulder" className="rightShoulder" source={rightShoulder} />
-                    <TouchableArea cursor={cursor} label="Right Chest" className="rightChest" source={rightChest} />
-                    <TouchableArea cursor={cursor} label="Neck" className="neck" source={neck} />
+            <ScrollView>
+                <View style={s.container}>
+                    <View style={s.widget}>
+                        <TouchableOpacity onPress={this.flipImage} style={s.flip}>
+                            <Image source={flip} />
+                        </TouchableOpacity>
+                        {wasFlipped ?
+                            <HumanBackSide cursor={currentSite} />
+                        :
+                            <HumanFrontSide cursor={currentSite} />
+                        }
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
         );
     },
-});
+}));
