@@ -37,7 +37,7 @@ const model = {
     },
 };
 
-async function submit(props, navigator, getInput) {
+async function submit(props, context, getInput) {
     const formData = props.tree.form.get();
     const validationResult = tv4.validateMultiple(formData, createPatientSchema);
 
@@ -54,7 +54,7 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const result = await props.createPatientService(
+    const result = await context.services.createPatientService(
         props.tree.serverAnswer,
         formData);
 
@@ -63,7 +63,7 @@ async function submit(props, navigator, getInput) {
             'Create Patient Error',
             JSON.stringify(result));
     } else {
-        navigator.pop();
+        context.mainNavigator.pop();
         props.tree.form.set(model.tree);
         props.onPatientAdded(result.data);
     }
@@ -126,26 +126,25 @@ export const AddPatient = schema(model)(React.createClass({
     },
 }));
 
-export function getRoute(props, navigator) {
+export function getRoute(props, context) {
     let getInput;
     let passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree.newPatient,
-        createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
             props.changeCurrentPatient(patient);
-            props.patientsService(props.tree.patients);
+            context.services.patientsService(props.tree.patients);
         },
     };
 
-    const doSubmit = async () => submit(passProps, navigator, getInput);
+    const doSubmit = async () => submit(passProps, context, getInput);
 
     passProps.submit = doSubmit;
 
     return {
         component: AddPatient,
         leftButtonTitle: 'Cancel',
-        onLeftButtonPress: () => navigator.pop(),
+        onLeftButtonPress: () => context.mainNavigator.pop(),
         title: 'Create patient',
         rightButtonTitle: 'Done',
         onRightButtonPress: doSubmit,

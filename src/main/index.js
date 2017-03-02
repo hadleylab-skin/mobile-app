@@ -1,16 +1,15 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
-    View,
     StatusBar,
     TabBarIOS,
     NavigatorIOS,
 } from 'react-native';
-import { getPatientList, createPatient,
-    getPatientImages, updatePatient } from 'libs/services/patients';
-import { uploadClinicalPhoto, getImage, updateImage } from 'libs/services/image';
+import _ from 'lodash';
+import services from 'libs/services';
 import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
 import schema from 'libs/state';
+import { ServiceProvider } from 'components';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
 import cameraIcon from './images/camera.png';
@@ -41,7 +40,15 @@ const Main = schema(model)(React.createClass({
             firstname: React.PropTypes.string.isRequired,
             lastname: React.PropTypes.string.isRequired,
         }).isRequired,
-        mainNavigator: React.PropTypes.func.isRequired, // eslint-disable-line
+    },
+
+    initServices() {
+        const token = this.props.token;
+        let initializedServices = {};
+        _.each(services, (service, name) => {
+            initializedServices[name] = service(token);
+        });
+        return initializedServices;
     },
 
     render() {
@@ -50,20 +57,14 @@ const Main = schema(model)(React.createClass({
         const patientsCursor = this.props.tree.patients;
         const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
-        const token = this.props.token;
 
-        const clinicalPhotoService = uploadClinicalPhoto(
-             token,
-             currentPatientCursor.get('id'));
-        const patientsService = getPatientList(token);
-        const patientImagesService = getPatientImages(token);
-        const getImageService = getImage(token);
-        const updateImageService = updateImage(token);
-        const createPatientService = createPatient(token);
-        const updatePatientService = updatePatient(token);
+        const initializedServices = this.initServices();
 
         return (
-            <View style={{ flex: 1 }}>
+            <ServiceProvider
+                style={{ flex: 1 }}
+                services={initializedServices}
+            >
                 <StatusBar hidden={currentTabCursor.get() === 'camera'} />
                 <TabBarIOS
                     barTintColor="#fafafa"
@@ -80,11 +81,10 @@ const Main = schema(model)(React.createClass({
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
                             switchTab={() => currentTabCursor.set('patients')}
-                            clinicalPhotoService={clinicalPhotoService}
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');
-                                patientsService(patientsCursor.patients);
-                                patientImagesService(id, patientsImagesCursor.select(id));
+                                initializedServices.patientsService(patientsCursor.patients);
+                                initializedServices.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
                         />
                     </TabBarIOS.Item>
@@ -103,34 +103,38 @@ const Main = schema(model)(React.createClass({
                                     currentTabCursor.set('camera');
                                 }
                             }}
-                            mainNavigator={this.props.mainNavigator}
-                            createPatientService={createPatientService}
-                            patientsService={patientsService}
-                            patientImagesService={patientImagesService}
-                            getImageService={getImageService}
-                            updateImageService={updateImageService}
-                            updatePatientService={updatePatientService}
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                             currentPatientCursor={currentPatientCursor}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
-            </View>
+            </ServiceProvider>
         );
     },
 }));
 
 export default React.createClass({
     displayName: 'MainNavigator',
+
+    childContextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
+
+    getChildContext() {
+        return {
+            mainNavigator: this.mainNavigator || {},
+        };
+    },
+
     render() {
         return (
             <NavigatorIOS
-                ref={(ref) => { this.navigator = ref; }}
+                ref={(ref) => { this.mainNavigator = ref; }}
                 initialRoute={{
                     component: Main,
                     title: 'Patients',
-                    passProps: { ...this.props, mainNavigator: () => this.navigator },
+                    passProps: this.props,
                     navigationBarHidden: true,
                     tintColor: '#FF2D55',
                 }}

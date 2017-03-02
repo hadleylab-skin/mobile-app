@@ -1,4 +1,4 @@
-import { checkStatus, url } from '.';
+import { checkStatus, url } from './base';
 
 function hydrateImage(image) {
     const photo = {
@@ -11,32 +11,35 @@ function hydrateImage(image) {
     return data;
 }
 
-export async function mrnScanerService(photo) {
-    const headers = {
-        'Content-Type': 'multipart/form-data',
-        Accept: 'application/json',
-    };
-
-    let result = {};
-
-    const payload = {
-        body: hydrateImage(photo),
-        method: 'POST',
-        headers,
-    };
-
-    try {
-        let response = await fetch(`${url}/api/ocr/`, payload).then(checkStatus);
-        let respData = await response.json();
-        result = {
-            data: respData,
-            status: 'Succeed',
+export function mrnScanerService(token) {
+    return async (photo) => {
+        const headers = {
+            Authorization: `JWT ${token}`,
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
         };
-    } catch (error) {
-        result = {
-            error,
-            status: 'Failure',
+
+        let result = {};
+
+        const payload = {
+            body: hydrateImage(photo),
+            method: 'POST',
+            headers,
         };
-    }
-    return result;
+
+        try {
+            let response = await fetch(`${url}/api/ocr/`, payload).then(checkStatus);
+            let respData = await response.json();
+            result = {
+                data: respData,
+                status: 'Succeed',
+            };
+        } catch (error) {
+            result = {
+                error,
+                status: 'Failure',
+            };
+        }
+        return result;
+    };
 }

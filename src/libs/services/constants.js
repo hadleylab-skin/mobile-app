@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildGetService, defaultHeaders } from '.';
+import { buildGetService, defaultHeaders } from './base';
 
 export function getAnatomicalSiteList(token) {
     const headers = {

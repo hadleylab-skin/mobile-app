@@ -94,6 +94,7 @@ const model = {
 };
 
 export default schema(model)(React.createClass({
+    displayName: 'CameraScreen',
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         updatePatients: React.PropTypes.func.isRequired,
@@ -105,6 +106,12 @@ export default schema(model)(React.createClass({
         switchTab: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        services: React.PropTypes.shape({
+            clinicalPhotoService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     async takePicture() {
         const photo = await this.camera.capture();
         const path = photo.path;
@@ -113,7 +120,7 @@ export default schema(model)(React.createClass({
             data: {},
         });
         const cursor = this.props.tree.imageUploadResults.select(path, 'data');
-        await this.props.clinicalPhotoService(cursor, photo);
+        await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
         this.props.updatePatients();
     },
 

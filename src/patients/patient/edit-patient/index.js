@@ -264,13 +264,14 @@ async function submit(props, navigator, getInput) {
     }
 }
 
-export function getRoute(props, navigator) {
+export function getRoute(props, context) {
     let getInput;
+    const navigator = props.navigator;
     const passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
         patientCursor: props.patientCursor,
-        updatePatientService: props.updatePatientService,
+        updatePatientService: context.services.updatePatientService,
         racesList: props.racesList,
     };
 

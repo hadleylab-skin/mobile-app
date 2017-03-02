@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders } from '.';
+import { buildGetService, buildPostService, defaultHeaders } from './base';
 
-export function getImage(token) {
+export function getImageService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -14,7 +14,7 @@ export function getImage(token) {
     };
 }
 
-export function updateImage(token) {
+export function updateImageService(token) {
     const headers = {
         Accept: 'application/json',
         Authorization: `JWT ${token}`,
@@ -42,15 +42,20 @@ function hidrateImage(image) {
     return data;
 }
 
-export function uploadClinicalPhoto(token, patientPk) {
+export function clinicalPhotoService(token) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
         Authorization: `JWT ${token}`,
     };
-    return buildPostService(`/api/v1/patients/${patientPk}/upload_clinical_photo/`,
-                            'POST',
-                            hidrateImage,
-                            _.identity,
-                            _.merge({}, defaultHeaders, headers));
+
+    return (patientPk, cursor, data) => {
+        const _service = buildPostService(
+            `/api/v1/patients/${patientPk}/upload_clinical_photo/`,
+            'POST',
+            hidrateImage,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _service(cursor, data);
+    };
 }

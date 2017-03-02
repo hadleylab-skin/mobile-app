@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from '.';
+import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from './base';
 
 function dehydrateMrn(item) {
     return _.merge(
@@ -15,14 +15,14 @@ function dehydratePatients(patients) {
     return wrapItemsAsRemoteData(data);
 }
 
-export function getPatientList(token) {
+export function patientsService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
     return buildGetService('/api/v1/patients/', dehydratePatients, _.merge({}, defaultHeaders, headers));
 }
 
-export function getPatientImages(token) {
+export function patientImagesService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -35,7 +35,7 @@ export function getPatientImages(token) {
     };
 }
 
-export function createPatient(token) {
+export function createPatientService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -46,7 +46,7 @@ export function createPatient(token) {
                             _.merge({}, defaultHeaders, headers));
 }
 
-export function updatePatient(token) {
+export function updatePatientService(token) {
     const headers = {
         Accept: 'application/json',
         Authorization: `JWT ${token}`,
