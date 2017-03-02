@@ -133,7 +133,7 @@ const ImageInfo = schema(model)(React.createClass({
             >
                 <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                     <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Anatomical Site:</Text>
-                    <Text style={s.groupText}>{anatomicalSiteCursor.get()}</Text>
+                    <Text style={s.groupText}>{this.props.tree.form.anatomical_site.get()}</Text>
                 </View>
             </TouchableWithoutFeedback>
         );
