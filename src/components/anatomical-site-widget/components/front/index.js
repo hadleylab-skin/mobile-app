@@ -5,184 +5,24 @@ import {
     View,
     Image,
 } from 'react-native';
+import * as images from './static';
 import TouchableArea from '../touchable-area';
 import s from './styles';
 
 import front from './images/front/front.png';
-import head from './images/body/head/head.png';
-import neck from './images/body/neck/neck.png';
 
-import rightChest from './images/body/right-chest/right-chest.png';
-import leftChest from './images/body/left-chest/left-chest.png';
-import upperRightPelvis from './images/body/upper-right-pelvis/upper-right-pelvis.png';
-import upperLeftPelvis from './images/body/upper-left-pelvis/upper-left-pelvis.png';
-import lowerRightPelvis from './images/body/lower-right-pelvis/lower-right-pelvis.png';
-import lowerLeftPelvis from './images/body/lower-left-pelvis/lower-left-pelvis.png';
+const sites = _.map(_.toPairs(images), (image) => {
+    const key = image[0];
+    const label = _.startCase(key);
+    const styles = s[key];
+    const source = image[1];
 
-import leftShoulder from './images/arms/left-shoulder/left-shoulder.png';
-import rightShoulder from './images/arms/right-shoulder/right-shoulder.png';
-import rightElbow from './images/arms/right-elbow/right-elbow.png';
-import leftElbow from './images/arms/left-elbow/left-elbow.png';
-import rightForearm from './images/arms/right-forearm/right-forearm.png';
-import leftForearm from './images/arms/left-forearm/left-forearm.png';
-import rightWrist from './images/arms/right-wrist/right-wrist.png';
-import leftWrist from './images/arms/left-wrist/left-wrist.png';
-import rightHand from './images/arms/right-hand/right-hand.png';
-import leftHand from './images/arms/left-hand/left-hand.png';
-
-import rightThigh from './images/legs/right-thigh/right-thigh.png';
-import leftThigh from './images/legs/left-thigh/left-thigh.png';
-import rightKnee from './images/legs/right-knee/right-knee.png';
-import leftKnee from './images/legs/left-knee/left-knee.png';
-import rightShin from './images/legs/right-shin/right-shin.png';
-import leftShin from './images/legs/left-shin/left-shin.png';
-import rightAnkle from './images/legs/right-ankle/right-ankle.png';
-import leftAnkle from './images/legs/left-ankle/left-ankle.png';
-import rightFoot from './images/legs/right-foot/right-foot.png';
-import leftFoot from './images/legs/left-foot/left-foot.png';
-
-const sites = [
-    {
-        label: 'Right Foot',
-        styles: s.rightFoot,
-        source: rightFoot,
-    },
-    {
-        label: 'Left Foot',
-        styles: s.leftFoot,
-        source: leftFoot,
-    },
-    {
-        label: 'Right Ankle',
-        styles: s.rightAnkle,
-        source: rightAnkle,
-    },
-    {
-        label: 'Left Ankle',
-        styles: s.leftAnkle,
-        source: leftAnkle,
-    },
-    {
-        label: 'Right Shin',
-        styles: s.rightShin,
-        source: rightShin,
-    },
-    {
-        label: 'Left Shin',
-        styles: s.leftShin,
-        source: leftShin,
-    },
-    {
-        label: 'Right Thigh',
-        styles: s.rightThigh,
-        source: rightThigh,
-    },
-    {
-        label: 'Left Thigh',
-        styles: s.leftThigh,
-        source: leftThigh,
-    },
-    {
-        label: 'Right Knee',
-        styles: s.rightKnee,
-        source: rightKnee,
-    },
-    {
-        label: 'Left Knee',
-        styles: s.leftKnee,
-        source: leftKnee,
-    },
-    {
-        label: 'Head',
-        styles: s.head,
-        source: head,
-    },
-    {
-        label: 'Right Shoulder',
-        styles: s.rightShoulder,
-        source: rightShoulder,
-    },
-    {
-        label: 'Right Chest',
-        styles: s.rightChest,
-        source: rightChest,
-    },
-    {
-        label: 'Left Shoulder',
-        styles: s.leftShoulder,
-        source: leftShoulder,
-    },
-    {
-        label: 'Left Chest',
-        styles: s.leftChest,
-        source: leftChest,
-    },
-    {
-        label: 'Neck',
-        styles: s.neck,
-        source: neck,
-    },
-    {
-        label: 'Upper Right Pelvis',
-        styles: s.upperRightPelvis,
-        source: upperRightPelvis,
-    },
-    {
-        label: 'Upper Left Pelvis',
-        styles: s.upperLeftPelvis,
-        source: upperLeftPelvis,
-    },
-    {
-        label: 'Lower Right Pelvis',
-        styles: s.lowerRightPelvis,
-        source: lowerRightPelvis,
-    },
-    {
-        label: 'Lower Left Pelvis',
-        styles: s.lowerLeftPelvis,
-        source: lowerLeftPelvis,
-    },
-    {
-        label: 'Right Elbow',
-        styles: s.rightElbow,
-        source: rightElbow,
-    },
-    {
-        label: 'Left Elbow',
-        styles: s.leftElbow,
-        source: leftElbow,
-    },
-    {
-        label: 'Right Forearm',
-        styles: s.rightForearm,
-        source: rightForearm,
-    },
-    {
-        label: 'Left Forearm',
-        styles: s.leftForearm,
-        source: leftForearm,
-    },
-    {
-        label: 'Right Wrist',
-        styles: s.rightWrist,
-        source: rightWrist,
-    },
-    {
-        label: 'Left Wrist',
-        styles: s.leftWrist,
-        source: leftWrist,
-    },
-    {
-        label: 'Right Hand',
-        styles: s.rightHand,
-        source: rightHand,
-    },
-    {
-        label: 'Left Hand',
-        styles: s.leftHand,
-        source: leftHand,
-    },
-];
+    return {
+        label,
+        styles,
+        source,
+    };
+});
 
 const HumanFrontSide = React.createClass({
     displayName: 'HumanFrontSide',
