@@ -42,11 +42,8 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                         <Image source={flip} />
                     </TouchableOpacity>
                     <View style={s.widget}>
-                        {wasFlipped ?
-                            <HumanBackSide cursor={currentSiteCursor} />
-                        :
-                            <HumanFrontSide cursor={currentSiteCursor} />
-                        }
+                        <HumanFrontSide cursor={currentSiteCursor} isShown={!wasFlipped} />
+                        <HumanBackSide cursor={currentSiteCursor} isShown={wasFlipped} />
                     </View>
                 </View>
             </ScrollView>

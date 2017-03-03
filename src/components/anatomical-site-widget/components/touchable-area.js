@@ -5,9 +5,10 @@ import {
     TouchableWithoutFeedback,
     Image,
 } from 'react-native';
+import schema from 'libs/state';
 import s from '../styles';
 
-const TouchableArea = React.createClass({
+const TouchableArea = schema({})(React.createClass({
     displayName: 'TouchableArea',
 
     propTypes: {
@@ -33,6 +34,6 @@ const TouchableArea = React.createClass({
             </TouchableWithoutFeedback>
         );
     },
-});
+}));
 
 export default TouchableArea;

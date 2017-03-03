@@ -5,6 +5,7 @@ import {
     Image,
 } from 'react-native';
 import TouchableArea from '../touchable-area';
+import s from './styles';
 
 import back from './images/back/back.png';
 
@@ -16,10 +17,10 @@ const HumanBackSide = React.createClass({
     },
 
     render() {
-        const { cursor } = this.props;
+        const { cursor, isShown } = this.props;
 
         return (
-            <View>
+            <View style={[s.container, { opacity: isShown ? 1 : 0, zIndex: isShown ? 1 : 0 }]}>
                 <Image source={back} style={{ opacity: 0.5 }} />
             </View>
         );

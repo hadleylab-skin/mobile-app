@@ -9,7 +9,6 @@ export default StyleSheet.create({
     },
     widget: {
         width: 320,
-        height: 598,
         position: 'relative',
     },
     flip: {

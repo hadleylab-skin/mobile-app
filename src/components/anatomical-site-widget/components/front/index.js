@@ -32,10 +32,10 @@ const HumanFrontSide = React.createClass({
     },
 
     render() {
-        const { cursor } = this.props;
+        const { cursor, isShown } = this.props;
 
         return (
-            <View>
+            <View style={{ opacity: isShown ? 1 : 0, zIndex: isShown ? 1 : 0 }}>
                 <Image source={front} style={{ opacity: 0.5 }} />
                 {_.map(sites, (site, index) =>
                     <TouchableArea
