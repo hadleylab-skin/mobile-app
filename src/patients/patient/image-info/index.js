@@ -37,7 +37,6 @@ const model = {
             biopsy: '',
         },
         offsetY: 0,
-        anatomicalSitePickerCursor: {},
         currentAnatomicalSite: '',
     },
 };
@@ -77,7 +76,6 @@ const ImageInfo = schema(model)(React.createClass({
             anatomical_site: data.get('anatomical_site'),
             biopsy: data.get('biopsy'),
         });
-        tree.anatomicalSitePickerCursor.isOpen.set(false);
         tree.currentAnatomicalSite.set(data.get('anatomical_site'));
     },
 
@@ -113,23 +111,25 @@ const ImageInfo = schema(model)(React.createClass({
 
         return (
             <TouchableWithoutFeedback
-                onPress={() => navigator.push({
-                    component: AnatomicalSiteWidget,
-                    title: 'Anatomical site',
-                    leftButtonTitle: 'Cancel',
-                    onLeftButtonPress: () => navigator.pop(),
-                    onRightButtonPress: () => {
-                        this.props.tree.form.anatomical_site.set(anatomicalSiteCursor.get());
-                        navigator.pop();
-                    },
-                    navigationBarHidden: false,
-                    rightButtonTitle: 'Update',
-                    tintColor: '#FF2D55',
-                    passProps: {
-                        tree: this.props.tree,
-                        cursor: anatomicalSiteCursor,
-                    },
-                })}
+                onPress={() => {
+                    anatomicalSiteCursor.set(this.props.tree.form.anatomical_site.get());
+                    navigator.push({
+                        component: AnatomicalSiteWidget,
+                        title: 'Anatomical site',
+                        leftButtonTitle: 'Cancel',
+                        onLeftButtonPress: () => navigator.pop(),
+                        onRightButtonPress: () => {
+                            this.props.tree.form.anatomical_site.set(anatomicalSiteCursor.get());
+                            navigator.pop();
+                        },
+                        navigationBarHidden: false,
+                        rightButtonTitle: 'Update',
+                        tintColor: '#FF2D55',
+                        passProps: {
+                            cursor: anatomicalSiteCursor,
+                        },
+                    });
+                }}
             >
                 <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                     <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Anatomical Site:</Text>

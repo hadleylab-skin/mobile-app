@@ -13,15 +13,7 @@ import s from './styles';
 
 import flip from './images/flip/flip.png';
 
-const model = (props) => (
-    {
-        tree: {
-            currentSite: props.cursor.get(),
-        },
-    }
-);
-
-export const AnatomicalSiteWidget = schema(model)(React.createClass({
+export const AnatomicalSiteWidget = schema({})(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
@@ -34,19 +26,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         };
     },
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.tree.currentSite !== this.props.tree.currentSite) {
-            this.props.cursor.set(this.props.tree.currentSite.get());
-        }
-    },
-
     flipImage() {
         const wasFlipped = !this.state.wasFlipped;
         this.setState({ wasFlipped });
     },
 
     render() {
-        const { currentSite } = this.props.tree;
+        const currentSiteCursor = this.props.cursor;
         const { wasFlipped } = this.state;
 
         return (
@@ -57,9 +43,9 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     </TouchableOpacity>
                     <View style={s.widget}>
                         {wasFlipped ?
-                            <HumanBackSide cursor={currentSite} />
+                            <HumanBackSide cursor={currentSiteCursor} />
                         :
-                            <HumanFrontSide cursor={currentSite} />
+                            <HumanFrontSide cursor={currentSiteCursor} />
                         }
                     </View>
                 </View>
