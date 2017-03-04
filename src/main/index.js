@@ -4,6 +4,7 @@ import {
     StatusBar,
     TabBarIOS,
     NavigatorIOS,
+    View,
 } from 'react-native';
 import _ from 'lodash';
 import services from 'libs/services';
@@ -34,7 +35,6 @@ const Main = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        token: React.PropTypes.string.isRequired,
         defaultPatient: React.PropTypes.shape({ // eslint-disable-line
             id: React.PropTypes.number.isRequired,
             firstname: React.PropTypes.string.isRequired,
@@ -42,13 +42,11 @@ const Main = schema(model)(React.createClass({
         }).isRequired,
     },
 
-    initServices() {
-        const token = this.props.token;
-        let initializedServices = {};
-        _.each(services, (service, name) => {
-            initializedServices[name] = service(token);
-        });
-        return initializedServices;
+    contextTypes: {
+        services: React.PropTypes.shape({
+            patientsService: React.PropTypes.func.isRequired,
+            patientImagesService: React.PropTypes.func.isRequired,
+        }),
     },
 
     render() {
@@ -58,12 +56,9 @@ const Main = schema(model)(React.createClass({
         const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
 
-        const initializedServices = this.initServices();
-
         return (
-            <ServiceProvider
+            <View
                 style={{ flex: 1 }}
-                services={initializedServices}
             >
                 <StatusBar hidden={currentTabCursor.get() === 'camera'} />
                 <TabBarIOS
@@ -83,8 +78,8 @@ const Main = schema(model)(React.createClass({
                             switchTab={() => currentTabCursor.set('patients')}
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');
-                                initializedServices.patientsService(patientsCursor.patients);
-                                initializedServices.patientImagesService(id, patientsImagesCursor.select(id));
+                                this.contex.patientsService(patientsCursor.patients);
+                                this.context.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
                         />
                     </TabBarIOS.Item>
@@ -109,13 +104,17 @@ const Main = schema(model)(React.createClass({
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
-            </ServiceProvider>
+            </View>
         );
     },
 }));
 
 export default React.createClass({
     displayName: 'MainNavigator',
+
+    propTypes: {
+        token: React.PropTypes.string.isRequired,
+    },
 
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
@@ -127,19 +126,33 @@ export default React.createClass({
         };
     },
 
+    initServices() {
+        const token = this.props.token;
+        let initializedServices = {};
+        _.each(services, (service, name) => {
+            initializedServices[name] = service(token);
+        });
+        return initializedServices;
+    },
+
     render() {
         return (
-            <NavigatorIOS
-                ref={(ref) => { this.mainNavigator = ref; }}
-                initialRoute={{
-                    component: Main,
-                    title: 'Patients',
-                    passProps: this.props,
-                    navigationBarHidden: true,
-                    tintColor: '#FF2D55',
-                }}
+            <ServiceProvider
                 style={{ flex: 1 }}
-            />
+                services={this.initServices()}
+            >
+                <NavigatorIOS
+                    ref={(ref) => { this.mainNavigator = ref; }}
+                    initialRoute={{
+                        component: Main,
+                        title: 'Patients',
+                        passProps: this.props,
+                        navigationBarHidden: true,
+                        tintColor: '#FF2D55',
+                    }}
+                    style={{ flex: 1 }}
+                />
+            </ServiceProvider>
         );
     },
 });
