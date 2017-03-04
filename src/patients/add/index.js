@@ -5,8 +5,10 @@ import {
     ActivityIndicator,
     Alert,
     View,
+    TouchableWithoutFeedback,
+    Text,
 } from 'react-native';
-import { Input, Form } from 'components';
+import { Form, Input, DatePicker, ScanMrnButton } from 'components';
 import schema from 'libs/state';
 import tv4 from 'tv4';
 import s from './styles';
@@ -32,14 +34,22 @@ const model = {
         form: {
             firstname: '',
             lastname: '',
+            mrn: '',
+            dob: '',
+            sex: '',
         },
+        datePickerCursor: {},
         serverAnswer: { status: 'NotAsked' },
-        scanResult: { status: 'NotAsked'},
+        scanResult: { status: 'NotAsked' },
     },
 };
 
 async function submit(props, context, getInput) {
-    const formData = props.tree.form.get();
+    const formData = {
+        firstname: '',
+        lastname: '',
+        ..._.pickBy(props.tree.form.get()),
+    };
     const validationResult = tv4.validateMultiple(formData, createPatientSchema);
 
     if (!validationResult.valid) {
@@ -60,6 +70,11 @@ async function submit(props, context, getInput) {
         formData);
 
     if (result.status === 'Failure') {
+        if (result.error.data.mrn) {
+            getInput('mrn').showError(result.error.data.mrn);
+            return;
+        }
+
         Alert.alert(
             'Create Patient Error',
             JSON.stringify(result));
@@ -79,17 +94,39 @@ export const AddPatient = schema(model)(React.createClass({
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
+    componentWillMount() {
+        this.props.tree.set(model.tree);
+    },
+
     registerGetInput(ref) {
         if (ref) {
             this.props.registerGetInput(ref.getInput.bind(ref));
         }
     },
 
+    setupData(data) {
+        _.each(data, (value, key) => {
+            if (value) {
+                this.props.tree.form.select(key).set(value);
+            }
+        });
+    },
+
     render() {
         const firstNameCursor = this.props.tree.form.firstname;
         const lastNameCursor = this.props.tree.form.lastname;
-        const status = this.props.tree.serverAnswer.status.get();
-        const showLoader = status === 'Loading';
+        const mrnCursor = this.props.tree.form.mrn;
+        const dobCursor = this.props.tree.form.dob;
+        const sexCursor = this.props.tree.form.sex;
+
+        const mrn = mrnCursor.get();
+        const dob = dobCursor.get();
+        const sex = sexCursor.get();
+
+        const uploadStatus = this.props.tree.serverAnswer.get('status');
+        const scanStatus = this.props.tree.scanResult.get('status');
+
+        const showLoader = uploadStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
             <View>
@@ -113,10 +150,55 @@ export const AddPatient = schema(model)(React.createClass({
                         inputWrapperStyle={s.inputWrapperStyle}
                         inputStyle={s.inputStyle}
                         placeholderTextColor="#ccc"
-                        returnKeyType="done"
+                        returnKeyType={mrn || dob || sex ? 'next' : 'done'}
                         name="lastname"
                     />
+                    {
+                        mrn
+                    ?
+                        <Input
+                            label="MRN"
+                            cursor={mrnCursor}
+                            inputWrapperStyle={s.inputWrapperStyle}
+                            inputStyle={s.inputStyle}
+                            placeholderTextColor="#ccc"
+                            returnKeyType={dob || sex ? 'next' : 'done'}
+                            keyboardType="numeric"
+                            name="mrn"
+                        />
+                    :
+                        null
+                    }
+                    {
+                        dob
+                    ?
+                        <DatePicker
+                            tree={this.props.tree.datePickerCursor}
+                            cursor={dobCursor}
+                            title="Date of Birth"
+                        />
+                    :
+                        null
+                    }
+                    {
+                        sex
+                    ?
+                        <TouchableWithoutFeedback
+                            onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
+                        >
+                            <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
+                                <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
+                                <Text style={s.groupText}>{sex}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    :
+                        null
+                    }
                 </Form>
+                <ScanMrnButton
+                    cursor={this.props.tree.scanResult}
+                    setupData={this.setupData}
+                />
                 <ActivityIndicator
                     animating={showLoader}
                     size="large"
