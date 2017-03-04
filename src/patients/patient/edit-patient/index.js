@@ -66,12 +66,6 @@ const EditPatient = schema(model)(React.createClass({
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
-    contextTypes: {
-        services: React.PropTypes.shape({
-            mrnScanerService: React.PropTypes.func.isRequired,
-        }),
-    },
-
     componentWillMount() {
         const { firstname, lastname, mrn,
                 sex, dob, race } = this.props.patientCursor.data.get();
@@ -98,25 +92,12 @@ const EditPatient = schema(model)(React.createClass({
         }
     },
 
-    async setupData(response) {
-        if (!response.uri) {
-            return;
-        }
-
-        const data = await this.context.services.mrnScanerService(
-            this.props.tree.cursor.scanResult,
-            response.uri);
-        if (data.status === 'Failure') {
-            Alert.alert(
-                'Error at image recognition',
-                'We cant recognize patient\'s data, please try one more time');
-        } else {
-            _.each(data.data, (value, key) => {
-                if (value) {
-                    this.props.tree.form.select(key).set(value);
-                }
-            });
-        }
+    setupData(data) {
+        _.each(data, (value, key) => {
+            if (value) {
+                this.props.tree.form.select(key).set(value);
+            }
+        });
     },
 
     renderSex() {
@@ -144,7 +125,7 @@ const EditPatient = schema(model)(React.createClass({
         const offsetY = this.props.tree.offsetY.get();
 
         const patientStatus = this.props.patientCursor.get('status');
-        const scanStatus = this.props.tree.cursor.scanResult.get('status');
+        const scanStatus = this.props.tree.scanResult.get('status');
         const showLoader = patientStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
@@ -229,7 +210,10 @@ const EditPatient = schema(model)(React.createClass({
                             />
                         </View>
                     </Form>
-                    <ScanMrnButton setupData={this.setupData} />
+                    <ScanMrnButton
+                        cursor={this.props.tree.scanResult}
+                        setupData={this.setupData}
+                    />
                 </ScrollView>
             </View>
         );
