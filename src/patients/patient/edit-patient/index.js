@@ -53,6 +53,7 @@ const model = {
         offsetY: 0,
         datePickerCursor: {},
         racePickerCursor: {},
+        scanResult: {},
     },
 };
 
@@ -104,7 +105,9 @@ const EditPatient = schema(model)(React.createClass({
             return;
         }
 
-        const data = await this.context.services.mrnScanerService(response.uri);
+        const data = await this.context.services.mrnScanerService(
+            this.props.tree.cursor.scanResult,
+            response.uri);
         if (data.status === 'Failure') {
             Alert.alert(
                 'Error at image recognition',
@@ -142,8 +145,9 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.patientCursor.get('status');
-        const showLoader = status === 'Loading';
+        const patientStatus = this.props.patientCursor.get('status');
+        const scanStatus = this.props.tree.cursor.scanResult.get('status');
+        const showLoader = patientStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
             <View style={s.container}>

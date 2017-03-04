@@ -1,4 +1,5 @@
-import { checkStatus, url } from './base';
+import _ from 'lodash';
+import { buildPostService, defaultHeaders } from './base';
 
 function hydrateImage(uri) {
     const photo = {
@@ -12,34 +13,14 @@ function hydrateImage(uri) {
 }
 
 export function mrnScanerService(token) {
-    return async (uri) => {
-        const headers = {
-            Authorization: `JWT ${token}`,
-            'Content-Type': 'multipart/form-data',
-            Accept: 'application/json',
-        };
-
-        let result = {};
-
-        const payload = {
-            body: hydrateImage(uri),
-            method: 'POST',
-            headers,
-        };
-
-        try {
-            let response = await fetch(`${url}/api/ocr/`, payload).then(checkStatus);
-            let respData = await response.json();
-            result = {
-                data: respData,
-                status: 'Succeed',
-            };
-        } catch (error) {
-            result = {
-                error,
-                status: 'Failure',
-            };
-        }
-        return result;
+    const headers = {
+        Authorization: `JWT ${token}`,
     };
+
+    return buildPostService(
+        '/api/ocr/',
+        'POST',
+        hydrateImage,
+        _.identity,
+        _.merge({}, defaultHeaders, headers));
 }
