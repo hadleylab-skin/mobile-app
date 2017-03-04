@@ -7,3 +7,4 @@ export { DatePicker } from './picker/date-picker';
 export { Form } from './form';
 export { Switch } from './switch';
 export { ServiceProvider } from './service-provider';
+export { ScanMrnButton } from './scan-mrn-button';

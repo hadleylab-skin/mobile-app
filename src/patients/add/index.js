@@ -34,6 +34,7 @@ const model = {
             lastname: '',
         },
         serverAnswer: { status: 'NotAsked' },
+        scanResult: { status: 'NotAsked'},
     },
 };
 

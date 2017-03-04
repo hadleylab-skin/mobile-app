@@ -7,12 +7,10 @@ import {
     TouchableWithoutFeedback,
     Alert,
     ActivityIndicator,
-    Button,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
-import { Form, Input, Picker, DatePicker } from 'components';
-import ImagePicker from 'react-native-image-picker';
+import { Form, Input, Picker, DatePicker, ScanMrnButton } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
 
@@ -53,7 +51,7 @@ const model = {
         offsetY: 0,
         datePickerCursor: {},
         racePickerCursor: {},
-        scanResult: {},
+        scanResult: { status: 'NotAsked' },
     },
 };
 
@@ -231,10 +229,7 @@ const EditPatient = schema(model)(React.createClass({
                             />
                         </View>
                     </Form>
-                    <Button
-                        onPress={() => ImagePicker.launchCamera({}, this.setupData)}
-                        title="Scan mrn label"
-                    />
+                    <ScanMrnButton setupData={this.setupData} />
                 </ScrollView>
             </View>
         );
