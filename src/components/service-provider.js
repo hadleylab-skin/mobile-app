@@ -5,12 +5,6 @@ import services from 'libs/services';
 
 
 export class ServiceProvider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.formItems = [];
-        this.namedItems = {};
-    }
-
     getChildContext() {
         return {
             services: this.props.services,
