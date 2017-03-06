@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
+    "assets": "http-server /app/dist/ -p 8000",
 		"test": "jest"
 	},
 	"dependencies": {

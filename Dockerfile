@@ -1,5 +1,7 @@
 FROM node:6-alpine
-RUN mkdir /app
+RUN yarn global add react-native-cli@^2.0.1
+RUN yarn global add http-server
+RUN mkdir -p /app/dist
 WORKDIR /app
 ADD package.json ./
 ADD yarn.lock ./
@@ -12,4 +14,5 @@ RUN echo "#!/usr/bin/env sh" > /tmp/setup_env.sh &&\
 ADD .babelrc ./
 ADD index* ./
 ADD src ./src
-CMD yarn start
+RUN react-native bundle --platform ios --dev false --entry-file index.ios.js --bundle-output /app/dist/index.ios.bundle --assets-dest /app/dist
+CMD yarn assets
