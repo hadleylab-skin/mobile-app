@@ -15,10 +15,23 @@ import backStyles from './components/back/styles';
 
 import * as frontImages from './components/front';
 import * as backImages from './components/back';
+/*
+   REVIEW
+   It should be
+   import frontImages from './components/front';
+
+   You need to fix export
+   export default {} inside ./component/front
+*/
 
 import flip from './images/flip/flip.png';
 import front from './images/front/front.png';
 import back from './images/back/back.png';
+
+/*
+   REVIEW
+   const images = parseSites(frontImages);
+*/
 
 export const AnatomicalSiteWidget = schema({})(React.createClass({
     displayName: 'AnatomicalSiteWidget',
@@ -29,7 +42,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
 
     getInitialState() {
         return {
-            wasFlipped: false,
+            wasFlipped: false, //REVIEW: _.include(this.props.cursor.get(), frontImages);
         };
     },
 
@@ -39,6 +52,11 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     parseSites(images, stylesList) {
+        /*
+        REVIEW
+           This function will be called for any render.
+           This values should be calculated once.
+        */
         const sites = _.map(_.toPairs(images), (image) => {
             const key = image[0];
             const label = _.startCase(key);
@@ -66,6 +84,10 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                         <Image source={flip} />
                     </TouchableOpacity>
                     <View style={s.widget}>
+                        {/*
+                            REVIEW
+                            { wasFlipped ? <HumanBody front/> : <HumanBody back/> }
+                          */}
                         <HumanBody
                             cursor={currentSiteCursor}
                             bodyImage={front}

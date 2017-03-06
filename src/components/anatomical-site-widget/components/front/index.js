@@ -30,6 +30,8 @@ import leftAnkle from './images/legs/left-ankle/left-ankle.png';
 import rightFoot from './images/legs/right-foot/right-foot.png';
 import leftFoot from './images/legs/left-foot/left-foot.png';
 
+
+// REVIEW export default
 export { head, neck, rightChest, leftChest, upperRightPelvis,
   upperLeftPelvis, lowerRightPelvis, lowerLeftPelvis, leftShoulder,
   rightShoulder, rightElbow, leftElbow, rightForearm, leftForearm,
