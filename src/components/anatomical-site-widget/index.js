@@ -13,16 +13,8 @@ import s from './styles';
 import frontStyles from './components/front/styles';
 import backStyles from './components/back/styles';
 
-import * as frontImages from './components/front';
-import * as backImages from './components/back';
-/*
-   REVIEW
-   It should be
-   import frontImages from './components/front';
-
-   You need to fix export
-   export default {} inside ./component/front
-*/
+import frontImages from './components/front';
+import backImages from './components/back';
 
 import flip from './images/flip/flip.png';
 import front from './images/front/front.png';
@@ -56,8 +48,10 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     getInitialState() {
+        const value = this.props.cursor.get();
+
         return {
-            wasFlipped: false, //REVIEW: _.include(this.props.cursor.get(), frontImages);
+            wasFlipped: _.findIndex(backSites, { label: value }) !== -1,
         };
     },
 

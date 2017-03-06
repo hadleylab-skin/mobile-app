@@ -29,9 +29,10 @@ import leftAnkleBack from './images/legs/left-ankle-back/left-ankle-back.png';
 import rightFootBack from './images/legs/right-foot-back/right-foot-back.png';
 import leftFootBack from './images/legs/left-foot-back/left-foot-back.png';
 
-export { backHead, backNeck, upperRightBack, upperLeftBack, rightShoulderBack,
+export default { backHead, backNeck, upperRightBack, upperLeftBack, rightShoulderBack,
   leftShoulderBack, rightElbowBack, leftElbowBack, leftForearmBack, rightForearmBack,
   rightWristBack, leftWristBack, leftHandBack, rightHandBack, middleRightBack,
   middleLeftBack, lowerRightBack, lowerLeftBack, rightThighBack, leftThighBack,
   rightKneeBack, leftKneeBack, rightShinBack, leftShinBack, rightAnkleBack,
   leftAnkleBack, rightFootBack, leftFootBack };
+  
