@@ -27,6 +27,12 @@ const SignInComponent = React.createClass({
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
+    getInitialState() {
+        return {
+            shouldBeScolledUp: false,
+        };
+    },
+
     async submit() {
         const result = await loginService(this.props.tokenCursor, this.props.tree.get());
 
@@ -45,12 +51,22 @@ const SignInComponent = React.createClass({
         this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
     },
 
+    scrollUp() {
+        this.setState({ shouldBeScolledUp: true });
+
+        setTimeout(() => this.setState({ shouldBeScolledUp: false }), 500);
+    },
+
     render() {
         const emailCursor = this.props.tree.email;
         const passwordCursor = this.props.tree.password;
 
         return (
-            <StartScreen>
+            <StartScreen
+                tree={this.props.tree}
+                shouldBeScolledUp={this.state.shouldBeScolledUp}
+                offset={100}
+            >
                 <Form onSubmit={this.submit}>
                     <Input
                         label="Email"
@@ -68,6 +84,7 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         secureTextEntry
+                        onFocus={this.scrollUp}
                     />
                 </Form>
                 <Button title="Login" onPress={this.submit} />
