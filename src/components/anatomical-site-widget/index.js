@@ -28,10 +28,25 @@ import flip from './images/flip/flip.png';
 import front from './images/front/front.png';
 import back from './images/back/back.png';
 
-/*
-   REVIEW
-   const images = parseSites(frontImages);
-*/
+function parseSites(images, stylesList) {
+    const sites = _.map(_.toPairs(images), (image) => {
+        const key = image[0];
+        const label = _.startCase(key);
+        const styles = stylesList[key];
+        const source = image[1];
+
+        return {
+            label,
+            styles,
+            source,
+        };
+    });
+
+    return sites;
+}
+
+const frontSites = parseSites(frontImages, frontStyles);
+const backSites = parseSites(backImages, backStyles);
 
 export const AnatomicalSiteWidget = schema({})(React.createClass({
     displayName: 'AnatomicalSiteWidget',
@@ -51,28 +66,6 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
         this.setState({ wasFlipped });
     },
 
-    parseSites(images, stylesList) {
-        /*
-        REVIEW
-           This function will be called for any render.
-           This values should be calculated once.
-        */
-        const sites = _.map(_.toPairs(images), (image) => {
-            const key = image[0];
-            const label = _.startCase(key);
-            const styles = stylesList[key];
-            const source = image[1];
-
-            return {
-                label,
-                styles,
-                source,
-            };
-        });
-
-        return sites;
-    },
-
     render() {
         const currentSiteCursor = this.props.cursor;
         const { wasFlipped } = this.state;
@@ -84,22 +77,19 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                         <Image source={flip} />
                     </TouchableOpacity>
                     <View style={s.widget}>
-                        {/*
-                            REVIEW
-                            { wasFlipped ? <HumanBody front/> : <HumanBody back/> }
-                          */}
-                        <HumanBody
-                            cursor={currentSiteCursor}
-                            bodyImage={front}
-                            sites={this.parseSites(frontImages, frontStyles)}
-                            isShown={!wasFlipped}
-                        />
-                        <HumanBody
-                            cursor={currentSiteCursor}
-                            bodyImage={back}
-                            sites={this.parseSites(backImages, backStyles)}
-                            isShown={wasFlipped}
-                        />
+                        {wasFlipped ? (
+                            <HumanBody
+                                cursor={currentSiteCursor}
+                                bodyImage={back}
+                                sites={backSites}
+                            />
+                        ) : (
+                            <HumanBody
+                                cursor={currentSiteCursor}
+                                bodyImage={front}
+                                sites={frontSites}
+                            />
+                        )}
                     </View>
                 </View>
             </ScrollView>

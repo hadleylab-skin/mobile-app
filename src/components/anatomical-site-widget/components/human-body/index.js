@@ -14,7 +14,6 @@ const HumanBody = React.createClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
         bodyImage: React.PropTypes.number.isRequired,
-        isShown: React.PropTypes.bool.isRequired,
         sites: React.PropTypes.arrayOf(React.PropTypes.shape({
             label: React.PropTypes.string.isRequired,
             styles: React.PropTypes.number.isRequired,
@@ -23,10 +22,10 @@ const HumanBody = React.createClass({
     },
 
     render() {
-        const { cursor, sites, bodyImage, isShown } = this.props;
+        const { cursor, sites, bodyImage } = this.props;
 
         return (
-            <View style={[s.container, { opacity: isShown ? 1 : 0, zIndex: isShown ? 1 : 0 }]}>
+            <View style={s.container}>
                 <Image source={bodyImage} style={{ opacity: 0.5 }} />
                 {_.map(sites, (site, index) =>
                     <TouchableArea
