@@ -11,5 +11,5 @@ RUN echo "#!/usr/bin/env sh" > /tmp/setup_env.sh &&\
     chmod +x  /app/node_modules/react-native/local-cli/setup_env.sh
 ADD .babelrc ./
 ADD index* ./
-ADD src ./
+ADD src ./src
 CMD yarn start
