@@ -6,15 +6,15 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    TouchableWithoutFeedback,
 } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
-import { Form, Input, Switch, AnatomicalSiteWidget } from 'components';
+import { Form, Switch, AnatomicalSiteWidget, Title, InfoField } from 'components';
 import tv4 from 'tv4';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Input from '../input';
 import s from './styles';
 
 const updateImageSchema = {
@@ -110,7 +110,9 @@ const ImageInfo = schema(model)(React.createClass({
         const { navigator } = this.props;
 
         return (
-            <TouchableWithoutFeedback
+            <InfoField
+                title="Anatomical Site"
+                text={this.props.tree.form.anatomical_site.get()}
                 onPress={() => {
                     anatomicalSiteCursor.set(this.props.tree.form.anatomical_site.get());
                     navigator.push({
@@ -130,12 +132,7 @@ const ImageInfo = schema(model)(React.createClass({
                         },
                     });
                 }}
-            >
-                <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
-                    <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Anatomical Site:</Text>
-                    <Text style={s.groupText}>{this.props.tree.form.anatomical_site.get()}</Text>
-                </View>
-            </TouchableWithoutFeedback>
+            />
         );
     },
 
@@ -210,15 +207,11 @@ const ImageInfo = schema(model)(React.createClass({
                                 null
                         }
                         <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Clinical Diagnosis</Text>
-                            </View>
+                            <Title text="Clinical Diagnosis" />
                             <Input
                                 label=""
                                 cursor={clinicalDiagnosisCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                errorStyle={s.error}
+                                fullWidth
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="clinical_diagnosis"
@@ -226,18 +219,13 @@ const ImageInfo = schema(model)(React.createClass({
                             />
                         </View>
                         <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Image Information</Text>
-                            </View>
+                            <Title text="Image Information" />
 
                             {this.renderAnatomicalSite()}
 
-                            <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
-                                <Text style={s.groupTitle}>Biopsy:</Text>
-                                <Switch
-                                    cursor={biopsyCursor}
-                                />
-                            </View>
+                            <InfoField title="Biopsy">
+                                <Switch cursor={biopsyCursor} />
+                            </InfoField>
                         </View>
                     </Form>
                 </KeyboardAwareScrollView>

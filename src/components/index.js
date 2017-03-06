@@ -1,5 +1,6 @@
 export { Input } from './input';
 export { Button } from './button';
+export { Title } from './title';
 export { InfoField } from './info-field';
 export { ClickableText } from './clickable-text';
 export { StartScreen } from './start-screen';

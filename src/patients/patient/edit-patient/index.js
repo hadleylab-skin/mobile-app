@@ -2,16 +2,15 @@ import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
-    Text,
-    TouchableWithoutFeedback,
     Alert,
     ActivityIndicator,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
-import { Form, Input, Picker, DatePicker, ScanMrnButton } from 'components';
+import { Form, Picker, DatePicker, Title, InfoField, ScanMrnButton } from 'components';
 import tv4 from 'tv4';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Input from '../input';
 import s from './styles';
 
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
@@ -105,14 +104,10 @@ const EditPatient = schema(model)(React.createClass({
         const sex = sexCursor.get();
 
         return (
-            <TouchableWithoutFeedback
-                onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
-            >
-                <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
-                    <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
-                    <Text style={s.groupText}>{sex}</Text>
-                </View>
-            </TouchableWithoutFeedback>
+            <InfoField
+                title="Sex"
+                text={sex}
+                onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')} />
         );
     },
 
@@ -150,15 +145,10 @@ const EditPatient = schema(model)(React.createClass({
                         onSubmit={() => console.log('submit')} style={{ marginBottom: 40 }}
                     >
                         <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Patient name</Text>
-                            </View>
+                            <Title text="Patient name" />
                             <Input
                                 label="First Name"
                                 cursor={firstnameCursor}
-                                inputWrapperStyle={s.wrapper}
-                                inputStyle={s.input}
-                                errorStyle={s.error}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="firstname"
@@ -167,9 +157,7 @@ const EditPatient = schema(model)(React.createClass({
                             <Input
                                 label="Last Name"
                                 cursor={lastnameCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                errorStyle={s.error}
+                                fullWidth
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="lastname"
@@ -177,15 +165,11 @@ const EditPatient = schema(model)(React.createClass({
                             />
                         </View>
                         <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Medical record number</Text>
-                            </View>
+                            <Title text="Medical record number" />
                             <Input
                                 label=""
                                 cursor={mrnCursor}
-                                inputWrapperStyle={[s.wrapper, s.wrapperFull]}
-                                inputStyle={s.input}
-                                errorStyle={s.error}
+                                fullWidth
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 keyboardType="numeric"
@@ -194,9 +178,7 @@ const EditPatient = schema(model)(React.createClass({
                             />
                         </View>
                         <View style={s.group}>
-                            <View style={s.groupTitleWrapper}>
-                                <Text style={s.groupTitle}>Patient Information</Text>
-                            </View>
+                            <Title text="Patient Information" />
                             <DatePicker
                                 tree={this.props.tree.datePickerCursor}
                                 cursor={dobCursor}

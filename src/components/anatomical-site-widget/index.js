@@ -59,8 +59,6 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
         const currentSiteCursor = this.props.cursor;
         const { wasFlipped } = this.state;
 
-        console.log(this.parseSites(backImages, backStyles));
-
         return (
             <ScrollView>
                 <View style={s.container}>
