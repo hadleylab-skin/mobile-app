@@ -16,74 +16,158 @@ export default StyleSheet.create({
     },
     upperRightBack: {
         top: 111,
-        left: 112,
-        width: 47,
-        height: 82,
-    },
-    upperLeftBack: {
-        top: 111,
         right: 112,
         width: 48,
         height: 82,
     },
-    rightShoulderBack: {
-        top: 92,
-        left: 84,
-        width: 60,
-        height: 67,
+    upperLeftBack: {
+        top: 111,
+        left: 112,
+        width: 47,
+        height: 82,
     },
-    leftShoulderBack: {
+    middleRightBack: {
+        top: 195,
+        right: 109,
+        width: 51,
+        height: 56,
+    },
+    middleLeftBack: {
+        top: 195,
+        left: 111,
+        width: 51,
+        height: 57,
+    },
+    lowerRightBack: {
+        top: 253,
+        right: 96,
+        width: 64,
+        height: 71,
+    },
+    lowerLeftBack: {
+        top: 253,
+        left: 99,
+        width: 63,
+        height: 72,
+    },
+    rightShoulderBack: {
         top: 90,
         right: 83,
         width: 62,
         height: 67,
     },
-    rightElbowBack: {
-        top: 146,
-        left: 65,
-        width: 49,
-        height: 66,
+    leftShoulderBack: {
+        top: 92,
+        left: 84,
+        width: 60,
+        height: 67,
     },
-    leftElbowBack: {
+    rightElbowBack: {
         top: 146,
         right: 64,
         width: 49,
         height: 65,
     },
-    rightForearmBack: {
-        top: 201,
-        left: 54,
-        width: 43,
-        height: 49,
+    leftElbowBack: {
+        top: 146,
+        left: 65,
+        width: 49,
+        height: 66,
     },
-    leftForearmBack: {
+    rightForearmBack: {
         top: 200,
         right: 52,
         width: 43,
         height: 49,
     },
-    rightWristBack: {
-        top: 239,
-        left: 43,
-        width: 40,
-        height: 48,
+    leftForearmBack: {
+        top: 201,
+        left: 54,
+        width: 43,
+        height: 49,
     },
-    leftWristBack: {
+    rightWristBack: {
         top: 239,
         right: 40,
         width: 39,
         height: 47,
     },
+    leftWristBack: {
+        top: 239,
+        left: 43,
+        width: 40,
+        height: 48,
+    },
     rightHandBack: {
+        top: 278,
+        right: 3,
+        width: 61,
+        height: 75,
+    },
+    leftHandBack: {
         top: 279,
         left: 14,
         width: 61,
         height: 75,
     },
-    leftHandBack: {
-        top: 278,
-        right: 3,
-        width: 61,
-        height: 75,
+    rightThighBack: {
+        top: 326,
+        right: 96,
+        width: 63,
+        height: 50,
+    },
+    leftThighBack: {
+        top: 326,
+        left: 99,
+        width: 63,
+        height: 50,
+    },
+    rightKneeBack: {
+        top: 378,
+        right: 97,
+        width: 54,
+        height: 63,
+    },
+    leftKneeBack: {
+        top: 378,
+        left: 103,
+        width: 54,
+        height: 63,
+    },
+    rightShinBack: {
+        top: 443,
+        right: 90,
+        width: 55,
+        height: 44,
+    },
+    leftShinBack: {
+        top: 443,
+        left: 105,
+        width: 55,
+        height: 44,
+    },
+    rightAnkleBack: {
+        top: 488,
+        right: 84,
+        width: 59,
+        height: 40,
+    },
+    leftAnkleBack: {
+        top: 488,
+        left: 109,
+        width: 59,
+        height: 40,
+    },
+    rightFootBack: {
+        top: 529,
+        right: 86,
+        width: 55,
+        height: 62,
+    },
+    leftFootBack: {
+        top: 529,
+        left: 107,
+        width: 55,
+        height: 62,
     },
 });
