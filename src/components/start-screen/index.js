@@ -1,37 +1,48 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-    StyleSheet,
     ScrollView,
     View,
     StatusBar,
 } from 'react-native';
 import Logo from './components/logo';
+import s from './styles';
 
-export class StartScreen extends Component {
+export const StartScreen = React.createClass({
+    displayName: 'StartScreen',
+
+    propTypes: {
+        children: React.PropTypes.node.isRequired,
+        offset: React.PropTypes.number,
+        shouldBeScolledUp: React.PropTypes.bool,
+    },
+
+    componentDidUpdate() {
+        const { shouldBeScolledUp } = this.props;
+
+        if (shouldBeScolledUp) {
+            this.scrollUp();
+        }
+    },
+
+    scrollUp() {
+        const { offset } = this.props;
+
+        this.scrollView.scrollTo({ y: offset, animated: true });
+    },
+
     render() {
         return (
-            <View style={styles.container}>
-                <ScrollView centerContent>
-                    <View style={styles.inner}>
-                        <StatusBar hidden />
-                        <Logo />
-                        {this.props.children}
-                    </View>
-                </ScrollView>
-            </View>
+            <ScrollView
+                style={s.container}
+                centerContent
+                ref={(ref) => { this.scrollView = ref; }}
+            >
+                <View style={s.inner}>
+                    <StatusBar hidden />
+                    <Logo />
+                    {this.props.children}
+                </View>
+            </ScrollView>
         );
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FF2D55',
-    },
-    inner: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 50,
-        paddingBottom: 50,
     },
 });
