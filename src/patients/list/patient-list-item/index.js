@@ -32,13 +32,16 @@ const PatientListItem = React.createClass({
         isActive: React.PropTypes.bool,
         isSelected: React.PropTypes.bool,
         changeCurrentPatient: React.PropTypes.func.isRequired,
-        patientImagesService: React.PropTypes.func.isRequired,
-        getImageService: React.PropTypes.func.isRequired,
-        updateImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         selectedPatientPk: React.PropTypes.number.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         showPatientOptions: React.PropTypes.func.isRequired,
+    },
+
+    contextTypes: {
+        services: React.PropTypes.shape({
+            updatePatientService: React.PropTypes.func.isRequired,
+        }),
     },
 
     onScroll(e) {
@@ -96,7 +99,7 @@ const PatientListItem = React.createClass({
                                 onLeftButtonPress: () => this.props.navigator.pop(),
                                 rightButtonTitle: 'Edit',
                                 onRightButtonPress: () => this.props.navigator.push(
-                                    getRoute(this.props, this.props.navigator)),
+                                    getRoute(this.props, this.context)),
                                 navigationBarHidden: false,
                                 tintColor: '#FF2D55',
                                 passProps: {
@@ -105,9 +108,6 @@ const PatientListItem = React.createClass({
                                     firstname,
                                     lastname,
                                     navigator: this.props.navigator,
-                                    patientImagesService: this.props.patientImagesService,
-                                    getImageService: this.props.getImageService,
-                                    updateImageService: this.props.updateImageService,
                                     anatomicalSiteList: this.props.anatomicalSiteList,
                                     patientCursor: this.props.patientCursor,
                                 },

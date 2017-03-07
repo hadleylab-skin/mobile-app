@@ -43,11 +43,18 @@ const ImageInfo = schema(model)(React.createClass({
     displayName: 'ImageInfo',
 
     propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
         cursor: BaobabPropTypes.cursor.isRequired,
         patientPk: React.PropTypes.number.isRequired,
-        getImageService: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
+        doSubmit: React.PropTypes.func.isRequired,
+    },
+
+    contextTypes: {
+        services: React.PropTypes.shape({
+            getImageService: React.PropTypes.func.isRequired,
+        }),
     },
 
     getInitialState() {
@@ -69,7 +76,7 @@ const ImageInfo = schema(model)(React.createClass({
     },
 
     updateImage() {
-        return this.props.getImageService(
+        return this.context.services.getImageService(
             this.props.patientPk,
             this.props.cursor.get('data', 'id'),
             this.props.cursor);
@@ -125,7 +132,7 @@ const ImageInfo = schema(model)(React.createClass({
                 >
                     <Form
                         style={{ marginBottom: 40 }}
-                        onSubmit={() => console.log('submit')}
+                        onSubmit={this.props.doSubmit}
                         ref={this.registerGetInput}
                     >
                         <View style={s.imageWrapper}>
@@ -194,10 +201,8 @@ const ImageInfo = schema(model)(React.createClass({
     },
 }));
 
-export default ImageInfo;
-
-export async function submit(patientPk, imagePk, cursor, updateImageService, navigator, getInput, tree) {
-    const formData = tree.form.get();
+async function submit(props, context, getInput) {
+    const formData = props.tree.form.get();
     const validationResult = tv4.validateMultiple(formData, updateImageSchema);
 
     if (!validationResult.valid) {
@@ -213,13 +218,45 @@ export async function submit(patientPk, imagePk, cursor, updateImageService, nav
         return;
     }
 
-    const result = await updateImageService(patientPk, imagePk, cursor, formData);
+    const imagePk = props.cursor.get('data', 'id');
+    const patientPk = props.patientCursor.get('data', 'id');
+    const result = await context.services.updateImageService(patientPk, imagePk, props.cursor, formData);
 
     if (result.status === 'Failure') {
         Alert.alert(
             'Update Image Error',
             JSON.stringify(result.error));
     } else {
-        navigator.pop();
+        props.navigator.pop();
     }
 }
+
+
+export function getRoute(props, context) {
+    const { firstname, lastname, id } = props.patientCursor.get('data');
+    const navigator = props.navigator;
+
+    let getInput;
+
+    const doSubmit = async () => submit(props, context, getInput);
+
+    const passProps = {
+        doSubmit,
+        tree: props.tree,
+        cursor: props.cursor,
+        patientPk: id,
+        anatomicalSiteList: props.anatomicalSiteList,
+        registerGetInput: (_getInput) => { getInput = _getInput; },
+    };
+
+    return {
+        component: ImageInfo,
+        title: `${firstname} ${lastname}`,
+        onLeftButtonPress: () => navigator.pop(),
+        navigationBarHidden: false,
+        rightButtonTitle: 'Update',
+        onRightButtonPress: doSubmit,
+        tintColor: '#FF2D55',
+        passProps,
+    };
+};

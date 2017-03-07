@@ -96,13 +96,17 @@ class TreeStateWrapper extends Component {
 }
 
 
-export default (model) => (component) => (props) => {
-    const schema = _.isFunction(model) ? model(props) : model;
-    return (
-        <TreeStateWrapper
-            schema={schema}
-            component={component}
-            parentProps={props}
-        />
-    );
+export default (model) => (component) => {
+    function _Component(props, context) {
+        const schema = _.isFunction(model) ? model(props, context) : model;
+        return (
+            <TreeStateWrapper
+                schema={schema}
+                component={component}
+                parentProps={props}
+            />
+        );
+    }
+    _Component.contextTypes = component.contextTypes;
+    return _Component;
 };

@@ -5,8 +5,9 @@ import {
     ActivityIndicator,
     Alert,
     View,
+    ScrollView,
 } from 'react-native';
-import { Input, Form } from 'components';
+import { Form, Input, DatePicker, ScanMrnButton, InfoField } from 'components';
 import schema from 'libs/state';
 import tv4 from 'tv4';
 import s from './styles';
@@ -32,13 +33,22 @@ const model = {
         form: {
             firstname: '',
             lastname: '',
+            mrn: '',
+            dob: '',
+            sex: '',
         },
+        datePickerCursor: {},
         serverAnswer: { status: 'NotAsked' },
+        scanResult: { status: 'NotAsked' },
     },
 };
 
-async function submit(props, navigator, getInput) {
-    const formData = props.tree.form.get();
+async function submit(props, context, getInput) {
+    const formData = {
+        firstname: '',
+        lastname: '',
+        ..._.pickBy(props.tree.form.get()),
+    };
     const validationResult = tv4.validateMultiple(formData, createPatientSchema);
 
     if (!validationResult.valid) {
@@ -54,16 +64,21 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const result = await props.createPatientService(
+    const result = await context.services.createPatientService(
         props.tree.serverAnswer,
         formData);
 
     if (result.status === 'Failure') {
+        if (result.error.data.mrn) {
+            getInput('mrn').showError(result.error.data.mrn);
+            return;
+        }
+
         Alert.alert(
             'Create Patient Error',
             JSON.stringify(result));
     } else {
-        navigator.pop();
+        context.mainNavigator.pop();
         props.tree.form.set(model.tree);
         props.onPatientAdded(result.data);
     }
@@ -78,74 +93,144 @@ export const AddPatient = schema(model)(React.createClass({
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
+    componentWillMount() {
+        this.props.tree.set(model.tree);
+    },
+
     registerGetInput(ref) {
         if (ref) {
             this.props.registerGetInput(ref.getInput.bind(ref));
         }
     },
 
+    setupData(data) {
+        _.each(data, (value, key) => {
+            if (value) {
+                this.props.tree.form.select(key).set(value);
+            }
+        });
+    },
+
     render() {
         const firstNameCursor = this.props.tree.form.firstname;
         const lastNameCursor = this.props.tree.form.lastname;
-        const status = this.props.tree.serverAnswer.status.get();
-        const showLoader = status === 'Loading';
+        const mrnCursor = this.props.tree.form.mrn;
+        const dobCursor = this.props.tree.form.dob;
+        const sexCursor = this.props.tree.form.sex;
+
+        const mrn = mrnCursor.get();
+        const dob = dobCursor.get();
+        const sex = sexCursor.get();
+
+        const uploadStatus = this.props.tree.serverAnswer.get('status');
+        const scanStatus = this.props.tree.scanResult.get('status');
+
+        const showLoader = uploadStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
-            <View>
+            <ScrollView>
+                {showLoader ? (
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                ) : null}
                 <Form
                     ref={this.registerGetInput}
-                    style={s.container}
                     onSubmit={this.props.submit}
                 >
-                    <Input
-                        label="First Name"
-                        cursor={firstNameCursor}
-                        inputWrapperStyle={s.inputWrapperStyle}
-                        inputStyle={s.inputStyle}
-                        placeholderTextColor="#ccc"
-                        returnKeyType="next"
-                        name="firstname"
-                    />
-                    <Input
-                        label="Last Name"
-                        cursor={lastNameCursor}
-                        inputWrapperStyle={s.inputWrapperStyle}
-                        inputStyle={s.inputStyle}
-                        placeholderTextColor="#ccc"
-                        returnKeyType="done"
-                        name="lastname"
-                    />
+                    <View style={{ paddingLeft: 15 }}>
+                        <Input
+                            label="First Name"
+                            cursor={firstNameCursor}
+                            inputWrapperStyle={s.inputWrapperStyle}
+                            inputStyle={s.inputStyle}
+                            errorStyle={s.error}
+                            placeholderTextColor="#ccc"
+                            returnKeyType="next"
+                            name="firstname"
+                        />
+                        <Input
+                            label="Last Name"
+                            cursor={lastNameCursor}
+                            inputWrapperStyle={s.inputWrapperStyle}
+                            inputStyle={s.inputStyle}
+                            errorStyle={s.error}
+                            placeholderTextColor="#ccc"
+                            returnKeyType={mrn || dob || sex ? 'next' : 'done'}
+                            name="lastname"
+                        />
+                        {
+                            mrn
+                        ?
+                            <Input
+                                label="MRN"
+                                cursor={mrnCursor}
+                                inputWrapperStyle={s.inputWrapperStyle}
+                                inputStyle={s.inputStyle}
+                                placeholderTextColor="#ccc"
+                                returnKeyType={dob || sex ? 'next' : 'done'}
+                                keyboardType="numeric"
+                                name="mrn"
+                            />
+                        :
+                            null
+                        }
+                    </View>
+                    {
+                        dob
+                    ?
+                        <DatePicker
+                            tree={this.props.tree.datePickerCursor}
+                            cursor={dobCursor}
+                            title="Date of Birth"
+                        />
+                    :
+                        null
+                    }
+                    {
+                        sex
+                    ?
+                        <InfoField
+                            title="Sex"
+                            text={sex}
+                            onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
+                        />
+                    :
+                        null
+                    }
                 </Form>
-                <ActivityIndicator
-                    animating={showLoader}
-                    size="large"
-                    color="#FF2D55"
+                <ScanMrnButton
+                    cursor={this.props.tree.scanResult}
+                    setupData={this.setupData}
                 />
-            </View>
+            </ScrollView>
         );
     },
 }));
 
-export function getRoute(props, navigator) {
+export function getRoute(props, context) {
     let getInput;
     let passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree.newPatient,
-        createPatientService: props.createPatientService,
         onPatientAdded: (patient) => {
             props.changeCurrentPatient(patient);
-            props.patientsService(props.tree.patients);
+            context.services.patientsService(props.tree.patients);
         },
     };
 
-    const doSubmit = async () => submit(passProps, navigator, getInput);
+    const doSubmit = async () => submit(passProps, context, getInput);
 
     passProps.submit = doSubmit;
 
     return {
         component: AddPatient,
         leftButtonTitle: 'Cancel',
-        onLeftButtonPress: () => navigator.pop(),
+        onLeftButtonPress: () => context.mainNavigator.pop(),
         title: 'Create patient',
         rightButtonTitle: 'Done',
         onRightButtonPress: doSubmit,

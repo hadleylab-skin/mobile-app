@@ -9,13 +9,13 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import ImageInfo, { submit } from './image-info';
+import { getRoute } from './image-info';
 import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
-const model = (props) => (
+const model = (props, context) => (
     {
-        tree: (cursor) => props.patientImagesService(props.id, cursor),
+        tree: (cursor) => context.services.patientImagesService(props.id, cursor),
     }
 );
 
@@ -26,11 +26,16 @@ const Patient = schema(model)(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         id: React.PropTypes.number.isRequired,
-        patientImagesService: React.PropTypes.func.isRequired,
-        getImageService: React.PropTypes.func.isRequired,
-        updateImageService: React.PropTypes.func.isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
+        anatomicalSiteList: React.PropTypes.arrayOf( //eslint-disable-line
+            React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
+    },
+
+    contextTypes: {
+        services: React.PropTypes.shape({
+            patientImagesService: React.PropTypes.func.isRequired,
+            updateImageService: React.PropTypes.func.isRequired,
+        }),
     },
 
     getInitialState() {
@@ -52,7 +57,7 @@ const Patient = schema(model)(React.createClass({
 
     updatePatient() {
         const { id, tree } = this.props;
-        return this.props.patientImagesService(id, tree);
+        return this.context.services.patientImagesService(id, tree);
     },
 
     renderActivityIndicator() {
@@ -95,7 +100,7 @@ const Patient = schema(model)(React.createClass({
     },
 
     render() {
-        const { firstname, lastname, id } = this.props.patientCursor.get('data');
+        const { firstname, lastname } = this.props.patientCursor.get('data');
         const data = this.props.tree.data;
         const showLoader = this.props.tree.status.get() === 'Loading';
 
@@ -138,38 +143,17 @@ const Patient = schema(model)(React.createClass({
                             }
 
                             if (!error && !uploading) {
-                                const patientPk = id;
                                 const imagePk = cursor.get('data', 'id');
-                                const updateImageService = this.props.updateImageService;
-                                const navigator = this.props.navigator;
-                                const tree = this.props.tree;
-                                let getInput;
-
-                                const passProps = {
-                                    registerGetInput: (_getInput) => { getInput = _getInput; },
-                                    cursor,
-                                    patientPk,
-                                    tree,
-                                    getImageService: this.props.getImageService,
-                                    anatomicalSiteList: this.props.anatomicalSiteList,
-                                };
 
                                 return (
                                     <TouchableOpacity
                                         key={imagePk}
                                         style={s.photoWrapper}
-                                        onPress={() => navigator.push({
-                                            component: ImageInfo,
-                                            title: `${firstname} ${lastname}`,
-                                            onLeftButtonPress: () => navigator.pop(),
-                                            navigationBarHidden: false,
-                                            rightButtonTitle: 'Update',
-                                            onRightButtonPress: async () =>
-                                                submit(patientPk, imagePk, cursor,
-                                                    updateImageService, navigator, getInput, tree),
-                                            tintColor: '#FF2D55',
-                                            passProps,
-                                        })}
+                                        onPress={() => this.props.navigator.push(
+                                                getRoute(
+                                                    { ...this.props, cursor },
+                                                    this.context))
+                                                }
                                     >
                                         {this.renderActivityIndicator()}
                                         <Image

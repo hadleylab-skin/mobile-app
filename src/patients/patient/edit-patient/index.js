@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
-import { Form, Input, Picker, DatePicker } from 'components';
+import { Form, Input, Picker, DatePicker, ScanMrnButton } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
 
@@ -51,6 +51,7 @@ const model = {
         offsetY: 0,
         datePickerCursor: {},
         racePickerCursor: {},
+        scanResult: { status: 'NotAsked' },
     },
 };
 
@@ -58,6 +59,7 @@ const EditPatient = schema(model)(React.createClass({
     displayName: 'EditPatient',
 
     propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
@@ -90,6 +92,14 @@ const EditPatient = schema(model)(React.createClass({
         }
     },
 
+    setupData(data) {
+        _.each(data, (value, key) => {
+            if (value) {
+                this.props.tree.form.select(key).set(value);
+            }
+        });
+    },
+
     renderSex() {
         const sexCursor = this.props.tree.form.sex;
         const sex = sexCursor.get();
@@ -114,8 +124,9 @@ const EditPatient = schema(model)(React.createClass({
         const dobCursor = this.props.tree.form.dob;
         const offsetY = this.props.tree.offsetY.get();
 
-        const status = this.props.patientCursor.get('status');
-        const showLoader = status === 'Loading';
+        const patientStatus = this.props.patientCursor.get('status');
+        const scanStatus = this.props.tree.scanResult.get('status');
+        const showLoader = patientStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
             <View style={s.container}>
@@ -198,6 +209,10 @@ const EditPatient = schema(model)(React.createClass({
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
                         </View>
+                        <ScanMrnButton
+                            cursor={this.props.tree.scanResult}
+                            setupData={this.setupData}
+                        />
                     </Form>
                 </ScrollView>
             </View>
@@ -242,13 +257,14 @@ async function submit(props, navigator, getInput) {
     }
 }
 
-export function getRoute(props, navigator) {
+export function getRoute(props, context) {
     let getInput;
+    const navigator = props.navigator;
     const passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree,
         patientCursor: props.patientCursor,
-        updatePatientService: props.updatePatientService,
+        updatePatientService: context.services.updatePatientService,
         racesList: props.racesList,
     };
 

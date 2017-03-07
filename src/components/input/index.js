@@ -61,6 +61,7 @@ export const Input = schema({})(React.createClass({
         if (this.props.cursor.get() !== prevState.value) {
             this.setState({ // eslint-disable-line
                 value: this.props.cursor.get(),
+                errorMessage: '',
             });
         }
     },

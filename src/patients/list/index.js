@@ -12,10 +12,10 @@ import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
 import s from './styles';
 
-const model = (props) => (
+const model = (props, context) => (
     {
         tree: {
-            patients: props.patientsService,
+            patients: context.services.patientsService,
             newPatient: {},
         },
         patientsImagesCursor: {},
@@ -28,14 +28,15 @@ const PatientsListScreen = schema(model)(React.createClass({
         changeCurrentPatient: React.PropTypes.func.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
         patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
-        patientsService: React.PropTypes.func.isRequired,
-        patientImagesService: React.PropTypes.func.isRequired,
-        getImageService: React.PropTypes.func.isRequired,
-        updateImageService: React.PropTypes.func.isRequired,
-        updatePatientService: React.PropTypes.func.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+    },
+
+    contextTypes: {
+        services: React.PropTypes.shape({
+            patientsService: React.PropTypes.func.isRequired,
+        }),
     },
 
     getInitialState() {
@@ -88,7 +89,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         const offset = e.nativeEvent.contentOffset.y;
         if (offset < -100 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
-            await this.props.patientsService(this.props.tree.patients);
+            await this.context.services.patientsService(this.props.tree.patients);
         }
         if (offset > -70) {
             this.setState({ canUpdate: true });
@@ -138,10 +139,6 @@ const PatientsListScreen = schema(model)(React.createClass({
                             patientCursor={this.props.tree.patients.data.select(rowId)}
                             selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
-                            patientImagesService={this.props.patientImagesService}
-                            getImageService={this.props.getImageService}
-                            updateImageService={this.props.updateImageService}
-                            updatePatientService={this.props.updatePatientService}
                             racesList={this.props.racesList}
                             anatomicalSiteList={this.props.anatomicalSiteList}
                         />
@@ -153,13 +150,15 @@ const PatientsListScreen = schema(model)(React.createClass({
 }));
 
 export const PatientsList = React.createClass({
-    propTypes: {
-        mainNavigator: React.PropTypes.func.isRequired,
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        services: React.PropTypes.shape({
+            createPatientService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
+        }),
     },
 
     render() {
-        const mainNavigator = this.props.mainNavigator();
-
         return (
             <NavigatorIOS
                 ref={(ref) => { this.navigator = ref; }}
@@ -168,7 +167,7 @@ export const PatientsList = React.createClass({
                     passProps: this.props,
                     title: 'Patients',
                     rightButtonTitle: 'Create',
-                    onRightButtonPress: () => mainNavigator.push(getRoute(this.props, mainNavigator)),
+                    onRightButtonPress: () => this.context.mainNavigator.push(getRoute(this.props, this.context)),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',
                 }}

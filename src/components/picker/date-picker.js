@@ -57,7 +57,7 @@ export const DatePicker = schema(model)(React.createClass({
     onPress() {
         const { isOpen } = this.props.tree;
 
-        if (!isOpen.get()) {
+        if (!isOpen.get() && this.props.onPress) {
             this.props.onPress();
         }
 

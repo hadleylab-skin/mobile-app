@@ -10,12 +10,12 @@ export class Button extends React.Component {
     render() {
         return (
             <TouchableHighlight
-                style={styles.button}
+                style={[styles.button, this.props.stylesButton]}
                 onPress={this.props.onPress}
-                underlayColor="rgba(255,255,255,0.2)"
+                underlayColor={this.props.underlayColor || 'rgba(255,255,255,0.2)'}
             >
                 <View>
-                    <Text style={styles.text}>
+                    <Text style={[styles.text, this.props.stylesText]}>
                         {this.props.title}
                     </Text>
                 </View>
