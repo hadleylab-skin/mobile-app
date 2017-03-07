@@ -209,11 +209,11 @@ const EditPatient = schema(model)(React.createClass({
                                 onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                             />
                         </View>
+                        <ScanMrnButton
+                            cursor={this.props.tree.scanResult}
+                            setupData={this.setupData}
+                        />
                     </Form>
-                    <ScanMrnButton
-                        cursor={this.props.tree.scanResult}
-                        setupData={this.setupData}
-                    />
                 </ScrollView>
             </View>
         );

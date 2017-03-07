@@ -1,6 +1,6 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { Button } from 'components';
 
