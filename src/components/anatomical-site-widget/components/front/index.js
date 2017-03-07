@@ -31,9 +31,9 @@ import rightFoot from './images/legs/right-foot/right-foot.png';
 import leftFoot from './images/legs/left-foot/left-foot.png';
 
 
-export default { head, neck, rightChest, leftChest, upperRightPelvis,
-  upperLeftPelvis, lowerRightPelvis, lowerLeftPelvis, leftShoulder,
-  rightShoulder, rightElbow, leftElbow, rightForearm, leftForearm,
-  rightWrist, leftWrist, rightHand, leftHand, rightThigh, leftThigh,
-  rightKnee, leftKnee, rightShin, leftShin, rightAnkle, leftAnkle,
-  rightFoot, leftFoot };
+export default { head, rightChest, leftChest, leftShoulder,
+  rightShoulder,  neck, upperRightPelvis, upperLeftPelvis,
+  lowerRightPelvis, lowerLeftPelvis, rightElbow, leftElbow,
+  rightForearm, leftForearm, rightWrist, leftWrist, rightHand,
+  leftHand, rightThigh, leftThigh, rightKnee, leftKnee, rightShin,
+  leftShin, rightAnkle, leftAnkle, rightFoot, leftFoot };
