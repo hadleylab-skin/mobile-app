@@ -129,6 +129,15 @@ export const AddPatient = schema(model)(React.createClass({
 
         return (
             <ScrollView>
+                {showLoader ? (
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                ) : null}
                 <Form
                     ref={this.registerGetInput}
                     onSubmit={this.props.submit}
@@ -170,18 +179,18 @@ export const AddPatient = schema(model)(React.createClass({
                         :
                             null
                         }
-                        {
-                            dob
-                        ?
-                            <DatePicker
-                                tree={this.props.tree.datePickerCursor}
-                                cursor={dobCursor}
-                                title="Date of Birth"
-                            />
-                        :
-                            null
-                        }
                     </View>
+                    {
+                        dob
+                    ?
+                        <DatePicker
+                            tree={this.props.tree.datePickerCursor}
+                            cursor={dobCursor}
+                            title="Date of Birth"
+                        />
+                    :
+                        null
+                    }
                     {
                         sex
                     ?
@@ -197,11 +206,6 @@ export const AddPatient = schema(model)(React.createClass({
                 <ScanMrnButton
                     cursor={this.props.tree.scanResult}
                     setupData={this.setupData}
-                />
-                <ActivityIndicator
-                    animating={showLoader}
-                    size="large"
-                    color="#FF2D55"
                 />
             </ScrollView>
         );
