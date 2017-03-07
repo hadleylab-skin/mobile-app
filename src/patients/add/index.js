@@ -5,10 +5,9 @@ import {
     ActivityIndicator,
     Alert,
     View,
-    TouchableWithoutFeedback,
-    Text,
+    ScrollView,
 } from 'react-native';
-import { Form, Input, DatePicker, ScanMrnButton } from 'components';
+import { Form, Input, DatePicker, ScanMrnButton, InfoField } from 'components';
 import schema from 'libs/state';
 import tv4 from 'tv4';
 import s from './styles';
@@ -129,68 +128,68 @@ export const AddPatient = schema(model)(React.createClass({
         const showLoader = uploadStatus === 'Loading' || scanStatus === 'Loading';
 
         return (
-            <View>
+            <ScrollView>
                 <Form
                     ref={this.registerGetInput}
-                    style={s.container}
                     onSubmit={this.props.submit}
                 >
-                    <Input
-                        label="First Name"
-                        cursor={firstNameCursor}
-                        inputWrapperStyle={s.inputWrapperStyle}
-                        inputStyle={s.inputStyle}
-                        placeholderTextColor="#ccc"
-                        returnKeyType="next"
-                        name="firstname"
-                    />
-                    <Input
-                        label="Last Name"
-                        cursor={lastNameCursor}
-                        inputWrapperStyle={s.inputWrapperStyle}
-                        inputStyle={s.inputStyle}
-                        placeholderTextColor="#ccc"
-                        returnKeyType={mrn || dob || sex ? 'next' : 'done'}
-                        name="lastname"
-                    />
-                    {
-                        mrn
-                    ?
+                    <View style={{ paddingLeft: 15 }}>
                         <Input
-                            label="MRN"
-                            cursor={mrnCursor}
+                            label="First Name"
+                            cursor={firstNameCursor}
                             inputWrapperStyle={s.inputWrapperStyle}
                             inputStyle={s.inputStyle}
+                            errorStyle={s.error}
                             placeholderTextColor="#ccc"
-                            returnKeyType={dob || sex ? 'next' : 'done'}
-                            keyboardType="numeric"
-                            name="mrn"
+                            returnKeyType="next"
+                            name="firstname"
                         />
-                    :
-                        null
-                    }
-                    {
-                        dob
-                    ?
-                        <DatePicker
-                            tree={this.props.tree.datePickerCursor}
-                            cursor={dobCursor}
-                            title="Date of Birth"
+                        <Input
+                            label="Last Name"
+                            cursor={lastNameCursor}
+                            inputWrapperStyle={s.inputWrapperStyle}
+                            inputStyle={s.inputStyle}
+                            errorStyle={s.error}
+                            placeholderTextColor="#ccc"
+                            returnKeyType={mrn || dob || sex ? 'next' : 'done'}
+                            name="lastname"
                         />
-                    :
-                        null
-                    }
+                        {
+                            mrn
+                        ?
+                            <Input
+                                label="MRN"
+                                cursor={mrnCursor}
+                                inputWrapperStyle={s.inputWrapperStyle}
+                                inputStyle={s.inputStyle}
+                                placeholderTextColor="#ccc"
+                                returnKeyType={dob || sex ? 'next' : 'done'}
+                                keyboardType="numeric"
+                                name="mrn"
+                            />
+                        :
+                            null
+                        }
+                        {
+                            dob
+                        ?
+                            <DatePicker
+                                tree={this.props.tree.datePickerCursor}
+                                cursor={dobCursor}
+                                title="Date of Birth"
+                            />
+                        :
+                            null
+                        }
+                    </View>
                     {
                         sex
                     ?
-                        <TouchableWithoutFeedback
+                        <InfoField
+                            title="Sex"
+                            text={sex}
                             onPress={() => sexCursor.set(sex && sex === 'Male' ? 'Female' : 'Male')}
-                        >
-                            <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
-                                <Text style={[s.groupTitle, { paddingTop: 7, paddingBottom: 8 }]}>Sex:</Text>
-                                <Text style={s.groupText}>{sex}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        />
                     :
                         null
                     }
@@ -204,7 +203,7 @@ export const AddPatient = schema(model)(React.createClass({
                     size="large"
                     color="#FF2D55"
                 />
-            </View>
+            </ScrollView>
         );
     },
 }));
