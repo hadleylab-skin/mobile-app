@@ -31,7 +31,7 @@ export function updateImageService(token) {
     };
 }
 
-function hidrateImage(image) {
+function hydrateImage(image) {
     const photo = {
         uri: image.path,
         type: 'image/jpeg',

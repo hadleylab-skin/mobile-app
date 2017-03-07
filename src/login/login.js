@@ -45,12 +45,18 @@ const SignInComponent = React.createClass({
         this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
     },
 
+    scrollUp() {
+        this.scrollView.scrollTo(50);
+    },
+
     render() {
         const emailCursor = this.props.tree.email;
         const passwordCursor = this.props.tree.password;
 
         return (
-            <StartScreen>
+            <StartScreen
+                ref={(ref) => { this.scrollView = ref; }}
+            >
                 <Form onSubmit={this.submit}>
                     <Input
                         label="Email"
@@ -68,6 +74,7 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         secureTextEntry
+                        onFocus={this.scrollUp}
                     />
                 </Form>
                 <Button title="Login" onPress={this.submit} />

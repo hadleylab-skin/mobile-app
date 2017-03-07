@@ -1,0 +1,29 @@
+stages:
+  - build
+  - release
+  - cleanup
+
+variables:
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  BUILD_IMAGE: skiniq-ios:$CI_BUILD_REF
+
+build:
+  stage: build
+  script:
+    - docker build -t $BUILD_IMAGE .
+
+release:
+  stage: release
+  script:
+    - docker tag $BUILD_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+    - develop
+
+cleanup:
+  stage: cleanup
+  script:
+    - bash -c "[ -z $(docker images -q $BUILD_IMAGE) ] || docker rmi $BUILD_IMAGE"
+  when: always
