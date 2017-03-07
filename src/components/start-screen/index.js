@@ -12,21 +12,9 @@ export const StartScreen = React.createClass({
 
     propTypes: {
         children: React.PropTypes.node.isRequired,
-        offset: React.PropTypes.number,
-        shouldBeScolledUp: React.PropTypes.bool,
     },
 
-    componentDidUpdate() {
-        const { shouldBeScolledUp } = this.props;
-
-        if (shouldBeScolledUp) {
-            this.scrollUp();
-        }
-    },
-
-    scrollUp() {
-        const { offset } = this.props;
-
+    scrollTo(offset) {
         this.scrollView.scrollTo({ y: offset, animated: true });
     },
 

@@ -27,12 +27,6 @@ const SignInComponent = React.createClass({
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
-    getInitialState() {
-        return {
-            shouldBeScolledUp: false,
-        };
-    },
-
     async submit() {
         const result = await loginService(this.props.tokenCursor, this.props.tree.get());
 
@@ -52,9 +46,7 @@ const SignInComponent = React.createClass({
     },
 
     scrollUp() {
-        this.setState({ shouldBeScolledUp: true });
-
-        setTimeout(() => this.setState({ shouldBeScolledUp: false }), 500);
+        this.scrollView.scrollTo(50);
     },
 
     render() {
@@ -63,9 +55,7 @@ const SignInComponent = React.createClass({
 
         return (
             <StartScreen
-                tree={this.props.tree}
-                shouldBeScolledUp={this.state.shouldBeScolledUp}
-                offset={100}
+                ref={(ref) => { this.scrollView = ref; }}
             >
                 <Form onSubmit={this.submit}>
                     <Input
