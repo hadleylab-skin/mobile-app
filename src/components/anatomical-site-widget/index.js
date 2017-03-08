@@ -71,14 +71,14 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                         <Image source={flip} />
                     </TouchableOpacity>
                     <View style={s.widget}>
-                        <View style={{ opacity: !wasFlipped ? 1 : 0 }}>
+                        <View style={{ opacity: !wasFlipped ? 1 : 0, zIndex: !wasFlipped ? 1 : 0 }}>
                             <HumanBody
                                 cursor={currentSiteCursor}
                                 bodyImage={front}
                                 sites={frontSites}
                             />
                         </View>
-                        <View style={{ opacity: wasFlipped ? 1 : 0 }}>
+                        <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
                             <HumanBody
                                 cursor={currentSiteCursor}
                                 bodyImage={back}
