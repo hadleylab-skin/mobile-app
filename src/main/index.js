@@ -78,8 +78,8 @@ const Main = schema(model)(React.createClass({
                             switchTab={() => currentTabCursor.set('patients')}
                             updatePatients={() => {
                                 const id = currentPatientCursor.get('id');
-                                this.contex.patientsService(patientsCursor.patients);
-                                this.context.patientImagesService(id, patientsImagesCursor.select(id));
+                                this.context.services.patientsService(patientsCursor.patients);
+                                this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
                         />
                     </TabBarIOS.Item>

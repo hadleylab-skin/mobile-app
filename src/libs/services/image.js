@@ -53,7 +53,7 @@ export function clinicalPhotoService(token) {
         const _service = buildPostService(
             `/api/v1/patients/${patientPk}/upload_clinical_photo/`,
             'POST',
-            hidrateImage,
+            hydrateImage,
             _.identity,
             _.merge({}, defaultHeaders, headers));
         return _service(cursor, data);
