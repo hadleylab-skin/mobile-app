@@ -30,6 +30,7 @@ function App(props) {
         <Main
             tree={mainScreen}
             token={tokenCursor.get('data', 'token')}
+            user={tokenCursor.get('data', 'user')}
             defaultPatient={tokenCursor.get('data', 'patient')}
         />
     );
