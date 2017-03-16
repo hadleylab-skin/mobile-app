@@ -16,7 +16,7 @@ export const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
-export const url = 'http://52.203.29.88';
+export const url = 'https://api.skiniq.co';
 
 export function buildGetService(path,
                                 dehydrate = _.identity,
