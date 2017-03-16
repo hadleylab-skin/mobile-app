@@ -11,6 +11,7 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import schema from 'libs/state';
+import { UserPropType } from 'libs/misc';
 import { Form, Input, Picker, Switch } from 'components';
 import tv4 from 'tv4';
 import s from './styles';
@@ -52,6 +53,7 @@ const ImageInfo = schema(model)(React.createClass({
     },
 
     contextTypes: {
+        user: UserPropType,
         services: React.PropTypes.shape({
             getImageService: React.PropTypes.func.isRequired,
         }),
@@ -112,6 +114,9 @@ const ImageInfo = schema(model)(React.createClass({
         const showLoader = this.props.cursor.status.get() === 'Loading';
         const offsetY = this.props.tree.offsetY.get();
 
+        const canSeePrediction = (
+            this.context.user.can_see_prediction
+            && typeof predictionAccuracy !== 'undefined');
         return (
             <View style={s.container}>
                 { showLoader ?
@@ -152,14 +157,22 @@ const ImageInfo = schema(model)(React.createClass({
                             <Text style={[s.text, s.textRight]}>Uploaded on:</Text>
                             <Text style={s.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
                         </View>
-                        <View style={s.table}>
-                            <Text style={[s.text, s.textRight]}>Prediction accuracy:</Text>
-                            <Text style={s.text}>{predictionAccuracy}</Text>
-                        </View>
-                        <View style={s.table}>
-                            <Text style={[s.text, s.textRight]}>Prediction:</Text>
-                            <Text style={s.text}>{prediction}</Text>
-                        </View>
+                        {
+                                canSeePrediction
+                            ?
+                                <View>
+                                    <View style={s.table}>
+                                        <Text style={[s.text, s.textRight]}>Prediction accuracy:</Text>
+                                        <Text style={s.text}>{predictionAccuracy}</Text>
+                                    </View>
+                                    <View style={s.table}>
+                                        <Text style={[s.text, s.textRight]}>Prediction:</Text>
+                                        <Text style={s.text}>{prediction}</Text>
+                                    </View>
+                                </View>
+                            :
+                                null
+                        }
                         <View style={s.group}>
                             <View style={s.groupTitleWrapper}>
                                 <Text style={s.groupTitle}>Clinical Diagnosis</Text>
@@ -259,4 +272,4 @@ export function getRoute(props, context) {
         tintColor: '#FF2D55',
         passProps,
     };
-};
+}

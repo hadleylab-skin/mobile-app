@@ -10,6 +10,7 @@ import _ from 'lodash';
 import services from 'libs/services';
 import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
 import schema from 'libs/state';
+import { UserPropType } from 'libs/misc';
 import { ServiceProvider } from 'components';
 import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
@@ -114,15 +115,18 @@ export default React.createClass({
 
     propTypes: {
         token: React.PropTypes.string.isRequired,
+        user: UserPropType,
     },
 
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        user: UserPropType,
     },
 
     getChildContext() {
         return {
             mainNavigator: this.mainNavigator || {},
+            user: this.props.user,
         };
     },
 
