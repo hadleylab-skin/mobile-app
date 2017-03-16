@@ -114,6 +114,9 @@ const ImageInfo = schema(model)(React.createClass({
         const showLoader = this.props.cursor.status.get() === 'Loading';
         const offsetY = this.props.tree.offsetY.get();
 
+        const canSeePrediction = (
+            this.context.user.can_see_prediction
+            && typeof predictionAccuracy !== 'undefined');
         return (
             <View style={s.container}>
                 { showLoader ?
@@ -155,7 +158,7 @@ const ImageInfo = schema(model)(React.createClass({
                             <Text style={s.text}>{moment(date_created).format('DD MMM YYYY')}</Text>
                         </View>
                         {
-                                this.context.user.can_see_prediction
+                                canSeePrediction
                             ?
                                 <View>
                                     <View style={s.table}>
