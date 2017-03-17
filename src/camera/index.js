@@ -121,7 +121,7 @@ export default schema(model)(React.createClass({
         });
         const cursor = this.props.tree.imageUploadResults.select(path, 'data');
         await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
-        this.props.updatePatients(cursor.get('data','patient'));
+        this.props.updatePatients(cursor.get('data', 'patient'));
     },
 
     deleteImage(photoPath) {

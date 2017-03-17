@@ -84,8 +84,6 @@ const PatientsListScreen = schema(model)(React.createClass({
                 flagSetter[flagName] = patientId === choosenPatientId;
                 return { ...patient, ...flagSetter };
             });
-
-            debugger;
             this.props.tree.patients.data.set(_.keyBy(patients, (patient) => patient.data.id));
         };
     },
