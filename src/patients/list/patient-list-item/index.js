@@ -48,7 +48,6 @@ const PatientListItem = React.createClass({
         const offset = e.nativeEvent.contentOffset.x;
         if (offset < 0) {
             this.props.showPatientOptions(this.props.data.id);
-            this.props.tree.isAdditionalMenuOpen.set(true);
         }
     },
 

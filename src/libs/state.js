@@ -8,7 +8,7 @@ function compareProps(oldProps, newProps) {
     if (oldKeys.length !== newKeys.length) {
         return false;
     }
-    return _.some(oldProps, (oldProp, key) => {
+    return !_.some(oldProps, (oldProp, key) => {
         if (oldProp instanceof Baobab.Cursor) {
             return oldProp.path !== newProps[key].path;
         }
@@ -67,13 +67,11 @@ class TreeStateWrapper extends Component {
         });
     }
 
-    // TODO fix it
-    /* shouldComponentUpdate(nextProps, nextState) {
-     *     const isPropsEqual = compareProps(this.props.parentProps, nextProps.parentProps);
-     *     const isStateEqual = _.isEqual(this.state, nextState);
-     *     return !(isPropsEqual && isStateEqual);
-     *   }
-     */
+    shouldComponentUpdate(nextProps, nextState) {
+        const isPropsEqual = compareProps(this.props.parentProps, nextProps.parentProps);
+        const isStateEqual = _.isEqual(this.state, nextState);
+        return !(isPropsEqual && isStateEqual);
+    }
 
     componentWillUnmount() {
         _.each(this.props.parentProps, (cursor) => {

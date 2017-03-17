@@ -77,8 +77,7 @@ const Main = schema(model)(React.createClass({
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
                             switchTab={() => currentTabCursor.set('patients')}
-                            updatePatients={() => {
-                                const id = currentPatientCursor.get('id');
+                            updatePatients={(id) => {
                                 this.context.services.patientsService(patientsCursor.patients);
                                 this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
