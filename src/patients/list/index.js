@@ -102,10 +102,23 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
-
-        // currentPatientCursor.get('id') can't be recieved properly from parent.
-        // It won't be updated in this case.
         const selectedPatientPk = this.props.currentPatientCursor.get('id');
+        /* We can't send selectedPatientPk via props
+         * this code
+         * main/index.js:103
+         * 100          }}
+         * 101          racesList={this.props.tree.racesList.get('data') || []}
+         * 102          anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
+         * 103 -       currentPatientCursor={currentPatientCursor}
+         * 103 +       selectedPatientPk={currentPatientCursor.get(lid)}
+         * 104     />
+         * 105 </TabBarIOS.Item>
+         * will not work.
+         *  It is related with render optimization.
+         *  Maybe the problem is
+         *  https://github.com/facebook/react-native/blob/c92ad5f6ae74c1d398c7cd93d5c4c50da0ca0430/Libraries/Components/TabBarIOS/TabBarItemIOS.ios.js#L121
+         * I leave cursor here, maybe it will be refactored later
+         */
 
         return (
             <View style={{ flex: 1 }}>
