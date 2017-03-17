@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -11,6 +12,14 @@ import schema from 'libs/state';
 import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
 import s from './styles';
+
+function patientsToList(patients) {
+    return _.chain(patients)
+            .values()
+            .sortBy((patient) => moment(patient.data.last_visit))
+            .reverse()
+            .value();
+}
 
 const model = (props, context) => (
     {
@@ -41,7 +50,7 @@ const PatientsListScreen = schema(model)(React.createClass({
 
     getInitialState() {
         const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
-        const patients = this.props.tree.patients.data.get() || [];
+        const patients = patientsToList(this.props.tree.patients.data.get()) || [];
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
@@ -59,7 +68,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     updateDataStore(event) {
         const data = event.data.currentData;
         if (data.status === 'Succeed') {
-            const patients = data.data;
+            const patients = patientsToList(data.data);
 
             this.setState({
                 ds: this.state.ds.cloneWithRows(patients),
@@ -67,22 +76,18 @@ const PatientsListScreen = schema(model)(React.createClass({
         }
     },
 
-    activatePatient(activePatientId) {
-        const patients = this.props.tree.patients.data.get().map((patient) => {
-            const patientId = patient.data.id;
-            return { ...patient, isActive: patientId === activePatientId };
-        });
+    setPatientGlobalFlag(flagName) {
+        return (choosenPatientId) => {
+            const patients = _.values(this.props.tree.patients.data.get()).map((patient) => {
+                const patientId = patient.data.id;
+                let flagSetter = {};
+                flagSetter[flagName] = patientId === choosenPatientId;
+                return { ...patient, ...flagSetter };
+            });
 
-        this.props.tree.patients.data.set(patients);
-    },
-
-    showPatientOptions(selectedPatientId) {
-        const patients = this.props.tree.patients.data.get().map((patient) => {
-            const patientId = patient.data.id;
-            return { ...patient, isSelected: patientId === selectedPatientId };
-        });
-
-        this.props.tree.patients.data.set(patients);
+            debugger;
+            this.props.tree.patients.data.set(_.keyBy(patients, (patient) => patient.data.id));
+        };
     },
 
     async onScroll(e) {
@@ -125,7 +130,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                         paddingBottom: 49,
                     }}
                     dataSource={this.state.ds}
-                    renderRow={(rowData, sectionId, rowId) => (
+                    renderRow={(rowData) => (
                         <PatientListItem
                             tree={this.props.patientsImagesCursor.select(rowData.data.id)}
                             data={rowData.data}
@@ -133,10 +138,10 @@ const PatientsListScreen = schema(model)(React.createClass({
                             isSelected={rowData.isSelected || false}
                             changeCurrentPatient={(patient, switchTab) => {
                                 this.props.changeCurrentPatient(patient, switchTab);
-                                this.activatePatient(rowData.data.id);
+                                this.setPatientGlobalFlag('isActive')(rowData.data.id);
                             }}
-                            showPatientOptions={this.showPatientOptions}
-                            patientCursor={this.props.tree.patients.data.select(rowId)}
+                            showPatientSelectButton={this.setPatientGlobalFlag('isSelected')}
+                            patientCursor={this.props.tree.patients.data.select(rowData.data.id)}
                             selectedPatientPk={selectedPatientPk}
                             navigator={this.props.navigator}
                             racesList={this.props.racesList}

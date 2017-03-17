@@ -35,7 +35,7 @@ const PatientListItem = React.createClass({
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         selectedPatientPk: React.PropTypes.number.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        showPatientOptions: React.PropTypes.func.isRequired,
+        showPatientSelectButton: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -47,7 +47,7 @@ const PatientListItem = React.createClass({
     onScroll(e) {
         const offset = e.nativeEvent.contentOffset.x;
         if (offset < 0) {
-            this.props.showPatientOptions(this.props.data.id);
+            this.props.showPatientSelectButton(this.props.data.id);
         }
     },
 
@@ -67,6 +67,7 @@ const PatientListItem = React.createClass({
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
         const { isActive, selectedPatientPk } = this.props;
+        console.log(id, this.props.isSelected);
 
         return (
             <View style={s.container}>
@@ -83,7 +84,7 @@ const PatientListItem = React.createClass({
                         underlayColor="#FF2D55"
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, true);
-                            this.props.showPatientOptions(null);
+                            this.props.showPatientSelectButton(null);
                         }}
                     >
                         <Text style={s.selectText}>Select</Text>
@@ -91,7 +92,7 @@ const PatientListItem = React.createClass({
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.changeCurrentPatient(this.props.data, false);
-                            this.props.showPatientOptions(null);
+                            this.props.showPatientSelectButton(null);
                             this.props.navigator.push({
                                 component: Patient,
                                 title: 'Patient',
