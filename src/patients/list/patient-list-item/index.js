@@ -67,7 +67,6 @@ const PatientListItem = React.createClass({
         const { firstname, lastname, last_visit, id } = this.props.data;
         const totalImages = this.props.data.total_images;
         const { isActive, selectedPatientPk } = this.props;
-        console.log(id, this.props.isSelected);
 
         return (
             <View style={s.container}>
