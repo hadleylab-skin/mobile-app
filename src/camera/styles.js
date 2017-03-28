@@ -21,6 +21,7 @@ export default StyleSheet.create({
     preloaders: {
         position: 'absolute',
         flexDirection: 'row',
+        flexWrap: 'wrap',
         top: 10,
         left: 10,
         right: 10,
@@ -39,6 +40,7 @@ export default StyleSheet.create({
     wrapper: {
         position: 'relative',
         zIndex: 1,
+        height: 75,
     },
     error: {
         position: 'absolute',
