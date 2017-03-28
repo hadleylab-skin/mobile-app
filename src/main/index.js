@@ -27,6 +27,7 @@ const model = (props) => (
             currentPatient: props.defaultPatient,
             racesList: getRacesList(props.token),
             anatomicalSiteList: getAnatomicalSiteList(props.token),
+            shouldNavigatorBeReset: false,
         },
     }
 );
@@ -50,12 +51,23 @@ const Main = schema(model)(React.createClass({
         }),
     },
 
+    switchTab() {
+        const shouldNavigatorBeResetCursor = this.props.tree.shouldNavigatorBeReset;
+        const currentTabCursor = this.props.tree.currentTab;
+
+        shouldNavigatorBeResetCursor.set(true);
+        currentTabCursor.set('patients');
+
+        setTimeout(() => shouldNavigatorBeResetCursor.set(false), 1000);
+    },
+
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const cameraCursor = this.props.tree.camera;
         const patientsCursor = this.props.tree.patients;
         const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
+        const shouldNavigatorBeResetCursor = this.props.tree.shouldNavigatorBeReset;
 
         return (
             <View
@@ -76,7 +88,7 @@ const Main = schema(model)(React.createClass({
                         <CameraScreen
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
-                            switchTab={() => currentTabCursor.set('patients')}
+                            switchTab={this.switchTab}
                             updatePatients={(id) => {
                                 this.context.services.patientsService(patientsCursor.patients);
                                 this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
@@ -101,6 +113,7 @@ const Main = schema(model)(React.createClass({
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                             currentPatientCursor={currentPatientCursor}
+                            shouldNavigatorBeResetCursor={shouldNavigatorBeResetCursor}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

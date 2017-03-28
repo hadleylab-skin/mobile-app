@@ -40,6 +40,7 @@ const PatientsListScreen = schema(model)(React.createClass({
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         currentPatientCursor: BaobabPropTypes.cursor.isRequired,
+        shouldNavigatorBeResetCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -59,10 +60,16 @@ const PatientsListScreen = schema(model)(React.createClass({
 
     componentWillMount() {
         this.props.tree.patients.on('update', this.updateDataStore);
+        this.props.shouldNavigatorBeResetCursor.on('update', this.updateNavigator);
     },
 
     componentWillUnmount() {
         this.props.tree.patients.off('update', this.updateDataStore);
+        this.props.shouldNavigatorBeResetCursor.off('update', this.updateNavigator);
+    },
+
+    updateNavigator() {
+        this.props.navigator.popToTop();
     },
 
     updateDataStore(event) {
