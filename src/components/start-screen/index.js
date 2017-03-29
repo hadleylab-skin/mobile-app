@@ -3,7 +3,7 @@ import {
     View,
     StatusBar,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Logo from './components/logo';
 import s from './styles';
 

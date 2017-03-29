@@ -4,7 +4,6 @@ import {
     View,
     Text,
     Image,
-    ScrollView,
     ActivityIndicator,
     Alert,
 } from 'react-native';
@@ -14,6 +13,7 @@ import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
 import { Form, Input, Picker, Switch } from 'components';
 import tv4 from 'tv4';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import s from './styles';
 
 const updateImageSchema = {
@@ -130,7 +130,7 @@ const ImageInfo = schema(model)(React.createClass({
                 :
                     null
                 }
-                <ScrollView
+                <KeyboardAwareScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
@@ -184,7 +184,6 @@ const ImageInfo = schema(model)(React.createClass({
                                 inputStyle={s.input}
                                 errorStyle={s.error}
                                 placeholderTextColor="#ccc"
-                                onFocus={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
                                 returnKeyType="next"
                                 name="clinical_diagnosis"
                             />
@@ -198,7 +197,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 cursor={anatomicalSiteCursor}
                                 items={this.props.anatomicalSiteList}
                                 title="Anatomical Site"
-                                onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                                onPress={() => { this.scrollView.scrollToPosition(0, offsetY + 220); }}
                             />
                             <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
@@ -208,7 +207,7 @@ const ImageInfo = schema(model)(React.createClass({
                             </View>
                         </View>
                     </Form>
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </View>
         );
     },
