@@ -236,6 +236,10 @@ async function submit(props, navigator, getInput) {
 
                 getInput(fieldName).showError(errorMessage);
             });
+
+        const firstErrorPath = validationResult.errors[0].dataPath.substr(1);
+        getInput(firstErrorPath).focus();
+
         return;
     }
 
