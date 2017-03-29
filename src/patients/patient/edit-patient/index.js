@@ -143,6 +143,7 @@ const EditPatient = schema(model)(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
+                    enableAutoAutomaticScroll={false}
                 >
                     <Form
                         ref={this.registerGetInput}
@@ -161,6 +162,8 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="firstname"
+                                scrollView={this.scrollView}
+                                offsetTop={-64}
                             />
                             <Input
                                 label="Last Name"
@@ -171,7 +174,8 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="lastname"
-
+                                scrollView={this.scrollView}
+                                offsetTop={-64}
                             />
                         </View>
                         <View style={s.group}>
@@ -188,6 +192,8 @@ const EditPatient = schema(model)(React.createClass({
                                 returnKeyType="next"
                                 keyboardType="numeric"
                                 name="mrn"
+                                scrollView={this.scrollView}
+                                offsetTop={74}
                             />
                         </View>
                         <View style={s.group}>

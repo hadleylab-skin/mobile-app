@@ -134,6 +134,7 @@ const ImageInfo = schema(model)(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
+                    enableAutoAutomaticScroll={false}
                 >
                     <Form
                         style={{ marginBottom: 40 }}
@@ -186,6 +187,8 @@ const ImageInfo = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="clinical_diagnosis"
+                                scrollView={this.scrollView}
+                                offsetTop={278}
                             />
                         </View>
                         <View style={s.group}>

@@ -23,6 +23,8 @@ export const Input = schema({})(React.createClass({
         onFocus: React.PropTypes.func,
         name: React.PropTypes.string,
         errorStyle: Text.propTypes.style,
+        scrollView: React.PropTypes.any, // eslint-disable-line
+        offsetTop: React.PropTypes.number,
     },
 
     contextTypes: Form.childContextTypes,
@@ -114,6 +116,10 @@ export const Input = schema({})(React.createClass({
         if (this.props.onFocus) {
             this.props.onFocus();
         }
+
+        if (this.props.scrollView) {
+            this.props.scrollView.scrollToPosition(0, this.props.offsetTop);
+        }
     },
 
     showError(errorMessage) {
@@ -145,7 +151,7 @@ export const Input = schema({})(React.createClass({
 
         return (
             <TouchableWithoutFeedback onPress={this.focus}>
-                <View>
+                <View ref={(ref) => (this.view = ref)}>
                     {this.state.errorMessage ? (
                         <Text style={[s.error, errorStyle || {}]}>{this.state.errorMessage}</Text>
                     ) : null}
