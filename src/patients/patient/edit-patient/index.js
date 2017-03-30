@@ -162,8 +162,7 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="firstname"
-                                scrollView={this.scrollView}
-                                offsetTop={-64}
+                                onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                             <Input
                                 label="Last Name"
@@ -174,8 +173,7 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="lastname"
-                                scrollView={this.scrollView}
-                                offsetTop={-64}
+                                onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                         </View>
                         <View style={s.group}>
@@ -192,8 +190,7 @@ const EditPatient = schema(model)(React.createClass({
                                 returnKeyType="next"
                                 keyboardType="numeric"
                                 name="mrn"
-                                scrollView={this.scrollView}
-                                offsetTop={74}
+                                onFocus={() => this.scrollView.scrollToPosition(0, 74)}
                             />
                         </View>
                         <View style={s.group}>
@@ -204,7 +201,7 @@ const EditPatient = schema(model)(React.createClass({
                                 tree={this.props.tree.datePickerCursor}
                                 cursor={dobCursor}
                                 title="Date of Birth"
-                                onPress={() => { this.scrollView.scrollToPosition(0, offsetY + 220); }}
+                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                             {this.renderSex()}
                             <Picker
@@ -212,7 +209,7 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={raceCursor}
                                 items={this.props.racesList}
                                 title="Race"
-                                onPress={() => { this.scrollView.scrollToPosition(0, offsetY + 220); }}
+                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                         </View>
                         <ScanMrnButton

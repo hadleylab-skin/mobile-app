@@ -187,8 +187,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="clinical_diagnosis"
-                                scrollView={this.scrollView}
-                                offsetTop={278}
+                                onFocus={() => this.scrollView.scrollToPosition(0, 278)}
                             />
                         </View>
                         <View style={s.group}>
@@ -200,7 +199,7 @@ const ImageInfo = schema(model)(React.createClass({
                                 cursor={anatomicalSiteCursor}
                                 items={this.props.anatomicalSiteList}
                                 title="Anatomical Site"
-                                onPress={() => { this.scrollView.scrollToPosition(0, offsetY + 220); }}
+                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                             <View style={[s.wrapper, { flexDirection: 'row', alignItems: 'center' }]}>
                                 <Text style={s.groupTitle}>Biopsy:</Text>
