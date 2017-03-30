@@ -3,7 +3,6 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
-    ScrollView,
     TouchableWithoutFeedback,
     Alert,
     ActivityIndicator,
@@ -12,6 +11,7 @@ import _ from 'lodash';
 import schema from 'libs/state';
 import { Form, Input, Picker, DatePicker, ScanMrnButton } from 'components';
 import tv4 from 'tv4';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import s from './styles';
 
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
@@ -139,10 +139,11 @@ const EditPatient = schema(model)(React.createClass({
                         />
                     </View>
                 ) : null}
-                <ScrollView
+                <KeyboardAwareScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                     ref={(ref) => { this.scrollView = ref; }}
+                    enableAutoAutomaticScroll={false}
                 >
                     <Form
                         ref={this.registerGetInput}
@@ -161,6 +162,7 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="firstname"
+                                onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                             <Input
                                 label="Last Name"
@@ -171,7 +173,7 @@ const EditPatient = schema(model)(React.createClass({
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
                                 name="lastname"
-
+                                onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                         </View>
                         <View style={s.group}>
@@ -188,6 +190,7 @@ const EditPatient = schema(model)(React.createClass({
                                 returnKeyType="next"
                                 keyboardType="numeric"
                                 name="mrn"
+                                onFocus={() => this.scrollView.scrollToPosition(0, 74)}
                             />
                         </View>
                         <View style={s.group}>
@@ -198,7 +201,7 @@ const EditPatient = schema(model)(React.createClass({
                                 tree={this.props.tree.datePickerCursor}
                                 cursor={dobCursor}
                                 title="Date of Birth"
-                                onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                             {this.renderSex()}
                             <Picker
@@ -206,7 +209,7 @@ const EditPatient = schema(model)(React.createClass({
                                 cursor={raceCursor}
                                 items={this.props.racesList}
                                 title="Race"
-                                onPress={() => { this.scrollView.scrollTo({ y: offsetY + 220, animated: true }); }}
+                                onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                         </View>
                         <ScanMrnButton
@@ -214,7 +217,7 @@ const EditPatient = schema(model)(React.createClass({
                             setupData={this.setupData}
                         />
                     </Form>
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </View>
         );
     },
@@ -236,6 +239,10 @@ async function submit(props, navigator, getInput) {
 
                 getInput(fieldName).showError(errorMessage);
             });
+
+        const firstErrorPath = validationResult.errors[0].dataPath.substr(1);
+        getInput(firstErrorPath).focus();
+
         return;
     }
 
