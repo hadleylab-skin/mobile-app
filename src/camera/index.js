@@ -56,7 +56,6 @@ const ImageLoader = React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => deleteImage(imageInfo.photo.path), 5000);
 
             return (
                 <View style={s.wrapper}>
@@ -120,8 +119,11 @@ export default schema(model)(React.createClass({
             data: {},
         });
         const cursor = this.props.tree.imageUploadResults.select(path, 'data');
-        await this.context.services.clinicalPhotoService(this.props.currentPatient.pk, cursor, photo);
-        this.props.updatePatients(cursor.get('data', 'patient'));
+        const result = await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
+        if (result.status === 'Succeed') {
+            setTimeout(() => this.deleteImage(photo.path), 5000);
+            this.props.updatePatients(cursor.get('data', 'patient'));
+        }
     },
 
     deleteImage(photoPath) {
