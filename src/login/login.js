@@ -4,14 +4,12 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
     View,
-    StyleSheet,
     NavigatorIOS,
 } from 'react-native';
-import { Input, Button, StartScreen, ClickableText } from 'components';
+import { Input, Button, StartScreen, ClickableText, Form } from 'components';
 import tree from 'libs/tree';
 import schema from 'libs/state';
 import { loginService } from 'libs/services/login';
-import { Form } from 'components';
 import ResetPassword from './reset-password';
 import SignUp from './sign-up';
 import s from './styles';
@@ -45,18 +43,12 @@ const SignInComponent = React.createClass({
         this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
     },
 
-    scrollUp() {
-        this.scrollView.scrollTo(50);
-    },
-
     render() {
         const emailCursor = this.props.tree.email;
         const passwordCursor = this.props.tree.password;
 
         return (
-            <StartScreen
-                ref={(ref) => { this.scrollView = ref; }}
-            >
+            <StartScreen>
                 <Form onSubmit={this.submit}>
                     <Input
                         label="Email"
@@ -74,7 +66,6 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         secureTextEntry
-                        onFocus={this.scrollUp}
                     />
                 </Form>
                 <Button title="Login" onPress={this.submit} />

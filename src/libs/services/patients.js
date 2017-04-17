@@ -8,11 +8,15 @@ function dehydrateMrn(item) {
         { mrn: `${typeof item.mrn === 'number' ? item.mrn : ''}` });
 }
 
+function convertListToDict(list) {
+    return _.keyBy(list, (patient) => patient.data.id);
+}
+
 function dehydratePatients(patients) {
     const data = _.map(
         patients,
         dehydrateMrn);
-    return wrapItemsAsRemoteData(data);
+    return convertListToDict(wrapItemsAsRemoteData(data));
 }
 
 export function patientsService(token) {

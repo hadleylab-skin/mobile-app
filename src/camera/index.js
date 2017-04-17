@@ -46,7 +46,7 @@ const ImageLoader = React.createClass({
 
         if (imageInfo.data.status === 'Loading') {
             return (
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, s.loading]}>
                     {this.renderImage(imageInfo.photo.path)}
                     <ActivityIndicator
                         size="large"
@@ -56,12 +56,9 @@ const ImageLoader = React.createClass({
                 </View>
             );
         } else if (imageInfo.data.status === 'Succeed') {
-            setTimeout(() => deleteImage(imageInfo.photo.path), 5000);
-
             return (
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, s.success]}>
                     {this.renderImage(imageInfo.photo.path)}
-                    <View style={s.success} />
                 </View>
             );
         }
@@ -76,9 +73,9 @@ const ImageLoader = React.createClass({
                     ]
                 )}
             >
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, s.error]}>
                     {this.renderImage(imageInfo.photo.path)}
-                    <View style={s.error}>
+                    <View style={s.errorShadow}>
                         <Text style={{ color: '#fff' }}>Error</Text>
                     </View>
                 </View>
@@ -120,8 +117,11 @@ export default schema(model)(React.createClass({
             data: {},
         });
         const cursor = this.props.tree.imageUploadResults.select(path, 'data');
-        await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
-        this.props.updatePatients();
+        const result = await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
+        if (result.status === 'Succeed') {
+            setTimeout(() => this.deleteImage(photo.path), 5000);
+            this.props.updatePatients(cursor.get('data', 'patient'));
+        }
     },
 
     deleteImage(photoPath) {

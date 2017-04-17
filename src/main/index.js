@@ -50,6 +50,13 @@ const Main = schema(model)(React.createClass({
         }),
     },
 
+    switchTab() {
+        const currentTabCursor = this.props.tree.currentTab;
+        currentTabCursor.set('patients');
+
+        this.patientsList.navigator.popToTop();
+    },
+
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const cameraCursor = this.props.tree.camera;
@@ -76,9 +83,8 @@ const Main = schema(model)(React.createClass({
                         <CameraScreen
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
-                            switchTab={() => currentTabCursor.set('patients')}
-                            updatePatients={() => {
-                                const id = currentPatientCursor.get('id');
+                            switchTab={this.switchTab}
+                            updatePatients={(id) => {
                                 this.context.services.patientsService(patientsCursor.patients);
                                 this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
@@ -91,6 +97,7 @@ const Main = schema(model)(React.createClass({
                         onPress={() => currentTabCursor.set('patients')}
                     >
                         <PatientsList
+                            ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
                             patientsImagesCursor={patientsImagesCursor}
                             changeCurrentPatient={(patient, switchTab = true) => {
