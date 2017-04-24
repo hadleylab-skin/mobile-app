@@ -17,22 +17,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
-  #if DEBUG
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
-  #else
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setHTTPMethod:@"GET"];
-    [request setURL:[NSURL URLWithString:@"https://api.skiniq.co/api/v1/login/"]];
-    NSError *error = nil;
-    NSHTTPURLResponse *responseCode = nil;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&responseCode error:&error];
-    if([responseCode statusCode] != 200){
-      jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
-    
-    } else {
-      jsCodeLocation = [NSURL URLWithString:@"https://api.skiniq.co/index.ios.bundle"];
-    }
-  #endif
+  
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"skiniq"
