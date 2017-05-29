@@ -94,7 +94,7 @@ const PatientListItem = React.createClass({
                             this.props.showPatientSelectButton(null);
                             this.props.navigator.push({
                                 component: Patient,
-                                title: 'Patient',
+                                title: `${firstname} ${lastname}`,
                                 onLeftButtonPress: () => this.props.navigator.pop(),
                                 rightButtonTitle: 'Edit',
                                 onRightButtonPress: () => this.props.navigator.push(

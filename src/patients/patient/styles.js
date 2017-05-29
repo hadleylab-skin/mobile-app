@@ -5,27 +5,8 @@ const photosContainerWidth = Dimensions.get('window').width + 2;
 export default StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 10,
         alignItems: 'center',
-    },
-    name: {
-        fontSize: 24,
-        lineHeight: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    mainPhoto: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        marginTop: 15,
-        marginBottom: 15,
-    },
-    subtitle: {
-        fontSize: 18,
-        lineHeight: 18,
-        fontWeight: '300',
-        textAlign: 'center',
+        backgroundColor: '#FAFAFA',
     },
     photos: {
         flexDirection: 'row',

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { getRoute } from './image-info';
-import defaultUserImage from './images/default-user.png';
+import { GeneralInfo } from './components/general-info';
 import s from './styles';
 
 const model = (props, context) => (
@@ -71,7 +71,7 @@ const Patient = schema(model)(React.createClass({
             </View>
         );
     },
-    
+
     renderError() {
         return (
             <TouchableOpacity style={s.photoWrapper}>
@@ -101,35 +101,22 @@ const Patient = schema(model)(React.createClass({
     },
 
     render() {
-        const { firstname, lastname } = this.props.patientCursor.get('data');
         const data = this.props.tree.data;
-        const showLoader = this.props.tree.status.get() === 'Loading';
+
+        const moles = 20;
+        const benign = 20;
+        const malignant = 2;
 
         return (
             <View style={s.container}>
-                { showLoader ?
-                    <View style={s.activityIndicator}>
-                        <ActivityIndicator
-                            animating={showLoader}
-                            size="large"
-                            color="#FF2D55"
-                        />
-                    </View>
-                :
-                    null
-                }
                 <ScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                 >
-                    <Text style={s.name}>{ `${firstname} ${lastname}` }</Text>
-                    <View style={{ alignItems: 'center' }}>
-                        <Image
-                            source={defaultUserImage}
-                            style={s.mainPhoto}
-                        />
-                    </View>
-                    <Text style={s.subtitle}>San Francisco C.A.</Text>
+                    <GeneralInfo
+                        {...this.props.patientCursor.get('data')}
+                        consentCursor={this.props.patientCursor.select('consentDateExpired')}
+                    />
                     <View style={s.photos}>
                         {data.get() && data.map((cursor) => {
                             const error = false;
