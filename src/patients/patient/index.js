@@ -12,6 +12,7 @@ import schema from 'libs/state';
 import { getRoute } from './image-info';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
+import { MolesList } from './components/moles-list';
 import s from './styles';
 
 const model = (props, context) => (
@@ -115,44 +116,7 @@ const Patient = schema(model)(React.createClass({
                         consentCursor={this.props.patientCursor.select('consentDateExpired')}
                     />
                     <MolesInfo />
-                    <View style={s.photos}>
-                        {data.get() && data.map((cursor) => {
-                            const error = false;
-                            const uploading = false;
-
-                            if (error) {
-                                return this.renderError();
-                            }
-
-                            if (uploading) {
-                                return this.renderUploading();
-                            }
-
-                            if (!error && !uploading) {
-                                const imagePk = cursor.get('data', 'id');
-
-                                return (
-                                    <TouchableOpacity
-                                        key={imagePk}
-                                        style={s.photoWrapper}
-                                        onPress={() => this.props.navigator.push(
-                                                getRoute(
-                                                    { ...this.props, cursor },
-                                                    this.context))
-                                                }
-                                    >
-                                        {this.renderActivityIndicator()}
-                                        <Image
-                                            source={{ uri: cursor.get('data').clinical_photo.thumbnail }}
-                                            style={s.photo}
-                                        />
-                                    </TouchableOpacity>
-                                );
-                            }
-
-                            return null;
-                        })}
-                    </View>
+                    <MolesList />
                 </ScrollView>
             </View>
         );

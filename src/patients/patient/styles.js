@@ -6,7 +6,6 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#FAFAFA',
     },
     photos: {
         flexDirection: 'row',
