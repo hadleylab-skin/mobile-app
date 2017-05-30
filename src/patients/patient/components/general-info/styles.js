@@ -8,7 +8,7 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
     },
     photoWrapper: {
-        width: 100,
+        width: 95,
     },
     photo: {
         width: 75,

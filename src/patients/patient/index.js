@@ -11,6 +11,7 @@ import {
 import schema from 'libs/state';
 import { getRoute } from './image-info';
 import { GeneralInfo } from './components/general-info';
+import { MolesInfo } from './components/moles-info';
 import s from './styles';
 
 const model = (props, context) => (
@@ -103,10 +104,6 @@ const Patient = schema(model)(React.createClass({
     render() {
         const data = this.props.tree.data;
 
-        const moles = 20;
-        const benign = 20;
-        const malignant = 2;
-
         return (
             <View style={s.container}>
                 <ScrollView
@@ -117,6 +114,7 @@ const Patient = schema(model)(React.createClass({
                         {...this.props.patientCursor.get('data')}
                         consentCursor={this.props.patientCursor.select('consentDateExpired')}
                     />
+                    <MolesInfo />
                     <View style={s.photos}>
                         {data.get() && data.map((cursor) => {
                             const error = false;
