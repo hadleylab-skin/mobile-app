@@ -4,10 +4,15 @@ import {
     Text,
 } from 'react-native';
 import { Button } from 'components/new/button';
+import { AnatomicalSiteWidget } from 'components';
 import s from './styles';
 
 export const MolesInfo = React.createClass({
     propTypes: {},
+
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
 
     render() {
         const moles = 20;
@@ -34,7 +39,22 @@ export const MolesInfo = React.createClass({
                 : null}
                 <Button
                     title="Add a new mole"
-                    onPress={() => console.log('Add a new mole')}
+                    onPress={() => {
+                        this.context.mainNavigator.push({
+                            component: AnatomicalSiteWidget,
+                            title: 'Add photo',
+                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
+                            onRightButtonPress: () => {
+                                this.context.mainNavigator.pop();
+                            },
+                            navigationBarHidden: false,
+                            rightButtonTitle: 'Cancel',
+                            tintColor: '#FF2D55',
+                            passProps: {
+                                tree: this.props.tree,
+                            },
+                        });
+                    }}
                 />
             </View>
         );

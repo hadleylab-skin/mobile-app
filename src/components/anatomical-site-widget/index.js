@@ -15,40 +15,50 @@ import backStyles from './components/back/styles';
 
 import frontImages from './components/front';
 import backImages from './components/back';
+import frontLargeImages from './components/front/large-images';
+import backLargeImages from './components/back/large-images';
 
 import flip from './images/flip/flip.png';
 import front from './images/front/front.png';
 import back from './images/back/back.png';
 
-function parseSites(images, stylesList) {
+function parseSites(images, largeImages, stylesList) {
     const sites = _.map(_.toPairs(images), (image) => {
         const key = image[0];
         const label = _.startCase(key);
         const styles = stylesList[key];
         const source = image[1];
+        const largeImageSource = largeImages[key];
 
         return {
             label,
             styles,
             source,
+            largeImageSource,
         };
     });
 
     return sites;
 }
 
-const frontSites = parseSites(frontImages, frontStyles);
-const backSites = parseSites(backImages, backStyles);
+const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
+const backSites = parseSites(backImages, backLargeImages, backStyles);
 
-export const AnatomicalSiteWidget = schema({})(React.createClass({
+const model = {
+    tree: {
+        currentAnatomicalSite: '',
+    },
+};
+
+export const AnatomicalSiteWidget = schema(model)(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
-        cursor: BaobabPropTypes.cursor.isRequired,
+        tree: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
-        const value = this.props.cursor.get();
+        const value = this.props.tree.currentAnatomicalSite.get();
 
         return {
             wasFlipped: _.findIndex(backSites, { label: value }) !== -1,
@@ -61,7 +71,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     render() {
-        const currentSiteCursor = this.props.cursor;
+        const currentSiteCursor = this.props.tree.currentAnatomicalSite;
         const { wasFlipped } = this.state;
 
         return (
@@ -85,6 +95,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                                 sites={backSites}
                             />
                         </View>
+
                     </View>
                 </View>
             </ScrollView>

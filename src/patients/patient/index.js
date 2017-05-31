@@ -81,7 +81,7 @@ const Patient = schema(model)(React.createClass({
                         {...this.props.patientCursor.get('data')}
                         consentCursor={this.props.patientCursor.select('consentDateExpired')}
                     />
-                    <MolesInfo />
+                    <MolesInfo tree={this.props.tree} />
                     <MolesList />
                 </ScrollView>
             </View>

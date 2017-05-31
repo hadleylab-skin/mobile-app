@@ -34,6 +34,7 @@ const HumanBody = React.createClass({
                         label={site.label}
                         styles={site.styles}
                         source={site.source}
+                        largeImageSource={site.largeImageSource}
                     />
                 )}
             </View>
