@@ -2,14 +2,10 @@ import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
-    Text,
-    Image,
-    TouchableOpacity,
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import { getRoute } from './image-info';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
@@ -74,37 +70,7 @@ const Patient = schema(model)(React.createClass({
         );
     },
 
-    renderError() {
-        return (
-            <TouchableOpacity style={s.photoWrapper}>
-                <View style={s.withoutImg}>
-                    <Text style={s.text}>
-                        { 'Upload error\n Click for details' }
-                    </Text>
-                </View>
-            </TouchableOpacity>
-        );
-    },
-
-    renderUploading() {
-        return (
-            <TouchableOpacity style={s.photoWrapper}>
-                <View style={s.withoutImg}>
-                    <ActivityIndicator
-                        animating
-                        size="large"
-                        color="#FF2D55"
-                        style={{ marginBottom: 10 }}
-                    />
-                    <Text style={s.text}>Uploading</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    },
-
     render() {
-        const data = this.props.tree.data;
-
         return (
             <View style={s.container}>
                 <ScrollView
