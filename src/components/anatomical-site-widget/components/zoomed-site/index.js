@@ -9,6 +9,7 @@ import {
 import schema from 'libs/state';
 import { Button } from 'components/new/button';
 import MolePicker from '../mole-picker';
+import ImagePicker from 'react-native-image-picker';
 import s from './styles';
 
 const ZoomedSite = schema({})(React.createClass({
@@ -24,7 +25,12 @@ const ZoomedSite = schema({})(React.createClass({
         return {
             locationX: null,
             locationY: null,
+            userSiteImage: null,
         };
+    },
+
+    onAddDistantPhoto(userSiteImage) {
+        this.setState({ userSiteImage });
     },
 
     onContinuePress() {
@@ -35,6 +41,12 @@ const ZoomedSite = schema({})(React.createClass({
             locationX,
             locationY,
         });
+
+        ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
+    },
+
+    onSubmitMolePhoto(uri) {
+        console.log('onSubmitMolePhoto');
     },
 
     onMolePick(locationX, locationY) {
@@ -43,13 +55,13 @@ const ZoomedSite = schema({})(React.createClass({
 
     render() {
         const { source } = this.props;
-        const { locationX, locationY } = this.state;
+        const { locationX, locationY, userSiteImage } = this.state;
 
         return (
             <View style={s.container}>
                 <View style={s.wrapper}>
                     <MolePicker onMolePick={this.onMolePick}>
-                        <Image source={source} />
+                        <Image source={userSiteImage ? { uri: userSiteImage } : source} />
                     </MolePicker>
                     <View style={s.footer}>
                         {locationX && locationY ?
@@ -57,7 +69,11 @@ const ZoomedSite = schema({})(React.createClass({
                         :
                             <View style={s.footerInner}>
                                 <Text style={s.text}>Tap on location or {' '}</Text>
-                                <TouchableOpacity style={s.textButton}>
+                                <TouchableOpacity
+                                    style={s.textButton}
+                                    onPress={() => ImagePicker.launchCamera({},
+                                        (response) => this.onAddDistantPhoto(response.uri))}
+                                >
                                     <Text style={[s.text, s.textPink]}>take a distant photo</Text>
                                 </TouchableOpacity>
                             </View>
