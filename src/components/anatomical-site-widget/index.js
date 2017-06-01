@@ -46,7 +46,7 @@ const backSites = parseSites(backImages, backLargeImages, backStyles);
 
 const model = {
     tree: {
-        currentAnatomicalSite: '',
+        moles: [],
     },
 };
 
@@ -71,7 +71,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     render() {
-        const currentSiteCursor = this.props.tree.currentAnatomicalSite;
+        const molesCursor = this.props.tree.moles;
         const { wasFlipped } = this.state;
 
         return (
@@ -83,14 +83,14 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     <View style={s.widget}>
                         <View style={{ opacity: !wasFlipped ? 1 : 0, zIndex: !wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                cursor={currentSiteCursor}
+                                molesCursor={molesCursor}
                                 bodyImage={front}
                                 sites={frontSites}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                cursor={currentSiteCursor}
+                                molesCursor={molesCursor}
                                 bodyImage={back}
                                 sites={backSites}
                             />

@@ -13,7 +13,7 @@ const TouchableArea = schema({})(React.createClass({
     displayName: 'TouchableArea',
 
     propTypes: {
-        cursor: BaobabPropTypes.cursor.isRequired,
+        molesCursor: BaobabPropTypes.cursor.isRequired,
         label: React.PropTypes.string.isRequired,
         styles: React.PropTypes.number.isRequired,
         source: React.PropTypes.number.isRequired,
@@ -25,9 +25,6 @@ const TouchableArea = schema({})(React.createClass({
     },
 
     onPress() {
-        // const { cursor, label } = this.props;
-        // cursor.set(label);
-
         this.context.mainNavigator.push({
             component: ZoomedSite,
             title: 'Add photo',
@@ -39,17 +36,19 @@ const TouchableArea = schema({})(React.createClass({
             rightButtonTitle: 'Cancel',
             tintColor: '#FF2D55',
             passProps: {
+                molesCursor: this.props.molesCursor,
                 source: this.props.largeImageSource,
+                label: this.props.label,
             },
         });
     },
 
     render() {
-        const { cursor, label, styles, source } = this.props;
+        const { molesCursor, label, styles, source } = this.props;
 
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s.siteWrapper, styles, { opacity: cursor.get() === label ? 1 : 0 }]}>
+                <View style={[s.siteWrapper, styles, { opacity: molesCursor.get() === label ? 1 : 0 }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>
