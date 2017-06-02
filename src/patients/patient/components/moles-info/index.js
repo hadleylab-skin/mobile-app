@@ -49,6 +49,7 @@ export const MolesInfo = React.createClass({
                             },
                             navigationBarHidden: false,
                             rightButtonTitle: 'Cancel',
+                            leftButtonIcon: require('components/icons/back/back.png'),
                             tintColor: '#FF2D55',
                             passProps: {
                                 tree: this.props.tree,
