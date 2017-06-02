@@ -19,10 +19,11 @@ const HumanBody = React.createClass({
             styles: React.PropTypes.number.isRequired,
             source: React.PropTypes.number.isRequired,
         })),
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     render() {
-        const { molesCursor, sites, bodyImage, largeImageSource } = this.props;
+        const { molesCursor, sites, bodyImage } = this.props;
 
         return (
             <View style={s.container}>
@@ -35,6 +36,7 @@ const HumanBody = React.createClass({
                         styles={site.styles}
                         source={site.source}
                         largeImageSource={site.largeImageSource}
+                        onAddingComplete={this.props.onAddingComplete}
                     />
                 )}
             </View>

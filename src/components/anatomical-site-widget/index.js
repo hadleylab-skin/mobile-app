@@ -55,6 +55,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     getInitialState() {
@@ -86,6 +87,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 molesCursor={molesCursor}
                                 bodyImage={front}
                                 sites={frontSites}
+                                onAddingComplete={this.props.onAddingComplete}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
@@ -93,6 +95,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 molesCursor={molesCursor}
                                 bodyImage={back}
                                 sites={backSites}
+                                onAddingComplete={this.props.onAddingComplete}
                             />
                         </View>
 

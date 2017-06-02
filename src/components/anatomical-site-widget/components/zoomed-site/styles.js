@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 export default StyleSheet.create({
     container: {
@@ -19,6 +19,7 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
+        justifyContent: 'center',
     },
     footerInner: {
         flexDirection: 'row',
@@ -29,6 +30,7 @@ export default StyleSheet.create({
         fontSize: 16,
         lineHeight: 20,
         color: '#fff',
+        backgroundColor: 'transparent',
     },
     textPink: {
         color: '#FC3159',
@@ -36,5 +38,9 @@ export default StyleSheet.create({
     textButton: {
         paddingTop: 10,
         paddingBottom: 10,
+    },
+    imageURI: {
+        height: Dimensions.get('window').height - 64,
+        width: Dimensions.get('window').width,
     },
 });

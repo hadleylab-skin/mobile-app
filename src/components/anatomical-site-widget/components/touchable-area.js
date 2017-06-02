@@ -18,6 +18,7 @@ const TouchableArea = schema({})(React.createClass({
         styles: React.PropTypes.number.isRequired,
         source: React.PropTypes.number.isRequired,
         largeImageSource: React.PropTypes.number.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -39,6 +40,7 @@ const TouchableArea = schema({})(React.createClass({
                 molesCursor: this.props.molesCursor,
                 source: this.props.largeImageSource,
                 label: this.props.label,
+                onAddingComplete: this.props.onAddingComplete,
             },
         });
     },

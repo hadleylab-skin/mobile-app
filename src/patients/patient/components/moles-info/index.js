@@ -52,6 +52,7 @@ export const MolesInfo = React.createClass({
                             tintColor: '#FF2D55',
                             passProps: {
                                 tree: this.props.tree,
+                                onAddingComplete: () => this.context.mainNavigator.pop(),
                             },
                         });
                     }}

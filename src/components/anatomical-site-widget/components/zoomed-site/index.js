@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components/new/button';
-import MolePicker from '../mole-picker';
 import ImagePicker from 'react-native-image-picker';
+import MolePicker from '../mole-picker';
 import s from './styles';
 
 const ZoomedSite = schema({})(React.createClass({
@@ -19,6 +19,7 @@ const ZoomedSite = schema({})(React.createClass({
         molesCursor: BaobabPropTypes.cursor.isRequired,
         source: React.PropTypes.number.isRequired,
         label: React.PropTypes.string.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     getInitialState() {
@@ -46,7 +47,7 @@ const ZoomedSite = schema({})(React.createClass({
     },
 
     onSubmitMolePhoto(uri) {
-        console.log('onSubmitMolePhoto');
+        this.props.onAddingComplete();
     },
 
     onMolePick(locationX, locationY) {
@@ -56,28 +57,39 @@ const ZoomedSite = schema({})(React.createClass({
     render() {
         const { source } = this.props;
         const { locationX, locationY, userSiteImage } = this.state;
+        const hasMoleLocation = locationX && locationY;
 
         return (
             <View style={s.container}>
                 <View style={s.wrapper}>
                     <MolePicker onMolePick={this.onMolePick}>
-                        <Image source={userSiteImage ? { uri: userSiteImage } : source} />
+                        <Image
+                            source={userSiteImage ? { uri: userSiteImage } : source}
+                            style={userSiteImage ? s.imageURI : {}}
+                        />
                     </MolePicker>
                     <View style={s.footer}>
-                        {locationX && locationY ?
+                        {hasMoleLocation ?
                             <Button type="rect" title="Continue" onPress={this.onContinuePress} />
-                        :
+                        : null }
+                        {!hasMoleLocation ?
                             <View style={s.footerInner}>
-                                <Text style={s.text}>Tap on location or {' '}</Text>
-                                <TouchableOpacity
-                                    style={s.textButton}
-                                    onPress={() => ImagePicker.launchCamera({},
-                                        (response) => this.onAddDistantPhoto(response.uri))}
-                                >
-                                    <Text style={[s.text, s.textPink]}>take a distant photo</Text>
-                                </TouchableOpacity>
+                                {userSiteImage ?
+                                    <Text style={s.text}>Tap on location</Text>
+                                :
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={s.text}>Tap on location or{' '}</Text>
+                                        <TouchableOpacity
+                                            style={s.textButton}
+                                            onPress={() => ImagePicker.launchCamera({},
+                                                (response) => this.onAddDistantPhoto(response.uri))}
+                                        >
+                                            <Text style={[s.text, s.textPink]}>take a distant photo</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                }
                             </View>
-                        }
+                        : null}
                     </View>
                 </View>
             </View>
