@@ -1,39 +1,64 @@
-import head from './images/body/head/large/head.png';
-import neck from './images/body/neck/large/neck.png';
+import face from './images/large/body/face.png';
+import middleChest from './images/large/body/middle-chest.png';
+import anteriorNeck from './images/large/body/anterior-neck.png';
+import leftUpperChest from './images/large/body/left-upper-chest.png';
+import rightUpperChest from './images/large/body/right-upper-chest.png';
+import leftUpperAbdomen from './images/large/body/left-upper-abdomen.png';
+import rightUpperAbdomen from './images/large/body/right-upper-abdomen.png';
+import leftLowerAbdomen from './images/large/body/left-lower-abdomen.png';
+import rightLowerAbdomen from './images/large/body/right-lower-abdomen.png';
 
-import rightChest from './images/body/right-chest/large/right-chest.png';
-import leftChest from './images/body/left-chest/large/left-chest.png';
-import upperRightPelvis from './images/body/upper-right-pelvis/large/upper-right-pelvis.png';
-import upperLeftPelvis from './images/body/upper-left-pelvis/large/upper-left-pelvis.png';
-import lowerRightPelvis from './images/body/lower-right-pelvis/large/lower-right-pelvis.png';
-import lowerLeftPelvis from './images/body/lower-left-pelvis/large/lower-left-pelvis.png';
+import leftAnteriorShoulder from './images/large/arms/left-anterior-shoulder.png';
+import rightAnteriorShoulder from './images/large/arms/right-anterior-shoulder.png';
+import leftAnteriorUpperArm from './images/large/arms/left-anterior-upper-arm.png';
+import rightAnteriorUpperArm from './images/large/arms/right-anterior-upper-arm.png';
+import leftAntecubitalFossa from './images/large/arms/left-antecubital-fossa.png';
+import rightAntecubitalFossa from './images/large/arms/right-antecubital-fossa.png';
+import leftAnteriorForearm from './images/large/arms/left-anterior-forearm.png';
+import rightAnteriorForearm from './images/large/arms/right-anterior-forearm.png';
+import leftPalm from './images/large/arms/left-palm.png';
+import rightPalm from './images/large/arms/right-palm.png';
 
-import leftShoulder from './images/arms/left-shoulder/large/left-shoulder.png';
-import rightShoulder from './images/arms/right-shoulder/large/right-shoulder.png';
-import rightElbow from './images/arms/right-elbow/large/right-elbow.png';
-import leftElbow from './images/arms/left-elbow/large/left-elbow.png';
-import rightForearm from './images/arms/right-forearm/large/right-forearm.png';
-import leftForearm from './images/arms/left-forearm/large/left-forearm.png';
-import rightWrist from './images/arms/right-wrist/large/right-wrist.png';
-import leftWrist from './images/arms/left-wrist/large/left-wrist.png';
-import rightHand from './images/arms/right-hand/large/right-hand.png';
-import leftHand from './images/arms/left-hand/large/left-hand.png';
+import leftAnteriorThigh from './images/large/legs/left-anterior-thigh.png';
+import rightAnteriorThigh from './images/large/legs/right-anterior-thigh.png';
+import leftKnee from './images/large/legs/left-knee.png';
+import rightKnee from './images/large/legs/right-knee.png';
+import leftProximalLowerLeg from './images/large/legs/left-proximal-lower-leg.png';
+import rightProximalLowerLeg from './images/large/legs/right-proximal-lower-leg.png';
+import leftDistalLowerLeg from './images/large/legs/left-distal-lower-leg.png';
+import rightDistalLowerLeg from './images/large/legs/right-distal-lower-leg.png';
+import leftDorsalFoot from './images/large/legs/left-dorsal-foot.png';
+import rightDorsalFoot from './images/large/legs/right-dorsal-foot.png';
 
-import rightThigh from './images/legs/right-thigh/large/right-thigh.png';
-import leftThigh from './images/legs/left-thigh/large/left-thigh.png';
-import rightKnee from './images/legs/right-knee/large/right-knee.png';
-import leftKnee from './images/legs/left-knee/large/left-knee.png';
-import rightShin from './images/legs/right-shin/large/right-shin.png';
-import leftShin from './images/legs/left-shin/large/left-shin.png';
-import rightAnkle from './images/legs/right-ankle/large/right-ankle.png';
-import leftAnkle from './images/legs/left-ankle/large/left-ankle.png';
-import rightFoot from './images/legs/right-foot/large/right-foot.png';
-import leftFoot from './images/legs/left-foot/large/left-foot.png';
+export default { face,
+    middleChest,
+    anteriorNeck,
+    leftUpperChest,
+    rightUpperChest,
+    leftUpperAbdomen,
+    rightUpperAbdomen,
+    leftLowerAbdomen,
+    rightLowerAbdomen,
 
+    leftAnteriorShoulder,
+    rightAnteriorShoulder,
+    leftAnteriorUpperArm,
+    rightAnteriorUpperArm,
+    leftAntecubitalFossa,
+    rightAntecubitalFossa,
+    leftAnteriorForearm,
+    rightAnteriorForearm,
+    leftPalm,
+    rightPalm,
 
-export default { head, rightChest, leftChest, leftShoulder,
-  rightShoulder,  neck, upperRightPelvis, upperLeftPelvis,
-  lowerRightPelvis, lowerLeftPelvis, rightElbow, leftElbow,
-  rightForearm, leftForearm, rightWrist, leftWrist, rightHand,
-  leftHand, rightThigh, leftThigh, rightKnee, leftKnee, rightShin,
-  leftShin, rightAnkle, leftAnkle, rightFoot, leftFoot };
+    leftAnteriorThigh,
+    rightAnteriorThigh,
+    leftKnee,
+    rightKnee,
+    leftProximalLowerLeg,
+    rightProximalLowerLeg,
+    leftDistalLowerLeg,
+    rightDistalLowerLeg,
+    leftDorsalFoot,
+    rightDorsalFoot,
+};

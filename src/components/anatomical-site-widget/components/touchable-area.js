@@ -51,7 +51,7 @@ const TouchableArea = schema({})(React.createClass({
 
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s.siteWrapper, styles, { opacity: molesCursor.get() === label ? 1 : 0 }]}>
+                <View style={[s.siteWrapper, styles, { opacity:  0.5/*molesCursor.get() === label ? 1 : 0*/ }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>
