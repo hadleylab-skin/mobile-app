@@ -173,7 +173,12 @@ export const MolesList = React.createClass({
                     <View key={key}>
                         <Title text={key} />
                         {_.map(molesGroup, (mole, index) => (
-                            <Mole key={`${key}-${index}`} {...mole} hasBorder={index !== 0} />
+                            <Mole
+                                key={`${key}-${index}`}
+                                {...mole}
+                                hasBorder={index !== 0}
+                                navigator={this.props.navigator}
+                            />
                         ))}
                     </View>
                 ))}

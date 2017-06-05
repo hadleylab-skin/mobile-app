@@ -4,8 +4,11 @@ import {
     View,
     Text,
     Image,
+    TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
+import ImagePicker from 'react-native-image-picker';
+import MoleScreen from '../../../mole';
 import s from './styles';
 
 import arrowImage from './images/arrow.png';
@@ -28,6 +31,23 @@ export const Mole = React.createClass({
         return newDate.from(todayDate);
     },
 
+    onAddPhoto(uri) {},
+
+    onPress() {
+        this.props.navigator.push({
+            component: MoleScreen,
+            title: this.props.title,
+            onLeftButtonPress: () => this.props.navigator.pop(),
+            onRightButtonPress: () => ImagePicker.launchCamera({},
+                (response) => this.onAddPhoto(response.uri)),
+            navigationBarHidden: false,
+            leftButtonIcon: require('components/icons/back/back.png'),
+            rightButtonIcon: require('./images/camera.png'),
+            tintColor: '#FF2D55',
+            passProps: {},
+        });
+    },
+
     render() {
         const {
             images, title, dateModified,
@@ -36,7 +56,10 @@ export const Mole = React.createClass({
         } = this.props;
 
         return (
-            <View style={s.mole}>
+            <TouchableOpacity
+                style={s.mole}
+                onPress={this.onPress}
+            >
                 <View style={s.photoWrapper}>
                     <Image source={images[0].photo} style={s.photo} />
                     {images.length > 1 ?
@@ -66,7 +89,7 @@ export const Mole = React.createClass({
                 </View>
                 {hasBorder ? <View style={s.border} /> : null}
                 <Image source={arrowImage} style={s.arrow} />
-            </View>
+            </TouchableOpacity>
         );
     },
 });
