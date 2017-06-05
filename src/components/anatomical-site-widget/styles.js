@@ -6,7 +6,7 @@ export default StyleSheet.create({
         paddingTop: 15,
         paddingBottom: 15,
         alignItems: 'center',
-        height: 628,
+        height: 660,
     },
     widget: {
         width: 320,

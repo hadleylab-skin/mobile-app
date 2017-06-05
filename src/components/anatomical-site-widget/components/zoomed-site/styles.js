@@ -11,7 +11,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         paddingBottom: 56,
         position: 'relative',
-        backgroundColor: '#ACB5BE',
+        backgroundColor: '#a0a0a0',
     },
     footer: {
         height: 56,
