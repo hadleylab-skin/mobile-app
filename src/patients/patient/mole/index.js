@@ -17,9 +17,11 @@ const model = {
         biopsy: false,
         clinicalDiagnosis: '',
         pathDiagnosis: '',
+        lesionsSize: '',
 
         clinicalDiagnosisPickerCursor: {},
         pathDiagnosisPickerCursor: {},
+        lesionsSizePickerCursor: {},
     },
 };
 
@@ -31,6 +33,26 @@ const diagnosesList = [
     ['Diagnosis 5', 'Diagnosis 5'],
     ['Diagnosis 6', 'Diagnosis 6'],
     ['Diagnosis 7', 'Diagnosis 7'],
+];
+
+const lesionsSizeCM = [
+    ['1 by 2 cm', '1 by 2 cm'],
+    ['2 by 3 cm', '2 by 3 cm'],
+    ['3 by 4 cm', '3 by 4 cm'],
+    ['4 by 5 cm', '4 by 5 cm'],
+    ['5 by 6 cm', '5 by 6 cm'],
+    ['6 by 7 cm', '6 by 7 cm'],
+    ['7 by 8 cm', '7 by 8 cm'],
+];
+
+const lesionsSizeIN = [
+    ['1 by 2 in', '1″ by 2″'],
+    ['2 by 3 in', '2″ by 3″'],
+    ['3 by 4 in', '3″ by 4″'],
+    ['4 by 5 in', '4″ by 5″'],
+    ['5 by 6 in', '5″ by 6″'],
+    ['6 by 7 in', '6″ by 7″'],
+    ['7 by 8 in', '7″ by 8″'],
 ];
 
 const Mole = schema(model)(React.createClass({
@@ -46,6 +68,9 @@ const Mole = schema(model)(React.createClass({
         const biopsyCursor = this.props.tree.biopsy;
         const clinicalDiagnosisCursor = this.props.tree.clinicalDiagnosis;
         const pathDiagnosisCursor = this.props.tree.pathDiagnosis;
+        const lesionsSizeCursor = this.props.tree.lesionsSize;
+
+        const units = 'in'; /* in || cm */
 
         return (
             <View style={s.fields}>
@@ -103,6 +128,15 @@ const Mole = schema(model)(React.createClass({
                         />
                     }
                 />
+                {biopsyCursor.get() ?
+                    <Picker
+                        tree={this.props.tree.lesionsSizePickerCursor}
+                        cursor={lesionsSizeCursor}
+                        items={units === 'in' ? lesionsSizeIN : lesionsSizeCM}
+                        title="Lesions Size"
+                        onPress={() => console.log('Pathlogical Diagnosis pressed')}
+                    />
+                : null}
             </View>
         );
     },
