@@ -7,9 +7,8 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
+import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
-
-import defaultUserImage from './images/default.png';
 
 export const GeneralInfo = React.createClass({
     propTypes: {

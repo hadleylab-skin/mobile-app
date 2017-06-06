@@ -14,6 +14,7 @@ export default StyleSheet.create({
         paddingLeft: 15,
         flex: 1,
         alignItems: 'flex-end',
+        paddingTop: 1,
     },
     title: {
         fontSize: 17,

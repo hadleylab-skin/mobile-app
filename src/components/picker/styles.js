@@ -7,9 +7,6 @@ export default StyleSheet.create({
         borderBottomColor: '#ccc',
         marginLeft: 15,
     },
-    picker: {
-        marginRight: 15,
-    },
     title: {
         fontSize: 16,
         lineHeight: 16,
@@ -33,5 +30,21 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 15,
+    },
+    submitWrapper: {
+        paddingTop: 10,
+        paddingRight: 15,
+        paddingBottom: 10,
+        paddingLeft: 15,
+        alignItems: 'flex-end',
+        backgroundColor: '#FAFAFA',
+        borderTopWidth: 0.5,
+        borderTopColor: '#DADADA',
+    },
+    submitText: {
+        fontSize: 17,
+        lineHeight: 20,
+        color: '#FC3159',
+        fontWeight: '500',
     },
 });

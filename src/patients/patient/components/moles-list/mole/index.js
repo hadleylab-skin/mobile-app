@@ -8,10 +8,9 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-picker';
+import arrowImage from 'components/icons/arrow/arrow.png';
 import MoleScreen from '../../../mole';
 import s from './styles';
-
-import arrowImage from './images/arrow.png';
 
 export const Mole = React.createClass({
     propTypes: {
@@ -43,7 +42,7 @@ export const Mole = React.createClass({
                 (response) => this.onAddPhoto(response.uri)),
             navigationBarHidden: false,
             leftButtonIcon: require('components/icons/back/back.png'),
-            rightButtonIcon: require('./images/camera.png'),
+            rightButtonIcon: require('components/icons/camera/camera.png'),
             tintColor: '#FF2D55',
             passProps: {
                 tree: this.props.tree,
@@ -62,6 +61,7 @@ export const Mole = React.createClass({
             <TouchableOpacity
                 style={s.mole}
                 onPress={this.onPress}
+                activeOpacity={0.5}
             >
                 <View style={s.photoWrapper}>
                     <Image source={images[0].photo} style={s.photo} />

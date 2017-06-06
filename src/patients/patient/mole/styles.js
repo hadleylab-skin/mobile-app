@@ -4,6 +4,8 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FAFAFA',
+    },
+    inner: {
         paddingBottom: 100,
     },
     prediction: {
@@ -30,5 +32,20 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
         borderBottomWidth: 0.5,
         borderBottomColor: '#DADADA',
+    },
+    site: {
+        position: 'relative',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    siteText: {
+        fontSize: 15,
+        lineHeight: 17,
+        color: '#ACB5BE',
+    },
+    siteArrow: {
+        width: 8,
+        height: 13,
+        marginLeft: 8,
     },
 });

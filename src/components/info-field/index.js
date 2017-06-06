@@ -2,7 +2,7 @@ import React from 'react';
 import {
     View,
     Text,
-    TouchableWithoutFeedback,
+    TouchableOpacity,
 } from 'react-native';
 import s from './styles';
 
@@ -14,6 +14,7 @@ export const InfoField = React.createClass({
         children: React.PropTypes.node,
         onPress: React.PropTypes.func,
         hasNoBorder: React.PropTypes.bool,
+        controls: React.PropTypes.node,
     },
 
     onPress() {
@@ -29,18 +30,25 @@ export const InfoField = React.createClass({
         const hasBorder = !hasNoBorder;
 
         return (
-            <TouchableWithoutFeedback onPress={() => this.onPress()}>
-                <View style={s.container}>
-                    <View style={s.leftColumn}>
-                        <Text style={s.title}>{title}</Text>
+            <TouchableOpacity
+                onPress={() => this.onPress()}
+                disabled={!this.props.onPress}
+                activeOpacity={0.5}
+            >
+                <View>
+                    <View style={s.container}>
+                        <View style={s.leftColumn}>
+                            <Text style={s.title}>{title}</Text>
+                        </View>
+                        <View style={s.rightColumn}>
+                            {text && !this.props.controls ? <Text style={s.text}>{text}</Text> : null}
+                            {this.props.controls && !text ? this.props.controls : null}
+                        </View>
+                        {hasBorder ? <View style={s.border} /> : null}
                     </View>
-                    <View style={s.rightColumn}>
-                        {text && !this.props.children ? <Text style={s.text}>{text}</Text> : null}
-                        {this.props.children && !text ? this.props.children : null}
-                    </View>
-                    {hasBorder ? <View style={s.border} /> : null}
+                    {this.props.children}
                 </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
         );
     },
 });

@@ -8,7 +8,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
-import { Form } from '../form';
+import { Form, InfoField } from 'components';
 import s from './styles';
 
 const model = {
@@ -27,7 +27,7 @@ export const Picker = schema(model)(React.createClass({
         onPress: React.PropTypes.func,
     },
 
-    contextTypes: Form.childContextTypes,
+    // contextTypes: Form.childContextTypes,
 
     getInitialState() {
         const middleItemsValue = Math.floor(this.props.items.length / 2);
@@ -39,9 +39,9 @@ export const Picker = schema(model)(React.createClass({
     },
 
     componentDidMount() {
-        if (this.context.register) {
-            this.context.register(this);
-        }
+        // if (this.context.register) {
+            // this.context.register(this);
+        // }
     },
 
     componentDidUpdate(prevProps, prevState) {
@@ -69,7 +69,11 @@ export const Picker = schema(model)(React.createClass({
 
     onValueChange(value) {
         this.setState({ value });
-        this.props.cursor.set(value);
+    },
+
+    onSubmit() {
+        this.props.cursor.set(this.state.value);
+        this.props.tree.isOpen.set(false);
     },
 
     render() {
@@ -77,17 +81,14 @@ export const Picker = schema(model)(React.createClass({
         const { isOpen } = this.props.tree;
 
         return (
-            <View style={s.container}>
-                <TouchableWithoutFeedback
-                    onPress={this.onPress}
-                >
-                    <View style={s.wrapper}>
-                        <Text style={s.title}>{title}:</Text>
-                        <Text style={s.text}>{cursor.get()}</Text>
-                    </View>
-                </TouchableWithoutFeedback>
+            <InfoField title={title} text={cursor.get()} onPress={this.onPress}>
                 {isOpen.get() ? (
                     <View style={s.picker}>
+                        <TouchableWithoutFeedback onPress={this.onSubmit}>
+                            <View style={s.submitWrapper}>
+                                <Text style={s.submitText}>Done</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
                         <PickerIOS
                             selectedValue={this.state.value}
                             onValueChange={this.onValueChange}
@@ -102,7 +103,7 @@ export const Picker = schema(model)(React.createClass({
                         </PickerIOS>
                     </View>
                 ) : null}
-            </View>
+            </InfoField>
         );
     },
 }));
