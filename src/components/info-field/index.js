@@ -13,6 +13,7 @@ export const InfoField = React.createClass({
         text: React.PropTypes.string,
         children: React.PropTypes.node,
         onPress: React.PropTypes.func,
+        hasNoBorder: React.PropTypes.bool,
     },
 
     onPress() {
@@ -24,16 +25,20 @@ export const InfoField = React.createClass({
     },
 
     render() {
-        const { title, text } = this.props;
+        const { title, text, hasNoBorder } = this.props;
+        const hasBorder = !hasNoBorder;
 
         return (
             <TouchableWithoutFeedback onPress={() => this.onPress()}>
-                <View style={s.wrapper}>
-                    <Text style={s.title}>{title}:</Text>
-                    {text ? (
-                        <Text style={s.text}>{text}</Text>
-                    ) : null}
-                    {this.props.children}
+                <View style={s.container}>
+                    <View style={s.leftColumn}>
+                        <Text style={s.title}>{title}</Text>
+                    </View>
+                    <View style={s.rightColumn}>
+                        {text && !this.props.children ? <Text style={s.text}>{text}</Text> : null}
+                        {this.props.children && !text ? this.props.children : null}
+                    </View>
+                    {hasBorder ? <View style={s.border} /> : null}
                 </View>
             </TouchableWithoutFeedback>
         );

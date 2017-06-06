@@ -1,30 +1,36 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    wrapper: {
+    container: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderBottomWidth: 0.5,
+        justifyContent: 'center',
         borderBottomColor: '#D1D1D6',
-        paddingTop: 8,
-        marginLeft: 15,
-        paddingBottom: 7,
-        paddingRight: 15,
+        padding: 15,
+        position: 'relative',
     },
-    title: {
-        fontSize: 16,
-        lineHeight: 16,
-        fontWeight: '300',
-        flex: 1,
-        paddingTop: 7,
-        paddingBottom: 8,
-    },
-    text: {
-        fontSize: 16,
-        lineHeight: 16,
-        fontWeight: '300',
+    leftColumn: {},
+    rightColumn: {
         paddingLeft: 15,
         flex: 1,
+        alignItems: 'flex-end',
+    },
+    title: {
+        fontSize: 17,
+        lineHeight: 20,
+    },
+    text: {
+        fontSize: 15,
+        lineHeight: 17,
+        color: '#ACB5BE',
         textAlign: 'right',
+    },
+    border: {
+        position: 'absolute',
+        left: 15,
+        right: 0,
+        top: 0,
+        height: 0.5,
+        backgroundColor: '#DADADA',
     },
 });

@@ -162,7 +162,9 @@ const molesData = [
 ];
 
 export const MolesList = React.createClass({
-    propTypes: {},
+    propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
 
     render() {
         const groupedMolesData = _.groupBy(molesData, (mole) => mole.category);
@@ -178,6 +180,7 @@ export const MolesList = React.createClass({
                                 {...mole}
                                 hasBorder={index !== 0}
                                 navigator={this.props.navigator}
+                                tree={this.props.tree}
                             />
                         ))}
                     </View>

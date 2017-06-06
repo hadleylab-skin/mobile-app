@@ -16,6 +16,7 @@ import arrowImage from './images/arrow.png';
 export const Mole = React.createClass({
     propTypes: {
         hasBorder: React.PropTypes.bool,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     formatDate(date) {
@@ -44,7 +45,9 @@ export const Mole = React.createClass({
             leftButtonIcon: require('components/icons/back/back.png'),
             rightButtonIcon: require('./images/camera.png'),
             tintColor: '#FF2D55',
-            passProps: {},
+            passProps: {
+                tree: this.props.tree,
+            },
         });
     },
 
