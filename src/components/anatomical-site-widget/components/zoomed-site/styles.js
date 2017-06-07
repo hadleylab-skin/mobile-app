@@ -11,7 +11,6 @@ export default StyleSheet.create({
         justifyContent: 'center',
         paddingBottom: 56,
         position: 'relative',
-        backgroundColor: '#a0a0a0',
     },
     footer: {
         height: 56,
@@ -29,7 +28,7 @@ export default StyleSheet.create({
     text: {
         fontSize: 16,
         lineHeight: 20,
-        color: '#fff',
+        color: '#ACB5BE',
         backgroundColor: 'transparent',
     },
     textPink: {

@@ -30,7 +30,8 @@ import rightDistalLowerLeg from './images/small/legs/right-distal-lower-leg.png'
 import leftDorsalFoot from './images/small/legs/left-dorsal-foot.png';
 import rightDorsalFoot from './images/small/legs/right-dorsal-foot.png';
 
-export default { face,
+export default {
+    face,
     middleChest,
     anteriorNeck,
     leftUpperChest,

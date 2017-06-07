@@ -1,38 +1,63 @@
-import backHead from './images/body/back-head/large/back-head.png';
-import backNeck from './images/body/back-neck/large/back-neck.png';
-import upperRightBack from './images/body/upper-right-back/large/upper-right-back.png';
-import upperLeftBack from './images/body/upper-left-back/large/upper-left-back.png';
-import middleRightBack from './images/body/middle-right-back/large/middle-right-back.png';
-import middleLeftBack from './images/body/middle-left-back/large/middle-left-back.png';
-import lowerRightBack from './images/body/lower-right-back/large/lower-right-back.png';
-import lowerLeftBack from './images/body/lower-left-back/large/lower-left-back.png';
+import occipitalScalp from './images/large/body/occipital-scalp.png';
+import posteriorNeck from './images/large/body/posterior-neck.png';
+import rightUpperBack from './images/large/body/right-upper-back.png';
+import leftUpperBack from './images/large/body/left-upper-back.png';
+import rightLowerBack from './images/large/body/right-lower-back.png';
+import leftLowerBack from './images/large/body/left-lower-back.png';
+import rightButtock from './images/large/body/right-buttock.png';
+import leftButtock from './images/large/body/left-buttock.png';
 
-import rightShoulderBack from './images/arms/right-shoulder-back/large/right-shoulder-back.png';
-import leftShoulderBack from './images/arms/left-shoulder-back/large/left-shoulder-back.png';
-import rightElbowBack from './images/arms/right-elbow-back/large/right-elbow-back.png';
-import leftElbowBack from './images/arms/left-elbow-back/large/left-elbow-back.png';
-import leftForearmBack from './images/arms/left-forearm-back/large/left-forearm-back.png';
-import rightForearmBack from './images/arms/right-forearm-back/large/right-forearm-back.png';
-import rightWristBack from './images/arms/right-wrist-back/large/right-wrist-back.png';
-import leftWristBack from './images/arms/left-wrist-back/large/left-wrist-back.png';
-import leftHandBack from './images/arms/left-hand-back/large/left-hand-back.png';
-import rightHandBack from './images/arms/right-hand-back/large/right-hand-back.png';
+import rightPosteriorShoulder from './images/large/arms/right-posterior-shoulder.png';
+import leftPosteriorShoulder from './images/large/arms/left-posterior-shoulder.png';
+import rightPosteriorUpperArm from './images/large/arms/right-posterior-upper-arm.png';
+import leftPosteriorUpperArm from './images/large/arms/left-posterior-upper-arm.png';
+import rightElbow from './images/large/arms/right-elbow.png';
+import leftElbow from './images/large/arms/left-elbow.png';
+import rightPosteriorForearm from './images/large/arms/right-posterior-forearm.png';
+import leftPosteriorForearm from './images/large/arms/left-posterior-forearm.png';
+import rightDorsalHand from './images/large/arms/right-dorsal-hand.png';
+import leftDorsalHand from './images/large/arms/left-dorsal-hand.png';
 
-import rightThighBack from './images/legs/right-thigh-back/large/right-thigh-back.png';
-import leftThighBack from './images/legs/left-thigh-back/large/left-thigh-back.png';
-import rightKneeBack from './images/legs/right-knee-back/large/right-knee-back.png';
-import leftKneeBack from './images/legs/left-knee-back/large/left-knee-back.png';
-import rightShinBack from './images/legs/right-shin-back/large/right-shin-back.png';
-import leftShinBack from './images/legs/left-shin-back/large/left-shin-back.png';
-import rightAnkleBack from './images/legs/right-ankle-back/large/right-ankle-back.png';
-import leftAnkleBack from './images/legs/left-ankle-back/large/left-ankle-back.png';
-import rightFootBack from './images/legs/right-foot-back/large/right-foot-back.png';
-import leftFootBack from './images/legs/left-foot-back/large/left-foot-back.png';
+import rightPosteriorThigh from './images/large/legs/right-posterior-thigh.png';
+import leftPosteriorThigh from './images/large/legs/left-posterior-thigh.png';
+import rightPoplitealFossa from './images/large/legs/right-popliteal-fossa.png';
+import leftPoplitealFossa from './images/large/legs/left-popliteal-fossa.png';
+import rightProximalCalf from './images/large/legs/right-proximal-calf.png';
+import leftProximalCalf from './images/large/legs/left-proximal-calf.png';
+import rightDistalCalf from './images/large/legs/right-distal-calf.png';
+import leftDistalCalf from './images/large/legs/left-distal-calf.png';
+import rightHeel from './images/large/legs/right-heel.png';
+import leftHeel from './images/large/legs/left-heel.png';
 
-export default { backHead, backNeck, upperRightBack, upperLeftBack, rightShoulderBack,
-  leftShoulderBack, rightElbowBack, leftElbowBack, leftForearmBack, rightForearmBack,
-  rightWristBack, leftWristBack, leftHandBack, rightHandBack, middleRightBack,
-  middleLeftBack, lowerRightBack, lowerLeftBack, rightThighBack, leftThighBack,
-  rightKneeBack, leftKneeBack, rightShinBack, leftShinBack, rightAnkleBack,
-  leftAnkleBack, rightFootBack, leftFootBack };
-  
+export default {
+    occipitalScalp,
+    posteriorNeck,
+    rightUpperBack,
+    leftUpperBack,
+    rightLowerBack,
+    leftLowerBack,
+    rightButtock,
+    leftButtock,
+
+    rightPosteriorShoulder,
+    leftPosteriorShoulder,
+    rightPosteriorUpperArm,
+    leftPosteriorUpperArm,
+    rightElbow,
+    leftElbow,
+    rightPosteriorForearm,
+    leftPosteriorForearm,
+    rightDorsalHand,
+    leftDorsalHand,
+
+    rightPosteriorThigh,
+    leftPosteriorThigh,
+    rightPoplitealFossa,
+    leftPoplitealFossa,
+    rightProximalCalf,
+    leftProximalCalf,
+    rightDistalCalf,
+    leftDistalCalf,
+    rightHeel,
+    leftHeel,
+};
