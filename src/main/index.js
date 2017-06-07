@@ -24,7 +24,7 @@ const model = (props) => (
             camera: {},
             patients: {},
             patientsImages: {},
-            currentPatient: props.defaultPatient,
+            currentPatient: {},
             racesList: getRacesList(props.token),
             anatomicalSiteList: getAnatomicalSiteList(props.token),
         },
@@ -36,11 +36,6 @@ const Main = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        defaultPatient: React.PropTypes.shape({ // eslint-disable-line
-            id: React.PropTypes.number.isRequired,
-            firstname: React.PropTypes.string.isRequired,
-            lastname: React.PropTypes.string.isRequired,
-        }).isRequired,
     },
 
     contextTypes: {
