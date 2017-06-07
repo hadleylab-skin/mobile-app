@@ -20,7 +20,7 @@ import patientsIcon from './images/patients.png';
 const model = (props) => (
     {
         tree: {
-            currentTab: 'camera',
+            currentTab: 'patients',
             camera: {},
             patients: {},
             patientsImages: {},
@@ -80,7 +80,7 @@ const Main = schema(model)(React.createClass({
                         selected={currentTabCursor.get() === 'camera'}
                         onPress={() => currentTabCursor.set('camera')}
                     >
-                        <CameraScreen
+                        {/*<CameraScreen
                             tree={cameraCursor}
                             currentPatient={currentPatientCursor.get()}
                             switchTab={this.switchTab}
@@ -88,7 +88,8 @@ const Main = schema(model)(React.createClass({
                                 this.context.services.patientsService(patientsCursor.patients);
                                 this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
                             }}
-                        />
+                        />*/}
+                        <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         title="Patients"

@@ -44,7 +44,7 @@ const SignInComponent = React.createClass({
     },
 
     render() {
-        const emailCursor = this.props.tree.email;
+        const usernameCursor = this.props.tree.username;
         const passwordCursor = this.props.tree.password;
 
         return (
@@ -55,7 +55,7 @@ const SignInComponent = React.createClass({
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
-                        cursor={emailCursor}
+                        cursor={usernameCursor}
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                     />
@@ -93,7 +93,7 @@ const SignInComponent = React.createClass({
 function SignInScreen(props) {
     const model = {
         tree: {
-            email: '',
+            username: '',
             password: '',
         },
     };
