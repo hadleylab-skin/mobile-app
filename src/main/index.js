@@ -12,7 +12,6 @@ import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
 import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
 import { ServiceProvider } from 'components';
-import CameraScreen from '../camera';
 import { PatientsList } from '../patients';
 import cameraIcon from './images/camera.png';
 import patientsIcon from './images/patients.png';
@@ -21,7 +20,6 @@ const model = (props) => (
     {
         tree: {
             currentTab: 'patients',
-            camera: {},
             patients: {},
             patientsImages: {},
             currentPatient: {},
@@ -38,13 +36,6 @@ const Main = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
     },
 
-    contextTypes: {
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            patientImagesService: React.PropTypes.func.isRequired,
-        }),
-    },
-
     switchTab() {
         const currentTabCursor = this.props.tree.currentTab;
         currentTabCursor.set('patients');
@@ -54,7 +45,6 @@ const Main = schema(model)(React.createClass({
 
     render() {
         const currentTabCursor = this.props.tree.currentTab;
-        const cameraCursor = this.props.tree.camera;
         const patientsCursor = this.props.tree.patients;
         const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
@@ -75,15 +65,6 @@ const Main = schema(model)(React.createClass({
                         selected={currentTabCursor.get() === 'camera'}
                         onPress={() => currentTabCursor.set('camera')}
                     >
-                        {/*<CameraScreen
-                            tree={cameraCursor}
-                            currentPatient={currentPatientCursor.get()}
-                            switchTab={this.switchTab}
-                            updatePatients={(id) => {
-                                this.context.services.patientsService(patientsCursor.patients);
-                                this.context.services.patientImagesService(id, patientsImagesCursor.select(id));
-                            }}
-                        />*/}
                         <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
@@ -96,12 +77,6 @@ const Main = schema(model)(React.createClass({
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
                             patientsImagesCursor={patientsImagesCursor}
-                            changeCurrentPatient={(patient, switchTab = true) => {
-                                currentPatientCursor.set(patient);
-                                if (switchTab) {
-                                    currentTabCursor.set('camera');
-                                }
-                            }}
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                             currentPatientCursor={currentPatientCursor}

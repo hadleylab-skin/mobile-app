@@ -4,12 +4,14 @@ import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
+    Text,
     ListView,
     ActivityIndicator,
     NavigatorIOS,
 } from 'react-native';
 import schema from 'libs/state';
 import PatientListItem from './patient-list-item';
+import { Button } from 'components/new/button';
 import { getRoute } from '../add';
 import s from './styles';
 
@@ -34,16 +36,16 @@ const model = (props, context) => (
 const PatientsListScreen = schema(model)(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        changeCurrentPatient: React.PropTypes.func.isRequired,
         tree: BaobabPropTypes.cursor.isRequired,
         patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        currentPatientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         services: React.PropTypes.shape({
+            createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
         }),
     },
@@ -76,18 +78,6 @@ const PatientsListScreen = schema(model)(React.createClass({
         }
     },
 
-    setPatientGlobalFlag(flagName) {
-        return (choosenPatientId) => {
-            const patients = _.values(this.props.tree.patients.data.get()).map((patient) => {
-                const patientId = patient.data.id;
-                let flagSetter = {};
-                flagSetter[flagName] = patientId === choosenPatientId;
-                return { ...patient, ...flagSetter };
-            });
-            this.props.tree.patients.data.set(_.keyBy(patients, (patient) => patient.data.id));
-        };
-    },
-
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
         if (offset < -100 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
@@ -102,26 +92,10 @@ const PatientsListScreen = schema(model)(React.createClass({
     render() {
         const status = this.props.tree.patients.status.get();
         const showLoader = status === 'Loading';
-        const selectedPatientPk = this.props.currentPatientCursor.get('id');
-        /* We can't send selectedPatientPk via props
-         * this code
-         * main/index.js:103
-         * 100          }}
-         * 101          racesList={this.props.tree.racesList.get('data') || []}
-         * 102          anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
-         * 103 -       currentPatientCursor={currentPatientCursor}
-         * 103 +       selectedPatientPk={currentPatientCursor.get(lid)}
-         * 104     />
-         * 105 </TabBarIOS.Item>
-         * will not work.
-         *  It is related with render optimization.
-         *  Maybe the problem is
-         *  https://github.com/facebook/react-native/blob/c92ad5f6ae74c1d398c7cd93d5c4c50da0ca0430/Libraries/Components/TabBarIOS/TabBarItemIOS.ios.js#L121
-         * I leave cursor here, maybe it will be refactored later
-         */
+        const isSucced = status === 'Succeed';
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={s.container}>
                 { showLoader ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
@@ -133,33 +107,39 @@ const PatientsListScreen = schema(model)(React.createClass({
                 :
                     null
                 }
-                <ListView
-                    enableEmptySections
-                    onScroll={this.onScroll}
-                    scrollEventThrottle={20}
-                    style={{
-                        paddingBottom: 49,
-                    }}
-                    dataSource={this.state.ds}
-                    renderRow={(rowData) => (
-                        <PatientListItem
-                            tree={this.props.patientsImagesCursor.select(rowData.data.id)}
-                            data={rowData.data}
-                            isActive={rowData.isActive || false}
-                            isSelected={rowData.isSelected || false}
-                            changeCurrentPatient={(patient, switchTab) => {
-                                this.props.changeCurrentPatient(patient, switchTab);
-                                this.setPatientGlobalFlag('isActive')(rowData.data.id);
+                {isSucced && _.isEmpty(this.props.tree.patients.get('data')) ?
+                    <View style={s.emptyList}>
+                        <Text style={s.title}>You don’t have any patients yet.</Text>
+                        <View style={s.button}>
+                            <Button
+                                title="+ Add a new patient"
+                                onPress={() => this.context.mainNavigator.push(getRoute(this.props, this.context))}
+                            />
+                        </View>
+                    </View>
+                :
+                    <View style={s.list}>
+                        <ListView
+                            enableEmptySections
+                            onScroll={this.onScroll}
+                            scrollEventThrottle={20}
+                            style={{
+                                paddingBottom: 49,
                             }}
-                            showPatientSelectButton={this.setPatientGlobalFlag('isSelected')}
-                            patientCursor={this.props.tree.patients.data.select(rowData.data.id)}
-                            selectedPatientPk={selectedPatientPk}
-                            navigator={this.props.navigator}
-                            racesList={this.props.racesList}
-                            anatomicalSiteList={this.props.anatomicalSiteList}
+                            dataSource={this.state.ds}
+                            renderRow={(rowData) => (
+                                <PatientListItem
+                                    tree={this.props.patientsImagesCursor.select(rowData.data.pk)}
+                                    data={rowData.data}
+                                    patientCursor={this.props.tree.patients.data.select(rowData.data.pk)}
+                                    navigator={this.props.navigator}
+                                    racesList={this.props.racesList}
+                                    anatomicalSiteList={this.props.anatomicalSiteList}
+                                />
+                            )}
                         />
-                    )}
-                />
+                    </View>
+                }
             </View>
         );
     },
@@ -182,7 +162,7 @@ export const PatientsList = React.createClass({
                     component: PatientsListScreen,
                     passProps: this.props,
                     title: 'Patients',
-                    rightButtonTitle: 'Create',
+                    rightButtonSystemIcon: 'add',
                     onRightButtonPress: () => this.context.mainNavigator.push(getRoute(this.props, this.context)),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',

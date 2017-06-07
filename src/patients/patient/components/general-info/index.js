@@ -12,15 +12,17 @@ import s from './styles';
 
 export const GeneralInfo = React.createClass({
     propTypes: {
-        dob: React.PropTypes.string,
-        profile_pic: React.PropTypes.object, // eslint-disable-line
+        dateOfBirth: React.PropTypes.string,
+        photo: React.PropTypes.shape({
+            thumbnail: React.PropTypes.string,
+        }),
         sex: React.PropTypes.string,
         mrn: React.PropTypes.string,
         consentCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     render() {
-        const { dob, profile_pic, sex, mrn } = this.props;
+        const { dateOfBirth, photo, sex, mrn } = this.props;
 
         const consant = '2017-08-08';
 
@@ -28,15 +30,15 @@ export const GeneralInfo = React.createClass({
             <View style={s.container}>
                 <View style={s.photoWrapper}>
                     <Image
-                        source={profile_pic.thumbnail ? { uri: profile_pic.thumbnail } : defaultUserImage}
+                        source={photo.thumbnail ? { uri: photo.thumbnail } : defaultUserImage}
                         style={s.photo}
                     />
                 </View>
                 <View>
                     <View><Text style={s.text}>
-                        {moment(dob).format('DD/MMM/YYYY')}
+                        {moment(dateOfBirth).format('DD/MMM/YYYY')}
                         {' '}
-                        ({moment(dob).fromNow(true)})
+                        ({moment(dateOfBirth).fromNow(true)})
                         {', '}
                         {_.capitalize(sex.substring(0, 1))}
                     </Text></View>

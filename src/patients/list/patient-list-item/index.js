@@ -11,7 +11,6 @@ import {
 import moment from 'moment';
 import { getRoute } from '../../patient/edit-patient';
 import Patient from '../../patient';
-import defaultUserImage from './images/default-user.png';
 import s from './styles';
 
 const PatientListItem = React.createClass({
@@ -20,35 +19,23 @@ const PatientListItem = React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         data: React.PropTypes.shape({
-            id: React.PropTypes.int,
-            firstname: React.PropTypes.string,
-            lastname: React.PropTypes.string,
-            total_images: React.PropTypes.number,
-            profile_pic: React.PropTypes.shape({
+            pk: React.PropTypes.number,
+            firstName: React.PropTypes.string,
+            lastName: React.PropTypes.string,
+            molesImagesCount: React.PropTypes.number,
+            photo: React.PropTypes.shape({
                 thumbnail: React.PropTypes.string,
             }),
-            last_visit: React.PropTypes.string,
+            lastUpload: React.PropTypes.string,
         }).isRequired,
-        isActive: React.PropTypes.bool,
-        isSelected: React.PropTypes.bool,
-        changeCurrentPatient: React.PropTypes.func.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        selectedPatientPk: React.PropTypes.number.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        showPatientSelectButton: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         services: React.PropTypes.shape({
             updatePatientService: React.PropTypes.func.isRequired,
         }),
-    },
-
-    onScroll(e) {
-        const offset = e.nativeEvent.contentOffset.x;
-        if (offset < 0) {
-            this.props.showPatientSelectButton(this.props.data.id);
-        }
     },
 
     formatDate(date) {
@@ -64,79 +51,60 @@ const PatientListItem = React.createClass({
     },
 
     render() {
-        const { firstname, lastname, last_visit, id } = this.props.data;
-        const totalImages = this.props.data.total_images;
-        const { isActive, selectedPatientPk } = this.props;
+        const { firstName, lastName, lastUpload, photo, pk } = this.props.data;
+        const totalImages = this.props.data.molesImagesCount;
 
         return (
             <View style={s.container}>
-                <ScrollView
-                    showsHorizontalScrollIndicator={false}
-                    scrollEventThrottle={16}
-                    style={{ flex: 1 }}
-                    contentOffset={this.props.isSelected ? { x: 0 } : { x: 100 }}
-                    onScroll={this.onScroll}
-                    horizontal
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        this.props.navigator.push({
+                            component: Patient,
+                            title: `${firstName} ${lastName}`,
+                            onLeftButtonPress: () => this.props.navigator.pop(),
+                            rightButtonTitle: 'Edit',
+                            onRightButtonPress: () => this.props.navigator.push(
+                                getRoute(this.props, this.context)),
+                            navigationBarHidden: false,
+                            tintColor: '#FF2D55',
+                            passProps: {
+                                tree: this.props.tree,
+                                pk,
+                                firstName,
+                                lastName,
+                                navigator: this.props.navigator,
+                                anatomicalSiteList: this.props.anatomicalSiteList,
+                                patientCursor: this.props.patientCursor,
+                            },
+                        });
+                    }}
                 >
-                    <TouchableHighlight
-                        style={s.select}
-                        underlayColor="#FF2D55"
-                        onPress={() => {
-                            this.props.changeCurrentPatient(this.props.data, true);
-                            this.props.showPatientSelectButton(null);
-                        }}
-                    >
-                        <Text style={s.selectText}>Select</Text>
-                    </TouchableHighlight>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            this.props.changeCurrentPatient(this.props.data, false);
-                            this.props.showPatientSelectButton(null);
-                            this.props.navigator.push({
-                                component: Patient,
-                                title: `${firstname} ${lastname}`,
-                                onLeftButtonPress: () => this.props.navigator.pop(),
-                                rightButtonTitle: 'Edit',
-                                onRightButtonPress: () => this.props.navigator.push(
-                                    getRoute(this.props, this.context)),
-                                navigationBarHidden: false,
-                                tintColor: '#FF2D55',
-                                passProps: {
-                                    tree: this.props.tree,
-                                    id,
-                                    firstname,
-                                    lastname,
-                                    navigator: this.props.navigator,
-                                    anatomicalSiteList: this.props.anatomicalSiteList,
-                                    patientCursor: this.props.patientCursor,
-                                },
-                            });
-                        }}
-                    >
-                        <View style={s.inner}>
-                            <Image
-                                source={defaultUserImage}
-                                style={s.img}
-                            />
-                            <View style={s.info}>
-                                <Text
-                                    style={[s.text, {
-                                        fontSize: 18,
-                                        fontWeight: isActive || selectedPatientPk === id ? '700' : '400',
-                                    }]}
-                                >
-                                    {`${firstname} ${lastname}`}
-                                </Text>
-                                <Text style={[s.text, { opacity: 0.6 }]}>
-                                    Images: {totalImages}
-                                </Text>
-                                <Text style={[s.text, { opacity: 0.8 }]}>
-                                    Last Upload: {this.formatDate(last_visit)}
-                                </Text>
+                    <View style={s.inner}>
+                        {photo.thumbnail ?
+                            <View style={s.photoWrapper}>
+                                <Image
+                                    source={photo.thumbnail}
+                                    style={s.photo}
+                                />
                             </View>
+                        : null}
+                        <View style={s.info}>
+                            <Text style={s.name}>
+                                {`${firstName} ${lastName}`}
+                            </Text>
+                            <Text style={s.text}>
+                                <Text>
+                                    {totalImages} photos
+                                </Text>
+                                {lastUpload ?
+                                    <Text>
+                                        , last upload: {this.formatDate(lastUpload)}
+                                    </Text>
+                                : null}
+                            </Text>
                         </View>
-                    </TouchableWithoutFeedback>
-                </ScrollView>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
         );
     },

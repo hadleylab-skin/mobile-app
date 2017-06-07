@@ -3,7 +3,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     AppRegistry,
 } from 'react-native';
-import schema from 'libs/state';
+import schema from 'libs/state.js';
 import tree from 'libs/tree';
 import { Login } from './src/login';
 import Main from './src/main';
@@ -26,12 +26,12 @@ function App(props) {
             <Login tokenCursor={tokenCursor} tree={loginScreen} />
         );
     }
+
     return (
         <Main
             tree={mainScreen}
             token={tokenCursor.get('data', 'token')}
-            user={tokenCursor.get('data', 'user')}
-            defaultPatient={tokenCursor.get('data', 'patient')}
+            user={tokenCursor.get('data', 'doctor')}
         />
     );
 }

@@ -9,7 +9,7 @@ function dehydrateMrn(item) {
 }
 
 function convertListToDict(list) {
-    return _.keyBy(list, (patient) => patient.data.id);
+    return _.keyBy(list, (patient) => patient.data.pk);
 }
 
 function dehydratePatients(patients) {
@@ -23,7 +23,7 @@ export function patientsService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-    return buildGetService('/api/v1/patients/', dehydratePatients, _.merge({}, defaultHeaders, headers));
+    return buildGetService('/api/v1/patient/', dehydratePatients, _.merge({}, defaultHeaders, headers));
 }
 
 export function patientImagesService(token) {

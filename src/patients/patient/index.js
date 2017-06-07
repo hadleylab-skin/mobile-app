@@ -13,7 +13,7 @@ import s from './styles';
 
 const model = (props, context) => (
     {
-        tree: (cursor) => context.services.patientImagesService(props.id, cursor),
+        tree: (cursor) => context.services.patientImagesService(props.pk, cursor),
     }
 );
 
@@ -23,7 +23,7 @@ const Patient = schema(model)(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
-        id: React.PropTypes.number.isRequired,
+        pk: React.PropTypes.number.isRequired,
         anatomicalSiteList: React.PropTypes.arrayOf( //eslint-disable-line
             React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
@@ -54,8 +54,8 @@ const Patient = schema(model)(React.createClass({
     },
 
     updatePatient() {
-        const { id, tree } = this.props;
-        return this.context.services.patientImagesService(id, tree);
+        const { pk, tree } = this.props;
+        return this.context.services.patientImagesService(pk, tree);
     },
 
     renderActivityIndicator() {
