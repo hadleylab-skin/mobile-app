@@ -82,7 +82,11 @@ const Patient = schema(model)(React.createClass({
                         consentCursor={this.props.patientCursor.select('consentDateExpired')}
                     />
                     <MolesInfo tree={this.props.tree} />
-                    <MolesList tree={this.props.tree} navigator={this.props.navigator} />
+                    <MolesList
+                        tree={this.props.tree}
+                        navigator={this.props.navigator}
+                        pk={this.props.pk}
+                    />
                 </ScrollView>
             </View>
         );

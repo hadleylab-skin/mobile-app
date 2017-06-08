@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -14,6 +15,7 @@ import s from './styles';
 
 export const Mole = React.createClass({
     propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
         hasBorder: React.PropTypes.bool,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
@@ -34,9 +36,11 @@ export const Mole = React.createClass({
     onAddPhoto(uri) {},
 
     onPress() {
+        const { anatomicalSites } = this.props.tree.get();
+
         this.props.navigator.push({
             component: MoleScreen,
-            title: this.props.title,
+            title: anatomicalSites[1].name,
             onLeftButtonPress: () => this.props.navigator.pop(),
             onRightButtonPress: () => ImagePicker.launchCamera({},
                 (response) => this.onAddPhoto(response.uri)),
@@ -51,11 +55,15 @@ export const Mole = React.createClass({
     },
 
     render() {
-        const {
-            images, title, dateModified,
-            clinicalDiagnosis, isClinicalDiagnosisBad,
-            hasBorder,
-        } = this.props;
+        const { hasBorder } = this.props;
+        const { lastImage, imagesCount, anatomicalSites } = this.props.tree.get();
+
+        if (_.isEmpty(lastImage)) {
+            return null;
+        }
+
+        const { clinicalDiagnosis, dateModified, photo } = lastImage;
+        const isClinicalDiagnosisBad = false;
 
         return (
             <TouchableOpacity
@@ -63,22 +71,24 @@ export const Mole = React.createClass({
                 onPress={this.onPress}
                 activeOpacity={0.5}
             >
-                <View style={s.photoWrapper}>
-                    <Image source={images[0].photo} style={s.photo} />
-                    {images.length > 1 ?
-                        <Image source={images[1].photo} style={[s.photo, s.bottomPhoto]} />
-                    : null}
-                </View>
+                {!_.isEmpty(photo) ?
+                    <View style={s.photoWrapper}>
+                        <Image source={{ uri: photo.thumbnail }} style={s.photo} />
+                        {imagesCount > 1 ?
+                            <Image source={{ uri: photo.thumbnail }} style={[s.photo, s.bottomPhoto]} />
+                        : null}
+                    </View>
+                : null}
                 <View>
                     <View style={s.titleWrapper}>
                         <Text style={s.title}>
-                            {_.capitalize(title)}
+                            {_.capitalize(anatomicalSites[1].name)}
                         </Text>
                     </View>
                     <View style={s.textWrapper}>
                         <Text style={s.text}>
-                            {images.length}
-                            {images.length === 1 ? ' image, ' : ' images, '}
+                            {imagesCount}
+                            {imagesCount === 1 ? ' image, ' : ' images, '}
                             last upload: {this.formatDate(dateModified)}
                         </Text>
                     </View>

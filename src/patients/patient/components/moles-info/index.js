@@ -8,20 +8,22 @@ import { AnatomicalSiteWidget } from 'components';
 import s from './styles';
 
 export const MolesInfo = React.createClass({
-    propTypes: {},
+    propTypes: {
+        moles: React.PropTypes.number,
+        benign: React.PropTypes.number,
+        malignant: React.PropTypes.number,
+    },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     render() {
-        const moles = 20;
-        const benign = 20;
-        const malignant = 2;
+        const { moles, benign, malignant } = this.props;
 
         return (
             <View style={s.container}>
-                {moles ?
+                {moles && (benign || malignant) ?
                     <View style={s.moles}>
                         <Text style={s.text}>
                             {moles === 1 ? ' mole: ' : ' moles: '}

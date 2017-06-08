@@ -2,9 +2,12 @@ import React from 'react';
 import _ from 'lodash';
 import {
     View,
+    ActivityIndicator,
 } from 'react-native';
+import schema from 'libs/state';
 import { Title } from 'components/new/title';
 import { Mole } from './mole';
+import s from './styles';
 
 import moleImage from './images/mole.png';
 
@@ -161,31 +164,62 @@ const molesData = [
     },
 ];
 
-export const MolesList = React.createClass({
+const model = (props, context) => (
+    {
+        tree: {
+            moles: (cursor) => context.services.getMolesService(props.pk, cursor),
+        },
+    }
+);
+
+export const MolesList = schema(model)(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
+    contextTypes: {
+        services: React.PropTypes.shape({
+            getMolesService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     render() {
-        const groupedMolesData = _.groupBy(molesData, (mole) => mole.category);
+        const status = this.props.tree.moles.status.get();
+        const showLoader = status === 'Loading';
+        const moles = this.props.tree.moles.get('data') || [];
+        const groupedMolesData = !_.isEmpty(moles) ?
+            _.groupBy(moles, (mole) => mole.anatomicalSites[0].pk)
+            : [];
 
         return (
-            <View>
+            <View style={s.container}>
+                {showLoader ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating={showLoader}
+                            size="large"
+                            color="#FF2D55"
+                        />
+                    </View>
+                : null}
                 {_.map(groupedMolesData, (molesGroup, key) => (
                     <View key={key}>
                         <Title text={key} />
-                        {_.map(molesGroup, (mole, index) => (
-                            <Mole
-                                key={`${key}-${index}`}
-                                {...mole}
-                                hasBorder={index !== 0}
-                                navigator={this.props.navigator}
-                                tree={this.props.tree}
-                            />
-                        ))}
+                        {_.map(molesGroup, (mole, index) => {
+                            const moleIndex = _.findIndex(moles, mole);
+
+                            return (
+                                <Mole
+                                    key={`${key}-${index}`}
+                                    hasBorder={index !== 0}
+                                    navigator={this.props.navigator}
+                                    tree={this.props.tree.moles.select('data', moleIndex)}
+                                />
+                            );
+                        })}
                     </View>
                 ))}
             </View>
         );
     },
-});
+}));

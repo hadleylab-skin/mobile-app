@@ -11,9 +11,9 @@ export default StyleSheet.create({
         width: 95,
     },
     photo: {
-        width: 75,
-        height: 75,
-        borderRadius: 34,
+        width: 76,
+        height: 76,
+        borderRadius: 38,
     },
     text: {
         color: '#ACB5BE',

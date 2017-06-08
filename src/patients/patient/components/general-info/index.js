@@ -22,9 +22,7 @@ export const GeneralInfo = React.createClass({
     },
 
     render() {
-        const { dateOfBirth, photo, sex, mrn } = this.props;
-
-        const consant = '2017-08-08';
+        const { dateOfBirth, photo, sex, mrn, consant } = this.props;
 
         return (
             <View style={s.container}>
@@ -40,21 +38,23 @@ export const GeneralInfo = React.createClass({
                         {' '}
                         ({moment(dateOfBirth).fromNow(true)})
                         {', '}
-                        {_.capitalize(sex.substring(0, 1))}
+                        {_.capitalize(sex)}
                     </Text></View>
                     {mrn ?
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
                     {consant ?
-                        <View><Text style={s.text}>
-                            {moment(consant) > moment() ?
-                                `consent valid till ${moment(consant).format('DD/MMM/YYYY')}`
-                            :
-                                'consent expired'
-                            }
-                        </Text></View>
+                        <View>
+                            <View><Text style={s.text}>
+                                {moment(consant) > moment() ?
+                                    `consent valid till ${moment(consant).format('DD/MMM/YYYY')}`
+                                :
+                                    'consent expired'
+                                }
+                            </Text></View>
+                            <View><Text style={[s.text, s.textDark]}>Update consent</Text></View>
+                        </View>
                     : null}
-                    <View><Text style={[s.text, s.textDark]}>Update consent</Text></View>
                 </View>
             </View>
         );
