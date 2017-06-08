@@ -25,6 +25,7 @@ export const Picker = schema(model)(React.createClass({
         items: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         title: React.PropTypes.string.isRequired,
         onPress: React.PropTypes.func,
+        hasNoBorder: React.PropTypes.bool,
     },
 
     // contextTypes: Form.childContextTypes,
@@ -81,7 +82,12 @@ export const Picker = schema(model)(React.createClass({
         const { isOpen } = this.props.tree;
 
         return (
-            <InfoField title={title} text={cursor.get()} onPress={this.onPress}>
+            <InfoField
+                title={title}
+                text={cursor.get()}
+                onPress={this.onPress}
+                hasNoBorder={this.props.hasNoBorder}
+            >
                 {isOpen.get() ? (
                     <View style={s.picker}>
                         <TouchableWithoutFeedback onPress={this.onSubmit}>

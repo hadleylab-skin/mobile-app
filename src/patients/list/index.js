@@ -168,6 +168,7 @@ export const PatientsList = React.createClass({
                     tintColor: '#FF2D55',
                 }}
                 style={{ flex: 1 }}
+                barTintColor="#fff"
             />
         );
     },

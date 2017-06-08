@@ -18,10 +18,20 @@ export const Switch = React.createClass({
                 React.PropTypes.bool,
             ]),
         })).isRequired,
+        itemWidth: React.PropTypes.number,
+        onPress: React.PropTypes.func,
+    },
+
+    onPress(value) {
+        if (this.props.onPress) {
+            this.props.onPress(value);
+        } else {
+            this.props.cursor.set(value);
+        }
     },
 
     render() {
-        const { items } = this.props;
+        const { items, itemWidth } = this.props;
         const currentValue = this.props.cursor.get();
 
         return (
@@ -29,9 +39,15 @@ export const Switch = React.createClass({
                 {_.map(items, (item, index) => (
                     <TouchableWithoutFeedback
                         key={`switch-${index}`}
-                        onPress={() => this.props.cursor.set(item.value)}
+                        onPress={() => this.onPress(item.value)}
                     >
-                        <View style={[s.item, item.value === currentValue ? s.activeItem : {}]}>
+                        <View
+                            style={[
+                                s.item,
+                                item.value === currentValue ? s.activeItem : {},
+                                itemWidth ? { width: itemWidth } : {},
+                            ]}
+                        >
                             <Text
                                 style={[s.text, item.value === currentValue ? s.activeItemText : {}]}
                             >{item.label}</Text>

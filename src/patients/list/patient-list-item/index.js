@@ -1,11 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Text,
     View,
     Image,
-    ScrollView,
-    TouchableHighlight,
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
@@ -80,10 +79,10 @@ const PatientListItem = React.createClass({
                     }}
                 >
                     <View style={s.inner}>
-                        {photo.thumbnail ?
+                        {!_.isEmpty(photo) ?
                             <View style={s.photoWrapper}>
                                 <Image
-                                    source={photo.thumbnail}
+                                    source={{ uri: photo.thumbnail }}
                                     style={s.photo}
                                 />
                             </View>

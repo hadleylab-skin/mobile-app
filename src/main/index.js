@@ -5,6 +5,7 @@ import {
     TabBarIOS,
     NavigatorIOS,
     View,
+    Text,
 } from 'react-native';
 import _ from 'lodash';
 import services from 'libs/services';
@@ -13,8 +14,11 @@ import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
 import { ServiceProvider } from 'components';
 import { PatientsList } from '../patients';
-import cameraIcon from './images/camera.png';
+import { DoctorProfile } from '../doctor-profile';
+
 import patientsIcon from './images/patients.png';
+import cameraIcon from './images/camera.png';
+import profileIcon from './images/profile.png';
 
 const model = (props) => (
     {
@@ -34,6 +38,8 @@ const Main = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        unitsOfLengthCursor: BaobabPropTypes.cursor.isRequired,
+        tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     switchTab() {
@@ -49,24 +55,18 @@ const Main = schema(model)(React.createClass({
         const patientsImagesCursor = this.props.tree.patientsImages;
         const currentPatientCursor = this.props.tree.currentPatient;
 
+        const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
+
         return (
             <View
                 style={{ flex: 1 }}
             >
-                <StatusBar hidden={currentTabCursor.get() === 'camera'} />
+                <StatusBar barStyle={statusBarStyle} />
                 <TabBarIOS
-                    barTintColor="#fafafa"
-                    tintColor="#FF2D55"
-                    unselectedItemTintColor="#8E8E93"
+                    barTintColor="#fff"
+                    tintColor="#FC3159"
+                    unselectedItemTintColor="#ACB5BE"
                 >
-                    <TabBarIOS.Item
-                        title="Camera"
-                        icon={cameraIcon}
-                        selected={currentTabCursor.get() === 'camera'}
-                        onPress={() => currentTabCursor.set('camera')}
-                    >
-                        <View />
-                    </TabBarIOS.Item>
                     <TabBarIOS.Item
                         title="Patients"
                         icon={patientsIcon}
@@ -80,6 +80,26 @@ const Main = schema(model)(React.createClass({
                             racesList={this.props.tree.racesList.get('data') || []}
                             anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
                             currentPatientCursor={currentPatientCursor}
+                        />
+                    </TabBarIOS.Item>
+                    <TabBarIOS.Item
+                        title="Camera"
+                        icon={cameraIcon}
+                        selected={currentTabCursor.get() === 'camera'}
+                        onPress={() => currentTabCursor.set('camera')}
+                    >
+                        <View><Text>Camera</Text></View>
+                    </TabBarIOS.Item>
+                    <TabBarIOS.Item
+                        title="My Profile"
+                        icon={profileIcon}
+                        selected={currentTabCursor.get() === 'profile'}
+                        onPress={() => currentTabCursor.set('profile')}
+                    >
+                        <DoctorProfile
+                            tree={this.props.tree}
+                            unitsOfLengthCursor={this.props.unitsOfLengthCursor}
+                            tokenCursor={this.props.tokenCursor}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
@@ -133,6 +153,7 @@ export default React.createClass({
                         tintColor: '#FF2D55',
                     }}
                     style={{ flex: 1 }}
+                    barTintColor="#fff"
                 />
             </ServiceProvider>
         );

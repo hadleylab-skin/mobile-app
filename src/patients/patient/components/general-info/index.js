@@ -30,8 +30,8 @@ export const GeneralInfo = React.createClass({
             <View style={s.container}>
                 <View style={s.photoWrapper}>
                     <Image
-                        source={photo.thumbnail ? { uri: photo.thumbnail } : defaultUserImage}
                         style={s.photo}
+                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
                     />
                 </View>
                 <View>
