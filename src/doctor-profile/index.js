@@ -27,9 +27,8 @@ export const DoctorProfile = React.createClass({
     },
 
     async onUnitsOfLengthChange(unit) {
-        const { firstName, lastName, email } = this.context.user;
-        const data = { firstName, lastName, email, unitsOfLength: unit };
-        const result = await this.context.services.updateDoctorService(this.props.unitsOfLengthCursor, data)
+        const service = this.context.services.updateDoctorService;
+        const result = await service(this.props.unitsOfLengthCursor, { unitsOfLength: unit })
             .then(() => this.props.unitsOfLengthCursor.set(unit));
 
         if (result.status === 'Failure') {
@@ -41,7 +40,6 @@ export const DoctorProfile = React.createClass({
 
     render() {
         const { photo, degree, department } = this.context.user;
-        console.log(this.context.user);
 
         return (
             <View style={s.container}>

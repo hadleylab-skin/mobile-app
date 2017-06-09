@@ -27,11 +27,11 @@ const PatientListItem = React.createClass({
             }),
             lastUpload: React.PropTypes.string,
         }).isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             updatePatientService: React.PropTypes.func.isRequired,
         }),
@@ -57,6 +57,7 @@ const PatientListItem = React.createClass({
             <View style={s.container}>
                 <TouchableWithoutFeedback
                     onPress={() => {
+                        this.context.currentPatientPk.set(pk);
                         this.props.navigator.push({
                             component: Patient,
                             title: `${firstName} ${lastName}`,
@@ -68,11 +69,9 @@ const PatientListItem = React.createClass({
                             tintColor: '#FF2D55',
                             passProps: {
                                 tree: this.props.tree,
-                                pk,
                                 firstName,
                                 lastName,
                                 navigator: this.props.navigator,
-                                anatomicalSiteList: this.props.anatomicalSiteList,
                                 patientCursor: this.props.patientCursor,
                             },
                         });

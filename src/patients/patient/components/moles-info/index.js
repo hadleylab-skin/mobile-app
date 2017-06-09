@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Button } from 'components/new/button';
 import { AnatomicalSiteWidget } from 'components';
+import BaobabPropTypes from 'baobab-prop-types';
 import s from './styles';
 
 export const MolesInfo = React.createClass({
@@ -16,6 +17,24 @@ export const MolesInfo = React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        services: React.PropTypes.shape({
+            getMolesService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
+        }),
+    },
+
+    async onAddingComplete() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        await this.context.services.patientsService(this.context.patients);
+        await this.context.services.getMolesService(
+            patientPk,
+            this.context.patientsMoles.select(patientPk, 'moles')
+        );
+        this.context.mainNavigator.pop();
     },
 
     render() {
@@ -55,7 +74,7 @@ export const MolesInfo = React.createClass({
                             tintColor: '#FF2D55',
                             passProps: {
                                 tree: this.props.tree,
-                                onAddingComplete: () => this.context.mainNavigator.pop(),
+                                onAddingComplete: this.onAddingComplete,
                             },
                         });
                     }}

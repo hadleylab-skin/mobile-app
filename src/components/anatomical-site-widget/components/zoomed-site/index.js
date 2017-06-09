@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Image,
@@ -12,20 +13,32 @@ import ImagePicker from 'react-native-image-picker';
 import MolePicker from '../mole-picker';
 import s from './styles';
 
-const ZoomedSite = schema({})(React.createClass({
+const model = {
+    tree: {
+        mole: {},
+    },
+};
+
+const ZoomedSite = schema(model)(React.createClass({
     displayName: 'ZoomedSite',
 
     propTypes: {
-        molesCursor: BaobabPropTypes.cursor.isRequired,
         source: React.PropTypes.number.isRequired,
         label: React.PropTypes.string.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        services: React.PropTypes.shape({
+            addMoleService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     getInitialState() {
         return {
-            locationX: null,
-            locationY: null,
+            positionX: null,
+            positionY: null,
             userSiteImage: null,
         };
     },
@@ -35,29 +48,36 @@ const ZoomedSite = schema({})(React.createClass({
     },
 
     onContinuePress() {
-        const { locationX, locationY } = this.state;
-
-        this.props.molesCursor.push({
-            label: this.props.label,
-            locationX,
-            locationY,
-        });
-
         ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
     },
 
-    onSubmitMolePhoto(uri) {
-        this.props.onAddingComplete();
+    async onSubmitMolePhoto(uri) {
+        const { positionX, positionY } = this.state;
+
+        const data = {
+            anatomicalSite: _.kebabCase(this.props.label),
+            positionX: parseInt(positionX, 10),
+            positionY: parseInt(positionY, 10),
+            uri,
+        };
+
+        const service = this.context.services.addMoleService;
+        const patientPk = this.context.currentPatientPk.get();
+        const result = await service(patientPk, this.props.tree.mole, data);
+
+        if (result.status === 'Succeed') {
+            this.props.onAddingComplete();
+        }
     },
 
-    onMolePick(locationX, locationY) {
-        this.setState({ locationX, locationY });
+    onMolePick(positionX, positionY) {
+        this.setState({ positionX, positionY });
     },
 
     render() {
         const { source } = this.props;
-        const { locationX, locationY, userSiteImage } = this.state;
-        const hasMoleLocation = locationX && locationY;
+        const { positionX, positionY, userSiteImage } = this.state;
+        const hasMoleLocation = positionX && positionY;
 
         return (
             <View style={s.container}>

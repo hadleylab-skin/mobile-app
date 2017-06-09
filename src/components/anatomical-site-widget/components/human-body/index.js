@@ -12,7 +12,6 @@ const HumanBody = React.createClass({
     displayName: 'HumanBody',
 
     propTypes: {
-        molesCursor: BaobabPropTypes.cursor.isRequired,
         bodyImage: React.PropTypes.number.isRequired,
         sites: React.PropTypes.arrayOf(React.PropTypes.shape({
             label: React.PropTypes.string.isRequired,
@@ -23,15 +22,15 @@ const HumanBody = React.createClass({
     },
 
     render() {
-        const { molesCursor, sites, bodyImage } = this.props;
+        const { sites, bodyImage } = this.props;
 
         return (
             <View style={s.container}>
                 <Image source={bodyImage} style={{ opacity: 0.5 }} />
                 {_.map(sites, (site, index) =>
                     <TouchableArea
+                        tree={this.props.tree}
                         key={index}
-                        molesCursor={molesCursor}
                         label={site.label}
                         styles={site.styles}
                         source={site.source}

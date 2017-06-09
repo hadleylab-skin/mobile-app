@@ -10,8 +10,8 @@ import {
     NavigatorIOS,
 } from 'react-native';
 import schema from 'libs/state';
-import PatientListItem from './patient-list-item';
 import { Button } from 'components/new/button';
+import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
 import s from './styles';
 
@@ -23,27 +23,16 @@ function patientsToList(patients) {
             .value();
 }
 
-const model = (props, context) => (
-    {
-        tree: {
-            patients: context.services.patientsService,
-            newPatient: {},
-        },
-        patientsImagesCursor: {},
-    }
-);
-
-const PatientsListScreen = schema(model)(React.createClass({
+const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        tree: BaobabPropTypes.cursor.isRequired,
-        patientsImagesCursor: BaobabPropTypes.cursor.isRequired,
+        patientsMolesCursor: BaobabPropTypes.cursor.isRequired,
         racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        patients: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
@@ -52,7 +41,7 @@ const PatientsListScreen = schema(model)(React.createClass({
 
     getInitialState() {
         const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
-        const patients = patientsToList(this.props.tree.patients.data.get()) || [];
+        const patients = patientsToList(this.context.patients.data.get()) || [];
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
@@ -60,11 +49,12 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     componentWillMount() {
-        this.props.tree.patients.on('update', this.updateDataStore);
+        this.context.services.patientsService(this.context.patients);
+        this.context.patients.on('update', this.updateDataStore);
     },
 
     componentWillUnmount() {
-        this.props.tree.patients.off('update', this.updateDataStore);
+        this.context.patients.off('update', this.updateDataStore);
     },
 
     updateDataStore(event) {
@@ -80,9 +70,9 @@ const PatientsListScreen = schema(model)(React.createClass({
 
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        if (offset < -100 && this.state.canUpdate && this.props.tree.patients.status.get() !== 'Loading') {
+        if (offset < -100 && this.state.canUpdate && this.context.patients.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
-            await this.context.services.patientsService(this.props.tree.patients);
+            await this.context.services.patientsService(this.context.patients);
         }
         if (offset > -70) {
             this.setState({ canUpdate: true });
@@ -90,7 +80,7 @@ const PatientsListScreen = schema(model)(React.createClass({
     },
 
     render() {
-        const status = this.props.tree.patients.status.get();
+        const status = this.context.patients.status.get();
         const showLoader = status === 'Loading';
         const isSucced = status === 'Succeed';
 
@@ -107,7 +97,7 @@ const PatientsListScreen = schema(model)(React.createClass({
                 :
                     null
                 }
-                {isSucced && _.isEmpty(this.props.tree.patients.get('data')) ?
+                {isSucced && _.isEmpty(this.context.patients.get('data')) ?
                     <View style={s.emptyList}>
                         <Text style={s.title}>You don’t have any patients yet.</Text>
                         <View style={s.button}>
@@ -129,12 +119,11 @@ const PatientsListScreen = schema(model)(React.createClass({
                             dataSource={this.state.ds}
                             renderRow={(rowData) => (
                                 <PatientListItem
-                                    tree={this.props.patientsImagesCursor.select(rowData.data.pk)}
+                                    tree={this.props.patientsMolesCursor.select(rowData.data.pk)}
                                     data={rowData.data}
-                                    patientCursor={this.props.tree.patients.data.select(rowData.data.pk)}
+                                    patientCursor={this.context.patients.data.select(rowData.data.pk)}
                                     navigator={this.props.navigator}
                                     racesList={this.props.racesList}
-                                    anatomicalSiteList={this.props.anatomicalSiteList}
                                 />
                             )}
                         />

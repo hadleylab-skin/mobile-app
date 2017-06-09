@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
 import {
     View,
@@ -9,165 +10,10 @@ import { Title } from 'components/new/title';
 import { Mole } from './mole';
 import s from './styles';
 
-import moleImage from './images/mole.png';
-
-const molesData = [
-    {
-        category: 'head',
-        title: 'Left Ear Helix',
-        dateModified: '2017-04-06',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-04-06',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-04-06',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'back',
-        title: 'Right Mid Upper Back',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'head',
-        title: 'right nasal sidewall',
-        dateModified: '2017-05-29',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-    },
-    {
-        category: 'arms',
-        title: 'upper Forearm',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'head',
-        title: 'Rigth Ear Lobe',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-        ],
-        clinicalDiagnosis: 'Desmoplastic Melanoma',
-        isClinicalDiagnosisBad: true,
-    },
-    {
-        category: 'head',
-        title: 'Left Ear Helix',
-        dateModified: '2017-04-06',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-04-06',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-04-06',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'back',
-        title: 'Right Mid Upper Back',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'head',
-        title: 'right nasal sidewall',
-        dateModified: '2017-05-29',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-    },
-    {
-        category: 'arms',
-        title: 'upper Forearm',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-29',
-            },
-        ],
-        clinicalDiagnosis: 'Clinical Diagnosis goes here',
-        isClinicalDiagnosisBad: false,
-    },
-    {
-        category: 'head',
-        title: 'Rigth Ear Lobe',
-        dateModified: '2017-05-24',
-        images: [
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-            {
-                photo: moleImage,
-                dateCreated: '2017-05-24',
-            },
-        ],
-        clinicalDiagnosis: 'Desmoplastic Melanoma',
-        isClinicalDiagnosisBad: true,
-    },
-];
-
 const model = (props, context) => (
     {
         tree: {
-            moles: (cursor) => context.services.getMolesService(props.pk, cursor),
+            moles: (cursor) => context.services.getMolesService(context.currentPatientPk.get(), cursor),
         },
     }
 );
@@ -178,6 +24,7 @@ export const MolesList = schema(model)(React.createClass({
     },
 
     contextTypes: {
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             getMolesService: React.PropTypes.func.isRequired,
         }),
@@ -188,7 +35,7 @@ export const MolesList = schema(model)(React.createClass({
         const showLoader = status === 'Loading';
         const moles = this.props.tree.moles.get('data') || [];
         const groupedMolesData = !_.isEmpty(moles) ?
-            _.groupBy(moles, (mole) => mole.anatomicalSites[0].pk)
+            _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk)
             : [];
 
         return (
@@ -205,18 +52,14 @@ export const MolesList = schema(model)(React.createClass({
                 {_.map(groupedMolesData, (molesGroup, key) => (
                     <View key={key}>
                         <Title text={key} />
-                        {_.map(molesGroup, (mole, index) => {
-                            const moleIndex = _.findIndex(moles, mole);
-
-                            return (
-                                <Mole
-                                    key={`${key}-${index}`}
-                                    hasBorder={index !== 0}
-                                    navigator={this.props.navigator}
-                                    tree={this.props.tree.moles.select('data', moleIndex)}
-                                />
-                            );
-                        })}
+                        {_.map(molesGroup, (mole, index) => (
+                            <Mole
+                                key={`${key}-${index}`}
+                                hasBorder={index !== 0}
+                                navigator={this.props.navigator}
+                                tree={this.props.tree.select('moles', 'data', mole.data.pk, 'data')}
+                            />
+                        ))}
                     </View>
                 ))}
             </View>

@@ -13,7 +13,6 @@ const TouchableArea = schema({})(React.createClass({
     displayName: 'TouchableArea',
 
     propTypes: {
-        molesCursor: BaobabPropTypes.cursor.isRequired,
         label: React.PropTypes.string.isRequired,
         styles: React.PropTypes.number.isRequired,
         source: React.PropTypes.number.isRequired,
@@ -23,6 +22,7 @@ const TouchableArea = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     onPress() {
@@ -38,7 +38,7 @@ const TouchableArea = schema({})(React.createClass({
             leftButtonIcon: require('components/icons/back/back.png'),
             tintColor: '#FF2D55',
             passProps: {
-                molesCursor: this.props.molesCursor,
+                tree: this.props.tree,
                 source: this.props.largeImageSource,
                 label: this.props.label,
                 onAddingComplete: this.props.onAddingComplete,
@@ -47,11 +47,11 @@ const TouchableArea = schema({})(React.createClass({
     },
 
     render() {
-        const { molesCursor, label, styles, source } = this.props;
+        const { label, styles, source } = this.props;
 
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s.siteWrapper, styles, { opacity: molesCursor.get() === label ? 1 : 0 }]}>
+                <View style={[s.siteWrapper, styles, { opacity: 0 }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>

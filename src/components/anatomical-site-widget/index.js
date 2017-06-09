@@ -44,13 +44,7 @@ function parseSites(images, largeImages, stylesList) {
 const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
 const backSites = parseSites(backImages, backLargeImages, backStyles);
 
-const model = {
-    tree: {
-        moles: [],
-    },
-};
-
-export const AnatomicalSiteWidget = schema(model)(React.createClass({
+export const AnatomicalSiteWidget = schema({})(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
@@ -72,7 +66,6 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     render() {
-        const molesCursor = this.props.tree.moles;
         const { wasFlipped } = this.state;
 
         return (
@@ -84,7 +77,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     <View style={s.widget}>
                         <View style={{ opacity: !wasFlipped ? 1 : 0, zIndex: !wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                molesCursor={molesCursor}
+                                tree={this.props.tree}
                                 bodyImage={front}
                                 sites={frontSites}
                                 onAddingComplete={this.props.onAddingComplete}
@@ -92,13 +85,12 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                molesCursor={molesCursor}
+                                tree={this.props.tree}
                                 bodyImage={back}
                                 sites={backSites}
                                 onAddingComplete={this.props.onAddingComplete}
                             />
                         </View>
-
                     </View>
                 </View>
             </ScrollView>

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import services from 'libs/services';
-import { getRacesList, getAnatomicalSiteList } from 'libs/services/constants';
+import { getRacesList } from 'libs/services/constants';
 import schema from 'libs/state';
 import { UserPropType } from 'libs/misc';
 import { ServiceProvider } from 'components';
@@ -24,11 +24,11 @@ const model = (props) => (
     {
         tree: {
             currentTab: 'patients',
+            currentPatientPk: null,
             patients: {},
-            patientsImages: {},
-            currentPatient: {},
+            patientsMoles: {},
+            patientsMoleImages: {},
             racesList: getRacesList(props.token),
-            anatomicalSiteList: getAnatomicalSiteList(props.token),
         },
     }
 );
@@ -52,8 +52,7 @@ const Main = schema(model)(React.createClass({
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
-        const patientsImagesCursor = this.props.tree.patientsImages;
-        const currentPatientCursor = this.props.tree.currentPatient;
+        const patientsMolesCursor = this.props.tree.patientsMoles;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
@@ -76,10 +75,8 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
-                            patientsImagesCursor={patientsImagesCursor}
                             racesList={this.props.tree.racesList.get('data') || []}
-                            anatomicalSiteList={this.props.tree.anatomicalSiteList.get('data') || []}
-                            currentPatientCursor={currentPatientCursor}
+                            patientsMolesCursor={patientsMolesCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
@@ -119,12 +116,20 @@ export default React.createClass({
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         user: UserPropType,
+        patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
     },
 
     getChildContext() {
         return {
             mainNavigator: this.mainNavigator || {},
             user: this.props.user,
+            patients: this.props.tree.patients,
+            patientsMoles: this.props.tree.patientsMoles,
+            patientsMoleImages: this.props.tree.patientsMoleImages,
+            currentPatientPk: this.props.tree.currentPatient,
         };
     },
 

@@ -11,63 +11,13 @@ import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
 import s from './styles';
 
-const model = (props, context) => (
-    {
-        tree: (cursor) => context.services.patientImagesService(props.pk, cursor),
-    }
-);
-
-const Patient = schema(model)(React.createClass({
+const Patient = schema({})(React.createClass({
     displayName: 'Patient',
 
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
-        pk: React.PropTypes.number.isRequired,
-        anatomicalSiteList: React.PropTypes.arrayOf( //eslint-disable-line
-            React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-    },
-
-    contextTypes: {
-        services: React.PropTypes.shape({
-            patientImagesService: React.PropTypes.func.isRequired,
-            updateImageService: React.PropTypes.func.isRequired,
-        }),
-    },
-
-    getInitialState() {
-        return {
-            canUpdate: true,
-        };
-    },
-
-    async onScroll(e) {
-        const offset = e.nativeEvent.contentOffset.y;
-        if (offset < -130 && this.state.canUpdate && this.props.tree.status.get() !== 'Loading') {
-            this.setState({ canUpdate: false });
-            await this.updatePatient();
-        }
-        if (offset > -70) {
-            this.setState({ canUpdate: true });
-        }
-    },
-
-    updatePatient() {
-        const { pk, tree } = this.props;
-        return this.context.services.patientImagesService(pk, tree);
-    },
-
-    renderActivityIndicator() {
-        return (
-            <View style={s.indicator}>
-                <ActivityIndicator
-                    animating
-                    size="large"
-                    color="#FF2D55"
-                />
-            </View>
-        );
     },
 
     render() {
@@ -85,7 +35,6 @@ const Patient = schema(model)(React.createClass({
                     <MolesList
                         tree={this.props.tree}
                         navigator={this.props.navigator}
-                        pk={this.props.pk}
                     />
                 </ScrollView>
             </View>

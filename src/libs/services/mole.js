@@ -1,5 +1,15 @@
 import _ from 'lodash';
-import { buildGetService, defaultHeaders } from './base';
+import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from './base';
+
+function convertListToDict(list) {
+    return _.keyBy(list, (item) => item.data.pk);
+}
+
+function dehydrateMoles(moles) {
+    const data = _.map(moles);
+
+    return convertListToDict(wrapItemsAsRemoteData(data));
+}
 
 export function getMolesService(token) {
     const headers = {
@@ -7,11 +17,50 @@ export function getMolesService(token) {
     };
 
     return (patientPk, cursor) => {
-        const _getMoles = buildGetService(
+        const _service = buildGetService(
             `/api/v1/patient/${patientPk}/mole/`,
-            _.identity,
+            dehydrateMoles,
             _.merge({}, defaultHeaders, headers));
 
-        return _getMoles(cursor);
+        return _service(cursor);
+    };
+}
+
+function hydrateImage(uri) {
+    const photo = {
+        uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+    };
+
+    return photo;
+}
+
+function hydrateData(mole) {
+    let data = new FormData();
+
+    data.append('anatomicalSite', mole.anatomicalSite);
+    data.append('positionX', mole.positionX);
+    data.append('positionY', mole.positionY);
+    data.append('photo', hydrateImage(mole.uri));
+
+    return data;
+}
+
+export function addMoleService(token) {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, cursor, data) => {
+        const _service = buildPostService(
+            `/api/v1/patient/${patientPk}/mole/`,
+            'POST',
+            hydrateData,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _service(cursor, data);
     };
 }
