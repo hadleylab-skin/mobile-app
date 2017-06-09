@@ -16,6 +16,7 @@ import s from './styles';
 const model = {
     tree: {
         mole: {},
+        anatomicalSiteImage: {},
     },
 };
 
@@ -32,6 +33,8 @@ const ZoomedSite = schema(model)(React.createClass({
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
+            getAnatomicalSitePhotoService: React.PropTypes.func.isRequired,
+            addAnatomicalSitePhotoService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -39,12 +42,25 @@ const ZoomedSite = schema(model)(React.createClass({
         return {
             positionX: null,
             positionY: null,
-            userSiteImage: null,
         };
     },
 
-    onAddDistantPhoto(userSiteImage) {
-        this.setState({ userSiteImage });
+    async componentWillMount() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        const service = this.context.services.getAnatomicalSitePhotoService;
+        await service(patientPk, this.props.label, this.props.tree.anatomicalSiteImage);
+    },
+
+    async onAddDistantPhoto(uri) {
+        const data = {
+            anatomicalSite: this.props.label,
+            uri,
+        };
+
+        const service = this.context.services.addAnatomicalSitePhotoService;
+        const patientPk = this.context.currentPatientPk.get();
+        await service(patientPk, this.props.tree.anatomicalSiteImage, data);
     },
 
     onContinuePress() {
@@ -55,7 +71,7 @@ const ZoomedSite = schema(model)(React.createClass({
         const { positionX, positionY } = this.state;
 
         const data = {
-            anatomicalSite: _.kebabCase(this.props.label),
+            anatomicalSite: this.props.label,
             positionX: parseInt(positionX, 10),
             positionY: parseInt(positionY, 10),
             uri,
@@ -76,7 +92,7 @@ const ZoomedSite = schema(model)(React.createClass({
 
     render() {
         const { source } = this.props;
-        const { positionX, positionY, userSiteImage } = this.state;
+        const { positionX, positionY, anatomicalSiteImage } = this.state;
         const hasMoleLocation = positionX && positionY;
 
         return (
@@ -84,8 +100,8 @@ const ZoomedSite = schema(model)(React.createClass({
                 <View style={s.wrapper}>
                     <MolePicker onMolePick={this.onMolePick}>
                         <Image
-                            source={userSiteImage ? { uri: userSiteImage } : source}
-                            style={userSiteImage ? s.imageURI : {}}
+                            source={anatomicalSiteImage ? { uri: anatomicalSiteImage } : source}
+                            style={anatomicalSiteImage ? s.imageURI : {}}
                         />
                     </MolePicker>
                     <View style={s.footer}>
@@ -94,7 +110,7 @@ const ZoomedSite = schema(model)(React.createClass({
                         : null }
                         {!hasMoleLocation ?
                             <View style={s.footerInner}>
-                                {userSiteImage ?
+                                {anatomicalSiteImage ?
                                     <Text style={s.text}>Tap on location</Text>
                                 :
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

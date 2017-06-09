@@ -1,5 +1,5 @@
 import React from 'react';
-import BaobabPropTypes from 'baobab-prop-types';
+import _ from 'lodash';
 import {
     View,
     TouchableWithoutFeedback,
@@ -26,6 +26,8 @@ const TouchableArea = schema({})(React.createClass({
     },
 
     onPress() {
+        const anatomicalSite = this.props.label;
+
         this.context.mainNavigator.push({
             component: ZoomedSite,
             title: 'Add photo',
@@ -38,7 +40,7 @@ const TouchableArea = schema({})(React.createClass({
             leftButtonIcon: require('components/icons/back/back.png'),
             tintColor: '#FF2D55',
             passProps: {
-                tree: this.props.tree,
+                tree: this.props.tree.select(anatomicalSite),
                 source: this.props.largeImageSource,
                 label: this.props.label,
                 onAddingComplete: this.props.onAddingComplete,

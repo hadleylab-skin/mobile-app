@@ -2,6 +2,7 @@ import { getImageService, updateImageService, clinicalPhotoService } from './ima
 import { mrnScanerService } from './mrn-scaner';
 import { updateDoctorService } from './doctor';
 import { getMolesService, addMoleService } from './mole';
+import { addAnatomicalSitePhotoService, getAnatomicalSitePhotoService } from './anatomical-site.js';
 import { patientsService,
          patientImagesService,
          createPatientService,
@@ -16,6 +17,8 @@ export default {
     updateDoctorService,
     getMolesService,
     addMoleService,
+    addAnatomicalSitePhotoService,
+    getAnatomicalSitePhotoService,
     clinicalPhotoService,
     patientsService,
     patientImagesService,

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from './base';
+import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData, hydrateImage } from './base';
 
 function convertListToDict(list) {
     return _.keyBy(list, (item) => item.data.pk);
@@ -24,16 +24,6 @@ export function getMolesService(token) {
 
         return _service(cursor);
     };
-}
-
-function hydrateImage(uri) {
-    const photo = {
-        uri,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-    };
-
-    return photo;
 }
 
 function hydrateData(mole) {

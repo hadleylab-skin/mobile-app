@@ -25,7 +25,7 @@ import back from './images/back/back.png';
 function parseSites(images, largeImages, stylesList) {
     const sites = _.map(_.toPairs(images), (image) => {
         const key = image[0];
-        const label = _.startCase(key);
+        const label = _.kebabCase(key);
         const styles = stylesList[key];
         const source = image[1];
         const largeImageSource = largeImages[key];
@@ -44,7 +44,13 @@ function parseSites(images, largeImages, stylesList) {
 const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
 const backSites = parseSites(backImages, backLargeImages, backStyles);
 
-export const AnatomicalSiteWidget = schema({})(React.createClass({
+const model = {
+    tree: {
+        anatomicalSites: {},
+    },
+};
+
+export const AnatomicalSiteWidget = schema(model)(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
@@ -77,7 +83,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                     <View style={s.widget}>
                         <View style={{ opacity: !wasFlipped ? 1 : 0, zIndex: !wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                tree={this.props.tree}
+                                tree={this.props.tree.select('anatomicalSites')}
                                 bodyImage={front}
                                 sites={frontSites}
                                 onAddingComplete={this.props.onAddingComplete}
@@ -85,7 +91,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                tree={this.props.tree}
+                                tree={this.props.tree.select('anatomicalSites')}
                                 bodyImage={back}
                                 sites={backSites}
                                 onAddingComplete={this.props.onAddingComplete}
