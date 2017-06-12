@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     TouchableWithoutFeedback,
@@ -13,26 +14,37 @@ const TouchableArea = schema({})(React.createClass({
     displayName: 'TouchableArea',
 
     propTypes: {
-        label: React.PropTypes.string.isRequired,
+        anatomicalSite: React.PropTypes.string.isRequired,
         styles: React.PropTypes.number.isRequired,
         source: React.PropTypes.number.isRequired,
         largeImageSource: React.PropTypes.number.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
+        anatomicalSitesWithMoles: React.PropTypes.arrayOf(React.PropTypes.string),
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
+
+    getInitialState() {
+        return {
+            isActive: false,
+        };
     },
 
     onPress() {
-        const anatomicalSite = this.props.label;
+        const anatomicalSite = this.props.anatomicalSite;
+        this.setState({ isActive: true });
 
         this.context.mainNavigator.push({
             component: ZoomedSite,
             title: 'Add photo',
-            onLeftButtonPress: () => this.context.mainNavigator.pop(),
+            onLeftButtonPress: () => {
+                this.setState({ isActive: false });
+                this.context.mainNavigator.pop();
+            },
             onRightButtonPress: () => {
+                this.setState({ isActive: false });
                 this.context.mainNavigator.pop();
             },
             navigationBarHidden: false,
@@ -40,20 +52,26 @@ const TouchableArea = schema({})(React.createClass({
             leftButtonIcon: require('components/icons/back/back.png'),
             tintColor: '#FF2D55',
             passProps: {
-                tree: this.props.tree.select(anatomicalSite),
+                tree: this.props.tree.select('data', anatomicalSite),
                 source: this.props.largeImageSource,
-                label: this.props.label,
-                onAddingComplete: this.props.onAddingComplete,
+                anatomicalSite: this.props.anatomicalSite,
+                onAddingComplete: () => {
+                    this.setState({ isActive: false });
+                    this.props.onAddingComplete();
+                },
             },
         });
     },
 
     render() {
-        const { label, styles, source } = this.props;
+        const { isActive } = this.state;
+        const { anatomicalSite, styles, source, anatomicalSitesWithMoles } = this.props;
+
+        const hasMole = _.indexOf(anatomicalSitesWithMoles, anatomicalSite) !== -1;
 
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s.siteWrapper, styles, { opacity: 0 }]}>
+                <View style={[s.siteWrapper, styles, { opacity: isActive || hasMole ? 1 : 0 }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>

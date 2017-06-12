@@ -3,7 +3,6 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     ScrollView,
-    ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { GeneralInfo } from './components/general-info';

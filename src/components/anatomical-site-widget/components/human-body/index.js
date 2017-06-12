@@ -14,11 +14,10 @@ const HumanBody = React.createClass({
     propTypes: {
         bodyImage: React.PropTypes.number.isRequired,
         sites: React.PropTypes.arrayOf(React.PropTypes.shape({
-            label: React.PropTypes.string.isRequired,
+            anatomicalSite: React.PropTypes.string.isRequired,
             styles: React.PropTypes.number.isRequired,
             source: React.PropTypes.number.isRequired,
         })),
-        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     render() {
@@ -31,11 +30,8 @@ const HumanBody = React.createClass({
                     <TouchableArea
                         tree={this.props.tree}
                         key={index}
-                        label={site.label}
-                        styles={site.styles}
-                        source={site.source}
-                        largeImageSource={site.largeImageSource}
-                        onAddingComplete={this.props.onAddingComplete}
+                        {...site}
+                        {...this.props}
                     />
                 )}
             </View>

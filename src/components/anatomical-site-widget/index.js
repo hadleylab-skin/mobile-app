@@ -25,13 +25,13 @@ import back from './images/back/back.png';
 function parseSites(images, largeImages, stylesList) {
     const sites = _.map(_.toPairs(images), (image) => {
         const key = image[0];
-        const label = _.kebabCase(key);
+        const anatomicalSite = _.kebabCase(key);
         const styles = stylesList[key];
         const source = image[1];
         const largeImageSource = largeImages[key];
 
         return {
-            label,
+            anatomicalSite,
             styles,
             source,
             largeImageSource,
@@ -58,6 +58,14 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         onAddingComplete: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+        services: React.PropTypes.shape({
+            getAnatomicalSitesService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     getInitialState() {
         const value = this.props.tree.currentAnatomicalSite.get();
 
@@ -66,13 +74,51 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         };
     },
 
+    async componentWillMount() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        await this.context.services.getAnatomicalSitesService(
+            patientPk,
+            this.props.tree.anatomicalSites
+        );
+
+        this.context.patientsMoles.on('update', this.onPatientsMolesUpdate);
+    },
+
+    componentWillUnmount() {
+        this.context.patientsMoles.off('update', this.onPatientsMolesUpdate);
+    },
+
+    onPatientsMolesUpdate() {
+        this.forceUpdate();
+    },
+
     flipImage() {
         const wasFlipped = !this.state.wasFlipped;
         this.setState({ wasFlipped });
     },
 
+    getAnatomicalSitesWithMoles() {
+        const patientPk = this.context.currentPatientPk.get();
+        const patientMoles = this.context.patientsMoles.get(patientPk, 'moles', 'data');
+
+        let anatomicalSitesWithMoles = [];
+
+        _.map(patientMoles, (mole) => {
+            const lastIndex = mole.data.anatomicalSites.length - 1;
+            const anatomicalSite = mole.data.anatomicalSites[lastIndex].pk;
+
+            if (_.findIndex(anatomicalSitesWithMoles, anatomicalSite) === -1) {
+                anatomicalSitesWithMoles.push(anatomicalSite);
+            }
+        });
+
+        return anatomicalSitesWithMoles;
+    },
+
     render() {
         const { wasFlipped } = this.state;
+        const anatomicalSitesWithMoles = this.getAnatomicalSitesWithMoles();
 
         return (
             <ScrollView>
@@ -87,6 +133,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 bodyImage={front}
                                 sites={frontSites}
                                 onAddingComplete={this.props.onAddingComplete}
+                                anatomicalSitesWithMoles={anatomicalSitesWithMoles}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
@@ -95,6 +142,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 bodyImage={back}
                                 sites={backSites}
                                 onAddingComplete={this.props.onAddingComplete}
+                                anatomicalSitesWithMoles={anatomicalSitesWithMoles}
                             />
                         </View>
                     </View>

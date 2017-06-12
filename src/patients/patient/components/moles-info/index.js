@@ -21,7 +21,7 @@ export const MolesInfo = React.createClass({
         patients: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
-            getMolesService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
         }),
     },
@@ -30,7 +30,7 @@ export const MolesInfo = React.createClass({
         const patientPk = this.context.currentPatientPk.get();
 
         await this.context.services.patientsService(this.context.patients);
-        await this.context.services.getMolesService(
+        await this.context.services.getPatientMolesService(
             patientPk,
             this.context.patientsMoles.select(patientPk, 'moles')
         );

@@ -11,7 +11,7 @@ function dehydrateMoles(moles) {
     return convertListToDict(wrapItemsAsRemoteData(data));
 }
 
-export function getMolesService(token) {
+export function getPatientMolesService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -20,6 +20,21 @@ export function getMolesService(token) {
         const _service = buildGetService(
             `/api/v1/patient/${patientPk}/mole/`,
             dehydrateMoles,
+            _.merge({}, defaultHeaders, headers));
+
+        return _service(cursor);
+    };
+}
+
+export function getMoleService(token) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, molePk, cursor) => {
+        const _service = buildGetService(
+            `/api/v1/patient/${patientPk}/mole/${molePk}`,
+            _.identity,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);

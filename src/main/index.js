@@ -129,7 +129,7 @@ export default React.createClass({
             patients: this.props.tree.patients,
             patientsMoles: this.props.tree.patientsMoles,
             patientsMoleImages: this.props.tree.patientsMoleImages,
-            currentPatientPk: this.props.tree.currentPatient,
+            currentPatientPk: this.props.tree.currentPatientPk,
         };
     },
 

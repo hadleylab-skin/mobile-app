@@ -48,8 +48,8 @@ const PatientsListScreen = schema({})(React.createClass({
         };
     },
 
-    componentWillMount() {
-        this.context.services.patientsService(this.context.patients);
+    async componentWillMount() {
+        await this.context.services.patientsService(this.context.patients);
         this.context.patients.on('update', this.updateDataStore);
     },
 

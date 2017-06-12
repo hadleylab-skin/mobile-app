@@ -1,15 +1,29 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders, hydrateImage } from './base';
+import { buildGetService, buildPostService, defaultHeaders, hydrateImage, wrapItemsAsRemoteData } from './base';
 
-export function getAnatomicalSitePhotoService(token) {
+function convertListToDict(list) {
+    return _.keyBy(list, (item) => item.anatomicalSiteImage.data.anatomicalSite);
+}
+
+function dehydrateAnatomicalSites(items) {
+    const data = wrapItemsAsRemoteData(_.map(items));
+
+    return convertListToDict(_.map(data, (item) => (
+        {
+            anatomicalSiteImage: item,
+        }
+    )));
+}
+
+export function getAnatomicalSitesService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
 
-    return (patientPk, anatomicalSite, cursor) => {
+    return (patientPk, cursor) => {
         const _service = buildGetService(
-            `/api/v1/patient/${patientPk}/anatomical_site/${anatomicalSite}/`,
-            _.identity,
+            `/api/v1/patient/${patientPk}/anatomical_site/`,
+            dehydrateAnatomicalSites,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);

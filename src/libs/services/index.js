@@ -1,8 +1,8 @@
 import { getImageService, updateImageService, clinicalPhotoService } from './image';
 import { mrnScanerService } from './mrn-scaner';
 import { updateDoctorService } from './doctor';
-import { getMolesService, addMoleService } from './mole';
-import { addAnatomicalSitePhotoService, getAnatomicalSitePhotoService } from './anatomical-site.js';
+import { getPatientMolesService, addMoleService, getMoleService } from './mole';
+import { addAnatomicalSitePhotoService, getAnatomicalSitesService } from './anatomical-site.js';
 import { patientsService,
          patientImagesService,
          createPatientService,
@@ -15,10 +15,11 @@ export default {
     updateImageService,
     mrnScanerService,
     updateDoctorService,
-    getMolesService,
+    getPatientMolesService,
     addMoleService,
+    getMoleService,
     addAnatomicalSitePhotoService,
-    getAnatomicalSitePhotoService,
+    getAnatomicalSitesService,
     clinicalPhotoService,
     patientsService,
     patientImagesService,

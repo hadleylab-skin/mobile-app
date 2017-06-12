@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -14,14 +15,15 @@ import s from './styles';
 
 const model = {
     tree: {
-        biopsy: false,
+        info: {},
+        /*biopsy: false,
         clinicalDiagnosis: '',
         pathDiagnosis: '',
         lesionsSize: '',
 
         clinicalDiagnosisPickerCursor: {},
         pathDiagnosisPickerCursor: {},
-        lesionsSizePickerCursor: {},
+        lesionsSizePickerCursor: {},*/
     },
 };
 
@@ -62,6 +64,22 @@ const Mole = schema(model)(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        services: React.PropTypes.shape({
+            getMoleService: React.PropTypes.func.isRequired,
+        }),
+    },
+
+    async componentWillMount() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        const result = await this.context.services.getMoleService(
+            patientPk,
+            this.props.tree.pk.get(),
+            this.props.tree.select('info')
+        );
+
+        console.log('result', result);
     },
 
     renderFields() {
@@ -147,9 +165,9 @@ const Mole = schema(model)(React.createClass({
                 <ScrollView scrollEventThrottle={200}>
                     <View style={s.inner}>
                         <Gallery />
-                        <Prediction />
+                        {/*<Prediction />
                         <View style={s.distantPhoto} />
-                        {this.renderFields()}
+                        {this.renderFields()}*/}
                     </View>
                 </ScrollView>
             </View>

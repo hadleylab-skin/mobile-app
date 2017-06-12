@@ -13,7 +13,7 @@ import s from './styles';
 const model = (props, context) => (
     {
         tree: {
-            moles: (cursor) => context.services.getMolesService(context.currentPatientPk.get(), cursor),
+            moles: (cursor) => context.services.getPatientMolesService(context.currentPatientPk.get(), cursor),
         },
     }
 );
@@ -26,7 +26,7 @@ export const MolesList = schema(model)(React.createClass({
     contextTypes: {
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
-            getMolesService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
