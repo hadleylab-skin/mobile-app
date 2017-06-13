@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -12,20 +13,6 @@ import arrowImage from 'components/icons/arrow/arrow.png';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
 import s from './styles';
-
-const model = {
-    tree: {
-        info: {},
-        /*biopsy: false,
-        clinicalDiagnosis: '',
-        pathDiagnosis: '',
-        lesionsSize: '',
-
-        clinicalDiagnosisPickerCursor: {},
-        pathDiagnosisPickerCursor: {},
-        lesionsSizePickerCursor: {},*/
-    },
-};
 
 const diagnosesList = [
     ['Diagnosis 1', 'Diagnosis 1'],
@@ -57,10 +44,12 @@ const lesionsSizeIN = [
     ['7 by 8 in', '7″ by 8″'],
 ];
 
-const Mole = schema(model)(React.createClass({
+const Mole = schema({})(React.createClass({
     displayName: 'Mole',
 
-    propTypes: {},
+    propTypes: {
+        molePk: React.PropTypes.number.isRequired,
+    },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
@@ -70,16 +59,24 @@ const Mole = schema(model)(React.createClass({
         }),
     },
 
+    getInitialState() {
+        return {
+            currentImageId: 0,
+        };
+    },
+
     async componentWillMount() {
         const patientPk = this.context.currentPatientPk.get();
 
-        const result = await this.context.services.getMoleService(
+        await this.context.services.getMoleService(
             patientPk,
-            this.props.tree.pk.get(),
-            this.props.tree.select('info')
+            this.props.molePk,
+            this.props.tree,
         );
+    },
 
-        console.log('result', result);
+    setCurrentImageId(id) {
+        this.setState({ currentImageId: id });
     },
 
     renderFields() {
@@ -160,11 +157,19 @@ const Mole = schema(model)(React.createClass({
     },
 
     render() {
+        const { currentImageId } = this.state;
+        const { data } = this.props.tree.get();
+        const images = data ? data.images : [];
+
         return (
             <View style={s.container}>
                 <ScrollView scrollEventThrottle={200}>
                     <View style={s.inner}>
-                        <Gallery />
+                        <Gallery
+                            images={_.filter(images, (image) => image.data && image.data.dateCreated)}
+                            currentImageId={currentImageId}
+                            setCurrentImageId={this.setCurrentImageId}
+                        />
                         {/*<Prediction />
                         <View style={s.distantPhoto} />
                         {this.renderFields()}*/}

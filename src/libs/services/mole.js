@@ -5,7 +5,7 @@ function convertListToDict(list) {
     return _.keyBy(list, (item) => item.data.pk);
 }
 
-function dehydrateMoles(moles) {
+function dehydratePatientMoles(moles) {
     const data = _.map(moles);
 
     return convertListToDict(wrapItemsAsRemoteData(data));
@@ -19,11 +19,19 @@ export function getPatientMolesService(token) {
     return (patientPk, cursor) => {
         const _service = buildGetService(
             `/api/v1/patient/${patientPk}/mole/`,
-            dehydrateMoles,
+            dehydratePatientMoles,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);
     };
+}
+
+function dehydrateMoleData(data) {
+    let newData = data;
+
+    newData.images = wrapItemsAsRemoteData(data.images);
+
+    return newData;
 }
 
 export function getMoleService(token) {
@@ -34,14 +42,14 @@ export function getMoleService(token) {
     return (patientPk, molePk, cursor) => {
         const _service = buildGetService(
             `/api/v1/patient/${patientPk}/mole/${molePk}/`,
-            _.identity,
+            dehydrateMoleData,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);
     };
 }
 
-function hydrateData(mole) {
+function hydrateMoleData(mole) {
     let data = new FormData();
 
     data.append('anatomicalSite', mole.anatomicalSite);
@@ -63,9 +71,50 @@ export function addMoleService(token) {
         const _service = buildPostService(
             `/api/v1/patient/${patientPk}/mole/`,
             'POST',
-            hydrateData,
+            hydrateMoleData,
             _.identity,
             _.merge({}, defaultHeaders, headers));
         return _service(cursor, data);
+    };
+}
+
+function hydrateMolePhotoData(uri) {
+    let data = new FormData();
+
+    data.append('photo', hydrateImage(uri));
+
+    return data;
+}
+
+export function addMolePhotoService(token) {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, molePk, cursor, data) => {
+        const _service = buildPostService(
+            `/api/v1/patient/${patientPk}/mole/${molePk}/image/`,
+            'POST',
+            hydrateMolePhotoData,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _service(cursor, data);
+    };
+}
+
+export function getMolePhotoService(token) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, molePk, imagePk, cursor) => {
+        const _service = buildGetService(
+            `/api/v1/patient/${patientPk}/mole/${molePk}/image/${imagePk}/`,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+
+        return _service(cursor);
     };
 }

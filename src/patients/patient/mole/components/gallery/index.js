@@ -6,54 +6,29 @@ import {
     Dimensions,
     Image,
     ScrollView,
+    ActivityIndicator,
     TouchableWithoutFeedback,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import moment from 'moment';
 import s from './styles';
 
-import photo from './images/photo.png';
-
-const galleryData = [
-    {
-        pk: 1,
-        source: photo,
-        date: '2017-04-06',
-    },
-    {
-        pk: 2,
-        source: photo,
-        date: '2017-04-06',
-    },
-    {
-        pk: 3,
-        source: photo,
-        date: '2017-04-06',
-    },
-    {
-        pk: 4,
-        source: photo,
-        date: '2017-04-06',
-    },
-    {
-        pk: 5,
-        source: photo,
-        date: '2017-04-06',
-    },
-];
-
 const Gallery = React.createClass({
     displayName: 'Gallery',
 
-    propTypes: {},
+    propTypes: {
+        currentImageId: React.PropTypes.number.isRequired,
+        setCurrentImageId: React.PropTypes.func.isRequired,
+        images: React.PropTypes.arrayOf(React.PropTypes.shape({
+            photo: React.PropTypes.shape({
+                fullSize: React.PropTypes.string,
+                thumbnail: React.PropTypes.string,
+            }),
+            dateCreated: React.PropTypes.string,
+        })).isRequired,
+    },
 
     contextTypes: {},
-
-    getInitialState() {
-        return {
-            activeItem: 0,
-        };
-    },
 
     formateDate(date) {
         const formatedDate = moment(date).format('MMMM d, YYYY hh:mm a');
@@ -62,35 +37,42 @@ const Gallery = React.createClass({
     },
 
     render() {
-        const { activeItem } = this.state;
+        const { currentImageId, setCurrentImageId } = this.props;
         const { width } = Dimensions.get('window');
 
         return (
             <View style={s.container}>
                 <View style={s.carousel}>
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
                     <Carousel
                         ref={(ref) => { this.carousel = ref; }}
                         sliderWidth={width}
                         itemWidth={width}
                         inactiveSlideScale={1}
                         scrollEventThrottle={100}
-                        onSnapToItem={(id) => this.setState({ activeItem: id })}
+                        onSnapToItem={(id) => setCurrentImageId(id)}
                     >
-                        {_.map(galleryData, (image, index) => (
+                        {_.map(this.props.images, (image, index) => (
                             <View style={s.galleryItem} key={`gallery-image-${index}`}>
                                 <View style={s.dateWrraper}>
                                     <Text style={s.date}>
-                                        {`uploaded: ${this.formateDate(image.date)}`}
+                                        {`uploaded: ${this.formateDate(image.data.dateCreated)}`}
                                     </Text>
                                 </View>
-                                <Image source={image.source} style={s.galleryImage} />
+                                <Image source={{ uri: image.data.photo.fullSize }} style={s.galleryImage} />
                             </View>
                         ))}
                     </Carousel>
                     <View style={s.dots}>
-                        {_.map(galleryData, (dot, index) => (
+                        {_.map(this.props.images, (dot, index) => (
                             <View
-                                style={[s.dot, activeItem === index ? s.activeDot : {}]}
+                                style={[s.dot, currentImageId === index ? s.activeDot : {}]}
                                 key={`gallery-dot-${index}`}
                             />
                         ))}
@@ -98,16 +80,16 @@ const Gallery = React.createClass({
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <View style={s.thumbs}>
-                        {_.map(galleryData, (thumb, index) => (
+                        {_.map(this.props.images, (thumb, index) => (
                             <TouchableWithoutFeedback
                                 onPress={() => this.carousel.snapToItem(index)}
                                 key={`gallery-thumb-${index}`}
                             >
                                 <View
                                     style={[s.thumbWrapper,
-                                        activeItem === index ? s.activeThumb : {}]}
+                                        currentImageId === index ? s.activeThumb : {}]}
                                 >
-                                    <Image source={thumb.source} style={s.thumb} />
+                                    <Image source={{ uri: thumb.data.photo.thumbnail }} style={s.thumb} />
                                 </View>
                             </TouchableWithoutFeedback>
                         ))}

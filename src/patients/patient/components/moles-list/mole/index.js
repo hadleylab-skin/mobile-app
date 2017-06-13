@@ -20,6 +20,19 @@ export const Mole = React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
+    contextTypes: {
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+        services: React.PropTypes.shape({
+            addMolePhotoService: React.PropTypes.func.isRequired,
+            getMolePhotoService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     formatDate(date) {
         const todayDate = moment().startOf('second');
         const newDate = moment(date);
@@ -33,23 +46,48 @@ export const Mole = React.createClass({
         return newDate.from(todayDate);
     },
 
-    onAddPhoto(uri) {},
+    async onSubmitMolePhoto(uri) {
+        const molePk = this.props.tree.get('pk');
+        const service = this.context.services.addMolePhotoService;
+        const patientPk = this.context.currentPatientPk.get();
+        const imagesCursor = this.context.patientsMoleImages
+                .select(patientPk, 'moles', molePk, 'imagesData', 'data', 'images');
+        const images = imagesCursor.get();
+
+        const result = await service(patientPk, molePk, imagesCursor.select(images.length), uri);
+
+        if (result.status === 'Succeed') {
+            await this.context.services.patientsService(this.context.patients);
+            await this.context.services.getPatientMolesService(
+                patientPk,
+                this.context.patientsMoles.select(patientPk, 'moles')
+            );
+            await this.context.services.getMolePhotoService(
+                patientPk,
+                molePk,
+                result.data.pk,
+                imagesCursor.select(images.length)
+            );
+        }
+    },
 
     onPress() {
-        const { anatomicalSites } = this.props.tree.get();
+        const { anatomicalSites, pk } = this.props.tree.get();
+        const patientPk = this.context.currentPatientPk.get();
 
         this.props.navigator.push({
             component: MoleScreen,
-            title: anatomicalSites[1].name,
+            title: anatomicalSites[anatomicalSites.length - 1].name,
             onLeftButtonPress: () => this.props.navigator.pop(),
             onRightButtonPress: () => ImagePicker.launchCamera({},
-                (response) => this.onAddPhoto(response.uri)),
+                (response) => this.onSubmitMolePhoto(response.uri)),
             navigationBarHidden: false,
             leftButtonIcon: require('components/icons/back/back.png'),
             rightButtonIcon: require('components/icons/camera/camera.png'),
             tintColor: '#FF2D55',
             passProps: {
-                tree: this.props.tree,
+                tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk, 'imagesData'),
+                molePk: pk,
             },
         });
     },
@@ -82,7 +120,7 @@ export const Mole = React.createClass({
                 <View>
                     <View style={s.titleWrapper}>
                         <Text style={s.title}>
-                            {_.capitalize(anatomicalSites[1].name)}
+                            {_.capitalize(anatomicalSites[anatomicalSites.length - 1].name)}
                         </Text>
                     </View>
                     <View style={s.textWrapper}>

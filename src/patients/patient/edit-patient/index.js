@@ -130,7 +130,7 @@ const EditPatient = schema(model)(React.createClass({
                         <ActivityIndicator
                             animating={showLoader}
                             size="large"
-                            color="#FF2D55"
+                            color="#FF1D70"
                         />
                     </View>
                 ) : null}
