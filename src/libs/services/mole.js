@@ -33,7 +33,7 @@ export function getMoleService(token) {
 
     return (patientPk, molePk, cursor) => {
         const _service = buildGetService(
-            `/api/v1/patient/${patientPk}/mole/${molePk}`,
+            `/api/v1/patient/${patientPk}/mole/${molePk}/`,
             _.identity,
             _.merge({}, defaultHeaders, headers));
 

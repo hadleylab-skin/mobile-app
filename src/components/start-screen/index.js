@@ -21,7 +21,7 @@ export const StartScreen = React.createClass({
                 centerContent
             >
                 <View style={s.inner}>
-                    <StatusBar hidden />
+                    <StatusBar barStyle="light-content" />
                     <Logo />
                     {this.props.children}
                 </View>

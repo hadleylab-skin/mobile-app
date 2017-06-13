@@ -10,7 +10,7 @@ import {
     NavigatorIOS,
 } from 'react-native';
 import schema from 'libs/state';
-import { Button } from 'components/new/button';
+import { Button } from 'components';
 import PatientListItem from './patient-list-item';
 import { getRoute } from '../add';
 import s from './styles';

@@ -17,9 +17,9 @@ export default class Logo extends React.Component {
 
 const styles = StyleSheet.create({
     image: {
-        width: 200,
-        height: 95,
-        marginBottom: 100,
+        width: 150,
+        height: 72,
+        marginBottom: 50,
     },
 });
 

@@ -4,6 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
     View,
+    Text,
     NavigatorIOS,
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText, Form } from 'components';
@@ -50,6 +51,7 @@ const SignInComponent = React.createClass({
         return (
             <StartScreen>
                 <Form onSubmit={this.submit}>
+                    <Text style={s.label}>EMAIL</Text>
                     <Input
                         label="Email"
                         keyboardType="email-address"
@@ -59,6 +61,7 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                     />
+                    <Text style={s.label}>PASSWORD</Text>
                     <Input
                         label="Password"
                         returnKeyType="done"
@@ -68,7 +71,9 @@ const SignInComponent = React.createClass({
                         secureTextEntry
                     />
                 </Form>
-                <Button title="Login" onPress={this.submit} />
+                <View style={s.button}>
+                    <Button title="Login" onPress={this.submit} type="white" />
+                </View>
                 {/*
                 <View style={{ marginTop: 42 }}>
                     <ClickableText

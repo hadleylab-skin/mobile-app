@@ -3,7 +3,7 @@ import {
     View,
     Text,
 } from 'react-native';
-import { Button } from 'components/new/button';
+import { Button } from 'components';
 import { AnatomicalSiteWidget } from 'components';
 import BaobabPropTypes from 'baobab-prop-types';
 import s from './styles';

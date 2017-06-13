@@ -87,3 +87,13 @@ export function wrapItemsAsRemoteData(items) {
         })
     );
 }
+
+export function hydrateImage(uri) {
+    const photo = {
+        uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+    };
+
+    return photo;
+}

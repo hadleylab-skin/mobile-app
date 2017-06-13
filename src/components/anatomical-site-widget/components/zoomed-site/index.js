@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import schema from 'libs/state';
-import { Button } from 'components/new/button';
+import { Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import MolePicker from '../mole-picker';
 import s from './styles';
