@@ -8,6 +8,9 @@ export default StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#ACB5BE',
     },
+    containerDisabled: {
+        opacity: 0.2,
+    },
     item: {
         width: 100,
         alignItems: 'center',

@@ -8,19 +8,26 @@ import s from './styles';
 const Prediction = React.createClass({
     displayName: 'Prediction',
 
+    propTypes: {
+        prediction: React.PropTypes.string,
+        predictionAccuracy: React.PropTypes.string,
+    },
+
     render() {
+        const { prediction, predictionAccuracy } = this.props;
+
         return (
             <View style={s.prediction}>
                 <View style={{ marginBottom: 10 }}>
                     <Text style={s.text}>
                         <Text style={s.title}>Prediction Accuracy: </Text>
-                        0.890
+                        {predictionAccuracy}
                     </Text>
                 </View>
                 <View>
                     <Text style={s.text}>
                         <Text style={s.title}>Prediction: </Text>
-                        Seems Benign
+                        {prediction}
                     </Text>
                 </View>
             </View>

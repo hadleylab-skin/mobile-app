@@ -50,7 +50,7 @@ const ImageLoader = React.createClass({
                     {this.renderImage(imageInfo.photo.path)}
                     <ActivityIndicator
                         size="large"
-                        color="#FF2D55"
+                        color="#FF1D70"
                         style={{ position: 'absolute', top: 20, left: 10 }}
                     />
                 </View>

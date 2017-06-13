@@ -19,23 +19,26 @@ export const Switch = React.createClass({
             ]),
         })).isRequired,
         itemWidth: React.PropTypes.number,
+        disabled: React.PropTypes.bool,
         onPress: React.PropTypes.func,
     },
 
     onPress(value) {
+        if (this.props.disabled) {
+            return;
+        }
+
         if (this.props.onPress) {
             this.props.onPress(value);
-        } else {
-            this.props.cursor.set(value);
         }
     },
 
     render() {
-        const { items, itemWidth } = this.props;
+        const { items, itemWidth, disabled } = this.props;
         const currentValue = this.props.cursor.get();
 
         return (
-            <View style={s.container}>
+            <View style={[s.container, disabled ? s.containerDisabled : {}]}>
                 {_.map(items, (item, index) => (
                     <TouchableWithoutFeedback
                         key={`switch-${index}`}

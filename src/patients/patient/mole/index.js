@@ -56,6 +56,7 @@ const Mole = schema({})(React.createClass({
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             getMoleService: React.PropTypes.func.isRequired,
+            updateMolePhotoService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -79,8 +80,37 @@ const Mole = schema({})(React.createClass({
         this.setState({ currentImageId: id });
     },
 
+    onBiopsyChange(value) {
+        const { currentImageId } = this.state;
+        const currentImageCursor = this.props.tree.select('data', 'images', currentImageId, 'data');
+        const currentImageInfoCursor = currentImageCursor.select('info');
+        const currentImageInfo = currentImageInfoCursor.get('data');
+
+        currentImageInfoCursor.select('data', 'biopsy').set(value);
+
+        this.onDataChange({
+            biopsy: value,
+            // biopsyData: currentImageInfo.biopsyData,
+            clinicalDiagnosis: currentImageInfo.clinicalDiagnosis,
+            pathDiagnosis: currentImageInfo.pathDiagnosis,
+        });
+    },
+
+    async onDataChange(data) {
+        const { currentImageId } = this.state;
+        const patientPk = this.context.currentPatientPk.get();
+        const molePk = this.props.tree.get('data', 'pk');
+        const imagePk = this.props.tree.get('data', 'images', currentImageId, 'data', 'pk');
+        const service = this.context.services.updateMolePhotoService;
+        const imageInfoCursor = this.props.tree.select('data', 'images', currentImageId, 'data', 'info');
+
+        await service(patientPk, molePk, imagePk, imageInfoCursor, { ...data });
+    },
+
     renderFields() {
-        const biopsyCursor = this.props.tree.biopsy;
+        const { currentImageId } = this.state;
+        const currentImageCursor = this.props.tree.select('data', 'images', currentImageId, 'data');
+        const biopsyCursor = currentImageCursor.select('info', 'data', 'biopsy');
         const clinicalDiagnosisCursor = this.props.tree.clinicalDiagnosis;
         const pathDiagnosisCursor = this.props.tree.pathDiagnosis;
         const lesionsSizeCursor = this.props.tree.lesionsSize;
@@ -89,7 +119,7 @@ const Mole = schema({})(React.createClass({
 
         return (
             <View style={s.fields}>
-                <InfoField
+                {/*<InfoField
                     title={'Site'}
                     controls={
                         <View style={s.site}>
@@ -130,20 +160,22 @@ const Mole = schema({})(React.createClass({
                     items={diagnosesList}
                     title="Pathlogical Diagnosis"
                     onPress={() => console.log('Pathlogical Diagnosis pressed')}
-                />
+                />*/}
                 <InfoField
                     title={'Biopsy'}
                     controls={
                         <Switch
                             cursor={biopsyCursor}
+                            disabled={currentImageCursor.get('info', 'status') === 'Loading'}
                             items={[
                                 { label: 'Yes', value: true },
                                 { label: 'No', value: false },
                             ]}
+                            onPress={this.onBiopsyChange}
                         />
                     }
                 />
-                {biopsyCursor.get() ?
+                {/*biopsyCursor.get() ?
                     <Picker
                         tree={this.props.tree.lesionsSizePickerCursor}
                         cursor={lesionsSizeCursor}
@@ -151,7 +183,7 @@ const Mole = schema({})(React.createClass({
                         title="Lesions Size"
                         onPress={() => console.log('Pathlogical Diagnosis pressed')}
                     />
-                : null}
+                : null*/}
             </View>
         );
     },
@@ -160,6 +192,8 @@ const Mole = schema({})(React.createClass({
         const { currentImageId } = this.state;
         const { data } = this.props.tree.get();
         const images = data ? data.images : [];
+
+        const currentImage = images[currentImageId];
 
         return (
             <View style={s.container}>
@@ -170,9 +204,13 @@ const Mole = schema({})(React.createClass({
                             currentImageId={currentImageId}
                             setCurrentImageId={this.setCurrentImageId}
                         />
-                        {/*<Prediction />
-                        <View style={s.distantPhoto} />
-                        {this.renderFields()}*/}
+                        {currentImage && currentImage.data ?
+                            <View>
+                                <Prediction {...currentImage.data} />
+                                {/*<View style={s.distantPhoto} />*/}
+                                {this.renderFields()}
+                            </View>
+                        : null}
                     </View>
                 </ScrollView>
             </View>

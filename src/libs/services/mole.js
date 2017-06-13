@@ -29,7 +29,24 @@ export function getPatientMolesService(token) {
 function dehydrateMoleData(data) {
     let newData = data;
 
-    newData.images = wrapItemsAsRemoteData(data.images);
+    const images = _.map(data.images, (image) => {
+        const { biopsy, biopsyData, clinicalDiagnosis, pathDiagnosis } = image;
+        let newImage = _.omit(image, ['biopsy', 'biopsyData', 'clinicalDiagnosis', 'pathDiagnosis']);
+
+        newImage.info = {
+            data: {
+                biopsy,
+                biopsyData,
+                clinicalDiagnosis,
+                pathDiagnosis,
+            },
+            status: 'Succeed',
+        };
+
+        return newImage;
+    });
+
+    newData.images = wrapItemsAsRemoteData(images);
 
     return newData;
 }
@@ -116,5 +133,33 @@ export function getMolePhotoService(token) {
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);
+    };
+}
+
+function hydrateUpdateMolePhotoData(imageData) {
+    console.log('imageData', imageData);
+    let data = new FormData();
+    const keys = _.keys(imageData);
+
+    _.map(keys, (key) => data.append(key, imageData[key]));
+
+    return data;
+}
+
+export function updateMolePhotoService(token) {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, molePk, imagePk, cursor, data) => {
+        const _service = buildPostService(
+            `/api/v1/patient/${patientPk}/mole/${molePk}/image/${imagePk}/`,
+            'PATCH',
+            hydrateUpdateMolePhotoData,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _service(cursor, data);
     };
 }
