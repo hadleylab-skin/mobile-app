@@ -41,11 +41,26 @@ export function patientImagesService(token) {
 
 function hydratePatientData(patientData) {
     let data = new FormData();
-    const keys = _.keys(patientData);
 
-    _.map(keys, (key) => data.append(key, patientData[key]));
+    _.forEach(_.pickBy(patientData), (value, key) => {
+        if (key === 'mrn') {
+            data.append(key, parseInt(value, 10));
+
+            return;
+        }
+
+        data.append(key, value);
+    });
 
     return data;
+}
+
+function dehydratePatientData(data) {
+    let newData = data;
+
+    newData.mrn = `${data.mrn}`;
+
+    return newData;
 }
 
 export function createPatientService(token) {
@@ -73,9 +88,9 @@ export function updatePatientService(token) {
 
     return (patientPk, cursor, data) => {
         const _updatePatient = buildPostService(`/api/v1/patient/${patientPk}/`,
-            'PUT',
+            'PATCH',
             hydratePatientData,
-            dehydrateMrn,
+            dehydratePatientData,
             _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
     };

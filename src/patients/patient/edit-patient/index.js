@@ -233,20 +233,11 @@ async function submit(props, navigator, getInput) {
         return;
     }
 
-    const patientPk = props.patientCursor.data.get('id');
+    const patientPk = props.patientCursor.data.get('pk');
     const cursor = props.patientCursor;
     const result = await props.updatePatientService(patientPk, cursor, formData);
 
-    if (result.status === 'Failure') {
-        if (result.error.data.mrn) {
-            getInput('mrn').showError(result.error.data.mrn);
-            return;
-        }
-
-        Alert.alert(
-            'Update Patient Error',
-            JSON.stringify(result));
-    } else {
+    if (result.status === 'Succeed') {
         navigator.pop();
     }
 }
