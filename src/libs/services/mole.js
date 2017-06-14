@@ -137,7 +137,6 @@ export function getMolePhotoService(token) {
 }
 
 function hydrateUpdateMolePhotoData(imageData) {
-    console.log('imageData', imageData);
     let data = new FormData();
     const keys = _.keys(imageData);
 

@@ -28,11 +28,6 @@ export default StyleSheet.create({
         flex: 1,
         height: 125,
     },
-    fields: {
-        backgroundColor: '#fff',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
-    },
     site: {
         position: 'relative',
         flexDirection: 'row',
