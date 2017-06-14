@@ -27,7 +27,6 @@ const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         patientsMolesCursor: BaobabPropTypes.cursor.isRequired,
-        racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
     },
 
     contextTypes: {
@@ -123,7 +122,6 @@ const PatientsListScreen = schema({})(React.createClass({
                                     data={rowData.data}
                                     patientCursor={this.context.patients.data.select(rowData.data.pk)}
                                     navigator={this.props.navigator}
-                                    racesList={this.props.racesList}
                                 />
                             )}
                         />

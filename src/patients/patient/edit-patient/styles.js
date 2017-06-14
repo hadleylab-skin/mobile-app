@@ -14,4 +14,8 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    button: {
+        flexDirection: 'row',
+        padding: 15,
+    },
 });

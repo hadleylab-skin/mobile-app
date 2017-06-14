@@ -16,25 +16,25 @@ const createPatientSchema = {
     title: 'Create patient form',
     type: 'object',
     properties: {
-        firstname: {
+        firstName: {
             type: 'string',
             minLength: 2,
         },
-        lastname: {
+        lastName: {
             type: 'string',
             minLength: 2,
         },
     },
-    required: ['firstname', 'lastname'],
+    required: ['firstName', 'lastName'],
 };
 
 const model = {
     tree: {
         form: {
-            firstname: '',
-            lastname: '',
+            firstName: '',
+            lastName: '',
             mrn: '',
-            dob: '',
+            dateOfBirth: '',
             sex: '',
         },
         datePickerCursor: {},
@@ -45,8 +45,8 @@ const model = {
 
 async function submit(props, context, getInput) {
     const formData = {
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         ..._.pickBy(props.tree.form.get()),
     };
     const validationResult = tv4.validateMultiple(formData, createPatientSchema);
@@ -116,14 +116,14 @@ export const AddPatient = schema(model)(React.createClass({
     },
 
     render() {
-        const firstNameCursor = this.props.tree.form.firstname;
-        const lastNameCursor = this.props.tree.form.lastname;
+        const firstNameCursor = this.props.tree.form.firstName;
+        const lastNameCursor = this.props.tree.form.lastName;
         const mrnCursor = this.props.tree.form.mrn;
-        const dobCursor = this.props.tree.form.dob;
+        const dateOfBirthCursor = this.props.tree.form.dateOfBirth;
         const sexCursor = this.props.tree.form.sex;
 
         const mrn = mrnCursor.get();
-        const dob = dobCursor.get();
+        const dateOfBirth = dateOfBirthCursor.get();
         const sex = sexCursor.get();
 
         const uploadStatus = this.props.tree.serverAnswer.get('status');
@@ -155,7 +155,7 @@ export const AddPatient = schema(model)(React.createClass({
                             errorStyle={s.error}
                             placeholderTextColor="#ccc"
                             returnKeyType="next"
-                            name="firstname"
+                            name="firstName"
                         />
                         <Input
                             label="Last Name"
@@ -164,8 +164,8 @@ export const AddPatient = schema(model)(React.createClass({
                             inputStyle={s.inputStyle}
                             errorStyle={s.error}
                             placeholderTextColor="#ccc"
-                            returnKeyType={mrn || dob || sex ? 'next' : 'done'}
-                            name="lastname"
+                            returnKeyType={mrn || dateOfBirth || sex ? 'next' : 'done'}
+                            name="lastName"
                         />
                         {
                             mrn
@@ -176,7 +176,7 @@ export const AddPatient = schema(model)(React.createClass({
                                 inputWrapperStyle={s.inputWrapperStyle}
                                 inputStyle={s.inputStyle}
                                 placeholderTextColor="#ccc"
-                                returnKeyType={dob || sex ? 'next' : 'done'}
+                                returnKeyType={dateOfBirth || sex ? 'next' : 'done'}
                                 keyboardType="numeric"
                                 name="mrn"
                             />
@@ -185,11 +185,11 @@ export const AddPatient = schema(model)(React.createClass({
                         }
                     </View>
                     {
-                        dob
+                        dateOfBirth
                     ?
                         <DatePicker
                             tree={this.props.tree.datePickerCursor}
-                            cursor={dobCursor}
+                            cursor={dateOfBirthCursor}
                             title="Date of Birth"
                         />
                     :
@@ -207,10 +207,12 @@ export const AddPatient = schema(model)(React.createClass({
                         null
                     }
                 </Form>
-                <ScanMrnButton
-                    cursor={this.props.tree.scanResult}
-                    setupData={this.setupData}
-                />
+                <View style={s.button}>
+                    <ScanMrnButton
+                        cursor={this.props.tree.scanResult}
+                        setupData={this.setupData}
+                    />
+                </View>
             </ScrollView>
         );
     },

@@ -75,7 +75,6 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
-                            racesList={this.props.tree.racesList.get('data') || []}
                             patientsMolesCursor={patientsMolesCursor}
                         />
                     </TabBarIOS.Item>
@@ -85,7 +84,7 @@ const Main = schema(model)(React.createClass({
                         selected={currentTabCursor.get() === 'camera'}
                         onPress={() => currentTabCursor.set('camera')}
                     >
-                        <View><Text>Camera</Text></View>
+                        <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         title="My Profile"
@@ -120,6 +119,7 @@ export default React.createClass({
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         patientsMoleImages: BaobabPropTypes.cursor.isRequired,
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        racesList: BaobabPropTypes.cursor.isRequired,
     },
 
     getChildContext() {
@@ -130,6 +130,7 @@ export default React.createClass({
             patientsMoles: this.props.tree.patientsMoles,
             patientsMoleImages: this.props.tree.patientsMoleImages,
             currentPatientPk: this.props.tree.currentPatientPk,
+            racesList: this.props.tree.racesList,
         };
     },
 

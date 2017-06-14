@@ -22,7 +22,7 @@ export const Picker = schema(model)(React.createClass({
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
+        items: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
         title: React.PropTypes.string.isRequired,
         onPress: React.PropTypes.func,
         hasNoBorder: React.PropTypes.bool,
@@ -81,10 +81,12 @@ export const Picker = schema(model)(React.createClass({
         const { cursor, items, title } = this.props;
         const { isOpen } = this.props.tree;
 
+        const itemsObject = _.fromPairs(items);
+
         return (
             <InfoField
                 title={title}
-                text={cursor.get()}
+                text={itemsObject[cursor.get()]}
                 onPress={this.onPress}
                 hasNoBorder={this.props.hasNoBorder}
             >

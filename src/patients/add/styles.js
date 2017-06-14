@@ -29,5 +29,9 @@ export default StyleSheet.create({
         marginTop: 10,
         marginBottom: -10,
     },
+    button: {
+        flexDirection: 'row',
+        padding: 15,
+    },
 });
 

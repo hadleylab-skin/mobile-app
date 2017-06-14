@@ -39,27 +39,42 @@ export function patientImagesService(token) {
     };
 }
 
+function hydratePatientData(patientData) {
+    let data = new FormData();
+    const keys = _.keys(patientData);
+
+    _.map(keys, (key) => data.append(key, patientData[key]));
+
+    return data;
+}
+
 export function createPatientService(token) {
     const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
         Authorization: `JWT ${token}`,
     };
-    return buildPostService('/api/v1/patients/',
-                            'POST',
-                            JSON.stringify,
-                            _.identity,
-                            _.merge({}, defaultHeaders, headers));
+
+    return buildPostService(
+        '/api/v1/patient/',
+        'POST',
+        hydratePatientData,
+        _.identity,
+        _.merge({}, defaultHeaders, headers)
+    );
 }
 
 export function updatePatientService(token) {
     const headers = {
+        'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
         Authorization: `JWT ${token}`,
     };
 
     return (patientPk, cursor, data) => {
-        const _updatePatient = buildPostService(`/api/v1/patients/${patientPk}/`,
+        const _updatePatient = buildPostService(`/api/v1/patient/${patientPk}/`,
             'PUT',
-            JSON.stringify,
+            hydratePatientData,
             dehydrateMrn,
             _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);

@@ -50,7 +50,7 @@ const TouchableArea = schema({})(React.createClass({
             navigationBarHidden: false,
             rightButtonTitle: 'Cancel',
             leftButtonIcon: require('components/icons/back/back.png'),
-            tintColor: '#FF2D55',
+            tintColor: '#FF1D70',
             passProps: {
                 tree: this.props.tree.select('data', anatomicalSite),
                 source: this.props.largeImageSource,

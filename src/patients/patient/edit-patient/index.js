@@ -19,11 +19,11 @@ const updatePatientSchema = {
     title: 'Update patient form',
     type: 'object',
     properties: {
-        firstname: {
+        firstName: {
             type: 'string',
             minLength: 2,
         },
-        lastname: {
+        lastName: {
             type: 'string',
             minLength: 2,
         },
@@ -34,16 +34,16 @@ const updatePatientSchema = {
             maxLength: 10,
         },
     },
-    required: ['firstname', 'lastname'],
+    required: ['firstName', 'lastName'],
 };
 
 const model = {
     tree: {
         form: {
-            firstname: '',
-            lastname: '',
+            firstName: '',
+            lastName: '',
             mrn: '',
-            dob: '',
+            dateOfBirth: '',
             sex: '',
             race: '',
         },
@@ -61,20 +61,23 @@ const EditPatient = schema(model)(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        racesList: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string)).isRequired,
         registerGetInput: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        racesList: BaobabPropTypes.cursor.isRequired,
+    },
+
     componentWillMount() {
-        const { firstname, lastname, mrn,
-                sex, dob, race } = this.props.patientCursor.data.get();
+        const { firstName, lastName, mrn,
+                sex, dateOfBirth, race } = this.props.patientCursor.data.get();
         this.props.tree.datePickerCursor.isOpen.set(false);
         this.props.tree.racePickerCursor.isOpen.set(false);
         this.props.tree.form.set({
-            firstname,
-            lastname,
+            firstName,
+            lastName,
             mrn,
-            dob,
+            dateOfBirth,
             sex,
             race,
         });
@@ -112,11 +115,11 @@ const EditPatient = schema(model)(React.createClass({
     },
 
     render() {
-        const firstnameCursor = this.props.tree.form.firstname;
-        const lastnameCursor = this.props.tree.form.lastname;
+        const firstNameCursor = this.props.tree.form.firstName;
+        const lastNameCursor = this.props.tree.form.lastName;
         const mrnCursor = this.props.tree.form.mrn;
         const raceCursor = this.props.tree.form.race;
-        const dobCursor = this.props.tree.form.dob;
+        const dateOfBirthCursor = this.props.tree.form.dateOfBirth;
         const offsetY = this.props.tree.offsetY.get();
 
         const patientStatus = this.props.patientCursor.get('status');
@@ -148,19 +151,19 @@ const EditPatient = schema(model)(React.createClass({
                             <Title text="Patient name" />
                             <Input
                                 label="First Name"
-                                cursor={firstnameCursor}
+                                cursor={firstNameCursor}
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
-                                name="firstname"
+                                name="firstName"
                                 onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                             <Input
                                 label="Last Name"
-                                cursor={lastnameCursor}
+                                cursor={lastNameCursor}
                                 fullWidth
                                 placeholderTextColor="#ccc"
                                 returnKeyType="next"
-                                name="lastname"
+                                name="lastName"
                                 onFocus={() => this.scrollView.scrollToPosition(0, -64)}
                             />
                         </View>
@@ -181,7 +184,7 @@ const EditPatient = schema(model)(React.createClass({
                             <Title text="Patient Information" />
                             <DatePicker
                                 tree={this.props.tree.datePickerCursor}
-                                cursor={dobCursor}
+                                cursor={dateOfBirthCursor}
                                 title="Date of Birth"
                                 onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
@@ -189,15 +192,17 @@ const EditPatient = schema(model)(React.createClass({
                             <Picker
                                 tree={this.props.tree.racePickerCursor}
                                 cursor={raceCursor}
-                                items={this.props.racesList}
+                                items={this.context.racesList.data.get()}
                                 title="Race"
                                 onPress={() => this.scrollView.scrollToPosition(0, offsetY + 220)}
                             />
                         </View>
-                        <ScanMrnButton
-                            cursor={this.props.tree.scanResult}
-                            setupData={this.setupData}
-                        />
+                        <View style={s.button}>
+                            <ScanMrnButton
+                                cursor={this.props.tree.scanResult}
+                                setupData={this.setupData}
+                            />
+                        </View>
                     </Form>
                 </KeyboardAwareScrollView>
             </View>
@@ -257,13 +262,13 @@ export function getRoute(props, context) {
         racesList: props.racesList,
     };
 
-    const { firstname, lastname } = props.patientCursor.data.get();
+    const { firstName, lastName } = props.patientCursor.data.get();
 
     return {
         component: EditPatient,
         leftButtonTitle: 'Cancel',
         onLeftButtonPress: () => navigator.pop(),
-        title: `${firstname} ${lastname}`,
+        title: `${firstName} ${lastName}`,
         rightButtonTitle: 'Update',
         onRightButtonPress: () => submit(passProps, navigator, getInput),
         navigationBarHidden: false,
