@@ -43,7 +43,6 @@ const ZoomedSite = schema(model)(React.createClass({
             positionX: null,
             positionY: null,
             photo: null,
-            isLoading: false,
         };
     },
 
@@ -74,15 +73,12 @@ const ZoomedSite = schema(model)(React.createClass({
             uri,
         };
 
-        this.setState({ isLoading: true });
-
         const service = this.context.services.addMoleService;
         const patientPk = this.context.currentPatientPk.get();
         const result = await service(patientPk, this.props.tree.mole, data);
 
         if (result.status === 'Succeed') {
             this.props.onAddingComplete();
-            this.setState({ isLoading: false });
         }
     },
 
@@ -93,7 +89,7 @@ const ZoomedSite = schema(model)(React.createClass({
     render() {
         const { source } = this.props;
         const anatomicalSiteImage = this.props.tree.get('anatomicalSiteImage');
-        const { positionX, positionY, photo, isLoading } = this.state;
+        const { positionX, positionY, photo } = this.state;
         const hasMoleLocation = positionX && positionY;
 
         let anatomicalSiteImageSource;
@@ -105,7 +101,7 @@ const ZoomedSite = schema(model)(React.createClass({
         return (
             <View style={s.container}>
                 <View style={s.wrapper}>
-                    {isLoading ?
+                    {this.props.tree.select('mole', 'status').get() === 'Loading' ?
                         <View style={s.activityIndicator}>
                             <ActivityIndicator
                                 animating
@@ -116,13 +112,24 @@ const ZoomedSite = schema(model)(React.createClass({
                     : null}
                     <MolePicker onMolePick={this.onMolePick}>
                         {anatomicalSiteImageSource || photo ?
-                            <Image
-                                source={{ uri: anatomicalSiteImageSource || photo }}
-                                style={s.imageURI}
-                            />
-                        :
-                            <Image source={source} />
-                        }
+                            <View>
+                                <View style={[s.activityIndicator, { zIndex: 0 }]}>
+                                    <ActivityIndicator
+                                        animating
+                                        size="large"
+                                        color="#FF1D70"
+                                    />
+                                </View>
+                                <Image
+                                    source={{ uri: anatomicalSiteImageSource || photo }}
+                                    style={s.imageURI}
+                                />
+                            </View>
+                        : (
+                            <View style={s.defaultImageWrapper}>
+                                <Image source={source} />
+                            </View>
+                        )}
                     </MolePicker>
                     <View style={s.footer}>
                         {hasMoleLocation ?
@@ -130,7 +137,7 @@ const ZoomedSite = schema(model)(React.createClass({
                         : null }
                         {!hasMoleLocation ?
                             <View style={s.footerInner}>
-                                {anatomicalSiteImageSource ?
+                                {anatomicalSiteImageSource || photo ?
                                     <Text style={s.text}>Tap on location</Text>
                                 :
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
