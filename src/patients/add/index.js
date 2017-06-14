@@ -84,7 +84,7 @@ async function submit(props, context, getInput) {
     } else {
         context.mainNavigator.pop();
         props.tree.form.set(model.tree);
-        props.onPatientAdded(result.data);
+        props.onPatientAdded();
     }
 }
 
@@ -223,10 +223,7 @@ export function getRoute(props, context) {
     let passProps = {
         registerGetInput: (_getInput) => { getInput = _getInput; },
         tree: props.tree.newPatient,
-        onPatientAdded: (patient) => {
-            props.changeCurrentPatient(patient);
-            context.services.patientsService(props.tree.patients);
-        },
+        onPatientAdded: async () => await context.services.patientsService(context.patients),
     };
 
     const doSubmit = async () => submit(passProps, context, getInput);

@@ -135,6 +135,7 @@ const PatientsListScreen = schema({})(React.createClass({
 export const PatientsList = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        patients: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
