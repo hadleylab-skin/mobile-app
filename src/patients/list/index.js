@@ -107,25 +107,23 @@ const PatientsListScreen = schema({})(React.createClass({
                         </View>
                     </View>
                 :
-                    <View style={s.list}>
-                        <ListView
-                            enableEmptySections
-                            onScroll={this.onScroll}
-                            scrollEventThrottle={20}
-                            style={{
-                                paddingBottom: 49,
-                            }}
-                            dataSource={this.state.ds}
-                            renderRow={(rowData) => (
-                                <PatientListItem
-                                    tree={this.props.patientsMolesCursor.select(rowData.data.pk)}
-                                    data={rowData.data}
-                                    patientCursor={this.context.patients.data.select(rowData.data.pk)}
-                                    navigator={this.props.navigator}
-                                />
-                            )}
-                        />
-                    </View>
+                    <ListView
+                        enableEmptySections
+                        onScroll={this.onScroll}
+                        scrollEventThrottle={20}
+                        style={{
+                            paddingBottom: 49,
+                        }}
+                        dataSource={this.state.ds}
+                        renderRow={(rowData) => (
+                            <PatientListItem
+                                tree={this.props.patientsMolesCursor.select(rowData.data.pk)}
+                                data={rowData.data}
+                                patientCursor={this.context.patients.data.select(rowData.data.pk)}
+                                navigator={this.props.navigator}
+                            />
+                        )}
+                    />
                 }
             </View>
         );

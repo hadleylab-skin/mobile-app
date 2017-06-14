@@ -2,9 +2,18 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
     container: {
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#dadada',
         flex: 1,
+        paddingLeft: 15,
+        paddingRight: 15,
+        position: 'relative',
+    },
+    border: {
+        position: 'absolute',
+        left: 15,
+        right: 15,
+        bottom: 0,
+        height: 0.5,
+        backgroundColor: '#dadada',
     },
     inner: {
         flex: 1,

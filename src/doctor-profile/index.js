@@ -5,9 +5,7 @@ import {
     View,
     Text,
     Image,
-    Alert,
 } from 'react-native';
-import { UserPropType } from 'libs/misc';
 import { Title } from 'components/new/title';
 import { InfoField, Switch } from 'components';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
@@ -15,12 +13,11 @@ import s from './styles';
 
 export const DoctorProfile = React.createClass({
     propTypes: {
-        unitsOfLengthCursor: BaobabPropTypes.cursor.isRequired,
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
+        doctorCursor: BaobabPropTypes.cursor.isRequired,
+        logout: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        user: UserPropType,
         services: React.PropTypes.shape({
             updateDoctorService: React.PropTypes.func.isRequired,
         }),
@@ -28,18 +25,18 @@ export const DoctorProfile = React.createClass({
 
     async onUnitsOfLengthChange(unit) {
         const service = this.context.services.updateDoctorService;
-        const result = await service(this.props.unitsOfLengthCursor, { unitsOfLength: unit })
-            .then(() => this.props.unitsOfLengthCursor.set(unit));
+        const unitsOfLengthCursor = this.props.doctorCursor.select('data', 'unitsOfLength');
 
-        if (result.status === 'Failure') {
-            Alert.alert(
-                'Update Units Of Length Error',
-                JSON.stringify(result.error));
+        if (unit === unitsOfLengthCursor.get()) {
+            return;
         }
+
+        unitsOfLengthCursor.set(unit);
+        await service(this.props.doctorCursor, { unitsOfLength: unit });
     },
 
     render() {
-        const { photo, degree, department } = this.context.user;
+        const { photo, degree, department } = this.props.doctorCursor.get('data');
 
         return (
             <View style={s.container}>
@@ -66,7 +63,8 @@ export const DoctorProfile = React.createClass({
                         hasNoBorder
                         controls={
                             <Switch
-                                cursor={this.props.unitsOfLengthCursor}
+                                cursor={this.props.doctorCursor.select('data', 'unitsOfLength')}
+                                disabled={this.props.doctorCursor.get('status') === 'Loading'}
                                 items={[
                                     { label: 'in', value: 'in' },
                                     { label: 'cm', value: 'cm' },
@@ -81,10 +79,7 @@ export const DoctorProfile = React.createClass({
                     <InfoField
                         title={'Log out'}
                         hasNoBorder
-                        onPress={() => {
-                            this.props.tree.set({});
-                            this.props.tokenCursor.set('');
-                        }}
+                        onPress={this.props.logout}
                     />
                 </View>
             </View>

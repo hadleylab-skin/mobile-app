@@ -4,11 +4,6 @@ export default StyleSheet.create({
     container: {
         flex: 1,
     },
-    list: {
-        flex: 1,
-        paddingLeft: 15,
-        paddingRight: 15,
-    },
     activityIndicator: {
         position: 'absolute',
         top: 85,

@@ -60,6 +60,7 @@ const SignInComponent = React.createClass({
                         cursor={usernameCursor}
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
+                        placeholderTextColor="rgba(255,255,255,0.7)"
                     />
                     <Text style={s.label}>PASSWORD</Text>
                     <Input
@@ -69,6 +70,7 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         secureTextEntry
+                        placeholderTextColor="rgba(255,255,255,0.7)"
                     />
                 </Form>
                 <View style={s.button}>

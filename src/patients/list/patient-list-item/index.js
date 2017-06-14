@@ -103,6 +103,7 @@ const PatientListItem = React.createClass({
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
+                <View style={s.border} />
             </View>
         );
     },

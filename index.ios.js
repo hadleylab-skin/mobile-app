@@ -30,10 +30,7 @@ function App(props) {
     return (
         <Main
             tree={mainScreen}
-            token={tokenCursor.get('data', 'token')}
-            user={tokenCursor.get('data', 'doctor')}
             tokenCursor={tokenCursor}
-            unitsOfLengthCursor={tokenCursor.select('data', 'doctor', 'unitsOfLength')}
         />
     );
 }

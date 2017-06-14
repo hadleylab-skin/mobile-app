@@ -38,7 +38,6 @@ const Main = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        unitsOfLengthCursor: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
@@ -94,8 +93,11 @@ const Main = schema(model)(React.createClass({
                     >
                         <DoctorProfile
                             tree={this.props.tree}
-                            unitsOfLengthCursor={this.props.unitsOfLengthCursor}
-                            tokenCursor={this.props.tokenCursor}
+                            doctorCursor={this.props.tokenCursor.select('data', 'doctor')}
+                            logout={() => {
+                                this.props.tree.set({});
+                                this.props.tokenCursor.set('');
+                            }}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
@@ -108,8 +110,7 @@ export default React.createClass({
     displayName: 'MainNavigator',
 
     propTypes: {
-        token: React.PropTypes.string.isRequired,
-        user: UserPropType,
+        tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     childContextTypes: {
@@ -125,7 +126,7 @@ export default React.createClass({
     getChildContext() {
         return {
             mainNavigator: this.mainNavigator || {},
-            user: this.props.user,
+            user: this.props.tokenCursor.get('data', 'doctor', 'data'),
             patients: this.props.tree.patients,
             patientsMoles: this.props.tree.patientsMoles,
             patientsMoleImages: this.props.tree.patientsMoleImages,
@@ -135,7 +136,7 @@ export default React.createClass({
     },
 
     initServices() {
-        const token = this.props.token;
+        const token = this.props.tokenCursor.get('data', 'token');
         let initializedServices = {};
         _.each(services, (service, name) => {
             initializedServices[name] = service(token);
@@ -154,9 +155,9 @@ export default React.createClass({
                     initialRoute={{
                         component: Main,
                         title: 'Patients',
-                        passProps: this.props,
                         navigationBarHidden: true,
                         tintColor: '#FF2D55',
+                        passProps: this.props,
                     }}
                     style={{ flex: 1 }}
                     barTintColor="#fff"
