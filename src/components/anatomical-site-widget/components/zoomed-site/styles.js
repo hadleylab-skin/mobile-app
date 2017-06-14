@@ -42,4 +42,14 @@ export default StyleSheet.create({
         height: Dimensions.get('window').height - 64,
         width: Dimensions.get('window').width,
     },
+    activityIndicator: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 64,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
+    },
 });
