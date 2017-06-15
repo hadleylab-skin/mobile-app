@@ -33,13 +33,15 @@ export const GeneralInfo = React.createClass({
                     />
                 </View>
                 <View>
-                    <View><Text style={s.text}>
-                        {moment(dateOfBirth).format('DD/MMM/YYYY')}
-                        {' '}
-                        ({moment(dateOfBirth).fromNow(true)})
-                        {', '}
-                        {_.capitalize(sex)}
-                    </Text></View>
+                    {dateOfBirth ?
+                        <View><Text style={s.text}>
+                            {moment(dateOfBirth).format('DD/MMM/YYYY')}
+                            {' '}
+                            ({moment(dateOfBirth).fromNow(true)})
+                            {', '}
+                            {_.capitalize(sex)}
+                        </Text></View>
+                    : null}
                     {mrn ?
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
