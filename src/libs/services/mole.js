@@ -36,7 +36,7 @@ function dehydrateMoleData(data) {
         newImage.info = {
             data: {
                 biopsy,
-                biopsyData,
+                biopsyData: JSON.parse(biopsyData),
                 clinicalDiagnosis,
                 pathDiagnosis,
             },
@@ -138,9 +138,24 @@ export function getMolePhotoService(token) {
 
 function hydrateUpdateMolePhotoData(imageData) {
     let data = new FormData();
-    const keys = _.keys(imageData);
 
-    _.map(keys, (key) => data.append(key, imageData[key]));
+    _.forEach(_.pickBy(imageData), (value, key) => {
+        if (key === 'biopsyData') {
+            data.append(key, JSON.stringify(value));
+
+            return;
+        }
+
+        data.append(key, value);
+    });
+
+    return data;
+}
+
+function dehydrateUpdateMolePhotoData(imageData) {
+    let data = imageData;
+
+    data.biopsyData = JSON.parse(imageData.biopsyData);
 
     return data;
 }
@@ -157,7 +172,7 @@ export function updateMolePhotoService(token) {
             `/api/v1/patient/${patientPk}/mole/${molePk}/image/${imagePk}/`,
             'PATCH',
             hydrateUpdateMolePhotoData,
-            _.identity,
+            dehydrateUpdateMolePhotoData,
             _.merge({}, defaultHeaders, headers));
         return _service(cursor, data);
     };

@@ -7,7 +7,7 @@ import {
 import { Input, Form } from 'components';
 import s from './styles';
 
-const DiagnosisInput = React.createClass({
+const DiagnosisScreen = React.createClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
         title: React.PropTypes.string.isRequired,
@@ -57,4 +57,4 @@ const DiagnosisInput = React.createClass({
     },
 });
 
-export default DiagnosisInput;
+export default DiagnosisScreen;

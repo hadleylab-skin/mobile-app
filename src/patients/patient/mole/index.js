@@ -16,10 +16,10 @@ const Mole = schema({})(React.createClass({
 
     propTypes: {
         molePk: React.PropTypes.number.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             getMoleService: React.PropTypes.func.isRequired,
@@ -70,6 +70,7 @@ const Mole = schema({})(React.createClass({
                                     tree={this.props.tree.select('data', 'images', currentImageId, 'data')}
                                     molePk={this.props.molePk}
                                     imagePk={this.props.tree.get('data', 'images', currentImageId, 'data', 'pk')}
+                                    navigator={this.props.navigator}
                                 />
                             </View>
                         : null}

@@ -88,6 +88,7 @@ export const Mole = React.createClass({
             passProps: {
                 tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk, 'imagesData'),
                 molePk: pk,
+                navigator: this.props.navigator,
             },
         });
     },

@@ -5,7 +5,6 @@ import {
     TabBarIOS,
     NavigatorIOS,
     View,
-    Text,
 } from 'react-native';
 import _ from 'lodash';
 import services from 'libs/services';
@@ -115,7 +114,7 @@ export default React.createClass({
 
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        user: UserPropType,
+        user: BaobabPropTypes.cursor.isRequired,
         patients: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         patientsMoleImages: BaobabPropTypes.cursor.isRequired,
@@ -126,7 +125,7 @@ export default React.createClass({
     getChildContext() {
         return {
             mainNavigator: this.mainNavigator || {},
-            user: this.props.tokenCursor.get('data', 'doctor', 'data'),
+            user: this.props.tokenCursor.select('data', 'doctor', 'data'),
             patients: this.props.tree.patients,
             patientsMoles: this.props.tree.patientsMoles,
             patientsMoleImages: this.props.tree.patientsMoleImages,

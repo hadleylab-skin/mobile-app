@@ -9,13 +9,16 @@ import {
 import schema from 'libs/state';
 import { InfoField, Switch, Picker, AnatomicalSiteWidget } from 'components';
 import arrowImage from 'components/icons/arrow/arrow.png';
-import DiagnosisInput from './components/diagnosis-input';
+import { UserPropType } from 'libs/misc';
+import DiagnosisScreen from './components/diagnosis-screen';
+import LesionsScreen from './components/lesions-screen';
 import s from './styles';
 
 const model = (props) => ({
     tree: {
         clinicalDiagnosis: props.tree.get('info', 'data', 'clinicalDiagnosis'),
         pathDiagnosis: props.tree.get('info', 'data', 'pathDiagnosis'),
+        biopsyData: props.tree.get('info', 'data', 'biopsyData'),
     },
 });
 
@@ -25,16 +28,29 @@ const InfoFields = schema(model)(React.createClass({
     propTypes: {
         molePk: React.PropTypes.number.isRequired,
         imagePk: React.PropTypes.number.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
+        user: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             updateMolePhotoService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    componentWillMount() {
+        this.context.user.on('update', this.update);
+    },
+
+    componentWillUnmount() {
+        this.context.user.off('update', this.update);
+    },
+
+    update() {
+        this.forceUpdate();
     },
 
     onBiopsyChange(value) {
@@ -45,19 +61,21 @@ const InfoFields = schema(model)(React.createClass({
         this.onDataChange({ biopsy: value });
     },
 
+    onBiopsyDataSubmit() {
+        const biopsyData = this.props.tree.get('biopsyData');
+
+        this.onDataChange({ biopsyData }, () => this.props.navigator.pop());
+    },
+
     onDiagnosisSubmit() {
         const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis');
         const pathDiagnosis = this.props.tree.get('pathDiagnosis');
         const patientPk = this.context.currentPatientPk.get();
 
         this.onDataChange(
-            {
-                // biopsyData: currentImageInfo.biopsyData,
-                clinicalDiagnosis,
-                pathDiagnosis,
-            },
+            { clinicalDiagnosis, pathDiagnosis },
             async () => {
-                this.context.mainNavigator.pop();
+                this.props.navigator.pop();
                 await this.context.services.getPatientMolesService(
                     patientPk,
                     this.context.patientsMoles.select(patientPk, 'moles')
@@ -79,6 +97,42 @@ const InfoFields = schema(model)(React.createClass({
         }
     },
 
+    renderLesionsField() {
+        const fieldsDataCursor = this.props.tree.select('info', 'data');
+        const biopsyDataCursor = fieldsDataCursor.select('biopsyData');
+        const formBiopsyDataCursor = this.props.tree.select('biopsyData');
+        const unitsOfLength = this.context.user.get('unitsOfLength');
+
+        const width = biopsyDataCursor.get('width');
+        const height = biopsyDataCursor.get('height');
+
+        return (
+            <InfoField
+                title="Lesions Size"
+                text={width && height ? `width: ${width} ${unitsOfLength}, height: ${height} ${unitsOfLength}` : ''}
+                onPress={() => {
+                    this.props.navigator.push({
+                        component: LesionsScreen,
+                        title: 'Lesions Size',
+                        onLeftButtonPress: () => {
+                            this.props.navigator.pop();
+                        },
+                        navigationBarHidden: false,
+                        leftButtonIcon: require('components/icons/back/back.png'),
+                        tintColor: '#FF1D70',
+                        passProps: {
+                            widthCursor: formBiopsyDataCursor.select('width'),
+                            heightCursor: formBiopsyDataCursor.select('height'),
+                            width: biopsyDataCursor.get('width'),
+                            height: biopsyDataCursor.get('height'),
+                            onSubmit: this.onBiopsyDataSubmit,
+                        },
+                    });
+                }}
+            />
+        );
+    },
+
     renderDiagnosisField(cursorName, title) {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const diagnosisCursor = fieldsDataCursor.select(cursorName);
@@ -88,16 +142,11 @@ const InfoFields = schema(model)(React.createClass({
                 title={title}
                 text={diagnosisCursor.get()}
                 onPress={() => {
-                    this.context.mainNavigator.push({
-                        component: DiagnosisInput,
+                    this.props.navigator.push({
+                        component: DiagnosisScreen,
                         title,
-                        onLeftButtonPress: () => {
-                            this.props.tree.select(cursorName).set(diagnosisCursor.get());
-                            this.context.mainNavigator.pop();
-                        },
-                        // onRightButtonPress: () => this.onClinicalDiagnosisSubmit(),
+                        onLeftButtonPress: () => this.props.navigator.pop(),
                         navigationBarHidden: false,
-                        // rightButtonTitle: 'Done',
                         leftButtonIcon: require('components/icons/back/back.png'),
                         tintColor: '#FF1D70',
                         passProps: {
@@ -167,6 +216,8 @@ const InfoFields = schema(model)(React.createClass({
                         />
                     }
                 />
+
+                {this.renderLesionsField()}
 
                 {/*biopsyCursor.get() ?
                     <Picker
