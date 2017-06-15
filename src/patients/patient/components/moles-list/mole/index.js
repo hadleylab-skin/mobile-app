@@ -117,7 +117,7 @@ export const Mole = React.createClass({
                         : null}
                     </View>
                 : null}
-                <View>
+                <View style={s.infoWrapper}>
                     <View style={s.titleWrapper}>
                         <Text style={s.title}>
                             {_.capitalize(anatomicalSites[anatomicalSites.length - 1].name)}

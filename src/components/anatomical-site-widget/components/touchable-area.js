@@ -32,6 +32,14 @@ const TouchableArea = schema({})(React.createClass({
         };
     },
 
+    onCancelAddingMole() {
+        const anatomicalSite = this.props.anatomicalSite;
+
+        this.setState({ isActive: false });
+        this.props.tree.select('data', anatomicalSite, 'showMessage').set(false);
+        this.context.mainNavigator.pop();
+    },
+
     onPress() {
         const anatomicalSite = this.props.anatomicalSite;
         this.setState({ isActive: true });
@@ -39,14 +47,8 @@ const TouchableArea = schema({})(React.createClass({
         this.context.mainNavigator.push({
             component: ZoomedSite,
             title: 'Add photo',
-            onLeftButtonPress: () => {
-                this.setState({ isActive: false });
-                this.context.mainNavigator.pop();
-            },
-            onRightButtonPress: () => {
-                this.setState({ isActive: false });
-                this.context.mainNavigator.pop();
-            },
+            onLeftButtonPress: () => this.onCancelAddingMole(),
+            onRightButtonPress: () => this.onCancelAddingMole(),
             navigationBarHidden: false,
             rightButtonTitle: 'Cancel',
             leftButtonIcon: require('components/icons/back/back.png'),
@@ -56,7 +58,6 @@ const TouchableArea = schema({})(React.createClass({
                 source: this.props.largeImageSource,
                 anatomicalSite: this.props.anatomicalSite,
                 onAddingComplete: () => {
-                    this.setState({ isActive: false });
                     this.props.onAddingComplete();
                 },
             },

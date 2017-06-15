@@ -32,6 +32,10 @@ export default StyleSheet.create({
         opacity: 0.6,
         zIndex: 0,
     },
+    infoWrapper: {
+        flex: 1,
+        paddingRight: 10,
+    },
     titleWrapper: {
         marginBottom: 10,
     },

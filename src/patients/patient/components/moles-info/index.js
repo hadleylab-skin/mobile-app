@@ -34,7 +34,6 @@ export const MolesInfo = React.createClass({
             patientPk,
             this.context.patientsMoles.select(patientPk, 'moles')
         );
-        this.context.mainNavigator.pop();
     },
 
     render() {

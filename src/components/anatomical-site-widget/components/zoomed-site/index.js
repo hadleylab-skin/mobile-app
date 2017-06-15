@@ -18,6 +18,7 @@ const model = {
     tree: {
         mole: {},
         anatomicalSiteImage: {},
+        showMessage: false,
     },
 };
 
@@ -43,7 +44,6 @@ const ZoomedSite = schema(model)(React.createClass({
             positionX: null,
             positionY: null,
             photo: null,
-            showMessage: false,
         };
     },
 
@@ -81,9 +81,9 @@ const ZoomedSite = schema(model)(React.createClass({
     },
 
     onMoleAddedSuccessfully() {
-        this.setState({ showMessage: true, positionX: null, positionY: null });
+        this.props.tree.showMessage.set(true);
 
-        setTimeout(() => this.setState({ showMessage: false }), 10000);
+        setTimeout(() => this.props.tree.showMessage.set(false), 10000);
     },
 
     onMolePick(positionX, positionY) {
@@ -100,8 +100,8 @@ const ZoomedSite = schema(model)(React.createClass({
 
     render() {
         const { source } = this.props;
-        const anatomicalSiteImage = this.props.tree.get('anatomicalSiteImage');
-        const { positionX, positionY, photo, showMessage } = this.state;
+        const { anatomicalSiteImage, showMessage } = this.props.tree.get();
+        const { positionX, positionY, photo } = this.state;
         const hasMoleLocation = positionX && positionY;
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
 
@@ -110,7 +110,6 @@ const ZoomedSite = schema(model)(React.createClass({
         if (!_.isEmpty(anatomicalSiteImage && anatomicalSiteImage.data)) {
             anatomicalSiteImageSource = anatomicalSiteImage.data.distantPhoto.fullSize;
         }
-
 
         return (
             <View style={s.container}>
@@ -130,7 +129,7 @@ const ZoomedSite = schema(model)(React.createClass({
                         </View>
                     : null}
                     {anatomicalSiteImageSource || photo ?
-                        <MolePicker onMolePick={this.onMolePick}>
+                        <MolePicker onMolePick={this.onMolePick} clearDot={showMessage}>
                             <View>
                                 <View style={[s.activityIndicator, { zIndex: 0 }]}>
                                     <ActivityIndicator
@@ -147,7 +146,7 @@ const ZoomedSite = schema(model)(React.createClass({
                         </MolePicker>
                     : (
                         <View style={s.defaultImageWrapper}>
-                            <MolePicker onMolePick={this.onMolePick}>
+                            <MolePicker onMolePick={this.onMolePick} clearDot={showMessage}>
                                 <Image source={source} />
                             </MolePicker>
                         </View>

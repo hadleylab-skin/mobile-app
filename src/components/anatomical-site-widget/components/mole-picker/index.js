@@ -1,5 +1,4 @@
 import React from 'react';
-import BaobabPropTypes from 'baobab-prop-types';
 import {
     TouchableWithoutFeedback,
     Image,
@@ -15,6 +14,7 @@ const MolePicker = schema({})(React.createClass({
 
     propTypes: {
         onMolePick: React.PropTypes.func.isRequired,
+        clearDot: React.PropTypes.bool,
         children: React.PropTypes.node.isRequired,
     },
 
@@ -25,9 +25,19 @@ const MolePicker = schema({})(React.createClass({
         };
     },
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.clearDot !== nextProps.clearDot && nextProps.clearDot) {
+            this.addDotlocation(null, null);
+        }
+    },
+
     onPress(event) {
         const { locationX, locationY } = event.nativeEvent;
 
+        this.addDotlocation(locationX, locationY);
+    },
+
+    addDotlocation(locationX, locationY) {
         this.setState({ locationX, locationY });
         this.props.onMolePick(locationX, locationY);
     },
