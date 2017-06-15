@@ -69,7 +69,7 @@ const PatientsListScreen = schema({})(React.createClass({
 
     async onScroll(e) {
         const offset = e.nativeEvent.contentOffset.y;
-        if (offset < -100 && this.state.canUpdate && this.context.patients.status.get() !== 'Loading') {
+        if (offset <= -70 && this.state.canUpdate && this.context.patients.status.get() !== 'Loading') {
             this.setState({ canUpdate: false });
             await this.context.services.patientsService(this.context.patients);
         }
@@ -83,8 +83,10 @@ const PatientsListScreen = schema({})(React.createClass({
         const showLoader = status === 'Loading';
         const isSucced = status === 'Succeed';
 
+        const isListEmpty = isSucced && _.isEmpty(this.context.patients.get('data'));
+
         return (
-            <View style={s.container}>
+            <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
                 { showLoader ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
@@ -96,7 +98,7 @@ const PatientsListScreen = schema({})(React.createClass({
                 :
                     null
                 }
-                {isSucced && _.isEmpty(this.context.patients.get('data')) ?
+                {isListEmpty ?
                     <View style={s.emptyList}>
                         <Text style={s.title}>You don’t have any patients yet.</Text>
                         <View style={s.button}>
@@ -111,8 +113,9 @@ const PatientsListScreen = schema({})(React.createClass({
                         enableEmptySections
                         onScroll={this.onScroll}
                         scrollEventThrottle={20}
+                        automaticallyAdjustContentInsets={false}
                         style={{
-                            paddingBottom: 49,
+                            marginBottom: 49,
                         }}
                         dataSource={this.state.ds}
                         renderRow={(rowData) => (

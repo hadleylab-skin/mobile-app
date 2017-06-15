@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 64,
+    },
+    containerEmpty: {
+        backgroundColor: '#FAFAFA',
     },
     activityIndicator: {
         position: 'absolute',
@@ -14,8 +18,7 @@ export default StyleSheet.create({
     },
     emptyList: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
-        paddingTop: 120,
+        paddingTop: 30,
         paddingLeft: 30,
         paddingRight: 30,
         alignItems: 'center',
