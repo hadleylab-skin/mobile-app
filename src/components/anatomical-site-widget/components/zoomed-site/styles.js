@@ -12,6 +12,15 @@ export default StyleSheet.create({
         paddingBottom: 56,
         position: 'relative',
     },
+    message: {
+        padding: 15,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        alignItems: 'center',
+        zIndex: 1,
+    },
     footer: {
         height: 56,
         position: 'absolute',

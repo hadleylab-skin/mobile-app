@@ -6,6 +6,9 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    disabled: {
+        opacity: 0.5,
+    },
     text: {
         textAlign: 'center',
         lineHeight: 20,

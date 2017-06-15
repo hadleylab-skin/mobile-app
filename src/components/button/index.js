@@ -6,12 +6,30 @@ import {
 } from 'react-native';
 import s from './styles';
 
-class CommonButton extends React.Component {
+const CommonButton = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired,
+        onPress: React.PropTypes.func.isRequired,
+        underlayColor: React.PropTypes.string.isRequired,
+        stylesButton: React.PropTypes.number,
+        stylesText: React.PropTypes.number,
+        disabled: React.PropTypes.bool,
+    },
+
+    onPress() {
+        if (this.props.disabled) {
+            return;
+        }
+
+        this.props.onPress();
+    },
+
     render() {
         return (
             <TouchableHighlight
-                style={[s.button, this.props.stylesButton || {}]}
-                onPress={this.props.onPress}
+                disabled={this.props.disabled}
+                style={[s.button, this.props.stylesButton || {}, this.props.disabled ? s.disabled : {}]}
+                onPress={this.onPress}
                 underlayColor={this.props.underlayColor}
             >
                 <View>
@@ -21,18 +39,14 @@ class CommonButton extends React.Component {
                 </View>
             </TouchableHighlight>
         );
-    }
-}
+    },
+});
 
-CommonButton.propTypes = {
-    title: React.PropTypes.string.isRequired,
-    onPress: React.PropTypes.func.isRequired,
-    underlayColor: React.PropTypes.string.isRequired,
-    stylesButton: React.PropTypes.number,
-    stylesText: React.PropTypes.number,
-};
+export const Button = React.createClass({
+    propTypes: {
+        type: React.PropTypes.string,
+    },
 
-export class Button extends React.Component {
     render() {
         const { type } = this.props;
 
@@ -64,10 +78,5 @@ export class Button extends React.Component {
                 underlayColor={'rgba(252,49,89,0.2)'}
             />
         );
-    }
-}
-
-Button.propTypes = {
-    type: React.PropTypes.string,
-};
-
+    },
+});

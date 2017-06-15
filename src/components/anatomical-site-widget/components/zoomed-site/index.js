@@ -43,6 +43,7 @@ const ZoomedSite = schema(model)(React.createClass({
             positionX: null,
             positionY: null,
             photo: null,
+            showMessage: false,
         };
     },
 
@@ -52,15 +53,11 @@ const ZoomedSite = schema(model)(React.createClass({
             uri,
         };
 
-        this.setState({ photo: uri })
+        this.setState({ photo: uri });
 
         const service = this.context.services.addAnatomicalSitePhotoService;
         const patientPk = this.context.currentPatientPk.get();
         await service(patientPk, this.props.tree.anatomicalSiteImage, data);
-    },
-
-    onContinuePress() {
-        ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
     },
 
     async onSubmitMolePhoto(uri) {
@@ -78,19 +75,35 @@ const ZoomedSite = schema(model)(React.createClass({
         const result = await service(patientPk, this.props.tree.mole, data);
 
         if (result.status === 'Succeed') {
+            this.onMoleAddedSuccessfully();
             this.props.onAddingComplete();
         }
+    },
+
+    onMoleAddedSuccessfully() {
+        this.setState({ showMessage: true, positionX: null, positionY: null });
+
+        setTimeout(() => this.setState({ showMessage: false }), 10000);
     },
 
     onMolePick(positionX, positionY) {
         this.setState({ positionX, positionY });
     },
 
+    onTakeDisatantPhotoPress() {
+        ImagePicker.launchCamera({}, (response) => this.onAddDistantPhoto(response.uri));
+    },
+
+    onContinuePress() {
+        ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
+    },
+
     render() {
         const { source } = this.props;
         const anatomicalSiteImage = this.props.tree.get('anatomicalSiteImage');
-        const { positionX, positionY, photo } = this.state;
+        const { positionX, positionY, photo, showMessage } = this.state;
         const hasMoleLocation = positionX && positionY;
+        const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
 
         let anatomicalSiteImageSource;
 
@@ -98,10 +111,11 @@ const ZoomedSite = schema(model)(React.createClass({
             anatomicalSiteImageSource = anatomicalSiteImage.data.distantPhoto.fullSize;
         }
 
+
         return (
             <View style={s.container}>
                 <View style={s.wrapper}>
-                    {this.props.tree.select('mole', 'status').get() === 'Loading' ?
+                    {isMoleLoading ?
                         <View style={s.activityIndicator}>
                             <ActivityIndicator
                                 animating
@@ -110,8 +124,13 @@ const ZoomedSite = schema(model)(React.createClass({
                             />
                         </View>
                     : null}
-                    <MolePicker onMolePick={this.onMolePick}>
-                        {anatomicalSiteImageSource || photo ?
+                    {showMessage && !hasMoleLocation ?
+                        <View style={s.message}>
+                            <Text style={s.text}>New mole successfully added</Text>
+                        </View>
+                    : null}
+                    {anatomicalSiteImageSource || photo ?
+                        <MolePicker onMolePick={this.onMolePick}>
                             <View>
                                 <View style={[s.activityIndicator, { zIndex: 0 }]}>
                                     <ActivityIndicator
@@ -125,15 +144,22 @@ const ZoomedSite = schema(model)(React.createClass({
                                     style={s.imageURI}
                                 />
                             </View>
-                        : (
-                            <View style={s.defaultImageWrapper}>
+                        </MolePicker>
+                    : (
+                        <View style={s.defaultImageWrapper}>
+                            <MolePicker onMolePick={this.onMolePick}>
                                 <Image source={source} />
-                            </View>
-                        )}
-                    </MolePicker>
+                            </MolePicker>
+                        </View>
+                    )}
                     <View style={s.footer}>
                         {hasMoleLocation ?
-                            <Button type="rect" title="Continue" onPress={this.onContinuePress} />
+                            <Button
+                                disabled={isMoleLoading}
+                                type="rect"
+                                title="Continue"
+                                onPress={this.onContinuePress}
+                            />
                         : null }
                         {!hasMoleLocation ?
                             <View style={s.footerInner}>
@@ -144,8 +170,7 @@ const ZoomedSite = schema(model)(React.createClass({
                                         <Text style={s.text}>Tap on location or{' '}</Text>
                                         <TouchableOpacity
                                             style={s.textButton}
-                                            onPress={() => ImagePicker.launchCamera({},
-                                                (response) => this.onAddDistantPhoto(response.uri))}
+                                            onPress={this.onTakeDisatantPhotoPress}
                                         >
                                             <Text style={[s.text, s.textPink]}>take a distant photo</Text>
                                         </TouchableOpacity>
