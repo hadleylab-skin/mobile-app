@@ -7,3 +7,16 @@ export const UserPropType = React.PropTypes.shape({
     lastName: React.PropTypes.string.isRequired,
     can_see_prediction: React.PropTypes.boolean,
 }).isRequired;
+
+
+export function convertInToCm(number) {
+    const result = parseFloat(number) * 2.54;
+
+    return `${result.toFixed(2)}`;
+}
+
+export function convertCmToIn(number) {
+    const result = parseFloat(number) / 2.54;
+
+    return `${result.toFixed(2)}`;
+}

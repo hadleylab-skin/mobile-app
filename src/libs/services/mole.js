@@ -138,15 +138,16 @@ export function getMolePhotoService(token) {
 
 function hydrateUpdateMolePhotoData(imageData) {
     let data = new FormData();
+    const keys = _.keys(imageData);
 
-    _.forEach(_.pickBy(imageData), (value, key) => {
+    _.map(keys, (key) => {
         if (key === 'biopsyData') {
-            data.append(key, JSON.stringify(value));
+            data.append(key, JSON.stringify(imageData[key]));
 
             return;
         }
 
-        data.append(key, value);
+        data.append(key, imageData[key]);
     });
 
     return data;

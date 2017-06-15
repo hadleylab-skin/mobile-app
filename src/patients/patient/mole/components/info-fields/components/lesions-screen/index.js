@@ -6,6 +6,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
+import { convertInToCm, convertCmToIn } from 'libs/misc';
 import s from './styles';
 
 const LesionsScreen = React.createClass({
@@ -32,8 +33,7 @@ const LesionsScreen = React.createClass({
     },
 
     componentDidMount() {
-        this.props.widthCursor.set(this.props.width);
-        this.props.heightCursor.set(this.props.height);
+        this.convertUnits();
     },
 
     componentWillUnmount() {
@@ -42,6 +42,23 @@ const LesionsScreen = React.createClass({
 
     update() {
         this.forceUpdate();
+        this.convertUnits();
+    },
+
+    convertUnits() {
+        let width = this.props.width;
+        let height = this.props.height;
+        const unitsOfLength = this.context.user.get('unitsOfLength');
+
+        if (this.props.width && this.props.height) {
+            if (unitsOfLength === 'in') {
+                width = convertCmToIn(width);
+                height = convertCmToIn(height);
+            }
+        }
+
+        this.props.widthCursor.set(width);
+        this.props.heightCursor.set(height);
     },
 
     onSubmit() {

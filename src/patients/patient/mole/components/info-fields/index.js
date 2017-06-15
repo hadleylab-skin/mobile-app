@@ -9,18 +9,18 @@ import {
 import schema from 'libs/state';
 import { InfoField, Switch, Picker, AnatomicalSiteWidget } from 'components';
 import arrowImage from 'components/icons/arrow/arrow.png';
-import { UserPropType } from 'libs/misc';
+import { convertInToCm, convertCmToIn } from 'libs/misc';
 import DiagnosisScreen from './components/diagnosis-screen';
 import LesionsScreen from './components/lesions-screen';
 import s from './styles';
 
-const model = (props) => ({
+const model = {
     tree: {
-        clinicalDiagnosis: props.tree.get('info', 'data', 'clinicalDiagnosis'),
-        pathDiagnosis: props.tree.get('info', 'data', 'pathDiagnosis'),
-        biopsyData: props.tree.get('info', 'data', 'biopsyData'),
+        clinicalDiagnosis: {},
+        pathDiagnosis: {},
+        biopsyData: {},
     },
-});
+};
 
 const InfoFields = schema(model)(React.createClass({
     displayName: 'Mole',
@@ -63,8 +63,16 @@ const InfoFields = schema(model)(React.createClass({
 
     onBiopsyDataSubmit() {
         const biopsyData = this.props.tree.get('biopsyData');
+        const unitsOfLength = this.context.user.get('unitsOfLength');
+        let width = biopsyData.width;
+        let height = biopsyData.height;
 
-        this.onDataChange({ biopsyData }, () => this.props.navigator.pop());
+        if (unitsOfLength === 'in') {
+            width = convertInToCm(biopsyData.width);
+            height = convertInToCm(biopsyData.height);
+        }
+
+        this.onDataChange({ biopsyData: { width, height } }, () => this.props.navigator.pop());
     },
 
     onDiagnosisSubmit() {
@@ -92,9 +100,31 @@ const InfoFields = schema(model)(React.createClass({
 
         const result = await service(patientPk, molePk, imagePk, imageInfoCursor, { ...data });
 
+        console.log('result', result);
+
         if (result.status === 'Succeed' && onSuccess) {
             onSuccess();
         }
+    },
+
+    convertUnits() {
+        const fieldsDataCursor = this.props.tree.select('info', 'data');
+        const biopsyDataCursor = fieldsDataCursor.select('biopsyData');
+        const biopsyDataWidth = biopsyDataCursor.get('width');
+        const biopsyDataHeight = biopsyDataCursor.get('height');
+        const unitsOfLength = this.context.user.get('unitsOfLength');
+
+        let width = biopsyDataWidth;
+        let height = biopsyDataHeight;
+
+        if (biopsyDataWidth && biopsyDataHeight) {
+            if (unitsOfLength === 'in') {
+                width = convertCmToIn(biopsyDataWidth);
+                height = convertCmToIn(biopsyDataHeight);
+            }
+        }
+
+        return { width, height };
     },
 
     renderLesionsField() {
@@ -103,8 +133,9 @@ const InfoFields = schema(model)(React.createClass({
         const formBiopsyDataCursor = this.props.tree.select('biopsyData');
         const unitsOfLength = this.context.user.get('unitsOfLength');
 
-        const width = biopsyDataCursor.get('width');
-        const height = biopsyDataCursor.get('height');
+        const convertedUnits = this.convertUnits();
+        const width = convertedUnits.width;
+        const height = convertedUnits.height;
 
         return (
             <InfoField
@@ -164,9 +195,6 @@ const InfoFields = schema(model)(React.createClass({
     render() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyCursor = fieldsDataCursor.select('biopsy');
-        const lesionsSizeCursor = this.props.tree.lesionsSize;
-
-        const units = 'in'; /* in || cm */
 
         return (
             <View style={s.fields}>
@@ -217,17 +245,7 @@ const InfoFields = schema(model)(React.createClass({
                     }
                 />
 
-                {this.renderLesionsField()}
-
-                {/*biopsyCursor.get() ?
-                    <Picker
-                        tree={this.props.tree.lesionsSizePickerCursor}
-                        cursor={lesionsSizeCursor}
-                        items={units === 'in' ? lesionsSizeIN : lesionsSizeCM}
-                        title="Lesions Size"
-                        onPress={() => console.log('Pathlogical Diagnosis pressed')}
-                    />
-                : null*/}
+                {biopsyCursor.get() ? this.renderLesionsField() : null}
             </View>
         );
     },
