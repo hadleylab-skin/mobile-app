@@ -68,11 +68,12 @@ export default StyleSheet.create({
     thumbWrapper: {
         width: 80,
         height: 80,
-        backgroundColor: '#fff',
-        padding: 3,
+        borderWidth: 3,
+        borderColor: '#fff',
+        position: 'relative',
     },
     activeThumb: {
-        backgroundColor: '#FC3159',
+        borderColor: '#FC3159',
     },
     thumb: {
         width: 74,

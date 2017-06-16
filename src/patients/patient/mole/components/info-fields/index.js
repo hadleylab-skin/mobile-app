@@ -23,8 +23,6 @@ const model = {
 };
 
 const InfoFields = schema(model)(React.createClass({
-    displayName: 'Mole',
-
     propTypes: {
         molePk: React.PropTypes.number.isRequired,
         imagePk: React.PropTypes.number.isRequired,
@@ -99,8 +97,6 @@ const InfoFields = schema(model)(React.createClass({
         const imageInfoCursor = this.props.tree.select('info');
 
         const result = await service(patientPk, molePk, imagePk, imageInfoCursor, { ...data });
-
-        console.log('result', result);
 
         if (result.status === 'Succeed' && onSuccess) {
             onSuccess();

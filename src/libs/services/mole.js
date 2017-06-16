@@ -46,7 +46,7 @@ function dehydrateMoleData(data) {
         return newImage;
     });
 
-    newData.images = wrapItemsAsRemoteData(images);
+    newData.images = convertListToDict(wrapItemsAsRemoteData(images));
 
     return newData;
 }
@@ -103,6 +103,23 @@ function hydrateMolePhotoData(uri) {
     return data;
 }
 
+function dehydrateMolePhotoData(data) {
+    const { biopsy, biopsyData, clinicalDiagnosis, pathDiagnosis } = data;
+    let newData = _.omit(data, ['biopsy', 'biopsyData', 'clinicalDiagnosis', 'pathDiagnosis']);
+
+    newData.info = {
+        data: {
+            biopsy,
+            biopsyData: JSON.parse(biopsyData),
+            clinicalDiagnosis,
+            pathDiagnosis,
+        },
+        status: 'Succeed',
+    };
+
+    return newData;
+}
+
 export function addMolePhotoService(token) {
     const headers = {
         'Content-Type': 'multipart/form-data',
@@ -129,7 +146,7 @@ export function getMolePhotoService(token) {
     return (patientPk, molePk, imagePk, cursor) => {
         const _service = buildGetService(
             `/api/v1/patient/${patientPk}/mole/${molePk}/image/${imagePk}/`,
-            _.identity,
+            dehydrateMolePhotoData,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);

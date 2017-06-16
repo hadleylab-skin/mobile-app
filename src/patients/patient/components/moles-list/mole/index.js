@@ -46,17 +46,35 @@ export const Mole = React.createClass({
         return newDate.from(todayDate);
     },
 
+    getNotExistingPk(pk) {
+        const molePk = this.props.tree.get('pk');
+        const patientPk = this.context.currentPatientPk.get();
+        const moleCursor = this.context.patientsMoleImages.select(patientPk, 'moles', molePk);
+        const images = moleCursor.get('data', 'images');
+
+        if (!images[pk]) {
+            return pk;
+        }
+
+        return this.getNotExistingPk(pk - 1);
+    },
+
     async onSubmitMolePhoto(uri) {
         const molePk = this.props.tree.get('pk');
         const service = this.context.services.addMolePhotoService;
         const patientPk = this.context.currentPatientPk.get();
-        const imagesCursor = this.context.patientsMoleImages
-                .select(patientPk, 'moles', molePk, 'imagesData', 'data', 'images');
-        const images = imagesCursor.get();
+        const moleCursor = this.context.patientsMoleImages.select(patientPk, 'moles', molePk);
+        const imagesCursor = moleCursor.select('data', 'images');
 
-        const result = await service(patientPk, molePk, imagesCursor.select(images.length), uri);
+        const pk = this.getNotExistingPk(-1);
+        imagesCursor.select(pk).set({ data: { pk }, status: 'Loading' });
+
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
 
         if (result.status === 'Succeed') {
+            imagesCursor.unset(pk);
+            imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
+
             await this.context.services.patientsService(this.context.patients);
             await this.context.services.getPatientMolesService(
                 patientPk,
@@ -66,8 +84,12 @@ export const Mole = React.createClass({
                 patientPk,
                 molePk,
                 result.data.pk,
-                imagesCursor.select(images.length)
+                imagesCursor.select(result.data.pk)
             );
+        }
+
+        if (result.status === 'Failure') {
+            imagesCursor.unset(pk);
         }
     },
 
@@ -86,7 +108,7 @@ export const Mole = React.createClass({
             rightButtonIcon: require('components/icons/camera/camera.png'),
             tintColor: '#FF2D55',
             passProps: {
-                tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk, 'imagesData'),
+                tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk),
                 molePk: pk,
                 navigator: this.props.navigator,
             },
