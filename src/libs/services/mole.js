@@ -27,7 +27,7 @@ export function getPatientMolesService(token) {
 }
 
 function dehydrateMoleData(data) {
-    let newData = data;
+    let newData = _.omit(data, ['anatomicalSites']);
 
     const images = _.map(data.images, (image) => {
         const { biopsy, biopsyData, clinicalDiagnosis, pathDiagnosis } = image;
@@ -47,6 +47,13 @@ function dehydrateMoleData(data) {
     });
 
     newData.images = convertListToDict(wrapItemsAsRemoteData(images));
+
+    const anatomicalSite = data.anatomicalSites[data.anatomicalSites.length - 1];
+
+    newData.anatomicalSite = {
+        data: { ...anatomicalSite },
+        status: 'Succeed',
+    };
 
     return newData;
 }
@@ -103,6 +110,15 @@ function hydrateUpdateMoleData(mole) {
     return data;
 }
 
+function dehydrateUpdateMoleData(mole) {
+    let data = {
+        pk: mole.anatomicalSite,
+        name: _.capitalize(_.lowerCase(mole.anatomicalSite)),
+    };
+
+    return data;
+}
+
 export function updateMoleService(token) {
     const headers = {
         'Content-Type': 'multipart/form-data',
@@ -112,10 +128,10 @@ export function updateMoleService(token) {
 
     return (patientPk, molePk, cursor, data) => {
         const _service = buildPostService(
-            `/api/v1/patient/${patientPk}/mole/${molePk}`,
+            `/api/v1/patient/${patientPk}/mole/${molePk}/`,
             'PATCH',
             hydrateUpdateMoleData,
-            _.identity,
+            dehydrateUpdateMoleData,
             _.merge({}, defaultHeaders, headers));
         return _service(cursor, data);
     };

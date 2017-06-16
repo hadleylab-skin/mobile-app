@@ -18,6 +18,7 @@ const AnatomicalSite = schema({})(React.createClass({
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             updateMoleService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -28,16 +29,20 @@ const AnatomicalSite = schema({})(React.createClass({
 
         const data = { anatomicalSite };
 
-        const result = await service(patientPk, molePk, this.props.tree.select('test'), data);
+        const result = await service(patientPk, molePk, this.props.tree.select('anatomicalSite'), data);
 
         if (result.status === 'Succeed') {
             this.context.mainNavigator.popN(2);
+
+            await this.context.services.getPatientMolesService(
+                patientPk,
+                this.context.patientsMoles.select(patientPk, 'moles')
+            );
         }
     },
 
     render() {
-        const { anatomicalSites } = this.props.tree.get();
-        const anatomicalSite = anatomicalSites[anatomicalSites.length - 1];
+        const { anatomicalSite } = this.props.tree.get();
 
         return (
             <View style={s.container}>
@@ -45,7 +50,7 @@ const AnatomicalSite = schema({})(React.createClass({
                     title={'Site'}
                     controls={
                         <View style={s.site}>
-                            <Text style={s.siteText}>{anatomicalSite.name}</Text>
+                            <Text style={s.siteText}>{anatomicalSite.data.name}</Text>
                             <Image source={arrowImage} style={s.siteArrow} />
                         </View>
                     }
@@ -65,8 +70,8 @@ const AnatomicalSite = schema({})(React.createClass({
                             passProps: {
                                 tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
                                 onlyChangeAnatomicalSite: true,
-                                currentAnatomicalSite: anatomicalSite.pk,
-                                onAddingComplete: this.onAddingComplete,
+                                currentAnatomicalSite: anatomicalSite.data.pk,
+                                onAddingComplete: (site) => this.onAddingComplete(site),
                             },
                         });
                     }}

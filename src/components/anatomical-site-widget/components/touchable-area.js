@@ -60,7 +60,7 @@ const TouchableArea = schema({})(React.createClass({
                 source: this.props.largeImageSource,
                 anatomicalSite: this.props.anatomicalSite,
                 onlyChangeAnatomicalSite: this.props.onlyChangeAnatomicalSite,
-                onAddingComplete: () => this.props.onAddingComplete(),
+                onAddingComplete: this.props.onAddingComplete,
             },
         });
     },
