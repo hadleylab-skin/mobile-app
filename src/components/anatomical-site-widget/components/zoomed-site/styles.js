@@ -34,6 +34,13 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    buttons: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+    },
     text: {
         fontSize: 16,
         lineHeight: 20,
@@ -59,6 +66,10 @@ export default StyleSheet.create({
     imageURI: {
         height: Dimensions.get('window').height - 64,
         width: Dimensions.get('window').width,
+    },
+    distantPhotoBtn: {
+        padding: 15,
+        backgroundColor: '#fff',
     },
     activityIndicator: {
         position: 'absolute',

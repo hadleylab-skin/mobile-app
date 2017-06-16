@@ -56,6 +56,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
+        onlyChangeAnatomicalSite: React.PropTypes.bool,
+        currentAnatomicalSite: React.PropTypes.string,
     },
 
     contextTypes: {
@@ -134,6 +136,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 sites={frontSites}
                                 onAddingComplete={this.props.onAddingComplete}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
+                                onlyChangeAnatomicalSite={this.props.onlyChangeAnatomicalSite}
+                                currentAnatomicalSite={this.props.currentAnatomicalSite}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
@@ -143,6 +147,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 sites={backSites}
                                 onAddingComplete={this.props.onAddingComplete}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
+                                onlyChangeAnatomicalSite={this.props.onlyChangeAnatomicalSite}
+                                currentAnatomicalSite={this.props.currentAnatomicalSite}
                             />
                         </View>
                     </View>

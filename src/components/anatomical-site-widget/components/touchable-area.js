@@ -20,6 +20,8 @@ const TouchableArea = schema({})(React.createClass({
         largeImageSource: React.PropTypes.number.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
         anatomicalSitesWithMoles: React.PropTypes.arrayOf(React.PropTypes.string),
+        onlyChangeAnatomicalSite: React.PropTypes.bool,
+        currentAnatomicalSite: React.PropTypes.string,
     },
 
     contextTypes: {
@@ -57,22 +59,34 @@ const TouchableArea = schema({})(React.createClass({
                 tree: this.props.tree.select('data', anatomicalSite),
                 source: this.props.largeImageSource,
                 anatomicalSite: this.props.anatomicalSite,
-                onAddingComplete: () => {
-                    this.props.onAddingComplete();
-                },
+                onlyChangeAnatomicalSite: this.props.onlyChangeAnatomicalSite,
+                onAddingComplete: () => this.props.onAddingComplete(),
             },
         });
     },
 
-    render() {
+    highlightMole() {
         const { isActive } = this.state;
-        const { anatomicalSite, styles, source, anatomicalSitesWithMoles } = this.props;
+        const {
+            onlyChangeAnatomicalSite, currentAnatomicalSite,
+            anatomicalSite, anatomicalSitesWithMoles,
+        } = this.props;
+
+        if (onlyChangeAnatomicalSite) {
+            return isActive || anatomicalSite === currentAnatomicalSite;
+        }
 
         const hasMole = _.indexOf(anatomicalSitesWithMoles, anatomicalSite) !== -1;
 
+        return isActive || hasMole;
+    },
+
+    render() {
+        const { styles, source } = this.props;
+
         return (
             <TouchableWithoutFeedback onPress={this.onPress}>
-                <View style={[s.siteWrapper, styles, { opacity: isActive || hasMole ? 1 : 0 }]}>
+                <View style={[s.siteWrapper, styles, { opacity: this.highlightMole() ? 1 : 0 }]}>
                     <Image source={source} />
                 </View>
             </TouchableWithoutFeedback>

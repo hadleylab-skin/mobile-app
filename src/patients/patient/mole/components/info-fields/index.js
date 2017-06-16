@@ -1,14 +1,10 @@
 import React from 'react';
-import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
-    Text,
-    Image,
 } from 'react-native';
 import schema from 'libs/state';
-import { InfoField, Switch, Picker, AnatomicalSiteWidget } from 'components';
-import arrowImage from 'components/icons/arrow/arrow.png';
+import { InfoField, Switch } from 'components';
 import { convertInToCm, convertCmToIn } from 'libs/misc';
 import DiagnosisScreen from './components/diagnosis-screen';
 import LesionsScreen from './components/lesions-screen';
@@ -194,35 +190,6 @@ const InfoFields = schema(model)(React.createClass({
 
         return (
             <View style={s.fields}>
-                {/*<InfoField
-                    title={'Site'}
-                    controls={
-                        <View style={s.site}>
-                            <Text style={s.siteText}>Left Ear Helix</Text>
-                            <Image source={arrowImage} style={s.siteArrow} />
-                        </View>
-                    }
-                    hasNoBorder
-                    onPress={() => {
-                        this.context.mainNavigator.push({
-                            component: AnatomicalSiteWidget,
-                            title: 'Add photo',
-                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
-                            onRightButtonPress: () => {
-                                this.context.mainNavigator.pop();
-                            },
-                            navigationBarHidden: false,
-                            rightButtonTitle: 'Cancel',
-                            leftButtonIcon: require('components/icons/back/back.png'),
-                            tintColor: '#FF1D70',
-                            passProps: {
-                                tree: this.props.tree,
-                                onAddingComplete: () => this.context.mainNavigator.pop(),
-                            },
-                        });
-                    }}
-                />*/}
-
                 {this.renderDiagnosisField('clinicalDiagnosis', 'Clinical Diagnosis')}
                 {this.renderDiagnosisField('pathDiagnosis', 'Pathlogical Diagnosis')}
 

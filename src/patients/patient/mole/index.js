@@ -9,6 +9,7 @@ import schema from 'libs/state';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
 import InfoFields from './components/info-fields';
+import AnatomicalSite from './components/anatomical-site';
 import s from './styles';
 
 const Mole = schema({})(React.createClass({
@@ -97,7 +98,7 @@ const Mole = schema({})(React.createClass({
                         {currentImage && !_.isEmpty(currentImage.data.dateCreated) ?
                             <View>
                                 <Prediction {...currentImage.data} />
-                                {/*<View style={s.distantPhoto} />*/}
+                                <AnatomicalSite tree={this.props.tree.select('data')} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
                                     molePk={this.props.molePk}

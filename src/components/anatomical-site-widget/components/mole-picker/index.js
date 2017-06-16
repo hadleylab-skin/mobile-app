@@ -16,6 +16,7 @@ const MolePicker = schema({})(React.createClass({
         onMolePick: React.PropTypes.func.isRequired,
         clearDot: React.PropTypes.bool,
         children: React.PropTypes.node.isRequired,
+        disabled: React.PropTypes.bool,
     },
 
     getInitialState() {
@@ -33,6 +34,10 @@ const MolePicker = schema({})(React.createClass({
 
     onPress(event) {
         const { locationX, locationY } = event.nativeEvent;
+
+        if (this.props.disabled) {
+            return;
+        }
 
         this.addDotlocation(locationX, locationY);
     },
