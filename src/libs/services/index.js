@@ -3,13 +3,14 @@ import { updateDoctorService } from './doctor';
 import { getPatientMolesService,
          addMoleService,
          getMoleService,
-         addMolePhotoService,
+         updateMoleService,
+       } from './mole';
+import { addMolePhotoService,
          getMolePhotoService,
          updateMolePhotoService,
-       } from './mole';
+       } from './photo';
 import { addAnatomicalSitePhotoService, getAnatomicalSitesService } from './anatomical-site.js';
 import { patientsService,
-         patientImagesService,
          createPatientService,
          updatePatientService,
        } from './patients';
@@ -21,13 +22,13 @@ export default {
     getPatientMolesService,
     addMoleService,
     getMoleService,
+    updateMoleService,
     addMolePhotoService,
     getMolePhotoService,
     updateMolePhotoService,
     addAnatomicalSitePhotoService,
     getAnatomicalSitesService,
     patientsService,
-    patientImagesService,
     createPatientService,
     updatePatientService,
 };

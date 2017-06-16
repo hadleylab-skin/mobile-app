@@ -69,10 +69,10 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     getInitialState() {
-        const value = this.props.tree.currentAnatomicalSite.get();
+        const value = this.props.currentAnatomicalSite;
 
         return {
-            wasFlipped: _.findIndex(backSites, { label: value }) !== -1,
+            wasFlipped: _.findIndex(backSites, { anatomicalSite: value }) !== -1,
         };
     },
 

@@ -112,6 +112,8 @@ const ZoomedSite = schema(model)(React.createClass({
             anatomicalSiteImageSource = anatomicalSiteImage.data.distantPhoto.fullSize;
         }
 
+        console.log('this.props.anatomicalSite', this.props.anatomicalSite);
+
         return (
             <View style={s.container}>
                 <View style={s.wrapper}>
@@ -175,7 +177,7 @@ const ZoomedSite = schema(model)(React.createClass({
                                 disabled={isMoleLoading}
                                 type="rect"
                                 title="Continue"
-                                onPress={this.onContinuePress}
+                                onPress={() => this.props.onAddingComplete(this.props.anatomicalSite)}
                             />
                         </View>
                     :

@@ -26,19 +26,6 @@ export function patientsService(token) {
     return buildGetService('/api/v1/patient/', dehydratePatients, _.merge({}, defaultHeaders, headers));
 }
 
-export function patientImagesService(token) {
-    const headers = {
-        Authorization: `JWT ${token}`,
-    };
-    return (patientPk, cursor) => {
-        const _getPatientImages = buildGetService(
-            `/api/v1/patients/${patientPk}/skin_images/`,
-            wrapItemsAsRemoteData,
-            _.merge({}, defaultHeaders, headers));
-        return _getPatientImages(cursor);
-    };
-}
-
 function hydratePatientData(patientData) {
     let data = new FormData();
 

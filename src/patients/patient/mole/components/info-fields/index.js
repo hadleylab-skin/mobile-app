@@ -92,7 +92,7 @@ const InfoFields = schema(model)(React.createClass({
         const service = this.context.services.updateMolePhotoService;
         const imageInfoCursor = this.props.tree.select('info');
 
-        const result = await service(patientPk, molePk, imagePk, imageInfoCursor, { ...data });
+        const result = await service(patientPk, molePk, imagePk, imageInfoCursor, data);
 
         if (result.status === 'Succeed' && onSuccess) {
             onSuccess();

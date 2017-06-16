@@ -16,6 +16,23 @@ const AnatomicalSite = schema({})(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
+        services: React.PropTypes.shape({
+            updateMoleService: React.PropTypes.func.isRequired,
+        }),
+    },
+
+    async onAddingComplete(anatomicalSite) {
+        const molePk = this.props.tree.get('pk');
+        const patientPk = this.context.currentPatientPk.get();
+        const service = this.context.services.updateMoleService;
+
+        const data = { anatomicalSite };
+
+        const result = await service(patientPk, molePk, this.props.tree.select('test'), data);
+
+        if (result.status === 'Succeed') {
+            this.context.mainNavigator.popN(2);
+        }
     },
 
     render() {
@@ -49,7 +66,7 @@ const AnatomicalSite = schema({})(React.createClass({
                                 tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
                                 onlyChangeAnatomicalSite: true,
                                 currentAnatomicalSite: anatomicalSite.pk,
-                                onAddingComplete: () => this.context.mainNavigator.pop(),
+                                onAddingComplete: this.onAddingComplete,
                             },
                         });
                     }}
