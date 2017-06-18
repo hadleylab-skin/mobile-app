@@ -7,8 +7,10 @@ import {
     Text,
     TouchableOpacity,
     ActivityIndicator,
+    Dimensions,
 } from 'react-native';
 import schema from 'libs/state';
+import { roundToIntegers, convertMoleToSave } from 'libs/misc';
 import { Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import MolePicker from '../mole-picker';
@@ -45,7 +47,30 @@ const ZoomedSite = schema(model)(React.createClass({
             positionX: null,
             positionY: null,
             photo: null,
+            width: 0,
+            height: 0,
         };
+    },
+
+    componentDidMount() {
+        const { anatomicalSiteImage } = this.props.tree.get();
+
+        if (!_.isEmpty(anatomicalSiteImage && anatomicalSiteImage.data)) {
+            const photo = anatomicalSiteImage.data.distantPhoto.fullSize;
+
+            this.getImageSize(photo);
+        }
+    },
+
+    getImageSize(photo) {
+        const windowWidth = Dimensions.get('window').width;
+
+        Image.getSize(photo, (photoWidth, photoHeight) => {
+            const width = windowWidth;
+            const height = (width / photoWidth) * photoHeight;
+
+            this.setState({ width, height: roundToIntegers(height) });
+        });
     },
 
     async onAddDistantPhoto(uri) {
@@ -55,6 +80,7 @@ const ZoomedSite = schema(model)(React.createClass({
         };
 
         this.setState({ photo: uri });
+        this.getImageSize(uri);
 
         const service = this.context.services.addAnatomicalSitePhotoService;
         const patientPk = this.context.currentPatientPk.get();
@@ -62,12 +88,20 @@ const ZoomedSite = schema(model)(React.createClass({
     },
 
     async onSubmitMolePhoto(uri) {
-        const { positionX, positionY } = this.state;
+        const { positionX, positionY, width, height } = this.state;
+        const { anatomicalSiteImage } = this.props.tree.get();
+        let position = {
+            positionX: parseInt(positionX, 10),
+            positionY: parseInt(positionY, 10),
+        };
+
+        if (!_.isEmpty(anatomicalSiteImage)) {
+            position = convertMoleToSave(positionX, positionY, width, height);
+        }
 
         const data = {
             anatomicalSite: this.props.anatomicalSite,
-            positionX: parseInt(positionX, 10),
-            positionY: parseInt(positionY, 10),
+            ...position,
             uri,
         };
 
@@ -102,7 +136,7 @@ const ZoomedSite = schema(model)(React.createClass({
     render() {
         const { source, onlyChangeAnatomicalSite } = this.props;
         const { anatomicalSiteImage, showMessage } = this.props.tree.get();
-        const { positionX, positionY, photo } = this.state;
+        const { positionX, positionY, photo, width, height } = this.state;
         const hasMoleLocation = positionX && positionY;
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
 
@@ -112,11 +146,11 @@ const ZoomedSite = schema(model)(React.createClass({
             anatomicalSiteImageSource = anatomicalSiteImage.data.distantPhoto.fullSize;
         }
 
-        console.log('this.props.anatomicalSite', this.props.anatomicalSite);
+        const anatomicalSitePhoto = anatomicalSiteImageSource || photo;
 
         return (
             <View style={s.container}>
-                <View style={s.wrapper}>
+                <View style={[s.wrapper, !anatomicalSitePhoto ? s.defaultWrapper : {}]}>
                     {isMoleLoading ?
                         <View style={s.activityIndicator}>
                             <ActivityIndicator
@@ -131,7 +165,7 @@ const ZoomedSite = schema(model)(React.createClass({
                             <Text style={s.text}>New mole successfully added</Text>
                         </View>
                     : null}
-                    {anatomicalSiteImageSource || photo ?
+                    {anatomicalSitePhoto ?
                         <MolePicker
                             onMolePick={this.onMolePick}
                             clearDot={showMessage}
@@ -146,8 +180,9 @@ const ZoomedSite = schema(model)(React.createClass({
                                     />
                                 </View>
                                 <Image
-                                    source={{ uri: anatomicalSiteImageSource || photo }}
-                                    style={s.imageURI}
+                                    source={{ uri: anatomicalSitePhoto }}
+                                    resizeMode="contain"
+                                    style={{ width, height }}
                                 />
                             </View>
                         </MolePicker>
@@ -192,7 +227,7 @@ const ZoomedSite = schema(model)(React.createClass({
                             : null }
                             {!hasMoleLocation ?
                                 <View style={s.footerInner}>
-                                    {anatomicalSiteImageSource || photo ?
+                                    {anatomicalSitePhoto ?
                                         <Text style={s.text}>Tap on location</Text>
                                     :
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

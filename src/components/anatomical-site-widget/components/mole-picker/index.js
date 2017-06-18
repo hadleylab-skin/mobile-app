@@ -5,9 +5,8 @@ import {
     View,
 } from 'react-native';
 import schema from 'libs/state';
+import dotImage from 'components/icons/dot/dot.png';
 import s from './styles';
-
-import dotImage from './images/dot.png';
 
 const MolePicker = schema({})(React.createClass({
     displayName: 'MolePicker',

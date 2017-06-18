@@ -6,7 +6,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
-import { convertInToCm, convertCmToIn } from 'libs/misc';
+import { convertCmToIn } from 'libs/misc';
 import s from './styles';
 
 const LesionsScreen = React.createClass({

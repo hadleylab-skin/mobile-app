@@ -30,12 +30,6 @@ const Gallery = React.createClass({
 
     contextTypes: {},
 
-    componentWillReceiveProps(nextProps) {
-        /*if (this.props.currentImagePk !== nextProps.currentImagePk) {
-            this.carousel.snapToItem(nextProps.currentImagePk);
-        }*/
-    },
-
     formateDate(date) {
         const formatedDate = moment(date).format('MMMM d, YYYY hh:mm a');
 

@@ -7,10 +7,12 @@ export default StyleSheet.create({
     },
     wrapper: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingBottom: 56,
         position: 'relative',
+    },
+    defaultWrapper: {
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     message: {
         padding: 15,
@@ -63,10 +65,6 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    imageURI: {
-        height: Dimensions.get('window').height - 64,
-        width: Dimensions.get('window').width,
-    },
     distantPhotoBtn: {
         padding: 15,
         backgroundColor: '#fff',
@@ -76,7 +74,7 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         top: 0,
-        bottom: 64,
+        height: Dimensions.get('window').height - 100,
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
