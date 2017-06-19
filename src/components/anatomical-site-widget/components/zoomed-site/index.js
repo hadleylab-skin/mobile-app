@@ -137,7 +137,11 @@ const ZoomedSite = schema(model)(React.createClass({
     },
 
     onTakeDisatantPhotoPress() {
-        ImagePicker.launchCamera({}, (response) => this.onAddDistantPhoto(response.uri));
+        ImagePicker.launchCamera({}, (response) => {
+            if (response.uri) {
+                this.onAddDistantPhoto(response.uri);
+            }
+        });
     },
 
     async onContinuePress() {
@@ -162,7 +166,11 @@ const ZoomedSite = schema(model)(React.createClass({
             return;
         }
 
-        ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
+        ImagePicker.launchCamera({}, (response) => {
+            if (response.uri) {
+                this.onSubmitMolePhoto(response.uri);
+            }
+        });
     },
 
     render() {

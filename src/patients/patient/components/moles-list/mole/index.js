@@ -102,7 +102,11 @@ export const Mole = React.createClass({
             title: anatomicalSites[anatomicalSites.length - 1].name,
             onLeftButtonPress: () => this.props.navigator.pop(),
             onRightButtonPress: () => ImagePicker.launchCamera({},
-                (response) => this.onSubmitMolePhoto(response.uri)),
+                (response) => {
+                    if (response.uri) {
+                        this.onSubmitMolePhoto(response.uri);
+                    }
+                }),
             navigationBarHidden: false,
             leftButtonIcon: require('components/icons/back/back.png'),
             rightButtonIcon: require('components/icons/camera/camera.png'),
