@@ -102,10 +102,12 @@ export function addMoleService(token) {
     };
 }
 
-function hydrateUpdateMoleData(mole) {
+function hydrateUpdateMoleData(moleData) {
     let data = new FormData();
 
-    data.append('anatomicalSite', mole.anatomicalSite);
+    _.forEach(_.pickBy(moleData), (value, key) => {
+        data.append(key, value);
+    });
 
     return data;
 }

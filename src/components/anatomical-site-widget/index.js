@@ -55,8 +55,6 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        onAddingComplete: React.PropTypes.func.isRequired,
-        onlyChangeAnatomicalSite: React.PropTypes.bool,
         currentAnatomicalSite: React.PropTypes.string,
     },
 
@@ -131,24 +129,20 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     <View style={s.widget}>
                         <View style={{ opacity: !wasFlipped ? 1 : 0, zIndex: !wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                tree={this.props.tree.select('anatomicalSites')}
                                 bodyImage={front}
                                 sites={frontSites}
-                                onAddingComplete={this.props.onAddingComplete}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
-                                onlyChangeAnatomicalSite={this.props.onlyChangeAnatomicalSite}
-                                currentAnatomicalSite={this.props.currentAnatomicalSite}
+                                {...this.props}
+                                tree={this.props.tree.select('anatomicalSites')}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
                             <HumanBody
-                                tree={this.props.tree.select('anatomicalSites')}
                                 bodyImage={back}
                                 sites={backSites}
-                                onAddingComplete={this.props.onAddingComplete}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
-                                onlyChangeAnatomicalSite={this.props.onlyChangeAnatomicalSite}
-                                currentAnatomicalSite={this.props.currentAnatomicalSite}
+                                {...this.props}
+                                tree={this.props.tree.select('anatomicalSites')}
                             />
                         </View>
                     </View>

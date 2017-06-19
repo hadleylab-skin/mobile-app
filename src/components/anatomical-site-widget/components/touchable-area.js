@@ -22,6 +22,7 @@ const TouchableArea = schema({})(React.createClass({
         anatomicalSitesWithMoles: React.PropTypes.arrayOf(React.PropTypes.string),
         onlyChangeAnatomicalSite: React.PropTypes.bool,
         currentAnatomicalSite: React.PropTypes.string,
+        molePk: React.PropTypes.number,
     },
 
     contextTypes: {
@@ -61,6 +62,7 @@ const TouchableArea = schema({})(React.createClass({
                 anatomicalSite: this.props.anatomicalSite,
                 onlyChangeAnatomicalSite: this.props.onlyChangeAnatomicalSite,
                 onAddingComplete: this.props.onAddingComplete,
+                molePk: this.props.molePk,
             },
         });
     },

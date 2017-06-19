@@ -50,10 +50,13 @@ const LesionsScreen = React.createClass({
         let height = this.props.height;
         const unitsOfLength = this.context.user.get('unitsOfLength');
 
-        if (this.props.width && this.props.height) {
+        if (width && height) {
             if (unitsOfLength === 'in') {
                 width = convertCmToIn(width);
                 height = convertCmToIn(height);
+            } else {
+                width = `${parseFloat(width).toFixed(2)}`;
+                height = `${parseFloat(height).toFixed(2)}`;
             }
         }
 

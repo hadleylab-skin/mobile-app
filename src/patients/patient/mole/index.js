@@ -98,7 +98,7 @@ const Mole = schema({})(React.createClass({
                         {currentImage && !_.isEmpty(currentImage.data.dateCreated) ?
                             <View>
                                 <Prediction {...currentImage.data} />
-                                <AnatomicalSite tree={this.props.tree.select('data')} />
+                                <AnatomicalSite tree={this.props.tree} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
                                     molePk={this.props.molePk}

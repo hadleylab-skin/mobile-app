@@ -32,12 +32,14 @@ const ZoomedSite = schema(model)(React.createClass({
         anatomicalSite: React.PropTypes.string.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
         onlyChangeAnatomicalSite: React.PropTypes.bool,
+        molePk: React.PropTypes.number,
     },
 
     contextTypes: {
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
+            updateMoleService: React.PropTypes.func.isRequired,
             addAnatomicalSitePhotoService: React.PropTypes.func.isRequired,
         }),
     },
@@ -87,7 +89,7 @@ const ZoomedSite = schema(model)(React.createClass({
         await service(patientPk, this.props.tree.anatomicalSiteImage, data);
     },
 
-    async onSubmitMolePhoto(uri) {
+    getPositionToSave() {
         const { positionX, positionY, width, height } = this.state;
         const { anatomicalSiteImage } = this.props.tree.get();
         let position = {
@@ -99,6 +101,11 @@ const ZoomedSite = schema(model)(React.createClass({
             position = convertMoleToSave(positionX, positionY, width, height);
         }
 
+        return position;
+    },
+
+    async onSubmitMolePhoto(uri) {
+        const position = this.getPositionToSave();
         const data = {
             anatomicalSite: this.props.anatomicalSite,
             ...position,
@@ -129,12 +136,33 @@ const ZoomedSite = schema(model)(React.createClass({
         ImagePicker.launchCamera({}, (response) => this.onAddDistantPhoto(response.uri));
     },
 
-    onContinuePress() {
+    async onContinuePress() {
+        const { onlyChangeAnatomicalSite, onAddingComplete, anatomicalSite, molePk } = this.props;
+        const position = this.getPositionToSave();
+
+        if (onlyChangeAnatomicalSite) {
+            const patientPk = this.context.currentPatientPk.get();
+            const service = this.context.services.updateMoleService;
+
+            const data = {
+                anatomicalSite,
+                ...position,
+            };
+
+            const result = await service(patientPk, molePk, this.props.tree.mole, data);
+
+            if (result.status === 'Succeed') {
+                onAddingComplete();
+            }
+
+            return;
+        }
+
         ImagePicker.launchCamera({}, (response) => this.onSubmitMolePhoto(response.uri));
     },
 
     render() {
-        const { source, onlyChangeAnatomicalSite } = this.props;
+        const { source } = this.props;
         const { anatomicalSiteImage, showMessage } = this.props.tree.get();
         const { positionX, positionY, photo, width, height } = this.state;
         const hasMoleLocation = positionX && positionY;
@@ -169,7 +197,6 @@ const ZoomedSite = schema(model)(React.createClass({
                         <MolePicker
                             onMolePick={this.onMolePick}
                             clearDot={showMessage}
-                            disabled={onlyChangeAnatomicalSite}
                         >
                             <View>
                                 <View style={[s.activityIndicator, { zIndex: 0 }]}>
@@ -187,63 +214,42 @@ const ZoomedSite = schema(model)(React.createClass({
                             </View>
                         </MolePicker>
                     : (
-                        <View style={[s.defaultImageWrapper, { bottom: onlyChangeAnatomicalSite ? 130 : 64 }]}>
+                        <View style={s.defaultImageWrapper}>
                             <MolePicker
                                 onMolePick={this.onMolePick}
                                 clearDot={showMessage}
-                                disabled={onlyChangeAnatomicalSite}
                             >
                                 <Image source={source} />
                             </MolePicker>
                         </View>
                     )}
-                    {onlyChangeAnatomicalSite ?
-                        <View style={s.buttons}>
-                            {!anatomicalSiteImageSource && !photo ?
-                                <View style={s.distantPhotoBtn}>
-                                    <Button
-                                        disabled={isMoleLoading}
-                                        title="Take a distant photo"
-                                        onPress={this.onTakeDisatantPhotoPress}
-                                    />
-                                </View>
-                            : null}
+                    <View style={s.footer}>
+                        {hasMoleLocation ?
                             <Button
                                 disabled={isMoleLoading}
                                 type="rect"
                                 title="Continue"
-                                onPress={() => this.props.onAddingComplete(this.props.anatomicalSite)}
+                                onPress={this.onContinuePress}
                             />
-                        </View>
-                    :
-                        <View style={s.footer}>
-                            {hasMoleLocation ?
-                                <Button
-                                    disabled={isMoleLoading}
-                                    type="rect"
-                                    title="Continue"
-                                    onPress={this.onContinuePress}
-                                />
-                            : null }
-                            {!hasMoleLocation ?
-                                <View style={s.footerInner}>
-                                    {anatomicalSitePhoto ?
-                                        <Text style={s.text}>Tap on location</Text>
-                                    :
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={s.text}>Tap on location or{' '}</Text>
-                                            <TouchableOpacity
-                                                style={s.textButton}
-                                                onPress={this.onTakeDisatantPhotoPress}
-                                            >
-                                                <Text style={[s.text, s.textPink]}>take a distant photo</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    }
-                                </View>
-                            : null}
-                        </View>
-                    }
+                        : null }
+                        {!hasMoleLocation ?
+                            <View style={s.footerInner}>
+                                {anatomicalSitePhoto ?
+                                    <Text style={s.text}>Tap on location</Text>
+                                :
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <Text style={s.text}>Tap on location or{' '}</Text>
+                                        <TouchableOpacity
+                                            style={s.textButton}
+                                            onPress={this.onTakeDisatantPhotoPress}
+                                        >
+                                            <Text style={[s.text, s.textPink]}>take a distant photo</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                }
+                            </View>
+                        : null}
+                    </View>
                 </View>
             </View>
         );

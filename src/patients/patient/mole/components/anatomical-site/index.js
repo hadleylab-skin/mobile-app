@@ -37,8 +37,20 @@ const AnatomicalSite = schema({})(React.createClass({
         };
     },
 
+    componentWillMount() {
+        this.props.tree.on('update', this.getPhotoSize);
+    },
+
     componentDidMount() {
-        const { patientAnatomicalSite } = this.props.tree.get();
+        this.getPhotoSize();
+    },
+
+    componentWillUnmount() {
+        this.props.tree.off('update', this.getPhotoSize);
+    },
+
+    getPhotoSize() {
+        const { patientAnatomicalSite } = this.props.tree.get('data');
 
         if (!_.isEmpty(patientAnatomicalSite)) {
             const photo = patientAnatomicalSite.distantPhoto.fullSize;
@@ -53,28 +65,27 @@ const AnatomicalSite = schema({})(React.createClass({
         }
     },
 
-    async onAddingComplete(anatomicalSite) {
-        const molePk = this.props.tree.get('pk');
+    async onAddingComplete() {
+        const molePk = this.props.tree.get('data', 'pk');
         const patientPk = this.context.currentPatientPk.get();
-        const service = this.context.services.updateMoleService;
 
-        const data = { anatomicalSite };
+        this.context.mainNavigator.popN(2);
 
-        const result = await service(patientPk, molePk, this.props.tree.select('anatomicalSite'), data);
+        await this.context.services.getPatientMolesService(
+            patientPk,
+            this.context.patientsMoles.select(patientPk, 'moles')
+        );
 
-        if (result.status === 'Succeed') {
-            this.context.mainNavigator.popN(2);
-
-            await this.context.services.getPatientMolesService(
-                patientPk,
-                this.context.patientsMoles.select(patientPk, 'moles')
-            );
-        }
+        await this.context.services.getMoleService(
+            patientPk,
+            molePk,
+            this.props.tree,
+        );
     },
 
     render() {
         const { width, height } = this.state.photo;
-        const { anatomicalSite, patientAnatomicalSite, positionX, positionY } = this.props.tree.get();
+        const { anatomicalSite, patientAnatomicalSite, positionX, positionY } = this.props.tree.get('data');
         const imageName = _.camelCase(anatomicalSite.data.pk);
         let position = { positionX, positionY };
 
@@ -143,7 +154,8 @@ const AnatomicalSite = schema({})(React.createClass({
                                 tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
                                 onlyChangeAnatomicalSite: true,
                                 currentAnatomicalSite: anatomicalSite.data.pk,
-                                onAddingComplete: (site) => this.onAddingComplete(site),
+                                molePk: this.props.tree.get('data', 'pk'),
+                                onAddingComplete: this.onAddingComplete,
                             },
                         });
                     }}

@@ -64,13 +64,15 @@ function hydrateUpdateMolePhotoData(imageData) {
     const keys = _.keys(imageData);
 
     _.map(keys, (key) => {
-        if (key === 'biopsyData') {
-            data.append(key, JSON.stringify(imageData[key]));
+        if (typeof imageData[key] !== 'undefined') {
+            if (key === 'biopsyData') {
+                data.append(key, JSON.stringify(imageData[key]));
 
-            return;
+                return;
+            }
+
+            data.append(key, imageData[key]);
         }
-
-        data.append(key, imageData[key]);
     });
 
     return data;
