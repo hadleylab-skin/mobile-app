@@ -8,8 +8,8 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
-import { getRoute } from '../../patient/edit-patient';
-import Patient from '../../patient';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
+import { getPatientRoute } from '../../patient';
 import s from './styles';
 
 const PatientListItem = React.createClass({
@@ -28,13 +28,29 @@ const PatientListItem = React.createClass({
             lastUpload: React.PropTypes.string,
         }).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
+        goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
+            getPatientMolesService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
             updatePatientService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    async onAddingComplete() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        await this.context.services.patientsService(this.context.patients);
+        await this.context.services.getPatientMolesService(
+            patientPk,
+            this.context.patientsMoles.select(patientPk, 'moles')
+        );
     },
 
     formatDate(date) {
@@ -56,25 +72,36 @@ const PatientListItem = React.createClass({
         return (
             <View style={s.container}>
                 <TouchableWithoutFeedback
-                    onPress={() => {
+                    onPress={async () => {
                         this.context.currentPatientPk.set(pk);
-                        this.props.navigator.push({
-                            component: Patient,
-                            title: `${firstName} ${lastName}`,
-                            onLeftButtonPress: () => this.props.navigator.pop(),
-                            rightButtonTitle: 'Edit',
-                            onRightButtonPress: () => this.props.navigator.push(
-                                getRoute(this.props, this.context)),
-                            navigationBarHidden: false,
-                            tintColor: '#FF2D55',
-                            passProps: {
+
+                        if (this.props.goToWidgetCursor.get()) {
+                            this.props.goToWidgetCursor.set(false);
+                            this.context.mainNavigator.push(
+                                getAnatomicalSiteWidgetRoute({
+                                    tree: this.props.tree,
+                                    onAddingComplete: this.onAddingComplete,
+                                }, this.context)
+                            );
+
+                            const patientPk = this.context.currentPatientPk.get();
+
+                            await this.context.services.getPatientMolesService(
+                                patientPk, this.context.patientsMoles.select(patientPk, 'moles'));
+
+                            return;
+                        }
+
+                        this.props.navigator.push(
+                            getPatientRoute({
                                 tree: this.props.tree,
                                 firstName,
                                 lastName,
                                 navigator: this.props.navigator,
                                 patientCursor: this.props.patientCursor,
-                            },
-                        });
+                                onAddingComplete: this.onAddingComplete,
+                            }, this.context)
+                        );
                     }}
                 >
                     <View style={s.inner}>

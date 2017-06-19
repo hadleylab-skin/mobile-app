@@ -5,12 +5,12 @@ import {
     View,
     Text,
     Image,
-    Dimensions,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import { roundToIntegers, convertMoleToDisplay } from 'libs/misc';
-import { InfoField, AnatomicalSiteWidget } from 'components';
+import { convertMoleToDisplay } from 'libs/misc';
+import { InfoField } from 'components';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import arrowImage from 'components/icons/arrow/arrow.png';
 import dotImage from 'components/icons/dot/dot.png';
 import frontImages from 'components/anatomical-site-widget/components/front/large-images';
@@ -121,27 +121,15 @@ const AnatomicalSite = schema({})(React.createClass({
                         </View>
                     }
                     hasNoBorder
-                    onPress={() => {
-                        this.context.mainNavigator.push({
-                            component: AnatomicalSiteWidget,
-                            title: 'Add photo',
-                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
-                            onRightButtonPress: () => {
-                                this.context.mainNavigator.pop();
-                            },
-                            navigationBarHidden: false,
-                            rightButtonTitle: 'Cancel',
-                            leftButtonIcon: require('components/icons/back/back.png'),
-                            tintColor: '#FF1D70',
-                            passProps: {
-                                tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
-                                onlyChangeAnatomicalSite: true,
-                                currentAnatomicalSite: anatomicalSite.data.pk,
-                                molePk: this.props.tree.get('data', 'pk'),
-                                onAddingComplete: this.onAddingComplete,
-                            },
-                        });
-                    }}
+                    onPress={() => this.context.mainNavigator.push(
+                        getAnatomicalSiteWidgetRoute({
+                            tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
+                            onlyChangeAnatomicalSite: true,
+                            currentAnatomicalSite: anatomicalSite.data.pk,
+                            molePk: this.props.tree.get('data', 'pk'),
+                            onAddingComplete: this.onAddingComplete,
+                        }, this.context)
+                    )}
                 />
             </View>
         );

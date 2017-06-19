@@ -242,7 +242,7 @@ async function submit(props, navigator, getInput) {
     }
 }
 
-export function getRoute(props, context) {
+export function getEditPatientRoute(props, context) {
     let getInput;
     const navigator = props.navigator;
     const passProps = {

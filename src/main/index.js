@@ -10,10 +10,10 @@ import _ from 'lodash';
 import services from 'libs/services';
 import { getRacesList } from 'libs/services/constants';
 import schema from 'libs/state';
-import { UserPropType } from 'libs/misc';
 import { ServiceProvider } from 'components';
 import { PatientsList } from '../patients';
 import { DoctorProfile } from '../doctor-profile';
+import { Camera } from '../camera';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
@@ -28,6 +28,7 @@ const model = (props) => (
             patientsMoles: {},
             patientsMoleImages: {},
             racesList: getRacesList(props.token),
+            showModal: false,
         },
     }
 );
@@ -40,17 +41,11 @@ const Main = schema(model)(React.createClass({
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
-    switchTab() {
-        const currentTabCursor = this.props.tree.currentTab;
-        currentTabCursor.set('patients');
-
-        this.patientsList.navigator.popToTop();
-    },
-
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
         const patientsMolesCursor = this.props.tree.patientsMoles;
+        const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
@@ -79,8 +74,8 @@ const Main = schema(model)(React.createClass({
                     <TabBarIOS.Item
                         title="Camera"
                         icon={cameraIcon}
-                        selected={currentTabCursor.get() === 'camera'}
-                        onPress={() => currentTabCursor.set('camera')}
+                        selected={false}
+                        onPress={() => showModalCursor.set(true)}
                     >
                         <View />
                     </TabBarIOS.Item>
@@ -100,6 +95,11 @@ const Main = schema(model)(React.createClass({
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
+                <Camera
+                    tree={this.props.tree}
+                    visibleCursor={showModalCursor}
+                    patientsList={this.patientsList}
+                />
             </View>
         );
     },

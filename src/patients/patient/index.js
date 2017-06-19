@@ -8,15 +8,17 @@ import schema from 'libs/state';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
+import { getEditPatientRoute } from './edit';
 import s from './styles';
 
-const Patient = schema({})(React.createClass({
+export const Patient = schema({})(React.createClass({
     displayName: 'Patient',
 
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     render() {
@@ -30,7 +32,7 @@ const Patient = schema({})(React.createClass({
                         {...this.props.patientCursor.get('data')}
                         consentCursor={this.props.patientCursor.select('consentDateExpired')}
                     />
-                    <MolesInfo tree={this.props.tree} />
+                    <MolesInfo tree={this.props.tree} onAddingComplete={this.props.onAddingComplete} />
                     <MolesList
                         tree={this.props.tree}
                         navigator={this.props.navigator}
@@ -41,4 +43,17 @@ const Patient = schema({})(React.createClass({
     },
 }));
 
-export default Patient;
+export function getPatientRoute(props, context) {
+    const { firstName, lastName, navigator } = props;
+
+    return {
+        component: Patient,
+        title: `${firstName} ${lastName}`,
+        onLeftButtonPress: () => navigator.pop(),
+        rightButtonTitle: 'Edit',
+        onRightButtonPress: () => navigator.push(getEditPatientRoute(props, context)),
+        navigationBarHidden: false,
+        tintColor: '#FF2D55',
+        passProps: props,
+    };
+}

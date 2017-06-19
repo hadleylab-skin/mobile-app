@@ -151,3 +151,17 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         );
     },
 }));
+
+export function getAnatomicalSiteWidgetRoute(props, context) {
+    return {
+        component: AnatomicalSiteWidget,
+        title: 'Add photo',
+        onLeftButtonPress: () => context.mainNavigator.pop(),
+        onRightButtonPress: () => context.mainNavigator.pop(),
+        navigationBarHidden: false,
+        rightButtonTitle: 'Cancel',
+        leftButtonIcon: require('components/icons/back/back.png'),
+        tintColor: '#FF2D55',
+        passProps: props,
+    };
+}

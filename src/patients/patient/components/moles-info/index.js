@@ -4,8 +4,7 @@ import {
     Text,
 } from 'react-native';
 import { Button } from 'components';
-import { AnatomicalSiteWidget } from 'components';
-import BaobabPropTypes from 'baobab-prop-types';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import s from './styles';
 
 export const MolesInfo = React.createClass({
@@ -13,27 +12,11 @@ export const MolesInfo = React.createClass({
         moles: React.PropTypes.number,
         benign: React.PropTypes.number,
         malignant: React.PropTypes.number,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-        }),
-    },
-
-    async onAddingComplete() {
-        const patientPk = this.context.currentPatientPk.get();
-
-        await this.context.services.patientsService(this.context.patients);
-        await this.context.services.getPatientMolesService(
-            patientPk,
-            this.context.patientsMoles.select(patientPk, 'moles')
-        );
     },
 
     render() {
@@ -59,24 +42,12 @@ export const MolesInfo = React.createClass({
                 : null}
                 <Button
                     title="Add a new mole"
-                    onPress={() => {
-                        this.context.mainNavigator.push({
-                            component: AnatomicalSiteWidget,
-                            title: 'Add photo',
-                            onLeftButtonPress: () => this.context.mainNavigator.pop(),
-                            onRightButtonPress: () => {
-                                this.context.mainNavigator.pop();
-                            },
-                            navigationBarHidden: false,
-                            rightButtonTitle: 'Cancel',
-                            leftButtonIcon: require('components/icons/back/back.png'),
-                            tintColor: '#FF2D55',
-                            passProps: {
-                                tree: this.props.tree,
-                                onAddingComplete: this.onAddingComplete,
-                            },
-                        });
-                    }}
+                    onPress={() => this.context.mainNavigator.push(
+                        getAnatomicalSiteWidgetRoute({
+                            tree: this.props.tree,
+                            onAddingComplete: this.props.onAddingComplete,
+                        }, this.context)
+                    )}
                 />
             </View>
         );

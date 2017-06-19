@@ -2,178 +2,98 @@ import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
 import {
-    Text,
     View,
+    Text,
+    Modal,
     TouchableOpacity,
-    Image,
-    ActivityIndicator,
-    Alert,
     TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
-import Camera from 'react-native-camera';
+import { getRoute } from '../patients/add';
 import s from './styles';
-import captureIcon from './images/capture.png';
 
-const ImageLoader = React.createClass({
+export const Camera = schema({})(React.createClass({
     propTypes: {
-        imageInfo: React.PropTypes.shape({
-            photo: React.PropTypes.shape({
-                path: React.PropTypes.string.isRequired,
-            }),
-            data: React.PropTypes.shape({
-                status: React.PropTypes.string.isRequired,
-            }),
-        }).isRequired,
-        deleteImage: React.PropTypes.func.isRequired,
-    },
-
-    renderImage(path) {
-        return (
-            <Image
-                style={{ height: 75, width: 50 }}
-                source={{ uri: path }}
-            />
-        );
-    },
-
-    render() {
-        const { imageInfo, deleteImage } = this.props;
-
-        if (!imageInfo.data) {
-            return null;
-        }
-
-        if (imageInfo.data.status === 'Loading') {
-            return (
-                <View style={[s.wrapper, s.loading]}>
-                    {this.renderImage(imageInfo.photo.path)}
-                    <ActivityIndicator
-                        size="large"
-                        color="#FF1D70"
-                        style={{ position: 'absolute', top: 20, left: 10 }}
-                    />
-                </View>
-            );
-        } else if (imageInfo.data.status === 'Succeed') {
-            return (
-                <View style={[s.wrapper, s.success]}>
-                    {this.renderImage(imageInfo.photo.path)}
-                </View>
-            );
-        }
-
-        return (
-            <TouchableWithoutFeedback
-                onPress={() => Alert.alert(
-                    'Loading Image Error',
-                    JSON.stringify(imageInfo.data),
-                    [
-                        { text: 'OK', onPress: () => deleteImage(imageInfo.photo.path) },
-                    ]
-                )}
-            >
-                <View style={[s.wrapper, s.error]}>
-                    {this.renderImage(imageInfo.photo.path)}
-                    <View style={s.errorShadow}>
-                        <Text style={{ color: '#fff' }}>Error</Text>
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
-        );
-    },
-});
-
-const model = {
-    tree: {
-        imageUploadResults: {},
-    },
-};
-
-export default schema(model)(React.createClass({
-    displayName: 'CameraScreen',
-    propTypes: {
-        tree: BaobabPropTypes.cursor.isRequired,
-        updatePatients: React.PropTypes.func.isRequired,
-        currentPatient: React.PropTypes.shape({
-            id: React.PropTypes.number.isRequired,
-            firstname: React.PropTypes.string.isRequired,
-            lastname: React.PropTypes.string.isRequired,
-        }).isRequired,
-        switchTab: React.PropTypes.func.isRequired,
+        visibleCursor: BaobabPropTypes.cursor.isRequired,
+        patientsList: React.PropTypes.object, // eslint-disable-line
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        patients: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
-            clinicalPhotoService: React.PropTypes.func.isRequired,
+            createPatientService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
         }),
     },
 
-    async takePicture() {
-        const photo = await this.camera.capture();
-        const path = photo.path;
-        this.props.tree.imageUploadResults.set(path, {
-            photo,
-            data: {},
-        });
-        const cursor = this.props.tree.imageUploadResults.select(path, 'data');
-        const result = await this.context.services.clinicalPhotoService(this.props.currentPatient.id, cursor, photo);
-        if (result.status === 'Succeed') {
-            setTimeout(() => this.deleteImage(photo.path), 5000);
-            this.props.updatePatients(cursor.get('data', 'patient'));
-        }
+    popPatientsList() {
+        const { patientsList, visibleCursor } = this.props;
+        const currentTabCursor = this.props.tree.currentTab;
+        currentTabCursor.set('patients');
+
+        patientsList.navigator.popToTop();
+        visibleCursor.set(false);
     },
 
-    deleteImage(photoPath) {
-        this.props.tree.imageUploadResults.unset(photoPath);
+    goToNewPatientScreen() {
+        this.popPatientsList();
+        this.context.mainNavigator.push(
+            getRoute({ tree: this.props.tree.select('patients') }, this.context));
+    },
+
+    gotToPatientScreen() {
+        this.popPatientsList();
+        this.props.tree.patients.select('goToWidget').set(true);
     },
 
     render() {
-        const patientName = `${this.props.currentPatient.firstname} ${this.props.currentPatient.lastname}`;
-        const images = this.props.tree.imageUploadResults.get();
+        const { visibleCursor } = this.props;
 
         return (
-            <View style={s.container}>
-                <Camera
-                    ref={(cam) => {
-                        this.camera = cam;
-                    }}
-                    style={s.camera}
-                    aspect={Camera.constants.Aspect.fill}
-                    captureTarget={Camera.constants.CaptureTarget.disk}
-                    onFocusChanged={() => true}
-                    defaultOnFocusComponent
+            <View>
+                <Modal
+                    animationType="slide"
+                    transparent
+                    visible={visibleCursor.get()}
                 >
-                    <View style={s.preloaders} >
-                        {
-                            _.map(images, (imageInfo) => {
-                                if (typeof imageInfo === 'undefined') {
-                                    return null;
-                                }
-                                return (
-                                    <ImageLoader
-                                        imageInfo={imageInfo}
-                                        key={imageInfo.photo.path}
-                                        deleteImage={this.deleteImage}
-                                    />
-                                );
-                            })
-                        }
-                    </View>
-                    <TouchableWithoutFeedback onPress={this.props.switchTab}>
-                        <View style={s.textWrapper}>
-                            <Text style={s.name}>
-                                {patientName}
-                            </Text>
+                    <View style={s.container}>
+                        <TouchableWithoutFeedback onPress={() => visibleCursor.set(false)}>
+                            <View style={s.bg} />
+                        </TouchableWithoutFeedback>
+                        <View style={s.buttons}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={s.buttonWrapper}
+                                onPress={this.goToNewPatientScreen}
+                            >
+                                <View style={[s.button, s.hasBottomBorder]}>
+                                    <Text style={[s.text, s.textRed]}>New Patient</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={s.buttonWrapper}
+                                onPress={this.gotToPatientScreen}
+                            >
+                                <View style={s.button}>
+                                    <Text style={[s.text, s.textRed]}>Existing Patient</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                    </TouchableWithoutFeedback>
-                    <TouchableOpacity onPress={this.takePicture}>
-                        <Image
-                            source={captureIcon}
-                            style={s.capture}
-                        />
-                    </TouchableOpacity>
-                </Camera>
+
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={s.buttonWrapper}
+                            onPress={() => visibleCursor.set(false)}
+                        >
+                            <View style={[s.button, s.buttonCancel]}>
+                                <Text style={s.text}>Cancel</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
         );
     },
