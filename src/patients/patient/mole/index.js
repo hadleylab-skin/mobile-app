@@ -3,9 +3,12 @@ import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
+    Image,
+    Dimensions,
     ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
+import { roundToIntegers } from 'libs/misc';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
 import InfoFields from './components/info-fields';
@@ -37,17 +40,38 @@ const Mole = schema({})(React.createClass({
     async componentWillMount() {
         const patientPk = this.context.currentPatientPk.get();
 
-        await this.context.services.getMoleService(
+        const result = await this.context.services.getMoleService(
             patientPk,
             this.props.molePk,
             this.props.tree,
         );
+
+        if (result.status === 'Succeed') {
+            this.getPhotoSize();
+        }
 
         this.props.tree.on('update', this.update);
     },
 
     componentWillUnmount() {
         this.props.tree.off('update', this.update);
+    },
+
+    getPhotoSize() {
+        const { patientAnatomicalSite } = this.props.tree.data;
+
+        if (!_.isEmpty(patientAnatomicalSite.get())) {
+            const photo = patientAnatomicalSite.get('distantPhoto', 'fullSize');
+            const windowWidth = Dimensions.get('window').width;
+
+            Image.getSize(photo, (photoWidth, photoHeight) => {
+                const width = windowWidth;
+                const height = (width / photoWidth) * photoHeight;
+
+                patientAnatomicalSite.select('width').set(width);
+                patientAnatomicalSite.select('height').set(height);
+            });
+        }
     },
 
     update() {
@@ -98,7 +122,7 @@ const Mole = schema({})(React.createClass({
                         {currentImage && !_.isEmpty(currentImage.data.dateCreated) ?
                             <View>
                                 <Prediction {...currentImage.data} />
-                                <AnatomicalSite tree={this.props.tree} />
+                                <AnatomicalSite tree={this.props.tree} getPhotoSize={this.getPhotoSize} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
                                     molePk={this.props.molePk}

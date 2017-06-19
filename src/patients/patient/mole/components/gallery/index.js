@@ -30,6 +30,14 @@ const Gallery = React.createClass({
 
     contextTypes: {},
 
+    shouldComponentUpdate(nextProps) {
+        if (nextProps !== this.props) {
+            return true;
+        }
+
+        return false;
+    },
+
     formateDate(date) {
         const formatedDate = moment(date).format('MMMM d, YYYY hh:mm a');
 

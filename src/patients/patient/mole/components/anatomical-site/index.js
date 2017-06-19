@@ -18,6 +18,10 @@ import backImages from 'components/anatomical-site-widget/components/back/large-
 import s from './styles';
 
 const AnatomicalSite = schema({})(React.createClass({
+    propTypes: {
+        getPhotoSize: React.PropTypes.func.isRequired,
+    },
+
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
@@ -28,48 +32,21 @@ const AnatomicalSite = schema({})(React.createClass({
         }),
     },
 
-    getInitialState() {
-        return {
-            photo: {
-                width: 0,
-                height: 0,
-            },
-        };
-    },
-
     componentWillMount() {
-        this.props.tree.on('update', this.getPhotoSize);
-    },
-
-    componentDidMount() {
-        this.getPhotoSize();
+        this.props.tree.on('update', this.props.getPhotoSize);
     },
 
     componentWillUnmount() {
-        this.props.tree.off('update', this.getPhotoSize);
+        this.props.tree.off('update', this.props.getPhotoSize);
     },
 
-    getPhotoSize() {
-        const { patientAnatomicalSite } = this.props.tree.get('data');
-
-        if (!_.isEmpty(patientAnatomicalSite)) {
-            const photo = patientAnatomicalSite.distantPhoto.fullSize;
-            const windowWidth = Dimensions.get('window').width;
-
-            Image.getSize(photo, (photoWidth, photoHeight) => {
-                const width = windowWidth;
-                const height = (width / photoWidth) * photoHeight;
-
-                this.setState({ photo: { width, height: roundToIntegers(height) } });
-            });
-        }
-    },
-
-    async onAddingComplete() {
+    async onAddingComplete(skipPop) {
         const molePk = this.props.tree.get('data', 'pk');
         const patientPk = this.context.currentPatientPk.get();
 
-        this.context.mainNavigator.popN(2);
+        if (!skipPop) {
+            this.context.mainNavigator.popN(2);
+        }
 
         await this.context.services.getPatientMolesService(
             patientPk,
@@ -84,12 +61,16 @@ const AnatomicalSite = schema({})(React.createClass({
     },
 
     render() {
-        const { width, height } = this.state.photo;
         const { anatomicalSite, patientAnatomicalSite, positionX, positionY } = this.props.tree.get('data');
         const imageName = _.camelCase(anatomicalSite.data.pk);
         let position = { positionX, positionY };
+        const isLoading = this.props.tree.get('status') === 'Loading';
+        let width = 0;
+        let height = 0;
 
         if (!_.isEmpty(patientAnatomicalSite)) {
+            width = patientAnatomicalSite.width;
+            height = patientAnatomicalSite.height;
             position = convertMoleToDisplay(positionX, positionY, width, height);
         }
 
@@ -110,12 +91,14 @@ const AnatomicalSite = schema({})(React.createClass({
                     </View>
                     {!_.isEmpty(patientAnatomicalSite) ?
                         <View style={{ marginTop: -(positionY - 70) }}>
-                            <Image
-                                source={{ uri: patientAnatomicalSite.distantPhoto.fullSize }}
-                                resizeMode="contain"
-                                style={{ width, height }}
-                            />
-                            {width && height ?
+                            {!isLoading ?
+                                <Image
+                                    source={{ uri: patientAnatomicalSite.distantPhoto.fullSize }}
+                                    resizeMode="contain"
+                                    style={{ width, height }}
+                                />
+                            : null}
+                            {width && height && !isLoading ?
                                 <Image
                                     source={dotImage}
                                     style={[s.dot, { left: position.positionX, top: position.positionY }]}

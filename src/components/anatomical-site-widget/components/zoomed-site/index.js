@@ -86,7 +86,11 @@ const ZoomedSite = schema(model)(React.createClass({
 
         const service = this.context.services.addAnatomicalSitePhotoService;
         const patientPk = this.context.currentPatientPk.get();
-        await service(patientPk, this.props.tree.anatomicalSiteImage, data);
+        const result = await service(patientPk, this.props.tree.anatomicalSiteImage, data);
+
+        if (result.status === 'Succeed') {
+            this.props.onAddingComplete(true);
+        }
     },
 
     getPositionToSave() {
