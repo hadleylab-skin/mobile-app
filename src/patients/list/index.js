@@ -12,7 +12,8 @@ import {
 import schema from 'libs/state';
 import { Button } from 'components';
 import PatientListItem from './patient-list-item';
-import { getRoute } from '../add';
+import { getCreateOrEditPatientRoute } from '../create-or-edit';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import s from './styles';
 
 function patientsToList(patients) {
@@ -27,6 +28,7 @@ const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         patientsMolesCursor: BaobabPropTypes.cursor.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -104,7 +106,27 @@ const PatientsListScreen = schema({})(React.createClass({
                         <View style={s.button}>
                             <Button
                                 title="+ Add a new patient"
-                                onPress={() => this.context.mainNavigator.push(getRoute(this.props, this.context))}
+                                onPress={() => this.context.mainNavigator.push(
+                                    getCreateOrEditPatientRoute({
+                                        title: 'New Patient',
+                                        service: this.context.services.createPatientService,
+                                        ...this.props,
+                                        onActionComplete: async (pk) => {
+                                            this.context.mainNavigator.pop();
+
+                                            const result = await this.context.services.patientsService(this.context.patients);
+
+                                            /*if (result.status === 'Succeed') {
+                                                this.context.mainNavigator.push(
+                                                    getAnatomicalSiteWidgetRoute({
+                                                        tree: this.context.patients.select('data', pk),
+                                                        onAddingComplete: this.onAddingComplete,
+                                                    }, this.context)
+                                                );
+                                            }*/
+                                        },
+                                    }, this.context)
+                                )}
                             />
                         </View>
                     </View>
@@ -122,9 +144,10 @@ const PatientsListScreen = schema({})(React.createClass({
                             <PatientListItem
                                 tree={this.props.patientsMolesCursor.select(rowData.data.pk)}
                                 data={rowData.data}
-                                patientCursor={this.context.patients.data.select(rowData.data.pk)}
+                                patientCursor={this.context.patients.select('data', rowData.data.pk)}
                                 navigator={this.props.navigator}
                                 goToWidgetCursor={this.props.tree.select('goToWidget')}
+                                onAddingComplete={this.props.onAddingComplete}
                             />
                         )}
                     />
@@ -137,11 +160,24 @@ const PatientsListScreen = schema({})(React.createClass({
 export const PatientsList = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
         patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    async onAddingComplete() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        await this.context.services.patientsService(this.context.patients);
+        await this.context.services.getPatientMolesService(
+            patientPk,
+            this.context.patientsMoles.select(patientPk, 'moles')
+        );
     },
 
     render() {
@@ -150,10 +186,33 @@ export const PatientsList = React.createClass({
                 ref={(ref) => { this.navigator = ref; }}
                 initialRoute={{
                     component: PatientsListScreen,
-                    passProps: this.props,
+                    passProps: {
+                        onAddingComplete: this.onAddingComplete,
+                        ...this.props,
+                    },
                     title: 'Patients',
                     rightButtonSystemIcon: 'add',
-                    onRightButtonPress: () => this.context.mainNavigator.push(getRoute(this.props, this.context)),
+                    onRightButtonPress: () => this.context.mainNavigator.push(
+                        getCreateOrEditPatientRoute({
+                            title: 'New Patient',
+                            service: this.context.services.createPatientService,
+                            ...this.props,
+                            onActionComplete: async (pk) => {
+                                this.context.mainNavigator.pop();
+
+                                const result = await this.context.services.patientsService(this.context.patients);
+
+                                /*if (result.status === 'Succeed') {
+                                    this.context.mainNavigator.push(
+                                        getAnatomicalSiteWidgetRoute({
+                                            tree: this.context.patients.select('data', pk),
+                                            onAddingComplete: this.onAddingComplete,
+                                        }, this.context)
+                                    );
+                                }*/
+                            },
+                        }, this.context)
+                    ),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',
                 }}

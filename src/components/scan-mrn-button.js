@@ -24,7 +24,7 @@ export function ScanMrnButton({ cursor, setupData }, { services }) {
     return (
         <Button
             onPress={() => ImagePicker.launchCamera({}, onResponse)}
-            title="Scan mrn label"
+            title="Scan MRN label"
         />
     );
 }

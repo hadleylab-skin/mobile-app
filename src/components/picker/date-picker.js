@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import moment from 'moment';
-import { Form } from '../form';
+import { Form, InfoField } from 'components';
 import s from './styles';
 
 const model = {
@@ -24,9 +24,10 @@ export const DatePicker = schema(model)(React.createClass({
         cursor: BaobabPropTypes.cursor.isRequired,
         title: React.PropTypes.string.isRequired,
         onPress: React.PropTypes.func,
+        hasNoBorder: React.PropTypes.bool,
     },
 
-    contextTypes: Form.childContextTypes,
+    // contextTypes: Form.childContextTypes,
 
     getInitialState() {
         return {
@@ -35,23 +36,13 @@ export const DatePicker = schema(model)(React.createClass({
     },
 
     componentDidMount() {
-        if (this.context.register) {
+        /*if (this.context.register) {
             this.context.register(this);
-        }
-    },
-
-    componentDidUpdate(prevProps, prevState) {
-        const newDate = new Date(this.props.cursor.get());
-        if (!moment(newDate).isSame(moment(prevState.value))) {
-            this.setState({ // eslint-disable-line
-                value: newDate,
-            });
-        }
+        }*/
     },
 
     onValueChange(value) {
         this.setState({ value });
-        this.props.cursor.set(moment(value).format('YYYY-MM-DD'));
     },
 
     onPress() {
@@ -69,22 +60,31 @@ export const DatePicker = schema(model)(React.createClass({
         this.props.onPress();
     },
 
+    onSubmit() {
+        this.props.cursor.set(moment(this.state.value).format('YYYY-MM-DD'));
+        this.props.tree.isOpen.set(false);
+    },
+
     render() {
         const { cursor, title } = this.props;
         const { isOpen } = this.props.tree;
+        const date = cursor.get();
+        const text = date ? `${moment(date).format('MMM DD')}, ${moment(date).format('YYYY')}` : null;
 
         return (
-            <View style={s.container}>
-                <TouchableWithoutFeedback onPress={this.onPress}>
-                    <View style={s.wrapper}>
-                        <Text style={s.title}>{title}:</Text>
-                        <Text style={s.text}>
-                            {cursor.get() ? moment(cursor.get()).format('DD MMM YYYY') : null}
-                        </Text>
-                    </View>
-                </TouchableWithoutFeedback>
+            <InfoField
+                title={title}
+                text={text}
+                onPress={this.onPress}
+                hasNoBorder={this.props.hasNoBorder}
+            >
                 {isOpen.get() ? (
                     <View style={s.picker}>
+                        <TouchableWithoutFeedback onPress={this.onSubmit}>
+                            <View style={s.submitWrapper}>
+                                <Text style={s.submitText}>Done</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
                         <DatePickerIOS
                             date={this.state.value}
                             mode="date"
@@ -93,7 +93,7 @@ export const DatePicker = schema(model)(React.createClass({
                         />
                     </View>
                 ) : null}
-            </View>
+            </InfoField>
         );
     },
 }));

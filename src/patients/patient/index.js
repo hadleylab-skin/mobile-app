@@ -8,7 +8,7 @@ import schema from 'libs/state';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
-import { getEditPatientRoute } from './edit';
+import { getCreateOrEditPatientRoute } from '../create-or-edit';
 import s from './styles';
 
 export const Patient = schema({})(React.createClass({
@@ -44,14 +44,22 @@ export const Patient = schema({})(React.createClass({
 }));
 
 export function getPatientRoute(props, context) {
-    const { firstName, lastName, navigator } = props;
+    const { navigator } = props;
+    const { firstName, lastName, pk } = props.patientCursor.get('data');
 
     return {
         component: Patient,
         title: `${firstName} ${lastName}`,
         onLeftButtonPress: () => navigator.pop(),
         rightButtonTitle: 'Edit',
-        onRightButtonPress: () => navigator.push(getEditPatientRoute(props, context)),
+        onRightButtonPress: () => context.mainNavigator.push(
+            getCreateOrEditPatientRoute({
+                tree: props.patientCursor,
+                title: 'Edit Patient',
+                service: (cursor, data) => context.services.updatePatientService(pk, cursor, data),
+                onActionComplete: () => context.mainNavigator.pop(),
+            }, context)
+        ),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps: props,

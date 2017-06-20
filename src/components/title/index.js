@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     View,
     Text,
@@ -15,8 +16,10 @@ export const Title = React.createClass({
         const { text } = this.props;
 
         return (
-            <View style={s.wrapper}>
-                <Text style={s.title}>{text}</Text>
+            <View style={s.title}>
+                <Text style={s.text}>
+                    {_.upperCase(text)}
+                </Text>
             </View>
         );
     },

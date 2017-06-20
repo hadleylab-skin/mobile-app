@@ -9,23 +9,16 @@ export default StyleSheet.create({
     inner: {
         paddingTop: 20,
         backgroundColor: '#fff',
+        height: 60,
         borderBottomColor: 'rgba(0,0,0,0.3)',
         borderBottomWidth: 0.5,
         marginBottom: 15,
-        paddingLeft: 15,
     },
-    hasBottomBorder: {
-        borderBottomColor: 'rgba(0,0,0,0.3)',
-        borderBottomWidth: 0.5,
-        marginBottom: 20,
+    inputWrapper: {
+        paddingLeft: 15,
     },
     input: {
         height: 40,
         color: '#000',
-    },
-    label: {
-        color: '#ACB5BE',
-        fontSize: 12,
-        lineHeight: 12,
     },
 });

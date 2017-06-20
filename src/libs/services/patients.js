@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData } from './base';
+import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData, hydrateImage } from './base';
 
 function dehydrateMrn(item) {
     return _.merge(
@@ -30,8 +30,18 @@ function hydratePatientData(patientData) {
     let data = new FormData();
 
     _.forEach(_.pickBy(patientData), (value, key) => {
+        if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
+            return;
+        }
+
         if (key === 'mrn') {
             data.append(key, parseInt(value, 10));
+
+            return;
+        }
+
+        if (key === 'photo') {
+            data.append('photo', hydrateImage(value.thumbnail));
 
             return;
         }
@@ -45,7 +55,9 @@ function hydratePatientData(patientData) {
 function dehydratePatientData(data) {
     let newData = data;
 
-    newData.mrn = `${data.mrn}`;
+    if (data.mrn) {
+        newData.mrn = `${data.mrn}`;
+    }
 
     return newData;
 }

@@ -6,7 +6,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
-import { Title } from 'components/new/title';
+import { Title } from 'components';
 import { Mole } from './mole';
 import s from './styles';
 

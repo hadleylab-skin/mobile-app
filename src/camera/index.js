@@ -1,6 +1,5 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import _ from 'lodash';
 import {
     View,
     Text,
@@ -9,7 +8,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
-import { getRoute } from '../patients/add';
+import { getCreateOrEditPatientRoute } from '../patients/create-or-edit';
 import s from './styles';
 
 export const Camera = schema({})(React.createClass({
@@ -32,14 +31,33 @@ export const Camera = schema({})(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         currentTabCursor.set('patients');
 
-        patientsList.navigator.popToTop();
         visibleCursor.set(false);
+        patientsList.navigator.popToTop();
     },
 
     goToNewPatientScreen() {
         this.popPatientsList();
         this.context.mainNavigator.push(
-            getRoute({ tree: this.props.tree.select('patients') }, this.context));
+            getCreateOrEditPatientRoute({
+                title: 'New Patient',
+                service: this.context.services.createPatientService,
+                tree: this.props.tree.select('patients'),
+                onActionComplete: async (pk) => {
+                    this.context.mainNavigator.pop();
+
+                    const result = await this.context.services.patientsService(this.context.patients);
+
+                    /*if (result.status === 'Succeed') {
+                        this.context.mainNavigator.push(
+                            getAnatomicalSiteWidgetRoute({
+                                tree: this.context.patients.select('data', pk),
+                                onAddingComplete: this.onAddingComplete,
+                            }, this.context)
+                        );
+                    }*/
+                },
+            }, this.context)
+        );
     },
 
     gotToPatientScreen() {

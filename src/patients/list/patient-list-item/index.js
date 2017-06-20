@@ -29,28 +29,16 @@ const PatientListItem = React.createClass({
         }).isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
+        onAddingComplete: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             getPatientMolesService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            updatePatientService: React.PropTypes.func.isRequired,
         }),
-    },
-
-    async onAddingComplete() {
-        const patientPk = this.context.currentPatientPk.get();
-
-        await this.context.services.patientsService(this.context.patients);
-        await this.context.services.getPatientMolesService(
-            patientPk,
-            this.context.patientsMoles.select(patientPk, 'moles')
-        );
     },
 
     formatDate(date) {
@@ -80,7 +68,7 @@ const PatientListItem = React.createClass({
                             this.context.mainNavigator.push(
                                 getAnatomicalSiteWidgetRoute({
                                     tree: this.props.tree,
-                                    onAddingComplete: this.onAddingComplete,
+                                    onAddingComplete: this.props.onAddingComplete,
                                 }, this.context)
                             );
 
@@ -95,11 +83,9 @@ const PatientListItem = React.createClass({
                         this.props.navigator.push(
                             getPatientRoute({
                                 tree: this.props.tree,
-                                firstName,
-                                lastName,
                                 navigator: this.props.navigator,
                                 patientCursor: this.props.patientCursor,
-                                onAddingComplete: this.onAddingComplete,
+                                onAddingComplete: this.props.onAddingComplete,
                             }, this.context)
                         );
                     }}

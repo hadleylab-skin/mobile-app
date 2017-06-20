@@ -30,7 +30,11 @@ export const Switch = React.createClass({
 
         if (this.props.onPress) {
             this.props.onPress(value);
+
+            return;
         }
+
+        this.props.cursor.set(value);
     },
 
     render() {

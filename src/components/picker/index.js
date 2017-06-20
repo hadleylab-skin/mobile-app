@@ -22,7 +22,7 @@ export const Picker = schema(model)(React.createClass({
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+        items: React.PropTypes.arrayOf(React.PropTypes.array),
         title: React.PropTypes.string.isRequired,
         onPress: React.PropTypes.func,
         hasNoBorder: React.PropTypes.bool,
@@ -45,18 +45,10 @@ export const Picker = schema(model)(React.createClass({
         // }
     },
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.cursor.get() && this.props.cursor.get() !== prevState.value) {
-            this.setState({ // eslint-disable-line
-                value: this.props.cursor.get(),
-            });
-        }
-    },
-
     onPress() {
         const { isOpen } = this.props.tree;
 
-        if (!isOpen.get()) {
+        if (!isOpen.get() && this.props.onPress) {
             this.props.onPress();
         }
 

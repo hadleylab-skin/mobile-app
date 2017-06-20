@@ -6,8 +6,7 @@ import {
     Text,
     Image,
 } from 'react-native';
-import { Title } from 'components/new/title';
-import { InfoField, Switch } from 'components';
+import { InfoField, Switch, Title } from 'components';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
 

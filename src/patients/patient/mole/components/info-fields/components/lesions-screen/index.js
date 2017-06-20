@@ -82,7 +82,7 @@ const LesionsScreen = React.createClass({
                             label={'width'}
                             cursor={widthCursor}
                             returnKeyType="next"
-                            inputWrapperStyle={[s.inputWrapper, s.hasBottomBorder]}
+                            inputWrapperStyle={s.hasBottomBorder}
                             inputStyle={s.input}
                             placeholderTextColor="rgba(0,0,0,0.5)"
                         />
@@ -91,7 +91,6 @@ const LesionsScreen = React.createClass({
                             label={'height'}
                             cursor={heightCursor}
                             returnKeyType="done"
-                            inputWrapperStyle={s.inputWrapper}
                             inputStyle={s.input}
                             placeholderTextColor="rgba(0,0,0,0.5)"
                         />

@@ -22,7 +22,9 @@ export const Input = schema({})(React.createClass({
         returnKeyType: React.PropTypes.string,
         onFocus: React.PropTypes.func,
         name: React.PropTypes.string,
+        errorWrapperStyle: View.propTypes.style,
         errorStyle: Text.propTypes.style,
+        erroPlaceholderTextColor: React.PropTypes.string,
     },
 
     contextTypes: Form.childContextTypes,
@@ -135,8 +137,8 @@ export const Input = schema({})(React.createClass({
     },
 
     render() {
-        const { label, inputWrapperStyle, inputStyle,
-                placeholderTextColor, errorStyle, ...props } = this.props;
+        const { label, inputWrapperStyle, inputStyle, erroPlaceholderTextColor,
+                placeholderTextColor, errorStyle, errorWrapperStyle, ...props } = this.props;
 
         const movingMargin = this.animatedValue.interpolate({
             inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
@@ -145,27 +147,27 @@ export const Input = schema({})(React.createClass({
 
         return (
             <TouchableWithoutFeedback onPress={this.focus}>
-                <View>
+                <View style={[s.container, inputWrapperStyle]}>
                     {this.state.errorMessage ? (
-                        <Text style={[s.error, errorStyle || {}]}>{this.state.errorMessage}</Text>
+                        <View style={[s.errorWrapper, errorWrapperStyle || {}]}>
+                            <Text style={[s.error, errorStyle || {}]}>{this.state.errorMessage}</Text>
+                        </View>
                     ) : null}
                     <Animated.View
                         style={{ transform: [{ translateX: movingMargin }] }}
                     >
-                        <View style={inputWrapperStyle}>
-                            <TextInput
-                                ref={(ref) => (this.input = ref)}
-                                style={inputStyle}
-                                placeholder={label}
-                                onChangeText={this.onChangeText}
-                                onBlur={this.syncCursor}
-                                onFocus={this.onFocus}
-                                placeholderTextColor={placeholderTextColor}
-                                value={this.state.value}
-                                onSubmitEditing={this.onSubmitEditing}
-                                {...props}
-                            />
-                        </View>
+                        <TextInput
+                            ref={(ref) => (this.input = ref)}
+                            style={inputStyle}
+                            placeholder={label}
+                            onChangeText={this.onChangeText}
+                            onBlur={this.syncCursor}
+                            onFocus={this.onFocus}
+                            placeholderTextColor={this.state.errorMessage ? erroPlaceholderTextColor : placeholderTextColor}
+                            value={this.state.value}
+                            onSubmitEditing={this.onSubmitEditing}
+                            {...props}
+                        />
                     </Animated.View>
                 </View>
             </TouchableWithoutFeedback>
