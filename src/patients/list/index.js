@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -11,15 +10,14 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import PatientListItem from './patient-list-item';
 import { getCreateOrEditPatientRoute } from '../create-or-edit';
-import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import s from './styles';
 
 function patientsToList(patients) {
     return _.chain(patients)
             .values()
-            .sortBy((patient) => moment(patient.data.last_visit))
             .reverse()
             .value();
 }
@@ -29,6 +27,7 @@ const PatientsListScreen = schema({})(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         patientsMolesCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
+        onPatientAdded: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -110,21 +109,8 @@ const PatientsListScreen = schema({})(React.createClass({
                                     getCreateOrEditPatientRoute({
                                         title: 'New Patient',
                                         service: this.context.services.createPatientService,
-                                        ...this.props,
-                                        onActionComplete: async (pk) => {
-                                            this.context.mainNavigator.pop();
-
-                                            const result = await this.context.services.patientsService(this.context.patients);
-
-                                            /*if (result.status === 'Succeed') {
-                                                this.context.mainNavigator.push(
-                                                    getAnatomicalSiteWidgetRoute({
-                                                        tree: this.context.patients.select('data', pk),
-                                                        onAddingComplete: this.onAddingComplete,
-                                                    }, this.context)
-                                                );
-                                            }*/
-                                        },
+                                        tree: this.props.tree.select('newPatient'),
+                                        onActionComplete: this.props.onPatientAdded,
                                     }, this.context)
                                 )}
                             />
@@ -180,6 +166,19 @@ export const PatientsList = React.createClass({
         );
     },
 
+    async onPatientAdded(pk) {
+        this.context.currentPatientPk.set(pk);
+        this.context.mainNavigator.push(
+            getAnatomicalSiteWidgetRoute({
+                tree: this.context.patientsMoles.select('data', pk),
+                onAddingComplete: this.onAddingComplete,
+                onBackPress: () => this.context.mainNavigator.popToTop(),
+            }, this.context)
+        );
+
+        await this.context.services.patientsService(this.context.patients);
+    },
+
     render() {
         return (
             <NavigatorIOS
@@ -188,6 +187,7 @@ export const PatientsList = React.createClass({
                     component: PatientsListScreen,
                     passProps: {
                         onAddingComplete: this.onAddingComplete,
+                        onPatientAdded: this.onPatientAdded,
                         ...this.props,
                     },
                     title: 'Patients',
@@ -196,21 +196,8 @@ export const PatientsList = React.createClass({
                         getCreateOrEditPatientRoute({
                             title: 'New Patient',
                             service: this.context.services.createPatientService,
-                            ...this.props,
-                            onActionComplete: async (pk) => {
-                                this.context.mainNavigator.pop();
-
-                                const result = await this.context.services.patientsService(this.context.patients);
-
-                                /*if (result.status === 'Succeed') {
-                                    this.context.mainNavigator.push(
-                                        getAnatomicalSiteWidgetRoute({
-                                            tree: this.context.patients.select('data', pk),
-                                            onAddingComplete: this.onAddingComplete,
-                                        }, this.context)
-                                    );
-                                }*/
-                            },
+                            tree: this.props.tree.select('newPatient'),
+                            onActionComplete: this.onPatientAdded,
                         }, this.context)
                     ),
                     navigationBarHidden: false,

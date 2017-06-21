@@ -8,6 +8,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import schema from 'libs/state';
+import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from '../patients/create-or-edit';
 import s from './styles';
 
@@ -19,10 +20,13 @@ export const Camera = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        currentPatientPk: BaobabPropTypes.cursor.isRequired,
         patients: BaobabPropTypes.cursor.isRequired,
+        patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -35,26 +39,34 @@ export const Camera = schema({})(React.createClass({
         patientsList.navigator.popToTop();
     },
 
+    async onAddingComplete() {
+        const patientPk = this.context.currentPatientPk.get();
+
+        await this.context.services.patientsService(this.context.patients);
+        await this.context.services.getPatientMolesService(
+            patientPk,
+            this.context.patientsMoles.select(patientPk, 'moles')
+        );
+    },
+
     goToNewPatientScreen() {
         this.popPatientsList();
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
                 title: 'New Patient',
                 service: this.context.services.createPatientService,
-                tree: this.props.tree.select('patients'),
+                tree: this.props.tree.select('patients', 'newPatient'),
                 onActionComplete: async (pk) => {
-                    this.context.mainNavigator.pop();
+                    this.context.currentPatientPk.set(pk);
+                    this.context.mainNavigator.push(
+                        getAnatomicalSiteWidgetRoute({
+                            tree: this.context.patientsMoles.select('data', pk),
+                            onAddingComplete: this.onAddingComplete,
+                            onBackPress: () => this.context.mainNavigator.popToTop(),
+                        }, this.context)
+                    );
 
-                    const result = await this.context.services.patientsService(this.context.patients);
-
-                    /*if (result.status === 'Succeed') {
-                        this.context.mainNavigator.push(
-                            getAnatomicalSiteWidgetRoute({
-                                tree: this.context.patients.select('data', pk),
-                                onAddingComplete: this.onAddingComplete,
-                            }, this.context)
-                        );
-                    }*/
+                    await this.context.services.patientsService(this.context.patients);
                 },
             }, this.context)
         );

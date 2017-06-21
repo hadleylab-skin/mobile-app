@@ -156,8 +156,24 @@ export function getAnatomicalSiteWidgetRoute(props, context) {
     return {
         component: AnatomicalSiteWidget,
         title: 'Add photo',
-        onLeftButtonPress: () => context.mainNavigator.pop(),
-        onRightButtonPress: () => context.mainNavigator.pop(),
+        onLeftButtonPress: () => {
+            if (props.onBackPress) {
+                props.onBackPress();
+
+                return;
+            }
+
+            context.mainNavigator.pop();
+        },
+        onRightButtonPress: () => {
+            if (props.onBackPress) {
+                props.onBackPress();
+
+                return;
+            }
+
+            context.mainNavigator.pop();
+        },
         navigationBarHidden: false,
         rightButtonTitle: 'Cancel',
         leftButtonIcon: require('components/icons/back/back.png'),

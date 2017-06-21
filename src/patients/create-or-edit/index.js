@@ -74,6 +74,16 @@ const CreateOrEditPatient = schema(model)(React.createClass({
 
     componentWillMount() {
         if (_.isEmpty(this.props.tree.get('data'))) {
+            this.props.tree.form.set({
+                firstName: '',
+                lastName: '',
+                mrn: '',
+                dateOfBirth: '',
+                photo: {},
+                sex: 'm',
+                race: '',
+            });
+
             return;
         }
 
