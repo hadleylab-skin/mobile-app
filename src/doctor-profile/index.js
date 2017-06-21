@@ -1,54 +1,64 @@
 import React from 'react';
 import _ from 'lodash';
-import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
     Image,
 } from 'react-native';
-import { InfoField, Switch, Title } from 'components';
+import { InfoField, Switch, Title, Updater } from 'components';
+import schema from 'libs/state';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
 
-export const DoctorProfile = React.createClass({
+export const DoctorProfile = schema({})(React.createClass({
     propTypes: {
-        doctorCursor: BaobabPropTypes.cursor.isRequired,
         logout: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         services: React.PropTypes.shape({
             updateDoctorService: React.PropTypes.func.isRequired,
+            getDoctorService: React.PropTypes.func.isRequired,
         }),
     },
 
     async onUnitsOfLengthChange(unit) {
         const service = this.context.services.updateDoctorService;
-        const unitsOfLengthCursor = this.props.doctorCursor.select('data', 'unitsOfLength');
+        const unitsOfLengthCursor = this.props.tree.select('data', 'unitsOfLength');
 
         if (unit === unitsOfLengthCursor.get()) {
             return;
         }
 
         unitsOfLengthCursor.set(unit);
-        await service(this.props.doctorCursor, { unitsOfLength: unit });
+        await service(this.props.tree, { unitsOfLength: unit });
     },
 
     render() {
-        const { photo, degree, department } = this.props.doctorCursor.get('data');
+        console.log('this.props.tree.get()', this.props.tree.get());
+        const { firstName, lastName, photo, degree, department } = this.props.tree.get('data');
+        const isLoading = this.props.tree.get('status') === 'Loading';
 
         return (
-            <View style={s.container}>
+            <Updater
+                service={() => this.context.services.getDoctorService(this.props.tree)}
+                isLoading={isLoading}
+                style={s.container}
+                color="#ACB5BE"
+            >
                 <View style={s.info}>
+                    <View style={s.pinkBg} />
                     <Image
                         style={s.photo}
                         source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
                     />
-                    {degree ?
-                        <View>
-                            <Text style={s.degree}>{degree}</Text>
-                        </View>
-                    : null}
+                    <View style={s.name}>
+                        <Text style={s.text}>
+                            {`${firstName} ${lastName}`}
+                            {', '}
+                            {degree || null}
+                        </Text>
+                    </View>
                     {department ?
                         <View>
                             <Text style={s.department}>{department}</Text>
@@ -62,8 +72,8 @@ export const DoctorProfile = React.createClass({
                         hasNoBorder
                         controls={
                             <Switch
-                                cursor={this.props.doctorCursor.select('data', 'unitsOfLength')}
-                                disabled={this.props.doctorCursor.get('status') === 'Loading'}
+                                cursor={this.props.tree.select('data', 'unitsOfLength')}
+                                disabled={this.props.tree.get('status') === 'Loading'}
                                 items={[
                                     { label: 'in', value: 'in' },
                                     { label: 'cm', value: 'cm' },
@@ -81,7 +91,7 @@ export const DoctorProfile = React.createClass({
                         onPress={this.props.logout}
                     />
                 </View>
-            </View>
+            </Updater>
         );
     },
-});
+}));

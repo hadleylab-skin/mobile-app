@@ -3,17 +3,26 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     container: {
         flex: 1,
-        position: 'relative',
         backgroundColor: '#FAFAFA',
     },
     info: {
-        height: 260,
+        minHeight: 260,
         backgroundColor: '#FF1D70',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 15,
+        position: 'relative',
+    },
+    pinkBg: {
+        position: 'absolute',
+        top: -250,
+        left: 0,
+        height: 260,
+        right: 0,
+        backgroundColor: '#FF1D70',
     },
     content: {
+        backgroundColor: '#fff',
         borderBottomWidth: 0.5,
         borderBottomColor: '#DADADA',
     },
@@ -24,18 +33,24 @@ export default StyleSheet.create({
         bottom: 49,
         borderTopWidth: 0.5,
         borderTopColor: '#DADADA',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#DADADA',
+        backgroundColor: '#fff',
     },
     photo: {
         width: 100,
         height: 100,
         borderRadius: 50,
     },
-    degree: {
+    name: {
         marginTop: 15,
         marginBottom: 10,
+    },
+    text: {
         fontSize: 24,
         lineHeight: 30,
         color: '#fff',
+        textAlign: 'center',
     },
     department: {
         fontSize: 15,

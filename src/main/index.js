@@ -86,8 +86,7 @@ const Main = schema(model)(React.createClass({
                         onPress={() => currentTabCursor.set('profile')}
                     >
                         <DoctorProfile
-                            tree={this.props.tree}
-                            doctorCursor={this.props.tokenCursor.select('data', 'doctor')}
+                            tree={this.props.tokenCursor.select('data', 'doctor')}
                             logout={() => {
                                 this.props.tree.set({});
                                 this.props.tokenCursor.set('');
