@@ -57,6 +57,7 @@ const InfoFields = schema(model)(React.createClass({
 
     onBiopsyDataSubmit() {
         const biopsyData = this.props.tree.get('biopsyData');
+        console.log('biopsyData', biopsyData);
         const unitsOfLength = this.context.user.get('unitsOfLength');
         let width = biopsyData.width;
         let height = biopsyData.height;
@@ -101,18 +102,16 @@ const InfoFields = schema(model)(React.createClass({
 
     convertUnits() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
-        const biopsyDataCursor = fieldsDataCursor.select('biopsyData');
-        const biopsyDataWidth = biopsyDataCursor.get('width');
-        const biopsyDataHeight = biopsyDataCursor.get('height');
+        const biopsyData = fieldsDataCursor.get('biopsyData');
         const unitsOfLength = this.context.user.get('unitsOfLength');
 
-        let width = biopsyDataWidth;
-        let height = biopsyDataHeight;
+        let width = (biopsyData && biopsyData.width) || '';
+        let height = (biopsyData && biopsyData.height) || '';
 
-        if (biopsyDataWidth && biopsyDataHeight) {
+        if (width && height) {
             if (unitsOfLength === 'in') {
-                width = convertCmToIn(biopsyDataWidth);
-                height = convertCmToIn(biopsyDataHeight);
+                width = convertCmToIn(width);
+                height = convertCmToIn(height);
             }
         }
 
@@ -126,6 +125,7 @@ const InfoFields = schema(model)(React.createClass({
         const unitsOfLength = this.context.user.get('unitsOfLength');
 
         const convertedUnits = this.convertUnits();
+
         const width = convertedUnits.width;
         const height = convertedUnits.height;
 
@@ -144,10 +144,8 @@ const InfoFields = schema(model)(React.createClass({
                         leftButtonIcon: require('components/icons/back/back.png'),
                         tintColor: '#FF1D70',
                         passProps: {
-                            widthCursor: formBiopsyDataCursor.select('width'),
-                            heightCursor: formBiopsyDataCursor.select('height'),
-                            width: biopsyDataCursor.get('width'),
-                            height: biopsyDataCursor.get('height'),
+                            cursor: formBiopsyDataCursor,
+                            data: biopsyDataCursor.get(),
                             onSubmit: this.onBiopsyDataSubmit,
                         },
                     });

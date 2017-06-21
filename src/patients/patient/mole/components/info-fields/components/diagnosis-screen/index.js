@@ -10,7 +10,7 @@ import s from './styles';
 
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
 
-const mrnSchema = {
+const dignosisSchema = {
     type: 'object',
     properties: {
         text: {
@@ -44,7 +44,7 @@ const DiagnosisScreen = React.createClass({
         const { cursor } = this.props;
         const formData = cursor.get();
 
-        const validationResult = tv4.validateMultiple(formData, mrnSchema);
+        const validationResult = tv4.validateMultiple(formData, dignosisSchema);
 
         if (!validationResult.valid) {
             const error = validationResult.errors[0];
