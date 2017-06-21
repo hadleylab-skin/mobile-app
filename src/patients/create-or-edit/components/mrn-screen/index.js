@@ -52,7 +52,6 @@ export const MrnScreen = React.createClass({
     render() {
         const { cursor } = this.props;
 
-
         return (
             <View style={s.container}>
                 <View style={s.inner}>

@@ -20,7 +20,6 @@ import s from './styles';
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
 
 const submitPatientSchema = {
-    title: 'Update patient form',
     type: 'object',
     properties: {
         firstName: {

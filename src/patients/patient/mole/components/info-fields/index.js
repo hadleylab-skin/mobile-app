@@ -70,8 +70,8 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     onDiagnosisSubmit() {
-        const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis');
-        const pathDiagnosis = this.props.tree.get('pathDiagnosis');
+        const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis', 'text');
+        const pathDiagnosis = this.props.tree.get('pathDiagnosis', 'text');
         const patientPk = this.context.currentPatientPk.get();
 
         this.onDataChange(
