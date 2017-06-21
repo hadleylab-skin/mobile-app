@@ -57,7 +57,6 @@ const InfoFields = schema(model)(React.createClass({
 
     onBiopsyDataSubmit() {
         const biopsyData = this.props.tree.get('biopsyData');
-        console.log('biopsyData', biopsyData);
         const unitsOfLength = this.context.user.get('unitsOfLength');
         let width = biopsyData.width;
         let height = biopsyData.height;
