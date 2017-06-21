@@ -193,7 +193,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                         <View style={s.generalInfo}>
                             <View style={s.photoWrapper}>
                                 <TouchableWithoutFeedback
-                                    onPress={() => ImagePicker.launchCamera({}, (response) => {
+                                    onPress={() => ImagePicker.showImagePicker({}, (response) => {
                                         if (response.uri) {
                                             photoCursor.select('thumbnail').set(response.uri);
                                         }
