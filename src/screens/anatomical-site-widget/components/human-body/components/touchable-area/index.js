@@ -6,7 +6,7 @@ import {
     Image,
 } from 'react-native';
 import schema from 'libs/state';
-import ZoomedSite from './components/zoomed-site';
+import ZoomedSite from './screens/zoomed-site';
 import s from './styles';
 
 const TouchableArea = schema({})(React.createClass({
