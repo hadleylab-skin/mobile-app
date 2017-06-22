@@ -27,7 +27,6 @@ const PatientListItem = React.createClass({
             }),
             lastUpload: React.PropTypes.string,
         }).isRequired,
-        patientCursor: BaobabPropTypes.cursor.isRequired,
         goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
     },
@@ -35,6 +34,7 @@ const PatientListItem = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        patients: BaobabPropTypes.cursor.isRequired,
         patientsMoles: BaobabPropTypes.cursor.isRequired,
         services: React.PropTypes.shape({
             getPatientMolesService: React.PropTypes.func.isRequired,
@@ -82,7 +82,7 @@ const PatientListItem = React.createClass({
                             getPatientRoute({
                                 tree: this.context.patientsMoles.select(pk),
                                 navigator: this.props.navigator,
-                                patientCursor: this.props.patientCursor,
+                                patientCursor: this.context.patients.select('data', pk),
                                 onAddingComplete: this.props.onAddingComplete,
                             }, this.context)
                         );

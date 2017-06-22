@@ -28,10 +28,7 @@ export const Patient = schema({})(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                 >
-                    <GeneralInfo
-                        {...this.props.patientCursor.get('data')}
-                        consentCursor={this.props.patientCursor.select('consentDateExpired')}
-                    />
+                    <GeneralInfo patientData={this.props.patientCursor.get('data')} />
                     <MolesInfo tree={this.props.tree} onAddingComplete={this.props.onAddingComplete} />
                     <MolesList
                         tree={this.props.tree}

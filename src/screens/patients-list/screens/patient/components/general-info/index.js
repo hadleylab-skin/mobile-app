@@ -6,23 +6,24 @@ import {
     Image,
 } from 'react-native';
 import moment from 'moment';
-import BaobabPropTypes from 'baobab-prop-types';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
 
 export const GeneralInfo = React.createClass({
     propTypes: {
-        dateOfBirth: React.PropTypes.string,
-        photo: React.PropTypes.shape({
-            thumbnail: React.PropTypes.string,
-        }),
-        sex: React.PropTypes.string,
-        mrn: React.PropTypes.string,
-        consentCursor: BaobabPropTypes.cursor.isRequired,
+        patientData: React.PropTypes.shape({
+            dateOfBirth: React.PropTypes.string,
+            photo: React.PropTypes.shape({
+                thumbnail: React.PropTypes.string,
+            }),
+            sex: React.PropTypes.string,
+            mrn: React.PropTypes.string,
+            consent: React.PropTypes.string,
+        }).isRequired,
     },
 
     render() {
-        const { dateOfBirth, photo, sex, mrn, consant } = this.props;
+        const { dateOfBirth, photo, sex, mrn, consent } = this.props.patientData;
 
         return (
             <View style={s.container}>
@@ -45,11 +46,11 @@ export const GeneralInfo = React.createClass({
                     {mrn ?
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
-                    {consant ?
+                    {consent ?
                         <View>
                             <View><Text style={s.text}>
-                                {moment(consant) > moment() ?
-                                    `consent valid till ${moment(consant).format('DD/MMM/YYYY')}`
+                                {moment(consent) > moment() ?
+                                    `consent valid till ${moment(consent).format('DD/MMM/YYYY')}`
                                 :
                                     'consent expired'
                                 }

@@ -117,7 +117,6 @@ const PatientsListScreen = schema({})(React.createClass({
                         renderRow={(rowData) => (
                             <PatientListItem
                                 data={rowData.data}
-                                patientCursor={this.context.patients.select('data', rowData.data.pk)}
                                 navigator={this.props.navigator}
                                 goToWidgetCursor={this.props.tree.select('goToWidget')}
                                 onAddingComplete={this.props.onAddingComplete}
