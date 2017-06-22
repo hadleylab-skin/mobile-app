@@ -55,6 +55,7 @@ export function getPatientRoute(props, context) {
         onRightButtonPress: () => context.mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: props.patientCursor,
+                dataCursor: props.patientCursor.select('data'),
                 title: 'Edit Patient',
                 service: (cursor, data) => context.services.updatePatientService(pk, cursor, data),
                 onActionComplete: () => context.mainNavigator.pop(),

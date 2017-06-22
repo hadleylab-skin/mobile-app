@@ -54,9 +54,9 @@ export const Camera = schema({})(React.createClass({
         this.popPatientsList();
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
+                tree: this.props.tree.select('patients', 'newPatient'),
                 title: 'New Patient',
                 service: this.context.services.createPatientService,
-                tree: this.props.tree.select('patients', 'newPatient'),
                 onActionComplete: async (pk) => {
                     this.context.currentPatientPk.set(pk);
                     this.context.mainNavigator.push(

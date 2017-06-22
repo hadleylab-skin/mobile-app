@@ -95,9 +95,9 @@ const PatientsListScreen = schema({})(React.createClass({
                                 title="+ Add a new patient"
                                 onPress={() => this.context.mainNavigator.push(
                                     getCreateOrEditPatientRoute({
+                                        tree: this.props.tree.select('newPatient'),
                                         title: 'New Patient',
                                         service: this.context.services.createPatientService,
-                                        tree: this.props.tree.select('newPatient'),
                                         onActionComplete: this.props.onPatientAdded,
                                     }, this.context)
                                 )}
@@ -181,9 +181,9 @@ export const PatientsList = React.createClass({
                     rightButtonSystemIcon: 'add',
                     onRightButtonPress: () => this.context.mainNavigator.push(
                         getCreateOrEditPatientRoute({
+                            tree: this.props.tree.select('newPatient'),
                             title: 'New Patient',
                             service: this.context.services.createPatientService,
-                            tree: this.props.tree.select('newPatient'),
                             onActionComplete: this.onPatientAdded,
                         }, this.context)
                     ),

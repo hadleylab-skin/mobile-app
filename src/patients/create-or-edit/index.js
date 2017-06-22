@@ -47,14 +47,16 @@ const model = {
             race: '',
         },
         scanResult: { status: 'NotAsked' },
-        datePickerCursor: {},
-        racePickerCursor: {},
+        datePicker: {},
+        racePicker: {},
         mrnCursor: '',
     },
 };
 
 const CreateOrEditPatient = schema(model)(React.createClass({
     propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        dataCursor: BaobabPropTypes.cursor,
         service: React.PropTypes.func.isRequired,
         onActionComplete: React.PropTypes.func.isRequired,
     },
@@ -72,7 +74,9 @@ const CreateOrEditPatient = schema(model)(React.createClass({
     },
 
     componentWillMount() {
-        if (_.isEmpty(this.props.tree.get('data'))) {
+        const { dataCursor } = this.props;
+
+        if (!dataCursor || _.isEmpty(dataCursor.get())) {
             this.props.tree.form.set({
                 firstName: '',
                 lastName: '',
@@ -87,7 +91,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
         }
 
         const { firstName, lastName, mrn,
-            photo, dateOfBirth, sex, race } = this.props.tree.get('data');
+            photo, dateOfBirth, sex, race } = dataCursor.get();
 
         this.props.tree.form.set({
             firstName,
@@ -259,7 +263,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                             }
                         />
                         <DatePicker
-                            tree={this.props.tree.datePickerCursor}
+                            tree={this.props.tree.datePicker}
                             cursor={dateOfBirthCursor}
                             title="Date of Birth"
                             onPress={() => this.scrollView.scrollTo({ x: 0, y: offsetY + 220, animated: true })}
@@ -277,7 +281,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                             }
                         />
                         <Picker
-                            tree={this.props.tree.racePickerCursor}
+                            tree={this.props.tree.racePicker}
                             cursor={raceCursor}
                             items={this.context.racesList.data.get()}
                             title="Race"
