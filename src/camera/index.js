@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -79,6 +80,8 @@ export const Camera = schema({})(React.createClass({
 
     render() {
         const { visibleCursor } = this.props;
+        const patients = this.context.patients.get();
+        const isPatientsListEmpty = _.isEmpty(patients) || _.isEmpty(patients.data);
 
         return (
             <View>
@@ -101,16 +104,17 @@ export const Camera = schema({})(React.createClass({
                                     <Text style={[s.text, s.textRed]}>New Patient</Text>
                                 </View>
                             </TouchableOpacity>
-
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={s.buttonWrapper}
-                                onPress={this.gotToPatientScreen}
-                            >
-                                <View style={s.button}>
-                                    <Text style={[s.text, s.textRed]}>Existing Patient</Text>
-                                </View>
-                            </TouchableOpacity>
+                            {!isPatientsListEmpty ?
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={s.buttonWrapper}
+                                    onPress={this.gotToPatientScreen}
+                                >
+                                    <View style={s.button}>
+                                        <Text style={[s.text, s.textRed]}>Existing Patient</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            : null}
                         </View>
 
                         <TouchableOpacity
