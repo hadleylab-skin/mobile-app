@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import _ from 'lodash';
-import services from 'libs/services';
+import services from 'services';
 
 
 export class ServiceProvider extends React.Component {

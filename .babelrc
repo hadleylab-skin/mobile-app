@@ -3,7 +3,9 @@
 "plugins": [[
     "module-alias", [
       { "src": "./src/libs", "expose": "libs" },
-      { "src": "./src/components", "expose": "components" }
+      { "src": "./src/components", "expose": "components" },
+      { "src": "./src/services", "expose": "services" },
+      { "src": "./src/screens", "expose": "screens" }
       ]
    ]]
 }

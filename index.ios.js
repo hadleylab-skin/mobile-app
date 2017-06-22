@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 import schema from 'libs/state.js';
 import tree from 'libs/tree';
-import { Login } from './src/login';
-import Main from './src/main';
+import { Login } from 'screens/login';
+import Main from 'screens/main';
 
 const model = {
     tree: {
