@@ -44,13 +44,7 @@ function parseSites(images, largeImages, stylesList) {
 const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
 const backSites = parseSites(backImages, backLargeImages, backStyles);
 
-const model = {
-    tree: {
-        anatomicalSites: {},
-    },
-};
-
-export const AnatomicalSiteWidget = schema(model)(React.createClass({
+export const AnatomicalSiteWidget = schema({})(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
@@ -79,7 +73,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
         await this.context.services.getAnatomicalSitesService(
             patientPk,
-            this.props.tree.anatomicalSites
+            this.props.tree
         );
 
         this.context.patientsMoles.on('update', this.onPatientsMolesUpdate);
@@ -133,7 +127,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 sites={frontSites}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
                                 {...this.props}
-                                tree={this.props.tree.select('anatomicalSites')}
+                                tree={this.props.tree}
                             />
                         </View>
                         <View style={{ opacity: wasFlipped ? 1 : 0, zIndex: wasFlipped ? 1 : 0 }}>
@@ -142,7 +136,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                                 sites={backSites}
                                 anatomicalSitesWithMoles={anatomicalSitesWithMoles}
                                 {...this.props}
-                                tree={this.props.tree.select('anatomicalSites')}
+                                tree={this.props.tree}
                             />
                         </View>
                     </View>

@@ -123,7 +123,9 @@ const AnatomicalSite = schema({})(React.createClass({
                     hasNoBorder
                     onPress={() => this.context.mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: this.context.patientsMoles.select(this.context.currentPatientPk.get()),
+                            tree: this.context.patientsMoles.select(
+                                this.context.currentPatientPk.get(), 'anatomicalSites'
+                            ),
                             onlyChangeAnatomicalSite: true,
                             currentAnatomicalSite: anatomicalSite.data.pk,
                             molePk: this.props.tree.get('data', 'pk'),

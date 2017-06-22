@@ -12,9 +12,7 @@ import s from './styles';
 
 const model = (props, context) => (
     {
-        tree: {
-            moles: (cursor) => context.services.getPatientMolesService(context.currentPatientPk.get(), cursor),
-        },
+        tree: (cursor) => context.services.getPatientMolesService(context.currentPatientPk.get(), cursor),
     }
 );
 
@@ -31,10 +29,10 @@ export const MolesList = schema(model)(React.createClass({
     },
 
     render() {
-        const status = this.props.tree.moles.status.get();
+        const status = this.props.tree.status.get();
         const showLoader = status === 'Loading';
-        const moles = this.props.tree.moles.get('data') || [];
-        const groupedMolesData = !_.isEmpty(moles) ?
+        const moles = this.props.tree.get('data') || [];
+        const groupedMolesData = !_.isEmpty(this.props.tree.get()) ?
             _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk)
             : [];
 
@@ -57,7 +55,7 @@ export const MolesList = schema(model)(React.createClass({
                                 key={`${key}-${index}`}
                                 hasBorder={index !== 0}
                                 navigator={this.props.navigator}
-                                tree={this.props.tree.select('moles', 'data', mole.data.pk, 'data')}
+                                tree={this.props.tree.select('data', mole.data.pk, 'data')}
                             />
                         ))}
                     </View>

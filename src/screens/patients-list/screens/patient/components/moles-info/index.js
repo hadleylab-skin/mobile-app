@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -9,6 +10,7 @@ import s from './styles';
 
 export const MolesInfo = React.createClass({
     propTypes: {
+        anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
         moles: React.PropTypes.number,
         benign: React.PropTypes.number,
         malignant: React.PropTypes.number,
@@ -20,7 +22,7 @@ export const MolesInfo = React.createClass({
     },
 
     render() {
-        const { moles, benign, malignant } = this.props;
+        const { moles, benign, malignant, anatomicalSitesCursor } = this.props;
 
         return (
             <View style={s.container}>
@@ -44,7 +46,7 @@ export const MolesInfo = React.createClass({
                     title="Add a new mole"
                     onPress={() => this.context.mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: this.props.tree,
+                            tree: anatomicalSitesCursor,
                             onAddingComplete: this.props.onAddingComplete,
                         }, this.context)
                     )}

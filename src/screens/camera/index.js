@@ -61,7 +61,7 @@ export const Camera = schema({})(React.createClass({
                     this.context.currentPatientPk.set(pk);
                     this.context.mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: this.context.patientsMoles.select('data', pk),
+                            tree: this.context.patientsMoles.select('data', pk, 'anatomicalSites'),
                             onAddingComplete: this.onAddingComplete,
                             onBackPress: () => this.context.mainNavigator.popToTop(),
                         }, this.context)

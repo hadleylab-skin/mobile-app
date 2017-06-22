@@ -11,7 +11,14 @@ import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
 import s from './styles';
 
-export const Patient = schema({})(React.createClass({
+const model = {
+    tree: {
+        anatomicalSites: {},
+        moles: {},
+    },
+};
+
+export const Patient = schema(model)(React.createClass({
     displayName: 'Patient',
 
     propTypes: {
@@ -22,6 +29,9 @@ export const Patient = schema({})(React.createClass({
     },
 
     render() {
+        const anatomicalSitesCursor = this.props.tree.select('anatomicalSites');
+        const molesCursor = this.props.tree.select('moles');
+
         return (
             <View style={s.container}>
                 <ScrollView
@@ -29,9 +39,12 @@ export const Patient = schema({})(React.createClass({
                     scrollEventThrottle={200}
                 >
                     <GeneralInfo patientData={this.props.patientCursor.get('data')} />
-                    <MolesInfo tree={this.props.tree} onAddingComplete={this.props.onAddingComplete} />
+                    <MolesInfo
+                        anatomicalSitesCursor={anatomicalSitesCursor}
+                        onAddingComplete={this.props.onAddingComplete}
+                    />
                     <MolesList
-                        tree={this.props.tree}
+                        tree={molesCursor}
                         navigator={this.props.navigator}
                     />
                 </ScrollView>
