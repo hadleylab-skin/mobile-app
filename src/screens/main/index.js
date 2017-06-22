@@ -131,20 +131,11 @@ export default React.createClass({
         };
     },
 
-    initServices() {
-        const token = this.props.tokenCursor.get('data', 'token');
-        let initializedServices = {};
-        _.each(services, (service, name) => {
-            initializedServices[name] = service(token);
-        });
-        return initializedServices;
-    },
-
     render() {
         return (
             <ServiceProvider
+                token={this.props.tokenCursor.get('data', 'token')}
                 style={{ flex: 1 }}
-                services={this.initServices()}
             >
                 <NavigatorIOS
                     ref={(ref) => { this.mainNavigator = ref; }}

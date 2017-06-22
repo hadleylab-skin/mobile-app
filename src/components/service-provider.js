@@ -3,11 +3,25 @@ import { View } from 'react-native';
 import _ from 'lodash';
 import services from 'services';
 
+function initServices(token) {
+    let initializedServices = {};
+
+    _.each(services, (service, name) => {
+        initializedServices[name] = service(token);
+    });
+
+    return initializedServices;
+}
 
 export class ServiceProvider extends React.Component {
+    constructor(props) {
+        super(props);
+        this.services = initServices(props.token);
+    }
+
     getChildContext() {
         return {
-            services: this.props.services,
+            services: this.services,
         };
     }
 
@@ -30,5 +44,5 @@ ServiceProvider.childContextTypes = {
 };
 
 ServiceProvider.propTypes = {
-    services: React.PropTypes.shape(servicesShape),
+    token: React.PropTypes.string.isRequired,
 };
