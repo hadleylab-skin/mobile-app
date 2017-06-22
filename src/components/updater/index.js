@@ -6,6 +6,23 @@ import {
 } from 'react-native';
 import s from './styles';
 
+export const onScroll = (service) => async function (e) {
+    const { canUpdate, isLoading } = this.state;
+    const offset = e.nativeEvent.contentOffset.y;
+
+    if (offset <= -70 && canUpdate && !isLoading) {
+        this.setState({ canUpdate: false, isLoading: true });
+        const result = await service();
+
+        if (result.status === 'Succeed' || result.status === 'Failure') {
+            setTimeout(() => this.setState({ isLoading: false }), 1000);
+        }
+    }
+    if (offset > -1) {
+        this.setState({ canUpdate: true });
+    }
+};
+
 export const Updater = React.createClass({
     propTypes: {
         service: React.PropTypes.func.isRequired,
@@ -21,26 +38,10 @@ export const Updater = React.createClass({
         };
     },
 
-    async onScroll(e) {
-        const { canUpdate, isLoading } = this.state;
-        const offset = e.nativeEvent.contentOffset.y;
-
-        if (offset <= -70 && canUpdate && !isLoading) {
-            this.setState({ canUpdate: false, isLoading: true });
-            const result = await this.props.service();
-
-            if (result.status === 'Succeed' || result.status === 'Failure') {
-                this.setState({ isLoading: false });
-            }
-        }
-        if (offset > -70) {
-            this.setState({ canUpdate: true });
-        }
-    },
-
     render() {
         const { color } = this.props;
         const { isLoading } = this.state;
+        const _onScroll = onScroll(this.props.service);
 
         return (
             <View style={[s.container, this.props.style]}>
@@ -56,7 +57,7 @@ export const Updater = React.createClass({
                     null
                 }
                 <ScrollView
-                    onScroll={this.onScroll}
+                    onScroll={_onScroll.bind(this)}
                     scrollEventThrottle={20}
                     automaticallyAdjustContentInsets={false}
                     style={{ flex: 1 }}

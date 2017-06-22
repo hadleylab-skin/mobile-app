@@ -52,8 +52,7 @@ export const DoctorProfile = schema({})(React.createClass({
                     <View style={s.name}>
                         <Text style={s.text}>
                             {`${firstName} ${lastName}`}
-                            {', '}
-                            {degree || null}
+                            {degree ? `, ${degree}` : null}
                         </Text>
                     </View>
                     {department ?

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
+import { onScroll } from 'components/updater';
 import { getAnatomicalSiteWidgetRoute } from 'components/anatomical-site-widget';
 import PatientListItem from './patient-list-item';
 import { getCreateOrEditPatientRoute } from '../create-or-edit';
@@ -40,6 +41,7 @@ const PatientsListScreen = schema({})(React.createClass({
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
+            isLoading: false,
         };
     },
 
@@ -63,23 +65,14 @@ const PatientsListScreen = schema({})(React.createClass({
         }
     },
 
-    async onScroll(e) {
-        const offset = e.nativeEvent.contentOffset.y;
-        if (offset <= -70 && this.state.canUpdate && this.context.patients.status.get() !== 'Loading') {
-            this.setState({ canUpdate: false });
-            await this.context.services.patientsService(this.context.patients);
-        }
-        if (offset > -70) {
-            this.setState({ canUpdate: true });
-        }
-    },
-
     render() {
         const status = this.context.patients.status.get();
-        const showLoader = status === 'Loading';
+        const showLoader = this.state.isLoading;
         const isSucced = status === 'Succeed';
 
         const isListEmpty = isSucced && _.isEmpty(this.context.patients.get('data'));
+
+        const _onScroll = onScroll(async () => await this.context.services.patientsService(this.context.patients));
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
@@ -114,7 +107,7 @@ const PatientsListScreen = schema({})(React.createClass({
                 :
                     <ListView
                         enableEmptySections
-                        onScroll={this.onScroll}
+                        onScroll={_onScroll.bind(this)}
                         scrollEventThrottle={20}
                         automaticallyAdjustContentInsets={false}
                         style={{
