@@ -15,12 +15,8 @@ import PatientListItem from './patient-list-item';
 import { getCreateOrEditPatientRoute } from '../create-or-edit';
 import s from './styles';
 
-function patientsToList(patients) {
-    return _.chain(patients)
-            .sortBy((list) => list.data.firstName)
-            .sortBy((list) => list.data.lastName)
-            .value();
-}
+const patientsToList = _.partialRight(
+    _.sortBy, ['data.lastName', 'data.firstName']);
 
 const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
