@@ -9,7 +9,6 @@ import s from './styles';
 export const Updater = React.createClass({
     propTypes: {
         service: React.PropTypes.func.isRequired,
-        isLoading: React.PropTypes.bool,
         children: React.PropTypes.node.isRequired,
         style: React.PropTypes.number,
         color: React.PropTypes.string,
@@ -17,18 +16,22 @@ export const Updater = React.createClass({
 
     getInitialState() {
         return {
+            isLoading: false,
             canUpdate: true,
         };
     },
 
     async onScroll(e) {
-        const { isLoading } = this.props;
-        const { canUpdate } = this.state;
+        const { canUpdate, isLoading } = this.state;
         const offset = e.nativeEvent.contentOffset.y;
 
         if (offset <= -70 && canUpdate && !isLoading) {
-            this.setState({ canUpdate: false });
-            await this.props.service();
+            this.setState({ canUpdate: false, isLoading: true });
+            const result = await this.props.service();
+
+            if (result.status === 'Succeed' || result.status === 'Failure') {
+                this.setState({ isLoading: false });
+            }
         }
         if (offset > -70) {
             this.setState({ canUpdate: true });
@@ -36,11 +39,12 @@ export const Updater = React.createClass({
     },
 
     render() {
-        const { isLoading, color } = this.props;
+        const { color } = this.props;
+        const { isLoading } = this.state;
 
         return (
             <View style={[s.container, this.props.style]}>
-                { isLoading ?
+                {isLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating
@@ -55,8 +59,8 @@ export const Updater = React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={20}
                     automaticallyAdjustContentInsets={false}
-                    contentContainerStyle={{ flex: 1, position: 'relative' }}
                     style={{ flex: 1 }}
+                    contentContainerStyle={{ flex: 1, position: 'relative' }}
                 >
                     {this.props.children}
                 </ScrollView>

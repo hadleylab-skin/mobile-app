@@ -35,14 +35,11 @@ export const DoctorProfile = schema({})(React.createClass({
     },
 
     render() {
-        console.log('this.props.tree.get()', this.props.tree.get());
         const { firstName, lastName, photo, degree, department } = this.props.tree.get('data');
-        const isLoading = this.props.tree.get('status') === 'Loading';
 
         return (
             <Updater
-                service={() => this.context.services.getDoctorService(this.props.tree)}
-                isLoading={isLoading}
+                service={async () => await this.context.services.getDoctorService(this.props.tree)}
                 style={s.container}
                 color="#ACB5BE"
             >
