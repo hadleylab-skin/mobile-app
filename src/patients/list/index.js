@@ -17,15 +17,14 @@ import s from './styles';
 
 function patientsToList(patients) {
     return _.chain(patients)
-            .values()
-            .reverse()
+            .sortBy((list) => list.data.firstName)
+            .sortBy((list) => list.data.lastName)
             .value();
 }
 
 const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        patientsMolesCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired,
     },
@@ -128,7 +127,6 @@ const PatientsListScreen = schema({})(React.createClass({
                         dataSource={this.state.ds}
                         renderRow={(rowData) => (
                             <PatientListItem
-                                tree={this.props.patientsMolesCursor.select(rowData.data.pk)}
                                 data={rowData.data}
                                 patientCursor={this.context.patients.select('data', rowData.data.pk)}
                                 navigator={this.props.navigator}

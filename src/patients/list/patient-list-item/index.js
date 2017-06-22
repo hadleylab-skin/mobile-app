@@ -67,22 +67,20 @@ const PatientListItem = React.createClass({
                             this.props.goToWidgetCursor.set(false);
                             this.context.mainNavigator.push(
                                 getAnatomicalSiteWidgetRoute({
-                                    tree: this.props.tree,
+                                    tree: this.context.patientsMoles.select(pk),
                                     onAddingComplete: this.props.onAddingComplete,
                                 }, this.context)
                             );
 
-                            const patientPk = this.context.currentPatientPk.get();
-
                             await this.context.services.getPatientMolesService(
-                                patientPk, this.context.patientsMoles.select(patientPk, 'moles'));
+                                pk, this.context.patientsMoles.select(pk, 'moles'));
 
                             return;
                         }
 
                         this.props.navigator.push(
                             getPatientRoute({
-                                tree: this.props.tree,
+                                tree: this.context.patientsMoles.select(pk),
                                 navigator: this.props.navigator,
                                 patientCursor: this.props.patientCursor,
                                 onAddingComplete: this.props.onAddingComplete,

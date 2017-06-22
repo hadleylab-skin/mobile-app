@@ -44,7 +44,6 @@ const Main = schema(model)(React.createClass({
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
-        const patientsMolesCursor = this.props.tree.patientsMoles;
         const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
@@ -68,7 +67,6 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
-                            patientsMolesCursor={patientsMolesCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
