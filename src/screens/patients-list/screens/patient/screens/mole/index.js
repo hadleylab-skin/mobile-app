@@ -8,13 +8,14 @@ import {
     ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
+import ImagePicker from 'react-native-image-picker';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
 import InfoFields from './components/info-fields';
 import AnatomicalSite from './components/anatomical-site';
 import s from './styles';
 
-const Mole = schema({})(React.createClass({
+export const Mole = schema({})(React.createClass({
     displayName: 'Mole',
 
     propTypes: {
@@ -137,4 +138,21 @@ const Mole = schema({})(React.createClass({
     },
 }));
 
-export default Mole;
+export function getMoleRoute(props) {
+    return {
+        component: Mole,
+        title: props.title,
+        onLeftButtonPress: () => props.navigator.pop(),
+        onRightButtonPress: () => ImagePicker.launchCamera({},
+            (response) => {
+                if (response.uri) {
+                    props.onSubmitMolePhoto(response.uri);
+                }
+            }),
+        navigationBarHidden: false,
+        leftButtonIcon: require('components/icons/back/back.png'),
+        rightButtonIcon: require('components/icons/camera/camera.png'),
+        tintColor: '#FF2D55',
+        passProps: props,
+    };
+}

@@ -45,7 +45,7 @@ const lesionsCmSchema = {
     message: 'required',
 };
 
-const LesionsScreen = React.createClass({
+export const LesionsScreen = React.createClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
         data: React.PropTypes.shape({
@@ -220,4 +220,14 @@ const LesionsScreen = React.createClass({
     },
 });
 
-export default LesionsScreen;
+export function getLesionsScreenRoute(props) {
+    return {
+        component: LesionsScreen,
+        title: 'Lesions Size',
+        onLeftButtonPress: () => props.navigator.pop(),
+        navigationBarHidden: false,
+        leftButtonIcon: require('components/icons/back/back.png'),
+        tintColor: '#FF1D70',
+        passProps: props,
+    };
+}

@@ -24,7 +24,7 @@ const model = {
     },
 };
 
-const ZoomedSite = schema(model)(React.createClass({
+export const ZoomedSite = schema(model)(React.createClass({
     displayName: 'ZoomedSite',
 
     propTypes: {
@@ -268,4 +268,16 @@ const ZoomedSite = schema(model)(React.createClass({
     },
 }));
 
-export default ZoomedSite;
+export function getZoomedSiteRoute(props) {
+    return {
+        component: ZoomedSite,
+        title: 'Add photo',
+        onLeftButtonPress: props.onCancelAddingMole,
+        onRightButtonPress: props.onCancelAddingMole,
+        navigationBarHidden: false,
+        rightButtonTitle: 'Cancel',
+        leftButtonIcon: require('components/icons/back/back.png'),
+        tintColor: '#FF1D70',
+        passProps: props,
+    };
+}

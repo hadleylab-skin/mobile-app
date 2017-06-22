@@ -11,10 +11,13 @@ import {
 import _ from 'lodash';
 import schema from 'libs/state';
 import tv4 from 'tv4';
-import { ScanMrnButton, Button, Title, Form, Input, DatePicker, InfoField, Switch, Picker } from 'components';
+import {
+    ScanMrnButton, Button, Title, Form, Input,
+    DatePicker, InfoField, Switch, Picker,
+} from 'components';
 import ImagePicker from 'react-native-image-picker';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { MrnScreen } from './screens/mrn-screen';
+import { getMrnScreenRoute } from './screens/mrn-screen';
 import s from './styles';
 
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
@@ -244,22 +247,16 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                             text={mrnCursor.get()}
                             hasNoBorder
                             onPress={() =>
-                                this.context.mainNavigator.push({
-                                    component: MrnScreen,
-                                    title: 'Medical Record Number',
-                                    onLeftButtonPress: () => this.context.mainNavigator.pop(),
-                                    navigationBarHidden: false,
-                                    leftButtonIcon: require('components/icons/back/back.png'),
-                                    tintColor: '#FF1D70',
-                                    passProps: {
+                                this.context.mainNavigator.push(
+                                    getMrnScreenRoute({
                                         cursor: this.props.tree.select('mrnCursor'),
                                         text: mrnCursor.get(),
                                         onSubmit: () => {
                                             mrnCursor.set(this.props.tree.get('mrnCursor'));
                                             this.context.mainNavigator.pop();
                                         },
-                                    },
-                                })
+                                    })
+                                )
                             }
                         />
                         <DatePicker

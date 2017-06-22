@@ -6,7 +6,7 @@ import {
     Image,
 } from 'react-native';
 import schema from 'libs/state';
-import ZoomedSite from './screens/zoomed-site';
+import { getZoomedSiteRoute } from './screens/zoomed-site';
 import s from './styles';
 
 const TouchableArea = schema({})(React.createClass({
@@ -46,24 +46,17 @@ const TouchableArea = schema({})(React.createClass({
         const anatomicalSite = this.props.anatomicalSite;
         this.setState({ isActive: true });
 
-        this.context.mainNavigator.push({
-            component: ZoomedSite,
-            title: 'Add photo',
-            onLeftButtonPress: () => this.onCancelAddingMole(),
-            onRightButtonPress: () => this.onCancelAddingMole(),
-            navigationBarHidden: false,
-            rightButtonTitle: 'Cancel',
-            leftButtonIcon: require('components/icons/back/back.png'),
-            tintColor: '#FF1D70',
-            passProps: {
+        this.context.mainNavigator.push(
+            getZoomedSiteRoute({
                 tree: this.props.tree.select('data', anatomicalSite),
                 source: this.props.largeImageSource,
                 anatomicalSite: this.props.anatomicalSite,
                 onlyChangeAnatomicalSite: this.props.onlyChangeAnatomicalSite,
                 onAddingComplete: this.props.onAddingComplete,
                 molePk: this.props.molePk,
-            },
-        });
+                onCancelAddingMole: this.onCancelAddingMole,
+            })
+        );
     },
 
     highlightMole() {

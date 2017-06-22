@@ -8,9 +8,8 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
-import ImagePicker from 'react-native-image-picker';
 import arrowImage from 'components/icons/arrow/arrow.png';
-import MoleScreen from 'screens/patients-list/screens/patient/screens/mole';
+import { getMoleRoute } from 'screens/patients-list/screens/patient/screens/mole';
 import s from './styles';
 
 export const Mole = React.createClass({
@@ -97,26 +96,15 @@ export const Mole = React.createClass({
         const { anatomicalSites, pk } = this.props.tree.get();
         const patientPk = this.context.currentPatientPk.get();
 
-        this.props.navigator.push({
-            component: MoleScreen,
-            title: anatomicalSites[anatomicalSites.length - 1].name,
-            onLeftButtonPress: () => this.props.navigator.pop(),
-            onRightButtonPress: () => ImagePicker.launchCamera({},
-                (response) => {
-                    if (response.uri) {
-                        this.onSubmitMolePhoto(response.uri);
-                    }
-                }),
-            navigationBarHidden: false,
-            leftButtonIcon: require('components/icons/back/back.png'),
-            rightButtonIcon: require('components/icons/camera/camera.png'),
-            tintColor: '#FF2D55',
-            passProps: {
+        this.props.navigator.push(
+            getMoleRoute({
                 tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk),
+                title: anatomicalSites[anatomicalSites.length - 1].name,
+                onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,
                 navigator: this.props.navigator,
-            },
-        });
+            })
+        );
     },
 
     render() {

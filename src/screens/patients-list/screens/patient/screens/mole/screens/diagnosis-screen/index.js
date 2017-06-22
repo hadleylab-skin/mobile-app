@@ -22,7 +22,7 @@ const dignosisSchema = {
     message: 'required',
 };
 
-const DiagnosisScreen = React.createClass({
+export const DiagnosisScreen = React.createClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
         title: React.PropTypes.string.isRequired,
@@ -91,4 +91,14 @@ const DiagnosisScreen = React.createClass({
     },
 });
 
-export default DiagnosisScreen;
+export function getDiagnosisScreenRoute(props) {
+    return {
+        component: DiagnosisScreen,
+        title: props.title,
+        onLeftButtonPress: () => props.navigator.pop(),
+        navigationBarHidden: false,
+        leftButtonIcon: require('components/icons/back/back.png'),
+        tintColor: '#FF1D70',
+        passProps: props,
+    };
+}

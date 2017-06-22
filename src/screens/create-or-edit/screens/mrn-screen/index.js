@@ -71,3 +71,15 @@ export const MrnScreen = React.createClass({
         );
     },
 });
+
+export function getMrnScreenRoute(props, context) {
+    return {
+        component: MrnScreen,
+        title: 'Medical Record Number',
+        onLeftButtonPress: () => context.mainNavigator.pop(),
+        navigationBarHidden: false,
+        leftButtonIcon: require('components/icons/back/back.png'),
+        tintColor: '#FF1D70',
+        passProps: props,
+    };
+}

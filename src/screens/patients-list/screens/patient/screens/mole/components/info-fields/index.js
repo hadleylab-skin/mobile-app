@@ -6,8 +6,8 @@ import {
 import schema from 'libs/state';
 import { InfoField, Switch } from 'components';
 import { convertInToCm, convertCmToIn } from 'libs/misc';
-import DiagnosisScreen from '../../screens/diagnosis-screen';
-import LesionsScreen from '../../screens/lesions-screen';
+import { getDiagnosisScreenRoute } from '../../screens/diagnosis-screen';
+import { getLesionsScreenRoute } from '../../screens/lesions-screen';
 import s from './styles';
 
 const model = {
@@ -133,21 +133,14 @@ const InfoFields = schema(model)(React.createClass({
                 title="Lesions Size"
                 text={width && height ? `width: ${width} ${unitsOfLength}, height: ${height} ${unitsOfLength}` : ''}
                 onPress={() => {
-                    this.props.navigator.push({
-                        component: LesionsScreen,
-                        title: 'Lesions Size',
-                        onLeftButtonPress: () => {
-                            this.props.navigator.pop();
-                        },
-                        navigationBarHidden: false,
-                        leftButtonIcon: require('components/icons/back/back.png'),
-                        tintColor: '#FF1D70',
-                        passProps: {
+                    this.props.navigator.push(
+                        getLesionsScreenRoute({
                             cursor: formBiopsyDataCursor,
                             data: biopsyDataCursor.get(),
                             onSubmit: this.onBiopsyDataSubmit,
-                        },
-                    });
+                            navigator: this.props.navigator,
+                        })
+                    );
                 }}
             />
         );
@@ -162,20 +155,15 @@ const InfoFields = schema(model)(React.createClass({
                 title={title}
                 text={diagnosisCursor.get()}
                 onPress={() => {
-                    this.props.navigator.push({
-                        component: DiagnosisScreen,
-                        title,
-                        onLeftButtonPress: () => this.props.navigator.pop(),
-                        navigationBarHidden: false,
-                        leftButtonIcon: require('components/icons/back/back.png'),
-                        tintColor: '#FF1D70',
-                        passProps: {
+                    this.props.navigator.push(
+                        getDiagnosisScreenRoute({
                             cursor: this.props.tree.select(cursorName),
                             text: diagnosisCursor.get(),
                             title,
                             onSubmit: this.onDiagnosisSubmit,
-                        },
-                    });
+                            navigator: this.props.navigator,
+                        })
+                    );
                 }}
             />
         );
