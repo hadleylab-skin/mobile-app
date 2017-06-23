@@ -52,7 +52,7 @@ const model = {
         scanResult: { status: 'NotAsked' },
         datePicker: {},
         racePicker: {},
-        mrnCursor: '',
+        mrn: '',
     },
 };
 
@@ -249,13 +249,13 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                             onPress={() =>
                                 this.context.mainNavigator.push(
                                     getMrnScreenRoute({
-                                        cursor: this.props.tree.select('mrnCursor'),
+                                        cursor: this.props.tree.select('mrn'),
                                         text: mrnCursor.get(),
                                         onSubmit: () => {
-                                            mrnCursor.set(this.props.tree.get('mrnCursor'));
+                                            mrnCursor.set(this.props.tree.get('mrn'));
                                             this.context.mainNavigator.pop();
                                         },
-                                    })
+                                    }, this.context)
                                 )
                             }
                         />
