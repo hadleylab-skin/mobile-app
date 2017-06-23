@@ -24,8 +24,10 @@ const AnatomicalSite = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             updateMoleService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
@@ -41,19 +43,20 @@ const AnatomicalSite = schema({})(React.createClass({
     },
 
     async onAddingComplete(skipPop) {
+        const { cursors, services, mainNavigator } = this.context;
         const molePk = this.props.tree.get('data', 'pk');
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = cursors.currentPatientPk.get();
 
         if (!skipPop) {
-            this.context.mainNavigator.popN(2);
+            mainNavigator.popN(2);
         }
 
-        await this.context.services.getPatientMolesService(
+        await services.getPatientMolesService(
             patientPk,
-            this.context.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles')
         );
 
-        await this.context.services.getMoleService(
+        await services.getMoleService(
             patientPk,
             molePk,
             this.props.tree,
@@ -61,6 +64,7 @@ const AnatomicalSite = schema({})(React.createClass({
     },
 
     render() {
+        const { cursors, mainNavigator } = this.context;
         const { anatomicalSite, patientAnatomicalSite, positionX, positionY } = this.props.tree.get('data');
         const imageName = _.camelCase(anatomicalSite.data.pk);
         let position = { positionX, positionY };
@@ -121,10 +125,10 @@ const AnatomicalSite = schema({})(React.createClass({
                         </View>
                     }
                     hasNoBorder
-                    onPress={() => this.context.mainNavigator.push(
+                    onPress={() => mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: this.context.patientsMoles.select(
-                                this.context.currentPatientPk.get(), 'anatomicalSites'
+                            tree: cursors.patientsMoles.select(
+                                cursors.currentPatientPk.get(), 'anatomicalSites'
                             ),
                             onlyChangeAnatomicalSite: true,
                             currentAnatomicalSite: anatomicalSite.data.pk,

@@ -26,9 +26,11 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
-        user: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+            user: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             updateMolePhotoService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
@@ -36,11 +38,11 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     componentWillMount() {
-        this.context.user.on('update', this.update);
+        this.context.cursors.user.on('update', this.update);
     },
 
     componentWillUnmount() {
-        this.context.user.off('update', this.update);
+        this.context.cursors.user.off('update', this.update);
     },
 
     update() {
@@ -57,7 +59,7 @@ const InfoFields = schema(model)(React.createClass({
 
     onBiopsyDataSubmit() {
         const biopsyData = this.props.tree.get('biopsyData');
-        const unitsOfLength = this.context.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
         let width = biopsyData.width;
         let height = biopsyData.height;
 
@@ -70,17 +72,18 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     onDiagnosisSubmit() {
+        const { cursors, services } = this.context;
         const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis', 'text');
         const pathDiagnosis = this.props.tree.get('pathDiagnosis', 'text');
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = cursors.currentPatientPk.get();
 
         this.onDataChange(
             { clinicalDiagnosis, pathDiagnosis },
             async () => {
                 this.props.navigator.pop();
-                await this.context.services.getPatientMolesService(
+                await services.getPatientMolesService(
                     patientPk,
-                    this.context.patientsMoles.select(patientPk, 'moles')
+                    cursors.patientsMoles.select(patientPk, 'moles')
                 );
             }
         );
@@ -88,7 +91,7 @@ const InfoFields = schema(model)(React.createClass({
 
     async onDataChange(data, onSuccess) {
         const { molePk, imagePk } = this.props;
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = this.context.cursors.currentPatientPk.get();
         const service = this.context.services.updateMolePhotoService;
         const imageInfoCursor = this.props.tree.select('info');
 
@@ -102,7 +105,7 @@ const InfoFields = schema(model)(React.createClass({
     convertUnits() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyData = fieldsDataCursor.get('biopsyData');
-        const unitsOfLength = this.context.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
 
         let width = (biopsyData && biopsyData.width) || '';
         let height = (biopsyData && biopsyData.height) || '';
@@ -121,7 +124,7 @@ const InfoFields = schema(model)(React.createClass({
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyDataCursor = fieldsDataCursor.select('biopsyData');
         const formBiopsyDataCursor = this.props.tree.select('biopsyData');
-        const unitsOfLength = this.context.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
 
         const convertedUnits = this.convertUnits();
 

@@ -33,9 +33,11 @@ const PatientListItem = React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),
@@ -54,6 +56,7 @@ const PatientListItem = React.createClass({
     },
 
     render() {
+        const { cursors, services, mainNavigator } = this.context;
         const { firstName, lastName, lastUpload, photo, pk } = this.props.data;
         const totalImages = this.props.data.molesImagesCount;
 
@@ -61,28 +64,28 @@ const PatientListItem = React.createClass({
             <View style={s.container}>
                 <TouchableWithoutFeedback
                     onPress={async () => {
-                        this.context.currentPatientPk.set(pk);
+                        cursors.currentPatientPk.set(pk);
 
                         if (this.props.goToWidgetCursor.get()) {
                             this.props.goToWidgetCursor.set(false);
-                            this.context.mainNavigator.push(
+                            mainNavigator.push(
                                 getAnatomicalSiteWidgetRoute({
-                                    tree: this.context.patientsMoles.select(pk, 'anatomicalSites'),
+                                    tree: cursors.patientsMoles.select(pk, 'anatomicalSites'),
                                     onAddingComplete: this.props.onAddingComplete,
                                 }, this.context)
                             );
 
-                            await this.context.services.getPatientMolesService(
-                                pk, this.context.patientsMoles.select(pk, 'moles'));
+                            await services.getPatientMolesService(
+                                pk, cursors.patientsMoles.select(pk, 'moles'));
 
                             return;
                         }
 
                         this.props.navigator.push(
                             getPatientRoute({
-                                tree: this.context.patientsMoles.select(pk),
+                                tree: cursors.patientsMoles.select(pk),
                                 navigator: this.props.navigator,
-                                patientCursor: this.context.patients.select('data', pk),
+                                patientCursor: cursors.patients.select('data', pk),
                                 onAddingComplete: this.props.onAddingComplete,
                             }, this.context)
                         );

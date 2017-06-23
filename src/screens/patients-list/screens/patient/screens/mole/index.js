@@ -24,7 +24,9 @@ export const Mole = schema({})(React.createClass({
     },
 
     contextTypes: {
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             getMoleService: React.PropTypes.func.isRequired,
         }),
@@ -38,7 +40,7 @@ export const Mole = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = this.context.cursors.currentPatientPk.get();
 
         const result = await this.context.services.getMoleService(
             patientPk,

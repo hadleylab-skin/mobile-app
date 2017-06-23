@@ -28,7 +28,9 @@ const PatientsListScreen = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        patients: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            patients: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
@@ -37,7 +39,7 @@ const PatientsListScreen = schema({})(React.createClass({
 
     getInitialState() {
         const ds = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
-        const patients = patientsToList(this.context.patients.data.get()) || [];
+        const patients = patientsToList(this.context.cursors.patients.data.get()) || [];
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
@@ -47,11 +49,11 @@ const PatientsListScreen = schema({})(React.createClass({
 
     async componentWillMount() {
         await this.context.services.patientsService(this.context.patients);
-        this.context.patients.on('update', this.updateDataStore);
+        this.context.cursors.patients.on('update', this.updateDataStore);
     },
 
     componentWillUnmount() {
-        this.context.patients.off('update', this.updateDataStore);
+        this.context.cursors.patients.off('update', this.updateDataStore);
     },
 
     updateDataStore(event) {
@@ -66,13 +68,14 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     render() {
-        const status = this.context.patients.status.get();
+        const { cursors, services, mainNavigator } = this.context;
+        const status = cursors.patients.status.get();
         const showLoader = this.state.isLoading;
         const isSucced = status === 'Succeed';
 
-        const isListEmpty = isSucced && _.isEmpty(this.context.patients.get('data'));
+        const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
 
-        const _onScroll = onScroll(async () => await this.context.services.patientsService(this.context.patients));
+        const _onScroll = onScroll(async () => await services.patientsService(cursors.patients));
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
@@ -93,11 +96,11 @@ const PatientsListScreen = schema({})(React.createClass({
                         <View style={s.button}>
                             <Button
                                 title="+ Add a new patient"
-                                onPress={() => this.context.mainNavigator.push(
+                                onPress={() => mainNavigator.push(
                                     getCreateOrEditPatientRoute({
                                         tree: this.props.tree.select('newPatient'),
                                         title: 'New Patient',
-                                        service: this.context.services.createPatientService,
+                                        service: services.createPatientService,
                                         onActionComplete: this.props.onPatientAdded,
                                     }, this.context)
                                 )}
@@ -132,9 +135,11 @@ const PatientsListScreen = schema({})(React.createClass({
 export const PatientsList = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
@@ -143,26 +148,29 @@ export const PatientsList = React.createClass({
     },
 
     async onAddingComplete() {
-        const patientPk = this.context.currentPatientPk.get();
+        const { cursors, services } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
 
-        await this.context.services.patientsService(this.context.patients);
-        await this.context.services.getPatientMolesService(
+        await services.patientsService(cursors.patients);
+        await services.getPatientMolesService(
             patientPk,
-            this.context.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles')
         );
     },
 
     async onPatientAdded(pk) {
-        this.context.currentPatientPk.set(pk);
-        this.context.mainNavigator.push(
+        const { cursors, services, mainNavigator } = this.context;
+
+        cursors.currentPatientPk.set(pk);
+        mainNavigator.push(
             getAnatomicalSiteWidgetRoute({
-                tree: this.context.patientsMoles.select('data', pk, 'anatomicalSites'),
+                tree: cursors.patientsMoles.select('data', pk, 'anatomicalSites'),
                 onAddingComplete: this.onAddingComplete,
-                onBackPress: () => this.context.mainNavigator.popToTop(),
+                onBackPress: () => mainNavigator.popToTop(),
             }, this.context)
         );
 
-        await this.context.services.patientsService(this.context.patients);
+        await services.patientsService(cursors.patients);
     },
 
     render() {

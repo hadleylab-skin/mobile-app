@@ -53,8 +53,10 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     contextTypes: {
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+        },
         services: React.PropTypes.shape({
             getAnatomicalSitesService: React.PropTypes.func.isRequired,
         }),
@@ -69,18 +71,19 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        const patientPk = this.context.currentPatientPk.get();
+        const { cursors, services } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
 
-        await this.context.services.getAnatomicalSitesService(
+        await services.getAnatomicalSitesService(
             patientPk,
             this.props.tree
         );
 
-        this.context.patientsMoles.on('update', this.onPatientsMolesUpdate);
+        cursors.patientsMoles.on('update', this.onPatientsMolesUpdate);
     },
 
     componentWillUnmount() {
-        this.context.patientsMoles.off('update', this.onPatientsMolesUpdate);
+        this.context.cursors.patientsMoles.off('update', this.onPatientsMolesUpdate);
     },
 
     onPatientsMolesUpdate() {
@@ -93,8 +96,9 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     getAnatomicalSitesWithMoles() {
-        const patientPk = this.context.currentPatientPk.get();
-        const patientMoles = this.context.patientsMoles.get(patientPk, 'moles', 'data');
+        const { cursors } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
+        const patientMoles = cursors.patientsMoles.get(patientPk, 'moles', 'data');
 
         let anatomicalSitesWithMoles = [];
 

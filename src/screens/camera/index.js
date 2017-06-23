@@ -21,9 +21,11 @@ export const Camera = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
@@ -41,33 +43,36 @@ export const Camera = schema({})(React.createClass({
     },
 
     async onAddingComplete() {
-        const patientPk = this.context.currentPatientPk.get();
+        const { cursors, services } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
 
-        await this.context.services.patientsService(this.context.patients);
-        await this.context.services.getPatientMolesService(
+        await services.patientsService(cursors.patients);
+        await services.getPatientMolesService(
             patientPk,
-            this.context.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles')
         );
     },
 
     goToNewPatientScreen() {
+        const { cursors, services, mainNavigator } = this.context;
+
         this.popPatientsList();
-        this.context.mainNavigator.push(
+        mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: this.props.tree.select('patients', 'newPatient'),
                 title: 'New Patient',
-                service: this.context.services.createPatientService,
+                service: services.createPatientService,
                 onActionComplete: async (pk) => {
-                    this.context.currentPatientPk.set(pk);
-                    this.context.mainNavigator.push(
+                    cursors.currentPatientPk.set(pk);
+                    mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: this.context.patientsMoles.select('data', pk, 'anatomicalSites'),
+                            tree: cursors.patientsMoles.select('data', pk, 'anatomicalSites'),
                             onAddingComplete: this.onAddingComplete,
-                            onBackPress: () => this.context.mainNavigator.popToTop(),
+                            onBackPress: () => mainNavigator.popToTop(),
                         }, this.context)
                     );
 
-                    await this.context.services.patientsService(this.context.patients);
+                    await services.patientsService(cursors.patients);
                 },
             }, this.context)
         );
@@ -80,7 +85,7 @@ export const Camera = schema({})(React.createClass({
 
     render() {
         const { visibleCursor } = this.props;
-        const patients = this.context.patients.get();
+        const patients = this.context.cursors.patients.get();
         const isPatientsListEmpty = _.isEmpty(patients) || _.isEmpty(patients.data);
 
         return (

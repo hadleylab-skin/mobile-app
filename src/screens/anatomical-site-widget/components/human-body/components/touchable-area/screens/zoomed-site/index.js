@@ -36,7 +36,9 @@ export const ZoomedSite = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        },
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
             updateMoleService: React.PropTypes.func.isRequired,
@@ -85,7 +87,7 @@ export const ZoomedSite = schema(model)(React.createClass({
         this.getImageSize(uri);
 
         const service = this.context.services.addAnatomicalSitePhotoService;
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = this.context.cursors.currentPatientPk.get();
         const result = await service(patientPk, this.props.tree.anatomicalSiteImage, data);
 
         if (result.status === 'Succeed') {
@@ -117,7 +119,7 @@ export const ZoomedSite = schema(model)(React.createClass({
         };
 
         const service = this.context.services.addMoleService;
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = this.context.cursors.currentPatientPk.get();
         const result = await service(patientPk, this.props.tree.mole, data);
 
         if (result.status === 'Succeed') {
@@ -149,7 +151,7 @@ export const ZoomedSite = schema(model)(React.createClass({
         const position = this.getPositionToSave();
 
         if (onlyChangeAnatomicalSite) {
-            const patientPk = this.context.currentPatientPk.get();
+            const patientPk = this.context.cursors.currentPatientPk.get();
             const service = this.context.services.updateMoleService;
 
             const data = {

@@ -111,23 +111,27 @@ export default React.createClass({
 
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        user: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
-        patientsMoleImages: BaobabPropTypes.cursor.isRequired,
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        racesList: BaobabPropTypes.cursor.isRequired,
+        cursors: React.PropTypes.shape({
+            user: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+            patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            racesList: BaobabPropTypes.cursor.isRequired,
+        }),
     },
 
     getChildContext() {
         return {
             mainNavigator: this.mainNavigator || {},
-            user: this.props.tokenCursor.select('data', 'doctor', 'data'),
-            patients: this.props.tree.patients,
-            patientsMoles: this.props.tree.patientsMoles,
-            patientsMoleImages: this.props.tree.patientsMoleImages,
-            currentPatientPk: this.props.tree.currentPatientPk,
-            racesList: this.props.tree.racesList,
+            cursors: {
+                user: this.props.tokenCursor.select('data', 'doctor', 'data'),
+                patients: this.props.tree.patients,
+                patientsMoles: this.props.tree.patientsMoles,
+                patientsMoleImages: this.props.tree.patientsMoleImages,
+                currentPatientPk: this.props.tree.currentPatientPk,
+                racesList: this.props.tree.racesList,
+            },
         };
     },
 

@@ -66,8 +66,10 @@ const CreateOrEditPatient = schema(model)(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        racesList: BaobabPropTypes.cursor.isRequired,
+        cursors: {
+            // currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            racesList: BaobabPropTypes.cursor.isRequired,
+        },
     },
 
     getInitialState() {
