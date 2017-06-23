@@ -11,9 +11,6 @@ import s from './styles';
 export const MolesInfo = React.createClass({
     propTypes: {
         anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
-        moles: React.PropTypes.number,
-        benign: React.PropTypes.number,
-        malignant: React.PropTypes.number,
         onAddingComplete: React.PropTypes.func.isRequired,
     },
 
@@ -22,11 +19,13 @@ export const MolesInfo = React.createClass({
     },
 
     render() {
-        const { moles, benign, malignant, anatomicalSitesCursor } = this.props;
+        const { anatomicalSitesCursor } = this.props;
 
         return (
             <View style={s.container}>
-                {moles && (benign || malignant) ?
+                {/*
+                // TODO should be refactored after data will be added to API
+                moles && (benign || malignant) ?
                     <View style={s.moles}>
                         <Text style={s.text}>
                             {moles === 1 ? ' mole: ' : ' moles: '}
@@ -41,7 +40,8 @@ export const MolesInfo = React.createClass({
                             : null}
                         </Text>
                     </View>
-                : null}
+                : null
+                */}
                 <Button
                     title="Add a new mole"
                     onPress={() => this.context.mainNavigator.push(
