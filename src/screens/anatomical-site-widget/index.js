@@ -44,7 +44,15 @@ function parseSites(images, largeImages, stylesList) {
 const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
 const backSites = parseSites(backImages, backLargeImages, backStyles);
 
-export const AnatomicalSiteWidget = schema({})(React.createClass({
+const model = (props, context) => {
+    const patientPk = context.currentPatientPk.get();
+
+    return {
+        tree: (cursor) => context.services.getAnatomicalSitesService(patientPk, cursor),
+    };
+};
+
+export const AnatomicalSiteWidget = schema(model)(React.createClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
@@ -71,15 +79,7 @@ export const AnatomicalSiteWidget = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        const { cursors, services } = this.context;
-        const patientPk = cursors.currentPatientPk.get();
-
-        await services.getAnatomicalSitesService(
-            patientPk,
-            this.props.tree
-        );
-
-        cursors.patientsMoles.on('update', this.onPatientsMolesUpdate);
+        this.context.cursors.patientsMoles.on('update', this.onPatientsMolesUpdate);
     },
 
     componentWillUnmount() {

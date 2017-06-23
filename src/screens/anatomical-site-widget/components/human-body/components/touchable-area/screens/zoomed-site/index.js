@@ -10,7 +10,7 @@ import {
     Dimensions,
 } from 'react-native';
 import schema from 'libs/state';
-import { roundToIntegers, convertMoleToSave } from 'libs/misc';
+import { convertMoleToSave } from 'libs/misc';
 import { Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import MolePicker from './components/mole-picker';
@@ -21,6 +21,7 @@ const model = {
         mole: {},
         anatomicalSiteImage: {},
         showMessage: false,
+        imageSize: {},
     },
 };
 
@@ -50,9 +51,6 @@ export const ZoomedSite = schema(model)(React.createClass({
         return {
             positionX: null,
             positionY: null,
-            photo: null,
-            width: 0,
-            height: 0,
         };
     },
 
@@ -73,7 +71,7 @@ export const ZoomedSite = schema(model)(React.createClass({
             const width = windowWidth;
             const height = (width / photoWidth) * photoHeight;
 
-            this.setState({ width, height: roundToIntegers(height) });
+            this.props.tree.select('imageSize').set({ width, height });
         });
     },
 
@@ -83,7 +81,7 @@ export const ZoomedSite = schema(model)(React.createClass({
             uri,
         };
 
-        this.setState({ photo: uri });
+        this.props.tree.anatomicalSiteImage.select('data', 'distantPhoto', 'fullSize').set(uri);
         this.getImageSize(uri);
 
         const service = this.context.services.addAnatomicalSitePhotoService;
@@ -91,12 +89,14 @@ export const ZoomedSite = schema(model)(React.createClass({
         const result = await service(patientPk, this.props.tree.anatomicalSiteImage, data);
 
         if (result.status === 'Succeed') {
+            this.getImageSize(uri);
             this.props.onAddingComplete(true);
         }
     },
 
     getPositionToSave() {
-        const { positionX, positionY, width, height } = this.state;
+        const { positionX, positionY } = this.state;
+        const { width, height } = this.props.tree.get('imageSize');
         const { anatomicalSiteImage } = this.props.tree.get();
         let position = {
             positionX: parseInt(positionX, 10),
@@ -178,17 +178,23 @@ export const ZoomedSite = schema(model)(React.createClass({
     render() {
         const { source } = this.props;
         const { anatomicalSiteImage, showMessage } = this.props.tree.get();
-        const { positionX, positionY, photo, width, height } = this.state;
+        const { positionX, positionY } = this.state;
         const hasMoleLocation = positionX && positionY;
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
 
-        let anatomicalSiteImageSource;
+        let width = 0;
+        let height = 0;
+
+        let anatomicalSitePhoto;
 
         if (!_.isEmpty(anatomicalSiteImage && anatomicalSiteImage.data)) {
-            anatomicalSiteImageSource = anatomicalSiteImage.data.distantPhoto.fullSize;
-        }
+            anatomicalSitePhoto = anatomicalSiteImage.data.distantPhoto.fullSize;
 
-        const anatomicalSitePhoto = anatomicalSiteImageSource || photo;
+            if (!_.isEmpty(this.props.tree.get('imageSize'))) {
+                width = this.props.tree.get('imageSize', 'width');
+                height = this.props.tree.get('imageSize', 'height');
+            }
+        }
 
         return (
             <View style={s.container}>
