@@ -18,6 +18,7 @@
 		"react-native-camera": "0.6",
 		"react-native-image-picker": "^0.25.7",
 		"react-native-keyboard-aware-scroll-view": "^0.2.8",
+		"react-native-signature-capture": "^0.4.6",
 		"react-native-snap-carousel": "^2.1.4",
 		"tv4": "^1.2.7"
 	},
