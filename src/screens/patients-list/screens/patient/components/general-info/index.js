@@ -18,12 +18,12 @@ export const GeneralInfo = React.createClass({
             }),
             sex: React.PropTypes.string,
             mrn: React.PropTypes.string,
-            consent: React.PropTypes.string,
+            validConsent: React.PropTypes.string,
         }).isRequired,
     },
 
     render() {
-        const { dateOfBirth, photo, sex, mrn, consent } = this.props.patientData;
+        const { dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientData;
 
         return (
             <View style={s.container}>
@@ -46,18 +46,16 @@ export const GeneralInfo = React.createClass({
                     {mrn ?
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
-                    {consent ?
-                        <View>
-                            <View><Text style={s.text}>
-                                {moment(consent) > moment() ?
-                                    `consent valid till ${moment(consent).format('DD/MMM/YYYY')}`
-                                :
-                                    'consent expired'
-                                }
-                            </Text></View>
-                            <View><Text style={[s.text, s.textDark]}>Update consent</Text></View>
-                        </View>
-                    : null}
+                    <View>
+                        <View><Text style={s.text}>
+                            {moment(validConsent.dateExpired) > moment() ?
+                                `consent valid till ${moment(validConsent.dateExpired).format('DD/MMM/YYYY')}`
+                            :
+                                'consent expired'
+                            }
+                        </Text></View>
+                        <View><Text style={[s.text, s.textDark]}>Update consent</Text></View>
+                    </View>
                 </View>
             </View>
         );
