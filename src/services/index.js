@@ -14,6 +14,7 @@ import { patientsService,
          getPatientService,
          createPatientService,
          updatePatientService,
+         updatePatientConsentService,
        } from './patients';
 
 
@@ -34,4 +35,5 @@ export default {
     getPatientService,
     createPatientService,
     updatePatientService,
+    updatePatientConsentService,
 };

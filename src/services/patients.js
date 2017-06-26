@@ -8,6 +8,22 @@ function dehydrateMrn(item) {
         { mrn: `${typeof item.mrn === 'number' ? item.mrn : ''}` });
 }
 
+function dehydrateConsent(item){
+    return  _.merge(
+        item,
+        {
+            validConsent: {
+                status: 'Succeed',
+                data: item.validConsent,
+            },
+        }
+    );
+};
+
+function dehydratePatientData(data) {
+    return dehydrateConsent(dehydrateMrn(data));
+}
+
 function convertListToDict(list) {
     return _.keyBy(list, (patient) => patient.data.pk);
 }
@@ -15,7 +31,7 @@ function convertListToDict(list) {
 function dehydratePatients(patients) {
     const data = _.map(
         patients,
-        dehydrateMrn);
+        dehydratePatientData);
 
     return convertListToDict(wrapItemsAsRemoteData(data));
 }
@@ -51,16 +67,6 @@ function hydratePatientData(patientData) {
     });
 
     return data;
-}
-
-function dehydratePatientData(data) {
-    let newData = data;
-
-    if (data.mrn) {
-        newData.mrn = `${data.mrn}`;
-    }
-
-    return newData;
 }
 
 export function getPatientService(token) {
@@ -106,6 +112,29 @@ export function updatePatientService(token) {
             hydratePatientData,
             dehydratePatientData,
             _.merge({}, defaultHeaders, headers));
+        return _updatePatient(cursor, data);
+    };
+}
+
+function hydrateConsentData(base64IMage){
+    let data = new FormData();
+    data.append('signature', base64IMage);
+    return data;
+}
+
+export function updatePatientConsentService(token) {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, cursor, data) => {
+        const _updatePatient = buildPostService(`/api/v1/patient/${patientPk}/consent/`,
+                                                'POST',
+                                                hydrateConsentData,
+                                                _.identity,
+                                                _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
     };
 }

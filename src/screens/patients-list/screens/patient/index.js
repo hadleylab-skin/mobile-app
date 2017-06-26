@@ -73,7 +73,10 @@ export const Patient = schema(model)(React.createClass({
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
                 >
-                    <GeneralInfo patientData={this.props.patientCursor.get('data')} />
+                    <GeneralInfo
+                        navigator={this.props.navigator}
+                        patientCursor={this.props.patientCursor.data}
+                    />
                     <MolesInfo
                         anatomicalSitesCursor={anatomicalSitesCursor}
                         onAddingComplete={this.props.onAddingComplete}
