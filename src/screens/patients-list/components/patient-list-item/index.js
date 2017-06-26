@@ -43,18 +43,6 @@ const PatientListItem = React.createClass({
         }),
     },
 
-    formatDate(date) {
-        const year = moment(date).format('YYYY');
-        const month = moment(date).format('M') - 1;
-        const day = moment(date).format('DD');
-        const hours = moment(date).format('H');
-        const minutes = moment(date).format('m');
-        const seconds = moment(date).format('s');
-        const formatedDate = moment([year, month, day, hours, minutes, seconds]).fromNow();
-
-        return formatedDate;
-    },
-
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const { firstName, lastName, lastUpload, photo, pk } = this.props.data;
@@ -110,7 +98,7 @@ const PatientListItem = React.createClass({
                                 </Text>
                                 {lastUpload ?
                                     <Text>
-                                        , last upload: {this.formatDate(lastUpload)}
+                                        , last upload: {moment(lastUpload).fromNow()}
                                     </Text>
                                 : null}
                             </Text>
