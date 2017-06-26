@@ -21,7 +21,10 @@ const model = {
         mole: {},
         anatomicalSiteImage: {},
         showMessage: false,
-        imageSize: {},
+        imageSize: {
+            width: 0,
+            height: 0,
+        },
     },
 };
 
@@ -96,14 +99,8 @@ export const ZoomedSite = schema(model)(React.createClass({
 
     getPositionToSave() {
         const { positionX, positionY } = this.state;
+        const { width, height } = this.props.tree.get('imageSize');
         const { anatomicalSiteImage } = this.props.tree.get();
-        let width = 0;
-        let height = 0;
-
-        if (!_.isEmpty(this.props.tree.get('imageSize'))) {
-            width = this.props.tree.get('imageSize', 'width');
-            height = this.props.tree.get('imageSize', 'height');
-        }
 
         let position = {
             positionX: parseInt(positionX, 10),
@@ -185,22 +182,15 @@ export const ZoomedSite = schema(model)(React.createClass({
     render() {
         const { source } = this.props;
         const { anatomicalSiteImage, showMessage } = this.props.tree.get();
+        const { width, height } = this.props.tree.get('imageSize');
         const { positionX, positionY } = this.state;
         const hasMoleLocation = positionX && positionY;
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
-
-        let width = 0;
-        let height = 0;
 
         let anatomicalSitePhoto;
 
         if (!_.isEmpty(anatomicalSiteImage && anatomicalSiteImage.data)) {
             anatomicalSitePhoto = anatomicalSiteImage.data.distantPhoto.fullSize;
-
-            if (!_.isEmpty(this.props.tree.get('imageSize'))) {
-                width = this.props.tree.get('imageSize', 'width');
-                height = this.props.tree.get('imageSize', 'height');
-            }
         }
 
         return (
