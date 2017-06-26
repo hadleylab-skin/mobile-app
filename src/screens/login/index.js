@@ -57,6 +57,7 @@ const SignInComponent = React.createClass({
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
+                        autoCorrect={false}
                         cursor={usernameCursor}
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
