@@ -39,7 +39,7 @@ const Gallery = React.createClass({
     },
 
     formateDate(date) {
-        const formatedDate = moment(date).format('MMMM d, YYYY hh:mm a');
+        const formatedDate = moment(date).format('MMMM D, YYYY hh:mm a');
 
         return formatedDate;
     },
