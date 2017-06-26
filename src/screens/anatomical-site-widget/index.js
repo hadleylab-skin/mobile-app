@@ -45,7 +45,7 @@ const frontSites = parseSites(frontImages, frontLargeImages, frontStyles);
 const backSites = parseSites(backImages, backLargeImages, backStyles);
 
 const model = (props, context) => {
-    const patientPk = context.currentPatientPk.get();
+    const patientPk = context.cursors.currentPatientPk.get();
 
     return {
         tree: (cursor) => context.services.getAnatomicalSitesService(patientPk, cursor),

@@ -96,8 +96,15 @@ export const ZoomedSite = schema(model)(React.createClass({
 
     getPositionToSave() {
         const { positionX, positionY } = this.state;
-        const { width, height } = this.props.tree.get('imageSize');
         const { anatomicalSiteImage } = this.props.tree.get();
+        let width = 0;
+        let height = 0;
+
+        if (!_.isEmpty(this.props.tree.get('imageSize'))) {
+            width = this.props.tree.get('imageSize', 'width');
+            height = this.props.tree.get('imageSize', 'height');
+        }
+
         let position = {
             positionX: parseInt(positionX, 10),
             positionY: parseInt(positionY, 10),
