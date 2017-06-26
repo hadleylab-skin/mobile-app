@@ -26,11 +26,11 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             user: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             updateMolePhotoService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,

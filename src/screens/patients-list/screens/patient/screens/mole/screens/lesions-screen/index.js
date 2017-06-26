@@ -56,9 +56,9 @@ export const LesionsScreen = React.createClass({
     },
 
     contextTypes: {
-        cursors: {
+        cursors: React.PropTypes.shape({
             user: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
     },
 
     getInitialState() {

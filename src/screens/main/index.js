@@ -48,6 +48,8 @@ const Main = schema(model)(React.createClass({
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
+        console.log(this.props.tree.get());
+
         return (
             <View
                 style={{ flex: 1 }}

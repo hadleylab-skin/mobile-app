@@ -24,9 +24,9 @@ export const Mole = schema({})(React.createClass({
     },
 
     contextTypes: {
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             getMoleService: React.PropTypes.func.isRequired,
         }),

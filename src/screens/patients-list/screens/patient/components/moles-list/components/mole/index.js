@@ -20,10 +20,12 @@ export const Mole = React.createClass({
     },
 
     contextTypes: {
-        currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        patients: BaobabPropTypes.cursor.isRequired,
-        patientsMoles: BaobabPropTypes.cursor.isRequired,
-        patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+        cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+            patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+        }),
         services: React.PropTypes.shape({
             addMolePhotoService: React.PropTypes.func.isRequired,
             getMolePhotoService: React.PropTypes.func.isRequired,
@@ -47,8 +49,8 @@ export const Mole = React.createClass({
 
     getNotExistingPk(pk) {
         const molePk = this.props.tree.get('pk');
-        const patientPk = this.context.currentPatientPk.get();
-        const moleCursor = this.context.patientsMoleImages.select(patientPk, 'moles', molePk);
+        const patientPk = this.context.cursors.currentPatientPk.get();
+        const moleCursor = this.context.cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
         const images = moleCursor.get('data', 'images');
 
         if (!images[pk]) {
@@ -59,10 +61,11 @@ export const Mole = React.createClass({
     },
 
     async onSubmitMolePhoto(uri) {
+        const { cursors, services } = this.context;
         const molePk = this.props.tree.get('pk');
-        const service = this.context.services.addMolePhotoService;
-        const patientPk = this.context.currentPatientPk.get();
-        const moleCursor = this.context.patientsMoleImages.select(patientPk, 'moles', molePk);
+        const service = services.addMolePhotoService;
+        const patientPk = cursors.currentPatientPk.get();
+        const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
         const imagesCursor = moleCursor.select('data', 'images');
 
         const pk = this.getNotExistingPk(-1);
@@ -74,12 +77,12 @@ export const Mole = React.createClass({
             imagesCursor.unset(pk);
             imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
 
-            await this.context.services.patientsService(this.context.patients);
-            await this.context.services.getPatientMolesService(
+            await services.patientsService(cursors.patients);
+            await services.getPatientMolesService(
                 patientPk,
-                this.context.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles')
             );
-            await this.context.services.getMolePhotoService(
+            await services.getMolePhotoService(
                 patientPk,
                 molePk,
                 result.data.pk,
@@ -94,11 +97,11 @@ export const Mole = React.createClass({
 
     onPress() {
         const { anatomicalSites, pk } = this.props.tree.get();
-        const patientPk = this.context.currentPatientPk.get();
+        const patientPk = this.context.cursors.currentPatientPk.get();
 
         this.props.navigator.push(
             getMoleRoute({
-                tree: this.context.patientsMoleImages.select(patientPk, 'moles', pk),
+                tree: this.context.cursors.patientsMoleImages.select(patientPk, 'moles', pk),
                 title: anatomicalSites[anatomicalSites.length - 1].name,
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,

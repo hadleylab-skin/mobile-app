@@ -36,9 +36,9 @@ export const ZoomedSite = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
             updateMoleService: React.PropTypes.func.isRequired,

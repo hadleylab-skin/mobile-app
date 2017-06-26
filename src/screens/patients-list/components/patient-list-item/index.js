@@ -33,11 +33,11 @@ const PatientListItem = React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),

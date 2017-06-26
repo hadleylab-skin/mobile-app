@@ -21,11 +21,11 @@ export const Camera = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,

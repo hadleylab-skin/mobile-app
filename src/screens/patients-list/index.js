@@ -28,9 +28,9 @@ const PatientsListScreen = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
+        cursors: React.PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
@@ -48,7 +48,7 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        await this.context.services.patientsService(this.context.patients);
+        await this.context.services.patientsService(this.context.cursors.patients);
         this.context.cursors.patients.on('update', this.updateDataStore);
     },
 
@@ -135,11 +135,11 @@ const PatientsListScreen = schema({})(React.createClass({
 export const PatientsList = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,

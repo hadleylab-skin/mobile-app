@@ -66,10 +66,10 @@ const CreateOrEditPatient = schema(model)(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
-            // currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
     },
 
     getInitialState() {
@@ -282,7 +282,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                         <Picker
                             tree={this.props.tree.racePicker}
                             cursor={raceCursor}
-                            items={this.context.racesList.data.get()}
+                            items={this.context.cursors.racesList.data.get()}
                             title="Race"
                             onPress={() => this.scrollView.scrollTo({ x: 0, y: offsetY + 220, animated: true })}
                         />

@@ -24,10 +24,10 @@ const AnatomicalSite = schema({})(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: {
+        cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-        },
+        }),
         services: React.PropTypes.shape({
             updateMoleService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
