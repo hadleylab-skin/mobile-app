@@ -125,7 +125,7 @@ export default React.createClass({
         return {
             mainNavigator: this.mainNavigator || {},
             cursors: {
-                user: this.props.tokenCursor.select('data', 'doctor', 'data'),
+                user: this.props.tokenCursor.data.doctor.data,
                 patients: this.props.tree.patients,
                 patientsMoles: this.props.tree.patientsMoles,
                 patientsMoleImages: this.props.tree.patientsMoleImages,
