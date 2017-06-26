@@ -13,7 +13,7 @@ import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import s from './styles';
 
-export const Camera = schema({})(React.createClass({
+export const CameraMenu = schema({})(React.createClass({
     propTypes: {
         visibleCursor: BaobabPropTypes.cursor.isRequired,
         patientsList: React.PropTypes.object, // eslint-disable-line

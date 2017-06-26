@@ -6,14 +6,12 @@ import {
     NavigatorIOS,
     View,
 } from 'react-native';
-import _ from 'lodash';
-import services from 'services';
 import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
 import { ServiceProvider } from 'components';
 import { PatientsList } from '../patients-list';
 import { DoctorProfile } from '../doctor-profile';
-import { Camera } from '../camera';
+import { CameraMenu } from '../camera-menu';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
@@ -92,7 +90,7 @@ const Main = schema(model)(React.createClass({
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>
-                <Camera
+                <CameraMenu
                     tree={this.props.tree}
                     visibleCursor={showModalCursor}
                     patientsList={this.patientsList}
