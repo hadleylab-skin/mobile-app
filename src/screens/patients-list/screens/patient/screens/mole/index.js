@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import ImagePicker from 'react-native-image-picker';
+import { Updater } from 'components';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
 import InfoFields from './components/info-fields';
@@ -62,7 +63,7 @@ export const Mole = schema({})(React.createClass({
     getPhotoSize() {
         const { patientAnatomicalSite } = this.props.tree.data;
 
-        if (!_.isEmpty(patientAnatomicalSite.get())) {
+        if (patientAnatomicalSite.get()) {
             const photo = patientAnatomicalSite.get('distantPhoto', 'fullSize');
             const windowWidth = Dimensions.get('window').width;
 
@@ -106,6 +107,7 @@ export const Mole = schema({})(React.createClass({
     },
 
     render() {
+        const patientPk = this.context.cursors.currentPatientPk.get();
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
         const images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
@@ -113,7 +115,14 @@ export const Mole = schema({})(React.createClass({
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
         return (
-            <View style={s.container}>
+            <Updater
+                service={async () => await this.context.services.getMoleService(
+                    patientPk,
+                    this.props.molePk,
+                    this.props.tree,
+                )}
+                style={s.container}
+            >
                 <ScrollView scrollEventThrottle={200}>
                     <View style={s.inner}>
                         <Gallery
@@ -135,7 +144,7 @@ export const Mole = schema({})(React.createClass({
                         : null}
                     </View>
                 </ScrollView>
-            </View>
+            </Updater>
         );
     },
 }));

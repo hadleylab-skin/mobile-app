@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { Updater } from 'components';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
@@ -28,12 +29,46 @@ export const Patient = schema(model)(React.createClass({
         onAddingComplete: React.PropTypes.func.isRequired,
     },
 
+    contextTypes: {
+        cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: React.PropTypes.shape({
+            getPatientMolesService: React.PropTypes.func.isRequired,
+            getPatientService: React.PropTypes.func.isRequired,
+        }),
+    },
+
+    async updatePatientScreen() {
+        const { cursors, services } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
+        const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
+
+        const moleResult = await services.getPatientMolesService(patientPk, patientMolesCursor);
+        const patientResult = await services.getPatientService(patientPk, cursors.patients.select(patientPk));
+
+        if (moleResult.status === 'Succeed' && patientResult.status === 'Succeed') {
+            return {
+                status: 'Succeed',
+            };
+        }
+
+        return {
+            status: 'Failure',
+        };
+    },
+
     render() {
         const anatomicalSitesCursor = this.props.tree.select('anatomicalSites');
         const molesCursor = this.props.tree.select('moles');
 
         return (
-            <View style={s.container}>
+            <Updater
+                service={this.updatePatientScreen}
+                style={s.container}
+            >
                 <ScrollView
                     onScroll={this.onScroll}
                     scrollEventThrottle={200}
@@ -48,7 +83,7 @@ export const Patient = schema(model)(React.createClass({
                         navigator={this.props.navigator}
                     />
                 </ScrollView>
-            </View>
+            </Updater>
         );
     },
 }));

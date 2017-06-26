@@ -63,6 +63,20 @@ function dehydratePatientData(data) {
     return newData;
 }
 
+export function getPatientService(token) {
+    const headers = {
+        Authorization: `JWT ${token}`,
+    };
+
+    return (patientPk, cursor) => {
+        const service = buildGetService(`/api/v1/patient/${patientPk}/`,
+            dehydratePatientData,
+            _.merge({}, defaultHeaders, headers));
+
+        return service(cursor);
+    };
+}
+
 export function createPatientService(token) {
     const headers = {
         'Content-Type': 'multipart/form-data',

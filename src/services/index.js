@@ -11,6 +11,7 @@ import { addMolePhotoService,
        } from './photo';
 import { addAnatomicalSitePhotoService, getAnatomicalSitesService } from './anatomical-site.js';
 import { patientsService,
+         getPatientService,
          createPatientService,
          updatePatientService,
        } from './patients';
@@ -30,6 +31,7 @@ export default {
     addAnatomicalSitePhotoService,
     getAnatomicalSitesService,
     patientsService,
+    getPatientService,
     createPatientService,
     updatePatientService,
 };
