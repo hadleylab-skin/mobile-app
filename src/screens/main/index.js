@@ -112,7 +112,7 @@ export default React.createClass({
     childContextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
-            user: BaobabPropTypes.cursor.isRequired,
+            doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
@@ -125,7 +125,7 @@ export default React.createClass({
         return {
             mainNavigator: this.mainNavigator || {},
             cursors: {
-                user: this.props.tokenCursor.data.doctor.data,
+                doctor: this.props.tokenCursor.data.doctor.data,
                 patients: this.props.tree.patients,
                 patientsMoles: this.props.tree.patientsMoles,
                 patientsMoleImages: this.props.tree.patientsMoleImages,

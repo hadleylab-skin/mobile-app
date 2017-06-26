@@ -29,7 +29,7 @@ const InfoFields = schema(model)(React.createClass({
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-            user: BaobabPropTypes.cursor.isRequired,
+            doctor: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
             updateMolePhotoService: React.PropTypes.func.isRequired,
@@ -38,11 +38,11 @@ const InfoFields = schema(model)(React.createClass({
     },
 
     componentWillMount() {
-        this.context.cursors.user.on('update', this.update);
+        this.context.cursors.doctor.on('update', this.update);
     },
 
     componentWillUnmount() {
-        this.context.cursors.user.off('update', this.update);
+        this.context.cursors.doctor.off('update', this.update);
     },
 
     update() {
@@ -59,7 +59,7 @@ const InfoFields = schema(model)(React.createClass({
 
     onBiopsyDataSubmit() {
         const biopsyData = this.props.tree.get('biopsyData');
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
         let width = biopsyData.width;
         let height = biopsyData.height;
 
@@ -105,7 +105,7 @@ const InfoFields = schema(model)(React.createClass({
     convertUnits() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyData = fieldsDataCursor.get('biopsyData');
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         let width = (biopsyData && biopsyData.width) || '';
         let height = (biopsyData && biopsyData.height) || '';
@@ -124,7 +124,7 @@ const InfoFields = schema(model)(React.createClass({
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyDataCursor = fieldsDataCursor.select('biopsyData');
         const formBiopsyDataCursor = this.props.tree.select('biopsyData');
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         const convertedUnits = this.convertUnits();
 

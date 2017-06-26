@@ -57,7 +57,7 @@ export const LesionsScreen = React.createClass({
 
     contextTypes: {
         cursors: React.PropTypes.shape({
-            user: BaobabPropTypes.cursor.isRequired,
+            doctor: BaobabPropTypes.cursor.isRequired,
         }),
     },
 
@@ -68,7 +68,7 @@ export const LesionsScreen = React.createClass({
     },
 
     componentWillMount() {
-        this.context.cursors.user.on('update', this.update);
+        this.context.cursors.doctor.on('update', this.update);
     },
 
     componentDidMount() {
@@ -76,7 +76,7 @@ export const LesionsScreen = React.createClass({
     },
 
     componentWillUnmount() {
-        this.context.cursors.user.off('update', this.update);
+        this.context.cursors.doctor.off('update', this.update);
     },
 
     update() {
@@ -87,7 +87,7 @@ export const LesionsScreen = React.createClass({
     convertUnits() {
         let width = (this.props.data && this.props.data.width) || '';
         let height = (this.props.data && this.props.data.height) || '';
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         if (width && height) {
             if (unitsOfLength === 'in') {
@@ -106,7 +106,7 @@ export const LesionsScreen = React.createClass({
     validate() {
         const { cursor } = this.props;
         const formData = cursor.get();
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         const validationResult = tv4.validateMultiple(formData,
             unitsOfLength === 'in' ? lesionsInchSchema : lesionsCmSchema);
@@ -185,7 +185,7 @@ export const LesionsScreen = React.createClass({
 
     render() {
         const { cursor } = this.props;
-        const unitsOfLength = this.context.cursors.user.get('unitsOfLength');
+        const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         return (
             <View style={s.container}>
