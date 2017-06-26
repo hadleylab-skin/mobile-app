@@ -9,9 +9,9 @@ import {
 import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
 import { ServiceProvider } from 'components';
-import { PatientsList } from '../patients-list';
-import { DoctorProfile } from '../doctor-profile';
-import { CameraMenu } from '../camera-menu';
+import { PatientsList } from 'screens/patients-list';
+import { DoctorProfile } from 'screens/doctor-profile';
+import { CameraMenu } from 'screens/camera-menu';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
