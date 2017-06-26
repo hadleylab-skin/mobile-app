@@ -5,6 +5,7 @@ import {
     View,
     Text,
     Modal,
+    Animated,
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native';
@@ -31,6 +32,31 @@ export const CameraMenu = schema({})(React.createClass({
             patientsService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    getInitialState() {
+        return {
+            isBgVisible: false,
+            fadeAnim: new Animated.Value(0),
+        };
+    },
+
+    componentWillMount() {
+        this.props.visibleCursor.on('update', this.animateBg);
+    },
+
+    componentWillUnmount() {
+        this.props.visibleCursor.off('update', this.animateBg);
+    },
+
+    animateBg() {
+        if (this.props.visibleCursor.get()) {
+            this.fadeIn();
+
+            return;
+        }
+
+        this.fadeOut();
     },
 
     popPatientsList() {
@@ -83,13 +109,42 @@ export const CameraMenu = schema({})(React.createClass({
         this.props.tree.patients.select('goToWidget').set(true);
     },
 
+    fadeIn() {
+        this.setState({ isBgVisible: true });
+
+        Animated.timing(
+            this.state.fadeAnim,
+            {
+                toValue: 1,
+                duration: 150,
+            },
+        ).start();
+    },
+
+    fadeOut() {
+        Animated.timing(
+            this.state.fadeAnim,
+            {
+                toValue: 0,
+                duration: 150,
+            },
+        ).start();
+
+        setTimeout(() => this.setState({ isBgVisible: false }), 150);
+    },
+
     render() {
         const { visibleCursor } = this.props;
         const patients = this.context.cursors.patients.get();
         const isPatientsListEmpty = _.isEmpty(patients) || _.isEmpty(patients.data);
 
         return (
-            <View>
+            <View style={this.state.isBgVisible ? s.wrapper : {}}>
+                <Animated.View
+                    style={[s.wrapperBg, {
+                        opacity: this.state.fadeAnim,
+                    }]}
+                />
                 <Modal
                     animationType="slide"
                     transparent
