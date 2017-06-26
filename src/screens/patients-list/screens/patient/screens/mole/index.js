@@ -63,11 +63,15 @@ export const Mole = schema({})(React.createClass({
     getPhotoSize() {
         const { patientAnatomicalSite } = this.props.tree.data;
 
-        if (patientAnatomicalSite.get()) {
+        if (!_.isEmpty(patientAnatomicalSite.get())) {
             const photo = patientAnatomicalSite.get('distantPhoto', 'fullSize');
             const windowWidth = Dimensions.get('window').width;
 
             Image.getSize(photo, (photoWidth, photoHeight) => {
+                if (_.isEmpty(patientAnatomicalSite.get())) {
+                    return;
+                }
+
                 const width = windowWidth;
                 const height = (width / photoWidth) * photoHeight;
 
