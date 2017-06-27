@@ -59,7 +59,7 @@ export const Mole = schema({})(React.createClass({
 
     componentWillUnmount() {
         this.props.tree.off('update', this.getPhotoSize);
-        this.props.tree.select('data', 'images').on('update', this.update);
+        this.props.tree.select('data', 'images').off('update', this.update);
     },
 
     getPhotoSize() {
