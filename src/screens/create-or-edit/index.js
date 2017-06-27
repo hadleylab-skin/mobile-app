@@ -16,8 +16,10 @@ import {
     DatePicker, InfoField, Switch, Picker,
 } from 'components';
 import ImagePicker from 'react-native-image-picker';
+import { getSignatureRoute } from 'screens/signature';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getMrnScreenRoute } from './screens/mrn-screen';
+import { getAgreementRoute } from './screens/agreement';
 import s from './styles';
 
 tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
@@ -81,7 +83,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
     componentWillMount() {
         const { dataCursor } = this.props;
 
-        if (!dataCursor || _.isEmpty(dataCursor.get())) {
+        if (this.isCreateMode()) {
             this.props.tree.form.set({
                 firstName: '',
                 lastName: '',
@@ -109,6 +111,11 @@ const CreateOrEditPatient = schema(model)(React.createClass({
         });
     },
 
+    isCreateMode() {
+        const { dataCursor } = this.props;
+        return !dataCursor || _.isEmpty(dataCursor.get());
+    },
+
     setupData(data) {
         _.each(data, (value, key) => {
             if (value) {
@@ -118,7 +125,6 @@ const CreateOrEditPatient = schema(model)(React.createClass({
     },
 
     async onSubmit() {
-        const { service, onActionComplete } = this.props;
         const formData = this.props.tree.form.get();
 
         const validationResult = tv4.validateMultiple(formData, submitPatientSchema);
@@ -139,6 +145,32 @@ const CreateOrEditPatient = schema(model)(React.createClass({
 
             return;
         }
+
+        if (this.isCreateMode()) {
+            this.props.navigator.push(
+                getAgreementRoute({
+                    navigator: this.props.navigator,
+                    onAgree: () => this.props.navigator.push(
+                        getSignatureRoute({
+                            navigator: this.props.navigator,
+                            onSave: async (signatureData) => {
+                                const formDataWithSignature = _.merge(
+                                    {},
+                                    formData,
+                                    { signature: signatureData.encoded });
+
+                                await this.saveAndCallback(formDataWithSignature);
+                            },
+                        })),
+                })
+            );
+        } else {
+            await this.saveAndCallback(formData);
+        }
+    },
+
+    async saveAndCallback(formData) {
+        const { service, onActionComplete } = this.props;
 
         const result = await service(this.props.tree, formData);
 
@@ -292,7 +324,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                     <Button
                         disabled={isLoading}
                         type="rect"
-                        title="Continue"
+                        title={this.isCreateMode() ? 'Continue to patient consent' : 'Save changes'}
                         onPress={this.onSubmit}
                     />
                 </View>

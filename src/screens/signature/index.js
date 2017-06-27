@@ -1,66 +1,85 @@
 import React from 'react';
-import _ from 'lodash';
 import {
     View,
     Text,
     TouchableHighlight,
-    StyleSheet,
+    ActivityIndicator,
 } from 'react-native';
 import SignatureCapture from 'react-native-signature-capture';
+import backIcon from 'components/icons/back/back.png';
+import s from './styles';
 
-const styles = StyleSheet.create({
-    signature: {
-        flex: 1,
-        borderColor: '#000033',
-        borderWidth: 1,
+const SignatureScreen = React.createClass({
+    propTypes: {
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        onSave: React.PropTypes.func.isRequired,
     },
-    buttonStyle: {
-        flex: 1, justifyContent: "center", alignItems: "center", height: 50,
-        backgroundColor: "#eeeeee",
-        margin: 10
-    }
-});
 
+    getInitialState() {
+        return {
+            isLoading: false,
+        };
+    },
 
-const Signature = React.createClass({
     onSave() {
-        const image = this.signature.saveImage();
-        console.log(image);
+        this.signature.saveImage();
+    },
+
+    async handleSignature(result) {
+        this.setState({ isLoading: true });
+        await this.props.onSave(result);
+        this.setState({ isLoading: false });
     },
     render() {
+        const { isLoading } = this.state;
         return (
-            <View style={{ flex: 1, flexDirection: "column" }}>
-                <Text style={{alignItems:"center",justifyContent:"center"}}>Signature Capture Extended </Text>
+            <View style={{ flex: 1, flexDirection: 'column' }}>
+                {isLoading ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                : null}
+                <Text style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    Signature Capture Extended
+                </Text>
                 <SignatureCapture
                     ref={(signature) => { this.signature = signature; }}
-                    onSaveEvent={this.props.onSave}
-                    style={[{flex:1},styles.signature]}
+                    onSaveEvent={this.handleSignature}
+                    style={[{ flex: 1 }, s.signature]}
                     saveImageFileInExtStorage={false}
                     showNativeButtons={false}
                     showTitleLabel={false}
-                    viewMode={"portrait"}/>
-
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                    <TouchableHighlight style={styles.buttonStyle}
-                        onPress={() => { this.onSave() } } >
+                    viewMode={'portrit'}
+                />
+                <View style={{ flex: 1, flexDirection: 'row' }}>
+                    <TouchableHighlight
+                        style={s.buttonStyle}
+                        onPress={() => this.onSave()}
+                    >
                         <Text>Save</Text>
                     </TouchableHighlight>
-
-                    <TouchableHighlight style={styles.buttonStyle}
-                        onPress={() => this.props.navigator.pop()} >
+                    <TouchableHighlight
+                        style={s.buttonStyle}
+                        onPress={() => this.props.navigator.pop()}
+                    >
                         <Text>Reset</Text>
                     </TouchableHighlight>
-
                 </View>
-
             </View>
         );
     },
 });
 
-export function getSignatureRoute(props){
+export function getSignatureRoute(props) {
     return {
-        component: Signature,
+        component: SignatureScreen,
+        leftButtonIcon: backIcon,
+        onLeftButtonPress: () => props.navigator.pop(),
+        tintColor: '#FF1D70',
         passProps: props,
     };
 }

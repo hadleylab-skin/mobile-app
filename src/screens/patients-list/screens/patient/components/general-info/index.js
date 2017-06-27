@@ -28,8 +28,9 @@ export const GeneralInfo = schema({})(React.createClass({
     goToSignatireScreen() {
         this.props.navigator.push(
             getSignatureRoute({
-                onSave: (signatureData) => {
-                    this.context.services.updatePatientConsentService(
+                navigator: this.props.navigator,
+                onSave: async (signatureData) => {
+                     await this.context.services.updatePatientConsentService(
                         this.props.patientCursor.get('pk'),
                         this.props.patientCursor.validConsent,
                         signatureData.encoded,
