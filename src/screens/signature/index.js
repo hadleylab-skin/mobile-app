@@ -2,11 +2,13 @@ import React from 'react';
 import {
     View,
     Text,
+    TouchableOpacity,
     TouchableHighlight,
     ActivityIndicator,
 } from 'react-native';
 import SignatureCapture from 'react-native-signature-capture';
 import backIcon from 'components/icons/back/back.png';
+import { Button } from 'components';
 import s from './styles';
 
 const SignatureScreen = React.createClass({
@@ -33,7 +35,11 @@ const SignatureScreen = React.createClass({
     render() {
         const { isLoading } = this.state;
         return (
-            <View style={{ flex: 1, flexDirection: 'column' }}>
+            <View style={s.container}>
+                <View style={s.header}>
+                    <Text style={s.title}>Signature</Text>
+                    <Text style={s.text}>Please sign using your finger on the line below</Text>
+                </View>
                 {isLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
@@ -43,31 +49,31 @@ const SignatureScreen = React.createClass({
                         />
                     </View>
                 : null}
-                <Text style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    Signature Capture Extended
-                </Text>
                 <SignatureCapture
                     ref={(signature) => { this.signature = signature; }}
                     onSaveEvent={this.handleSignature}
-                    style={[{ flex: 1 }, s.signature]}
+                    style={s.signature}
                     saveImageFileInExtStorage={false}
                     showNativeButtons={false}
                     showTitleLabel={false}
-                    viewMode={'portrit'}
+                    viewMode={'portrait'}
                 />
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <TouchableHighlight
-                        style={s.buttonStyle}
-                        onPress={() => this.onSave()}
-                    >
-                        <Text>Save</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        style={s.buttonStyle}
+                <View style={{ alignItems: 'center', marginTop: 10 }}>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={s.button}
                         onPress={() => this.props.navigator.pop()}
                     >
-                        <Text>Reset</Text>
-                    </TouchableHighlight>
+                        <Text style={s.buttonText}>Clear</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={s.footer}>
+                    <View style={s.buttonWrapper}>
+                        <Button
+                            title="Done"
+                            onPress={() => this.onSave()}
+                        />
+                    </View>
                 </View>
             </View>
         );

@@ -73,7 +73,6 @@ export const Patient = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                 >
                     <GeneralInfo
-                        navigator={this.props.navigator}
                         patientCursor={this.props.patientCursor.data}
                     />
                     <MolesInfo

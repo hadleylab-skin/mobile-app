@@ -15,27 +15,27 @@ import s from './styles';
 
 export const GeneralInfo = schema({})(React.createClass({
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         patientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired,
         services: React.PropTypes.shape({
             updatePatientConsentService: React.PropTypes.func.isRequired,
         }),
     },
 
     goToSignatireScreen() {
-        this.props.navigator.push(
+        this.context.mainNavigator.push(
             getSignatureRoute({
-                navigator: this.props.navigator,
+                navigator: this.context.mainNavigator,
                 onSave: async (signatureData) => {
                      await this.context.services.updatePatientConsentService(
                         this.props.patientCursor.get('pk'),
                         this.props.patientCursor.validConsent,
                         signatureData.encoded,
                     );
-                    this.props.navigator.pop();
+                    this.context.mainNavigator.pop();
                 },
             }));
     },

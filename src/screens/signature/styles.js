@@ -1,18 +1,57 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    signature: {
+    container: {
         flex: 1,
-        borderColor: '#000033',
-        borderWidth: 1,
+        marginTop: 64,
+        position: 'relative',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
-    buttonStyle: {
-        flex: 1,
+    header: {
+        alignItems: 'center',
+        marginTop: 25,
+        marginBottom: 25,
+    },
+    title: {
+        fontSize: 35,
+        lineHeight: 37,
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    text: {
+        fontSize: 17,
+        lineHeight: 19,
+        textAlign: 'center',
+    },
+    signature: {
+        height: 100,
+        borderWidth: 0,
+        marginLeft: 15,
+        marginRight: 15,
+    },
+    footer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    buttonWrapper: {
+        width: 150,
+        paddingBottom: 15,
+    },
+    button: {
+        justifyContent: 'center',
         height: 50,
-        backgroundColor: '#eeeeee',
-        margin: 10,
+        paddingLeft: 18,
+        paddingRight: 18,
+    },
+    buttonText: {
+        fontSize: 17,
+        lineHeight: 19,
+        color: '#FC3159',
     },
     activityIndicator: {
         position: 'absolute',
