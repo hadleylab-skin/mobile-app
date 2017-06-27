@@ -32,7 +32,6 @@ export const Patient = schema(model)(React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
-            patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -47,7 +46,7 @@ export const Patient = schema(model)(React.createClass({
         const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
 
         const moleResult = await services.getPatientMolesService(patientPk, patientMolesCursor);
-        const patientResult = await services.getPatientService(patientPk, cursors.patients.select(patientPk));
+        const patientResult = await services.getPatientService(patientPk, this.props.patientCursor);
 
         if (moleResult.status === 'Succeed' && patientResult.status === 'Succeed') {
             return {
