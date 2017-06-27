@@ -19,7 +19,7 @@ import s from './styles';
 
 const AnatomicalSite = schema({})(React.createClass({
     propTypes: {
-        getPhotoSize: React.PropTypes.func.isRequired,
+        tree: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -32,14 +32,6 @@ const AnatomicalSite = schema({})(React.createClass({
             updateMoleService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),
-    },
-
-    componentWillMount() {
-        this.props.tree.on('update', this.props.getPhotoSize);
-    },
-
-    componentWillUnmount() {
-        this.props.tree.off('update', this.props.getPhotoSize);
     },
 
     async onAddingComplete(skipPop) {

@@ -53,11 +53,13 @@ export const Mole = schema({})(React.createClass({
             this.getPhotoSize();
         }
 
-        this.props.tree.on('update', this.update);
+        this.props.tree.on('update', this.getPhotoSize);
+        this.props.tree.select('data', 'images').on('update', this.update);
     },
 
     componentWillUnmount() {
-        this.props.tree.off('update', this.update);
+        this.props.tree.off('update', this.getPhotoSize);
+        this.props.tree.select('data', 'images').on('update', this.update);
     },
 
     getPhotoSize() {
@@ -134,10 +136,10 @@ export const Mole = schema({})(React.createClass({
                             currentImagePk={currentImagePk}
                             setcurrentImagePk={this.setcurrentImagePk}
                         />
-                        {currentImage && !_.isEmpty(currentImage.data.dateCreated) ?
+                        {currentImage && currentImage.data.dateCreated ?
                             <View>
                                 <Prediction {...currentImage.data} />
-                                <AnatomicalSite tree={this.props.tree} getPhotoSize={this.getPhotoSize} />
+                                <AnatomicalSite tree={this.props.tree} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
                                     molePk={this.props.molePk}
