@@ -3,7 +3,6 @@ import {
     View,
     Text,
     TouchableOpacity,
-    TouchableHighlight,
     ActivityIndicator,
 } from 'react-native';
 import SignatureCapture from 'react-native-signature-capture';
@@ -62,7 +61,7 @@ const SignatureScreen = React.createClass({
                     <TouchableOpacity
                         activeOpacity={0.5}
                         style={s.button}
-                        onPress={() => this.props.navigator.pop()}
+                        onPress={() => this.signature.resetImage()}
                     >
                         <Text style={s.buttonText}>Clear</Text>
                     </TouchableOpacity>
