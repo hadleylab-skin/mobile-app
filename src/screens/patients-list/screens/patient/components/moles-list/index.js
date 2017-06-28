@@ -19,6 +19,7 @@ const model = (props, context) => (
 export const MolesList = schema(model)(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -55,6 +56,7 @@ export const MolesList = schema(model)(React.createClass({
                         {_.map(molesGroup, (mole, index) => (
                             <Mole
                                 key={`${key}-${index}`}
+                                checkConsent={this.props.checkConsent}
                                 hasBorder={index !== 0}
                                 navigator={this.props.navigator}
                                 tree={this.props.tree.select('data', mole.data.pk, 'data')}

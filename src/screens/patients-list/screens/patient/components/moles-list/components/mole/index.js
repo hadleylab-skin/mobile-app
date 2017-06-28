@@ -15,6 +15,7 @@ import s from './styles';
 export const Mole = React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        checkConsent: React.PropTypes.func.isRequired,
         hasBorder: React.PropTypes.bool,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
@@ -102,6 +103,7 @@ export const Mole = React.createClass({
         this.props.navigator.push(
             getMoleRoute({
                 tree: this.context.cursors.patientsMoleImages.select(patientPk, 'moles', pk),
+                checkConsent: this.props.checkConsent,
                 title: anatomicalSites[anatomicalSites.length - 1].name,
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,

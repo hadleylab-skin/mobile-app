@@ -10,9 +10,9 @@ import s from './styles';
 
 export const MolesInfo = React.createClass({
     propTypes: {
-        anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
+        anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired, //eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
-        checkConsent: React.PropTypes.func.isRequired,
+        checkConsent: React.PropTypes.func.isRequired, //eslint-disable-line
     },
 
     contextTypes: {

@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getPatientRoute } from '../../screens/patient';
+import { checkConsent } from 'screens/signature';
 import s from './styles';
 
 const PatientListItem = React.createClass({
@@ -40,7 +41,15 @@ const PatientListItem = React.createClass({
         }),
         services: React.PropTypes.shape({
             getPatientMolesService: React.PropTypes.func.isRequired,
+            updatePatientConsentService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    checkConsent() {
+        return checkConsent(
+            this.context.cursors.patients.data.select(this.props.data.pk).data,
+            this.context.services.updatePatientConsentService,
+            this.context.mainNavigator);
     },
 
     render() {
@@ -55,16 +64,19 @@ const PatientListItem = React.createClass({
                         cursors.currentPatientPk.set(pk);
 
                         if (this.props.goToWidgetCursor.get()) {
-                            this.props.goToWidgetCursor.set(false);
-                            mainNavigator.push(
-                                getAnatomicalSiteWidgetRoute({
-                                    tree: cursors.patientsMoles.select(pk, 'anatomicalSites'),
-                                    onAddingComplete: this.props.onAddingComplete,
-                                }, this.context)
-                            );
+                            let isConsentValid = await this.checkConsent();
+                            if (isConsentValid) {
+                                this.props.goToWidgetCursor.set(false);
+                                mainNavigator.push(
+                                    getAnatomicalSiteWidgetRoute({
+                                        tree: cursors.patientsMoles.select(pk, 'anatomicalSites'),
+                                        onAddingComplete: this.props.onAddingComplete,
+                                    }, this.context)
+                                );
 
-                            await services.getPatientMolesService(
-                                pk, cursors.patientsMoles.select(pk, 'moles'));
+                                await services.getPatientMolesService(
+                                    pk, cursors.patientsMoles.select(pk, 'moles'));
+                            }
 
                             return;
                         }

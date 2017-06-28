@@ -1,10 +1,12 @@
 import React from 'react';
 import {
+    AlertIOS,
     View,
     Text,
     TouchableOpacity,
     ActivityIndicator,
 } from 'react-native';
+import moment from 'moment';
 import SignatureCapture from 'react-native-signature-capture';
 import backIcon from 'components/icons/back/back.png';
 import { Button } from 'components';
@@ -90,4 +92,31 @@ export function getSignatureRoute(props) {
         tintColor: '#FF1D70',
         passProps: props,
     };
+}
+
+
+export function checkConsent(patientCursor, updatePatientConsentService, mainNavigator) {
+    const isConsentValid = moment(patientCursor.get('validConsent', 'data', 'dateExpired')) > moment();
+    if (!isConsentValid) {
+        return new Promise((resolve) => {
+            AlertIOS.alert(
+                'The consent is expired',
+                'Please, update the patient\'s consent.',
+                () => mainNavigator.push(
+                    getSignatureRoute({
+                        navigator: mainNavigator,
+                        onReject: () => resolve(false),
+                        onSave: async (signatureData) => {
+                            await updatePatientConsentService(
+                                patientCursor.get('pk'),
+                                patientCursor.validConsent,
+                                signatureData.encoded,
+                            );
+                            mainNavigator.pop();
+                            setTimeout(() => resolve(true), 1000);
+                        },
+                    })));
+        });
+    }
+    return new Promise((resolve) => resolve(true));
 }

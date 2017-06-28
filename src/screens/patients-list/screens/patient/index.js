@@ -1,14 +1,12 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
-    AlertIOS,
     View,
     ScrollView,
 } from 'react-native';
-import moment from 'moment';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
-import { getSignatureRoute } from 'screens/signature';
+import { checkConsent } from 'screens/signature';
 import { Updater } from 'components';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
@@ -64,30 +62,10 @@ export const Patient = schema(model)(React.createClass({
     },
 
     checkConsent() {
-        const patientCursor = this.props.patientCursor.data;
-        const isConsentValid = moment(patientCursor.get('validConsent', 'data', 'dateExpired')) > moment();
-        if (!isConsentValid) {
-            return new Promise((resolve) => {
-                AlertIOS.alert(
-                    'The consent is expired',
-                    'Please, update the patient\'s consent.',
-                    () => this.context.mainNavigator.push(
-                        getSignatureRoute({
-                            navigator: this.context.mainNavigator,
-                            onReject: () => resolve(false),
-                            onSave: async (signatureData) => {
-                                await this.context.services.updatePatientConsentService(
-                                    patientCursor.get('pk'),
-                                    patientCursor.validConsent,
-                                    signatureData.encoded,
-                                );
-                                this.context.mainNavigator.pop();
-                                setTimeout(() => resolve(true), 1000);
-                            },
-                        })));
-            });
-        }
-        return new Promise((resolve) => resolve(true));
+        return checkConsent(
+            this.props.patientCursor.data,
+            this.context.services.updatePatientConsentService,
+            this.context.mainNavigator);
     },
 
     render() {
@@ -115,6 +93,7 @@ export const Patient = schema(model)(React.createClass({
                     />
                     <MolesList
                         tree={molesCursor}
+                        checkConsent={this.checkConsent}
                         navigator={this.props.navigator}
                     />
                 </ScrollView>

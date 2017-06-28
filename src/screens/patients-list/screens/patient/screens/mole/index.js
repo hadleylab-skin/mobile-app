@@ -155,17 +155,23 @@ export const Mole = schema({})(React.createClass({
     },
 }));
 
-export function getMoleRoute(props) {
+export function getMoleRoute({ checkConsent, ...props }) {
+    async function onRightButtonPress() {
+        let isConsentValid = await checkConsent();
+        if (isConsentValid) {
+            ImagePicker.launchCamera({},
+                (response) => {
+                    if (response.uri) {
+                        props.onSubmitMolePhoto(response.uri);
+                    }
+                });
+        }
+    }
     return {
         component: Mole,
         title: props.title,
         onLeftButtonPress: () => props.navigator.pop(),
-        onRightButtonPress: () => ImagePicker.launchCamera({},
-            (response) => {
-                if (response.uri) {
-                    props.onSubmitMolePhoto(response.uri);
-                }
-            }),
+        onRightButtonPress,
         navigationBarHidden: false,
         leftButtonIcon: require('components/icons/back/back.png'),
         rightButtonIcon: require('components/icons/camera/camera.png'),
