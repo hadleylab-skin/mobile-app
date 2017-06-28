@@ -21,6 +21,7 @@ const SignatureScreen = React.createClass({
     getInitialState() {
         return {
             isLoading: false,
+            hasLines: false,
         };
     },
 
@@ -28,13 +29,23 @@ const SignatureScreen = React.createClass({
         this.signature.saveImage();
     },
 
+    onClear() {
+        this.signature.resetImage();
+        this.setState({ hasLines: false });
+    },
+
     async handleSignature(result) {
         this.setState({ isLoading: true });
         await this.props.onSave(result);
         this.setState({ isLoading: false });
     },
+
+    handleDrag() {
+        this.setState({ hasLines: true });
+    },
+
     render() {
-        const { isLoading } = this.state;
+        const { isLoading, hasLines } = this.state;
         return (
             <View style={s.container}>
                 <View style={s.header}>
@@ -53,6 +64,7 @@ const SignatureScreen = React.createClass({
                 <SignatureCapture
                     ref={(signature) => { this.signature = signature; }}
                     onSaveEvent={this.handleSignature}
+                    onDragEvent={this.handleDrag}
                     style={s.signature}
                     saveImageFileInExtStorage={false}
                     showNativeButtons={false}
@@ -63,19 +75,27 @@ const SignatureScreen = React.createClass({
                     <TouchableOpacity
                         activeOpacity={0.5}
                         style={s.button}
-                        onPress={() => this.signature.resetImage()}
+                        onPress={this.onClear}
                     >
                         <Text style={s.buttonText}>Clear</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={s.footer}>
-                    <View style={s.buttonWrapper}>
-                        <Button
-                            title="Done"
-                            onPress={() => this.onSave()}
-                        />
-                    </View>
-                </View>
+                {
+                    hasLines
+                    ?
+                    (
+                        <View style={s.footer}>
+                            <View style={s.buttonWrapper}>
+                                <Button
+                                    title="Done"
+                                    onPress={this.onSave}
+                                />
+                            </View>
+                        </View>
+                    )
+                    :
+                    null
+                }
             </View>
         );
     },
