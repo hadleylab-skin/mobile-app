@@ -64,9 +64,9 @@ const PatientListItem = React.createClass({
                         cursors.currentPatientPk.set(pk);
 
                         if (this.props.goToWidgetCursor.get()) {
+                            this.props.goToWidgetCursor.set(false);
                             let isConsentValid = await this.checkConsent();
                             if (isConsentValid) {
-                                this.props.goToWidgetCursor.set(false);
                                 mainNavigator.push(
                                     getAnatomicalSiteWidgetRoute({
                                         tree: cursors.patientsMoles.select(pk, 'anatomicalSites'),
