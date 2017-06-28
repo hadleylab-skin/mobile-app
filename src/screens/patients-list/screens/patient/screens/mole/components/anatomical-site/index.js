@@ -20,6 +20,7 @@ import s from './styles';
 const AnatomicalSite = schema({})(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        checkConsent: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -117,17 +118,24 @@ const AnatomicalSite = schema({})(React.createClass({
                         </View>
                     }
                     hasNoBorder
-                    onPress={() => mainNavigator.push(
-                        getAnatomicalSiteWidgetRoute({
-                            tree: cursors.patientsMoles.select(
-                                cursors.currentPatientPk.get(), 'anatomicalSites'
-                            ),
-                            onlyChangeAnatomicalSite: true,
-                            currentAnatomicalSite: anatomicalSite.data.pk,
-                            molePk: this.props.tree.get('data', 'pk'),
-                            onAddingComplete: this.onAddingComplete,
-                        }, this.context)
-                    )}
+                    onPress={async () => {
+                        let isConsentValid = await this.props.checkConsent();
+                        if (isConsentValid) {
+                            mainNavigator.push(
+                                getAnatomicalSiteWidgetRoute({
+                                    title: 'Select site',
+                                    tree: cursors.patientsMoles.select(
+                                        cursors.currentPatientPk.get(), 'anatomicalSites'
+                                    ),
+                                    onlyChangeAnatomicalSite: true,
+                                    currentAnatomicalSite: anatomicalSite.data.pk,
+                                    molePk: this.props.tree.get('data', 'pk'),
+                                    onAddingComplete: this.onAddingComplete,
+                                }, this.context)
+                            );
+                        }
+                    }
+                    }
                 />
             </View>
         );

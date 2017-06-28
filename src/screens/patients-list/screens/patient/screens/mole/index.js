@@ -22,6 +22,7 @@ export const Mole = schema({})(React.createClass({
     propTypes: {
         molePk: React.PropTypes.number.isRequired,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -139,7 +140,7 @@ export const Mole = schema({})(React.createClass({
                         {currentImage && currentImage.data.dateCreated ?
                             <View>
                                 <Prediction {...currentImage.data} />
-                                <AnatomicalSite tree={this.props.tree} />
+                                <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
                                     molePk={this.props.molePk}
@@ -155,7 +156,8 @@ export const Mole = schema({})(React.createClass({
     },
 }));
 
-export function getMoleRoute({ checkConsent, ...props }) {
+export function getMoleRoute(props) {
+    const { checkConsent } = props;
     async function onRightButtonPress() {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
