@@ -30,7 +30,7 @@ export const GeneralInfo = schema({})(React.createClass({
             getSignatureRoute({
                 navigator: this.context.mainNavigator,
                 onSave: async (signatureData) => {
-                     await this.context.services.updatePatientConsentService(
+                    await this.context.services.updatePatientConsentService(
                         this.props.patientCursor.get('pk'),
                         this.props.patientCursor.validConsent,
                         signatureData.encoded,
