@@ -8,8 +8,8 @@ function dehydrateMrn(item) {
         { mrn: `${typeof item.mrn === 'number' ? item.mrn : ''}` });
 }
 
-function dehydrateConsent(item){
-    return  _.merge(
+function dehydrateConsent(item) {
+    return _.merge(
         item,
         {
             validConsent: {
@@ -18,7 +18,7 @@ function dehydrateConsent(item){
             },
         }
     );
-};
+}
 
 function dehydratePatientData(data) {
     return dehydrateConsent(dehydrateMrn(data));
