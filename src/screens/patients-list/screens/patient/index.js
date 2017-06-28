@@ -1,11 +1,14 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
+    AlertIOS,
     View,
     ScrollView,
 } from 'react-native';
+import moment from 'moment';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { getSignatureRoute } from 'screens/signature';
 import { Updater } from 'components';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
@@ -30,6 +33,7 @@ export const Patient = schema(model)(React.createClass({
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired,
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
@@ -59,9 +63,38 @@ export const Patient = schema(model)(React.createClass({
         };
     },
 
+    checkConsent() {
+        const patientCursor = this.props.patientCursor.data;
+        const isConsentValid = moment(patientCursor.get('validConsent', 'data', 'dateExpired')) > moment();
+        if (!isConsentValid) {
+            return new Promise((resolve) => {
+                AlertIOS.alert(
+                    'The consent is expired',
+                    'Please, update the patient\'s consent.',
+                    () => this.context.mainNavigator.push(
+                        getSignatureRoute({
+                            navigator: this.context.mainNavigator,
+                            onReject: () => resolve(false),
+                            onSave: async (signatureData) => {
+                                await this.context.services.updatePatientConsentService(
+                                    patientCursor.get('pk'),
+                                    patientCursor.validConsent,
+                                    signatureData.encoded,
+                                );
+                                this.context.mainNavigator.pop();
+                                setTimeout(() => resolve(true), 1000);
+                            },
+                        })));
+            });
+        }
+        return new Promise((resolve) => resolve(true));
+    },
+
     render() {
         const anatomicalSitesCursor = this.props.tree.select('anatomicalSites');
         const molesCursor = this.props.tree.select('moles');
+        const patientCursor = this.props.patientCursor.data;
+
 
         return (
             <Updater
@@ -73,9 +106,10 @@ export const Patient = schema(model)(React.createClass({
                     scrollEventThrottle={200}
                 >
                     <GeneralInfo
-                        patientCursor={this.props.patientCursor.data}
+                        patientCursor={patientCursor}
                     />
                     <MolesInfo
+                        checkConsent={this.checkConsent}
                         anatomicalSitesCursor={anatomicalSitesCursor}
                         onAddingComplete={this.props.onAddingComplete}
                     />

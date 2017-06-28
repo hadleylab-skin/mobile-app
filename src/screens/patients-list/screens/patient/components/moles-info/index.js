@@ -12,15 +12,25 @@ export const MolesInfo = React.createClass({
     propTypes: {
         anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
+        checkConsent: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
-    render() {
-        const { anatomicalSitesCursor } = this.props;
+    async addNewMole() {
+        let isConsentValid = await this.props.checkConsent();
+        if (isConsentValid) {
+            this.context.mainNavigator.push(
+                getAnatomicalSiteWidgetRoute({
+                    tree: this.props.anatomicalSitesCursor,
+                    onAddingComplete: this.props.onAddingComplete,
+                }, this.context));
+        }
+    },
 
+    render() {
         return (
             <View style={s.container}>
                 {/*
@@ -44,14 +54,9 @@ export const MolesInfo = React.createClass({
                 */}
                 <Button
                     title="Add a new mole"
-                    onPress={() => this.context.mainNavigator.push(
-                        getAnatomicalSiteWidgetRoute({
-                            tree: anatomicalSitesCursor,
-                            onAddingComplete: this.props.onAddingComplete,
-                        }, this.context)
-                    )}
+                    onPress={this.addNewMole}
                 />
-            </View>
+           </View>
         );
     },
 });

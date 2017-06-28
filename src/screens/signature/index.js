@@ -84,7 +84,10 @@ export function getSignatureRoute(props) {
     return {
         component: SignatureScreen,
         leftButtonIcon: backIcon,
-        onLeftButtonPress: () => props.navigator.pop(),
+        onLeftButtonPress: () => {
+            props.navigator.pop();
+            (props.onReject || (() => {}))();
+        },
         tintColor: '#FF1D70',
         passProps: props,
     };
