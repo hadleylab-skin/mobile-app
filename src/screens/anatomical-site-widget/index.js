@@ -150,10 +150,10 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 }));
 
-export function getAnatomicalSiteWidgetRoute(props, context) {
+export function getAnatomicalSiteWidgetRoute({ title, ...props }, context) {
     return {
         component: AnatomicalSiteWidget,
-        title: 'Add photo',
+        title: title || 'Add photo',
         onLeftButtonPress: () => {
             if (props.onBackPress) {
                 props.onBackPress();
