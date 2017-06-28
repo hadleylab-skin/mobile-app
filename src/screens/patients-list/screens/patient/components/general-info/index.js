@@ -42,6 +42,7 @@ export const GeneralInfo = schema({})(React.createClass({
 
     render() {
         const { dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientCursor.get();
+        const isConsetValid = moment(_.get(validConsent, 'data.dateExpired')) > moment();
 
         return (
             <View style={s.container}>
@@ -65,13 +66,17 @@ export const GeneralInfo = schema({})(React.createClass({
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
                     <View>
-                        <View><Text style={s.text}>
-                            {moment(_.get(validConsent, 'data.dateExpired')) > moment() ?
-                                `consent valid till ${moment(validConsent.data.dateExpired).format('DD/MMM/YYYY')}`
-                            :
-                                'consent expired'
-                            }
-                        </Text></View>
+                        <View>
+                            <Text style={[s.text, isConsetValid ? {} : { color: '#FC3159' }]}>
+                                {
+                                    isConsetValid
+                                    ?
+                                    `consent valid till ${moment(validConsent.data.dateExpired).format('DD/MMM/YYYY')}`
+                                    :
+                                    'consent expired'
+                                }
+                            </Text>
+                        </View>
                         <TouchableOpacity
                             onPress={this.goToSignatireScreen}
                         >

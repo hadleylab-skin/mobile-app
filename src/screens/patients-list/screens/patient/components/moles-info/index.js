@@ -56,7 +56,7 @@ export const MolesInfo = React.createClass({
                     title="Add a new mole"
                     onPress={this.addNewMole}
                 />
-           </View>
+            </View>
         );
     },
 });
