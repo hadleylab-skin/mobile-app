@@ -13,7 +13,7 @@ const mrnSchema = {
     type: 'string',
     pattern: '^\\d+$',
     message: 'Should be an integer number, less than 10 digits',
-    maxLength: 10,
+    maxLength: 9,
 };
 
 export const MrnScreen = React.createClass({
