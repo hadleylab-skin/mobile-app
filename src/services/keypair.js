@@ -1,7 +1,10 @@
 import { NativeModules } from 'react-native';
 import { RSA } from 'react-native-rsa-native';
+import CryptoJS from 'crypto-js';
 
 const { RNSecretManager } = NativeModules;
+
+const iv = CryptoJS.enc.Latin1.parse('{+!%i=]%Y/upi8!Z');
 
 export async function getKeyPair() {
     const keys = await RNSecretManager.getKeyPair();
@@ -37,6 +40,15 @@ export async function decryptRSA(data) {
     return RSA.decrypt(data, keys.privateKey);
 }
 
+export function encryptAES(data, key) {
+    return CryptoJS.AES.encrypt(data, key, { iv }).toString();
+}
+
+export function decryptAES(ciphertext, key) {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, key, { iv });
+    return bytes.toString(CryptoJS.enc.Utf8);
+}
+
 export async function getKeyPairStatus(cursor) {
     cursor.set({ status: 'Loading' });
     try {
@@ -62,3 +74,4 @@ export async function createNewKeyPair(cursor) {
         });
     }
 }
+
