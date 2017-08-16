@@ -34,8 +34,10 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* skiniqTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* skiniqTests.m */; };
+		5E8806D21F441F99007990A5 /* RNSecretManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E8806D11F441F99007990A5 /* RNSecretManager.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B3258D4A164C35A951DF0D /* libRSSignatureCapture.a */; };
+		7D72B47E998D4EE09F8E4912 /* libRNRSA.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 328EAFD7833943C2AF0D2B96 /* libRNRSA.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB745C65464683A71EF3F9 /* libRNImagePicker.a */; };
 		F83C30F6E40A4589895FEF44 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B349AA8E5AFF476B947FAB05 /* libRNBlur.a */; };
@@ -217,6 +219,13 @@
 			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
 			remoteInfo = RNImagePicker;
 		};
+		5E6578151F6C23D200CB9CDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6E5E042ACF0D471C90D2A8B0 /* RNRSA.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF40FFBD1F05EC4000DC4E95;
+			remoteInfo = RNRSA;
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -282,8 +291,13 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* skiniq-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "skiniq-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* skiniq-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "skiniq-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		328EAFD7833943C2AF0D2B96 /* libRNRSA.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNRSA.a; sourceTree = "<group>"; };
 		33BB745C65464683A71EF3F9 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
+		5E067B4D1F42FDAA00498595 /* skiniq.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = skiniq.entitlements; sourceTree = "<group>"; };
+		5E8806D11F441F99007990A5 /* RNSecretManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNSecretManager.m; path = skiniq/RNSecretManager.m; sourceTree = "<group>"; };
+		5E8806EF1F441FBA007990A5 /* RNSecretManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RNSecretManager.h; path = skiniq/RNSecretManager.h; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		6E5E042ACF0D471C90D2A8B0 /* RNRSA.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRSA.xcodeproj; path = "../node_modules/react-native-rsa-native/ios/RNRSA.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
@@ -320,6 +334,7 @@
 				D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */,
 				6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */,
 				F83C30F6E40A4589895FEF44 /* libRNBlur.a in Frameworks */,
+				7D72B47E998D4EE09F8E4912 /* libRNRSA.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +449,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				5E8806D11F441F99007990A5 /* RNSecretManager.m */,
+				5E8806EF1F441FBA007990A5 /* RNSecretManager.h */,
 			);
 			name = skiniq;
 			sourceTree = "<group>";
@@ -465,6 +482,14 @@
 			isa = PBXGroup;
 			children = (
 				5E4A519C1E68379B00F5C52D /* libRNImagePicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5E6577F61F6C23D200CB9CDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5E6578161F6C23D200CB9CDF /* libRNRSA.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -504,6 +529,7 @@
 				CF03FB6D640144939D3FB5D3 /* RNImagePicker.xcodeproj */,
 				E59046236241445F94C6CC66 /* RSSignatureCapture.xcodeproj */,
 				8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */,
+				6E5E042ACF0D471C90D2A8B0 /* RNRSA.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -520,6 +546,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				5E067B4D1F42FDAA00498595 /* skiniq.entitlements */,
 				13B07FAE1A68108700A75B9A /* skiniq */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* skiniqTests */,
@@ -640,6 +667,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 4452VN45AX;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -706,6 +738,10 @@
 				{
 					ProductGroup = 5E4A517E1E68379B00F5C52D /* Products */;
 					ProjectRef = CF03FB6D640144939D3FB5D3 /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = 5E6577F61F6C23D200CB9CDF /* Products */;
+					ProjectRef = 6E5E042ACF0D471C90D2A8B0 /* RNRSA.xcodeproj */;
 				},
 				{
 					ProductGroup = 5E18FC011F010C350054EA11 /* Products */;
@@ -884,6 +920,13 @@
 			remoteRef = 5E4A519B1E68379B00F5C52D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		5E6578161F6C23D200CB9CDF /* libRNRSA.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNRSA.a;
+			remoteRef = 5E6578151F6C23D200CB9CDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1006,6 +1049,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E8806D21F441F99007990A5 /* RNSecretManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -1068,12 +1112,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1097,12 +1143,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1121,12 +1169,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = skiniq.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 4452VN45AX;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = skiniq/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1135,7 +1185,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.SkinIQ.Skin;
+				PRODUCT_BUNDLE_IDENTIFIER = software.beda.SkinIQ;
 				PRODUCT_NAME = skiniq;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1145,11 +1195,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = skiniq.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4452VN45AX;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = skiniq/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1158,7 +1210,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.SkinIQ.Skin;
+				PRODUCT_BUNDLE_IDENTIFIER = software.beda.SkinIQ;
 				PRODUCT_NAME = skiniq;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1179,11 +1231,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1213,11 +1267,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1248,6 +1304,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.skiniq-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1272,6 +1329,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.skiniq-tvOSTests";

@@ -8,9 +8,16 @@ import {
 import { InfoField, Switch, Title, Updater } from 'components';
 import schema from 'libs/state';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import { createNewKeyPair, getKeyPairStatus } from 'services/keypair';
 import s from './styles';
 
-export const DoctorProfile = schema({})(React.createClass({
+const model = {
+    tree: {
+        keyPairStatus: getKeyPairStatus,
+    },
+};
+
+export const DoctorProfile = schema(model)(React.createClass({
     propTypes: {
         logout: React.PropTypes.func.isRequired,
     },
@@ -32,6 +39,48 @@ export const DoctorProfile = schema({})(React.createClass({
 
         unitsOfLengthCursor.set(unit);
         await service(this.props.tree, { unitsOfLength: unit });
+    },
+
+    regenerateRSAKeypair() {
+        createNewKeyPair(this.props.tree.keyPairStatus);
+    },
+
+    renderCryptographyInfo() {
+        const status = this.props.tree.keyPairStatus.status.get();
+        if (status === 'Loading') {
+            return (
+                <Text>
+                    Loading
+                </Text>
+            );
+        } if (status === 'Exists') {
+            return (
+                <InfoField
+                    title={'RSA key is up to date'}
+                    hasNoBorder
+                />
+            );
+        } else if (status === 'Failure') {
+            const error = this.props.tree.keyPairStatus.error.get();
+            return (
+                <View>
+                    <Text>Error</Text>
+                    <Text>{JSON.stringify(error)}</Text>
+                    <InfoField
+                        title={'Regenerate RSA keypair'}
+                        hasNoBorder
+                        onPress={this.regenerateRSAKeypair}
+                    />
+                </View>
+            );
+        }
+        return (
+            <InfoField
+                title={'Generate RSA keypair'}
+                hasNoBorder
+                onPress={this.regenerateRSAKeypair}
+            />
+        );
     },
 
     render() {
@@ -80,6 +129,7 @@ export const DoctorProfile = schema({})(React.createClass({
                         }
                     />
                 </View>
+                { this.renderCryptographyInfo() }
                 <View style={s.logout}>
                     <InfoField
                         title={'Log out'}
