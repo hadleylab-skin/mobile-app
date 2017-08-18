@@ -11,3 +11,4 @@ export { Switch } from './switch';
 export { ServiceProvider } from './service-provider';
 export { ScanMrnButton } from './scan-mrn-button';
 export { Updater } from './updater';
+export { BodyView3D } from './body-view-3d';
