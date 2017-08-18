@@ -22,6 +22,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		19CD97505E6174B052F4AC63 /* Pods_Skin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 611B9049CE9FBF1F6FFFBFFF /* Pods_Skin.framework */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -37,6 +38,19 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B3258D4A164C35A951DF0D /* libRSSignatureCapture.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		929B2F6F1F468156001686EA /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 929B2F6E1F468156001686EA /* JavaScriptCore.framework */; };
+		929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */; };
+		92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */; };
+		92EBB3BD1F46AFDB003DD4EE /* CylindricalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */; };
+		92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */; };
+		92EBB3BF1F46AFDB003DD4EE /* SphericalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */; };
+		92EBB3C01F46AFDB003DD4EE /* Body.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B61F46AFDB003DD4EE /* Body.swift */; };
+		92EBB3C11F46AFDB003DD4EE /* BodyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */; };
+		92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B81F46AFDB003DD4EE /* Nevus.swift */; };
+		92EBB3C31F46AFDB003DD4EE /* BodyView3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */; };
+		92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */; };
+		92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3C61F46B017003DD4EE /* BodyViewManager.m */; };
+		92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
 		D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB745C65464683A71EF3F9 /* libRNImagePicker.a */; };
 		F83C30F6E40A4589895FEF44 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B349AA8E5AFF476B947FAB05 /* libRNBlur.a */; };
 /* End PBXBuildFile section */
@@ -280,14 +294,29 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = skiniq/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = skiniq/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		252EA344B51F192DDE5F5588 /* Pods-Skin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* skiniq-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "skiniq-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* skiniq-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "skiniq-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		33BB745C65464683A71EF3F9 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		611B9049CE9FBF1F6FFFBFFF /* Pods_Skin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.debug.xcconfig"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
-		8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
-		B349AA8E5AFF476B947FAB05 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
+		929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BodyViewEventEmitter.m; path = skiniq/BodyViewEventEmitter.m; sourceTree = "<group>"; };
+		929B2F6E1F468156001686EA /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraMotion.swift; sourceTree = "<group>"; };
+		92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CylindricalMotion.swift; sourceTree = "<group>"; };
+		92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EllipsoidalMotionWithFlexibleFocusPoint.swift; sourceTree = "<group>"; };
+		92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SphericalMotion.swift; sourceTree = "<group>"; };
+		92EBB3B61F46AFDB003DD4EE /* Body.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Body.swift; sourceTree = "<group>"; };
+		92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyNode.swift; sourceTree = "<group>"; };
+		92EBB3B81F46AFDB003DD4EE /* Nevus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nevus.swift; sourceTree = "<group>"; };
+		92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyView3D.swift; sourceTree = "<group>"; };
+		92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
+		92EBB3C51F46B017003DD4EE /* BodyViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BodyViewManager.h; path = skiniq/BodyViewManager.h; sourceTree = SOURCE_ROOT; };
+		92EBB3C61F46B017003DD4EE /* BodyViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BodyViewManager.m; path = skiniq/BodyViewManager.m; sourceTree = SOURCE_ROOT; };
+		92EBB3C81F46B061003DD4EE /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; name = art.scnassets; path = skiniq/art.scnassets; sourceTree = "<group>"; };
 		B5B3258D4A164C35A951DF0D /* libRSSignatureCapture.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRSSignatureCapture.a; sourceTree = "<group>"; };
 		CF03FB6D640144939D3FB5D3 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		E59046236241445F94C6CC66 /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
@@ -306,6 +335,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				929B2F6F1F468156001686EA /* JavaScriptCore.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -319,7 +349,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */,
 				6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */,
-				F83C30F6E40A4589895FEF44 /* libRNBlur.a in Frameworks */,
+				19CD97505E6174B052F4AC63 /* Pods_Skin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,9 +458,11 @@
 		13B07FAE1A68108700A75B9A /* skiniq */ = {
 			isa = PBXGroup;
 			children = (
+				928197111F4589CE003A93E4 /* BodyView3D */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				92EBB3C81F46B061003DD4EE /* art.scnassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -451,6 +483,15 @@
 				3DAD3EAF1DF850E9000B6D8A /* libjschelpers.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		5BF0D32E0FC3DE7A7B273F9A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				929B2F6E1F468156001686EA /* JavaScriptCore.framework */,
+				611B9049CE9FBF1F6FFFBFFF /* Pods_Skin.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		5E18FC011F010C350054EA11 /* Products */ = {
@@ -524,6 +565,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* skiniqTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
+				EB3E295CB01886ADFF362B4C /* Pods */,
+				5BF0D32E0FC3DE7A7B273F9A /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -540,13 +583,59 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BF48A19C1F4AEB0E006E2995 /* Products */ = {
+		928197111F4589CE003A93E4 /* BodyView3D */ = {
 			isa = PBXGroup;
 			children = (
-				BF48A1BA1F4AEB0F006E2995 /* libRNBlur.a */,
-				BF48A1BC1F4AEB0F006E2995 /* libRNBlur.a */,
+				92EBB3B01F46AFDB003DD4EE /* Camera Motion */,
+				92EBB3B51F46AFDB003DD4EE /* Models */,
+				92EBB3B91F46AFDB003DD4EE /* Views */,
+				929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */,
+				92EBB3C51F46B017003DD4EE /* BodyViewManager.h */,
+				92EBB3C61F46B017003DD4EE /* BodyViewManager.m */,
 			);
-			name = Products;
+			name = BodyView3D;
+			sourceTree = "<group>";
+		};
+		92EBB3B01F46AFDB003DD4EE /* Camera Motion */ = {
+			isa = PBXGroup;
+			children = (
+				92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */,
+				92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */,
+				92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */,
+				92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */,
+			);
+			name = "Camera Motion";
+			path = "skiniq/Camera Motion";
+			sourceTree = "<group>";
+		};
+		92EBB3B51F46AFDB003DD4EE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				92EBB3B61F46AFDB003DD4EE /* Body.swift */,
+				92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */,
+				92EBB3B81F46AFDB003DD4EE /* Nevus.swift */,
+			);
+			name = Models;
+			path = skiniq/Models;
+			sourceTree = "<group>";
+		};
+		92EBB3B91F46AFDB003DD4EE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */,
+				92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */,
+			);
+			name = Views;
+			path = skiniq/Views;
+			sourceTree = "<group>";
+		};
+		EB3E295CB01886ADFF362B4C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */,
+				252EA344B51F192DDE5F5588 /* Pods-Skin.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -574,10 +663,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Skin" */;
 			buildPhases = (
+				E9784E99335D54D3D7A0F27F /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				6DEA0DD0105CFCB49155BAFD /* [CP] Embed Pods Frameworks */,
+				DB1A972EF105A9AB8C21E31E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -639,7 +731,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 4452VN45AX;
+						DevelopmentTeam = WBWE6BMMKE;
 					};
 				};
 			};
@@ -941,6 +1033,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -991,6 +1084,51 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
 		};
+		6DEA0DD0105CFCB49155BAFD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skin/Pods-Skin-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DB1A972EF105A9AB8C21E31E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skin/Pods-Skin-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E9784E99335D54D3D7A0F27F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1006,7 +1144,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				92EBB3BD1F46AFDB003DD4EE /* CylindricalMotion.swift in Sources */,
+				92EBB3BF1F46AFDB003DD4EE /* SphericalMotion.swift in Sources */,
+				92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */,
+				929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */,
+				92EBB3C01F46AFDB003DD4EE /* Body.swift in Sources */,
+				92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */,
+				92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */,
+				92EBB3C11F46AFDB003DD4EE /* BodyNode.swift in Sources */,
+				92EBB3C31F46AFDB003DD4EE /* BodyView3D.swift in Sources */,
+				92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1059,6 +1208,7 @@
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 4452VN45AX;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1091,6 +1241,7 @@
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 4452VN45AX;
@@ -1119,16 +1270,14 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 4452VN45AX;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
-				);
+				DEVELOPMENT_TEAM = WBWE6BMMKE;
 				INFOPLIST_FILE = skiniq/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1137,21 +1286,21 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.SkinIQ.Skin;
 				PRODUCT_NAME = skiniq;
+				SWIFT_OBJC_BRIDGING_HEADER = BridgingHeader.h;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 252EA344B51F192DDE5F5588 /* Pods-Skin.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4452VN45AX;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
-				);
+				DEVELOPMENT_TEAM = WBWE6BMMKE;
 				INFOPLIST_FILE = skiniq/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1160,6 +1309,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.SkinIQ.Skin;
 				PRODUCT_NAME = skiniq;
+				SWIFT_OBJC_BRIDGING_HEADER = BridgingHeader.h;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
