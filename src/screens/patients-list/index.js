@@ -15,6 +15,7 @@ import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import PatientListItem from './components/patient-list-item';
 import Filter from './components/filter';
+import Search from './components/search';
 import s from './styles';
 
 const patientsToList = _.partialRight(
@@ -25,7 +26,8 @@ const PatientsListScreen = schema({})(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired,
-        filter: BaobabPropTypes.cursor.isRequired,
+        filterCursor: BaobabPropTypes.cursor.isRequired,
+        searchCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -50,7 +52,9 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        await this.context.services.patientsService(this.context.cursors.patients);
+        const queryParams = this.props.filterCursor.get();
+
+        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
         this.context.cursors.patients.on('update', this.updateDataStore);
     },
 
@@ -70,9 +74,9 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     async filterPatients() {
-        const data = this.props.filter.get();
+        const queryParams = this.props.filterCursor.get();
 
-        await this.context.services.patientsService(this.context.cursors.patients, data);
+        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
     },
 
     render() {
@@ -80,15 +84,17 @@ const PatientsListScreen = schema({})(React.createClass({
         const status = cursors.patients.status.get();
         const showLoader = this.state.isLoading;
         const isSucced = status === 'Succeed';
+        const queryParams = this.props.filterCursor.get();
 
         const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
 
-        const _onScroll = onScroll(async () => await services.patientsService(cursors.patients));
+        const _onScroll = onScroll(async () => await services.patientsService(cursors.patients, queryParams));
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
                 <View style={s.filter}>
-                    <Filter filter={this.props.filter} filterPatients={this.filterPatients} />
+                    <Filter filterCursor={this.props.filterCursor} filterPatients={this.filterPatients} />
+                    <Search searchCursor={this.props.searchCursor} />
                 </View>
                 { showLoader ?
                     <View style={s.activityIndicator}>
@@ -190,11 +196,6 @@ export const PatientsList = React.createClass({
                 ref={(ref) => { this.navigator = ref; }}
                 initialRoute={{
                     component: PatientsListScreen,
-                    passProps: {
-                        onAddingComplete: this.onAddingComplete,
-                        onPatientAdded: this.onPatientAdded,
-                        ...this.props,
-                    },
                     title: 'Patients',
                     rightButtonSystemIcon: 'add',
                     onRightButtonPress: () => this.context.mainNavigator.push(
@@ -207,6 +208,11 @@ export const PatientsList = React.createClass({
                     ),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',
+                    passProps: {
+                        onAddingComplete: this.onAddingComplete,
+                        onPatientAdded: this.onPatientAdded,
+                        ...this.props,
+                    },
                 }}
                 style={{ flex: 1 }}
                 barTintColor="#fff"

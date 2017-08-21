@@ -14,12 +14,12 @@ const Filter = React.createClass({
     displayName: 'Filter',
 
     propTypes: {
-        filter: BaobabPropTypes.cursor.isRequired,
+        filterCursor: BaobabPropTypes.cursor.isRequired,
         filterPatients: React.PropTypes.func.isRequired,
     },
 
     onFilterPress() {
-        const { filter } = this.props;
+        const filter = this.props.filterCursor;
 
         if (filter.get('pathPending')) {
             filter.pathPending.set(false);
@@ -31,7 +31,7 @@ const Filter = React.createClass({
     },
 
     render() {
-        const filter = this.props.filter.get();
+        const filter = this.props.filterCursor.get();
 
         return (
             <View style={s.container}>

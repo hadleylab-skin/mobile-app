@@ -30,6 +30,7 @@ const model = (props) => (
             filter: {
                 pathPending: false,
             },
+            search: '',
         },
     }
 );
@@ -46,7 +47,8 @@ const Main = schema(model)(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
-        const filter = this.props.tree.filter;
+        const filterCursor = this.props.tree.filter;
+        const searchCursor = this.props.tree.search;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
@@ -69,7 +71,8 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
-                            filter={filter}
+                            filterCursor={filterCursor}
+                            searchCursor={searchCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
