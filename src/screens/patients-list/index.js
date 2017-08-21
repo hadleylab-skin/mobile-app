@@ -92,21 +92,19 @@ const PatientsListScreen = schema({})(React.createClass({
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
-                <View style={s.filter}>
+                <View style={s.toolbar}>
                     <Filter filterCursor={this.props.filterCursor} filterPatients={this.filterPatients} />
                     <Search searchCursor={this.props.searchCursor} />
                 </View>
-                { showLoader ?
+                {showLoader || status === 'Loading' ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
-                            animating={showLoader}
+                            animating
                             size="large"
                             color="#FF1D70"
                         />
                     </View>
-                :
-                    null
-                }
+                : null}
                 {isListEmpty ?
                     <View style={s.emptyList}>
                         <Text style={s.title}>You don’t have any patients yet.</Text>

@@ -8,7 +8,7 @@ export default StyleSheet.create({
     containerEmpty: {
         backgroundColor: '#FAFAFA',
     },
-    filter: {
+    toolbar: {
         height: 44,
         borderBottomWidth: 0.5,
         borderBottomColor: '#ACB5BE',
