@@ -27,6 +27,9 @@ const model = (props) => (
             patientsMoleImages: {},
             racesList: getRacesList(props.token),
             showModal: false,
+            filter: {
+                pathPending: false,
+            },
         },
     }
 );
@@ -43,6 +46,7 @@ const Main = schema(model)(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
+        const filter = this.props.tree.filter;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
@@ -65,6 +69,7 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
+                            filter={filter}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item

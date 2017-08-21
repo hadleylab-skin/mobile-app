@@ -8,6 +8,15 @@ export default StyleSheet.create({
     containerEmpty: {
         backgroundColor: '#FAFAFA',
     },
+    filter: {
+        height: 44,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ACB5BE',
+        backgroundColor: 'rgba(172,181,190,0.4)',
+        paddingLeft: 15,
+        paddingRight: 15,
+        justifyContent: 'center',
+    },
     activityIndicator: {
         position: 'absolute',
         top: 85,

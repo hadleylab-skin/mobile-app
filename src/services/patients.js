@@ -40,7 +40,17 @@ export function patientsService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-    return buildGetService('/api/v1/patient/', dehydratePatients, _.merge({}, defaultHeaders, headers));
+
+    return (cursor, params) => {
+        const pathPending = params && params.pathPending ? 'path_pending=True' : '';
+        const service = buildGetService(
+            `/api/v1/patient/?${pathPending}`,
+            dehydratePatients,
+            _.merge({}, defaultHeaders, headers)
+        );
+
+        return service(cursor);
+    };
 }
 
 function hydratePatientData(patientData) {
@@ -116,7 +126,7 @@ export function updatePatientService(token) {
     };
 }
 
-function hydrateConsentData(base64IMage){
+function hydrateConsentData(base64IMage) {
     let data = new FormData();
     data.append('signature', base64IMage);
     return data;

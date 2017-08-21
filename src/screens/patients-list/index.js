@@ -14,6 +14,7 @@ import { onScroll } from 'components/updater';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import PatientListItem from './components/patient-list-item';
+import Filter from './components/filter';
 import s from './styles';
 
 const patientsToList = _.partialRight(
@@ -24,6 +25,7 @@ const PatientsListScreen = schema({})(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired,
+        filter: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -67,6 +69,12 @@ const PatientsListScreen = schema({})(React.createClass({
         }
     },
 
+    async filterPatients() {
+        const data = this.props.filter.get();
+
+        await this.context.services.patientsService(this.context.cursors.patients, data);
+    },
+
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
@@ -79,6 +87,9 @@ const PatientsListScreen = schema({})(React.createClass({
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
+                <View style={s.filter}>
+                    <Filter filter={this.props.filter} filterPatients={this.filterPatients} />
+                </View>
                 { showLoader ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
