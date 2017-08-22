@@ -89,7 +89,6 @@ const Search = React.createClass({
     },
 
     render() {
-        const { cursors } = this.context;
         const { empty, isFocused } = this.state;
         const search = this.props.searchCursor;
 
