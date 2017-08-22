@@ -27,8 +27,6 @@ export const BodyView3D = React.createClass({
         eventEmitter.removeListener('MoleSelectedEvent', this._onMoleSelected);
     },
 
-
-
     _onBodyPartSelected(data) {
         if (this.props.onBodyPartSelected) {
         this.props.onBodyPartSelected(data);

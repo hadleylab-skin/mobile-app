@@ -7,7 +7,7 @@ import {
     Text,
     NavigatorIOS,
 } from 'react-native';
-import { Input, Button, StartScreen, ClickableText, Form, BodyView3D } from 'components';
+import { Input, Button, StartScreen, ClickableText, Form } from 'components';
 import tree from 'libs/tree';
 import schema from 'libs/state';
 import { loginService } from 'services/login';
@@ -45,37 +45,6 @@ const SignInComponent = React.createClass({
     },
 
     render() {
-// BEGIN
-        const sex = 'male';
-        const moles = [
-            {
-                "anatomicalSite": "Right Posterior Thigh",
-                "id": "AF2A43AE-1D60-41AB-9400-CDB7C8AC2E7A",
-                "positionY": 29.90285301208496,
-                "faceIndex": 3797,
-                "positionZ": -3.4037790298461914,
-                "positionX": -6.334132194519043
-            },
-            {
-                "anatomicalSite": "Right Upper Chest",
-                "id": "7BB153EA-60AF-4EFB-8D70-50963E429F54",
-                "positionY": 52.08041763305664,
-                "faceIndex": 4737,
-                "positionZ": 3.9849777221679688,
-                "positionX": -4.140969276428223
-            }
-        ];
-
-        return (
-            <BodyView3D
-                sex={sex}
-                moles={moles}
-                onBodyPartSelected={(data) => console.log('onBodyPartSelected', data)}
-                onMoleAdded={(data) => console.log('onMoleAdded', data)}
-                onMoleSelected={(data) => console.log('onMoleSelected', data)}
-            />
-        );
-// END
         const usernameCursor = this.props.tree.username;
         const passwordCursor = this.props.tree.password;
 

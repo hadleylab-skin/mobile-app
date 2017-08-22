@@ -13,8 +13,8 @@ import { InfoField } from 'components';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import arrowImage from 'components/icons/arrow/arrow.png';
 import dotImage from 'components/icons/dot/dot.png';
-import frontImages from 'screens/anatomical-site-widget/components/front/large-images';
-import backImages from 'screens/anatomical-site-widget/components/back/large-images';
+import frontImages from 'screens/anatomical-site-widget-old/components/front/large-images';
+import backImages from 'screens/anatomical-site-widget-old/components/back/large-images';
 import s from './styles';
 
 const AnatomicalSite = schema({})(React.createClass({
