@@ -125,6 +125,7 @@ const PatientsListScreen = schema({})(React.createClass({
                         automaticallyAdjustContentInsets={false}
                         style={{
                             marginBottom: 49,
+                            flex: 1,
                         }}
                         dataSource={this.state.ds}
                         renderRow={(rowData) => (
