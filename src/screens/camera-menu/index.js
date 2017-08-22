@@ -26,6 +26,7 @@ export const CameraMenu = schema({})(React.createClass({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
@@ -71,8 +72,9 @@ export const CameraMenu = schema({})(React.createClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const queryParams = cursors.filter.get();
 
-        await services.patientsService(cursors.patients);
+        await services.patientsService(cursors.patients, queryParams);
         await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles')
@@ -89,6 +91,8 @@ export const CameraMenu = schema({})(React.createClass({
                 title: 'New Patient',
                 service: services.createPatientService,
                 onActionComplete: async (pk) => {
+                    const queryParams = cursors.filter.get();
+
                     cursors.currentPatientPk.set(pk);
                     mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
@@ -98,7 +102,7 @@ export const CameraMenu = schema({})(React.createClass({
                         }, this.context)
                     );
 
-                    await services.patientsService(cursors.patients);
+                    await services.patientsService(cursors.patients, queryParams);
                 },
             }, this.context)
         );

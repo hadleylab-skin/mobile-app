@@ -47,7 +47,6 @@ const Main = schema(model)(React.createClass({
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
-        const filterCursor = this.props.tree.filter;
         const searchCursor = this.props.tree.search;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
@@ -71,7 +70,6 @@ const Main = schema(model)(React.createClass({
                         <PatientsList
                             ref={(ref) => { this.patientsList = ref; }}
                             tree={patientsCursor}
-                            filterCursor={filterCursor}
                             searchCursor={searchCursor}
                         />
                     </TabBarIOS.Item>
@@ -124,6 +122,7 @@ export default React.createClass({
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line
         }),
     },
 
@@ -137,6 +136,7 @@ export default React.createClass({
                 patientsMoleImages: this.props.tree.patientsMoleImages,
                 currentPatientPk: this.props.tree.currentPatientPk,
                 racesList: this.props.tree.racesList,
+                filter: this.props.tree.racesList,
             },
         };
     },

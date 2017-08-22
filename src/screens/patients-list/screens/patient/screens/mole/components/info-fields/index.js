@@ -27,26 +27,38 @@ const InfoFields = schema(model)(React.createClass({
 
     contextTypes: {
         cursors: React.PropTypes.shape({
+            patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
+            patientsService: React.PropTypes.func.isRequired,
             updateMolePhotoService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
     componentWillMount() {
-        this.context.cursors.doctor.on('update', this.update);
+        this.props.tree.on('update', this.updatePatients);
+        this.context.cursors.doctor.on('update', this.onDoctorHasChanged);
     },
 
     componentWillUnmount() {
-        this.context.cursors.doctor.off('update', this.update);
+        this.props.tree.off('update', this.updatePatients);
+        this.context.cursors.doctor.off('update', this.onDoctorHasChanged);
     },
 
-    update() {
+    onDoctorHasChanged() {
         this.forceUpdate();
+    },
+
+    async updatePatients() {
+        const { cursors, services } = this.context;
+        const queryParams = cursors.filter.get();
+
+        await services.patientsService(cursors.patients, queryParams);
     },
 
     onBiopsyChange(value) {

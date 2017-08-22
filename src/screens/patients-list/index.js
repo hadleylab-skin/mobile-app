@@ -26,7 +26,6 @@ const PatientsListScreen = schema({})(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired,
-        filterCursor: BaobabPropTypes.cursor.isRequired,
         searchCursor: BaobabPropTypes.cursor.isRequired,
     },
 
@@ -34,6 +33,7 @@ const PatientsListScreen = schema({})(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
@@ -52,10 +52,11 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     async componentWillMount() {
-        const queryParams = this.props.filterCursor.get();
+        const { cursors, services } = this.context;
+        const queryParams = cursors.filter.get();
 
-        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
-        this.context.cursors.patients.on('update', this.updateDataStore);
+        await services.patientsService(cursors.patients, queryParams);
+        cursors.patients.on('update', this.updateDataStore);
     },
 
     componentWillUnmount() {
@@ -73,18 +74,12 @@ const PatientsListScreen = schema({})(React.createClass({
         }
     },
 
-    async filterPatients() {
-        const queryParams = this.props.filterCursor.get();
-
-        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
-    },
-
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
         const showLoader = this.state.isLoading;
         const isSucced = status === 'Succeed';
-        const queryParams = this.props.filterCursor.get();
+        const queryParams = cursors.filter.get();
 
         const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
 
@@ -93,7 +88,7 @@ const PatientsListScreen = schema({})(React.createClass({
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
                 <View style={s.toolbar}>
-                    <Filter filterCursor={this.props.filterCursor} filterPatients={this.filterPatients} />
+                    <Filter />
                     <Search searchCursor={this.props.searchCursor} />
                 </View>
                 {showLoader || status === 'Loading' ?
@@ -154,6 +149,7 @@ export const PatientsList = React.createClass({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
             createPatientService: React.PropTypes.func.isRequired,
@@ -165,8 +161,9 @@ export const PatientsList = React.createClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const queryParams = cursors.filter.get();
 
-        await services.patientsService(cursors.patients);
+        await services.patientsService(cursors.patients, queryParams);
         await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles')
@@ -175,6 +172,7 @@ export const PatientsList = React.createClass({
 
     async onPatientAdded(pk) {
         const { cursors, services, mainNavigator } = this.context;
+        const queryParams = cursors.filter.get();
 
         cursors.currentPatientPk.set(pk);
         mainNavigator.push(
@@ -185,7 +183,7 @@ export const PatientsList = React.createClass({
             }, this.context)
         );
 
-        await services.patientsService(cursors.patients);
+        await services.patientsService(cursors.patients, queryParams);
     },
 
     render() {

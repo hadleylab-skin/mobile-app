@@ -18,9 +18,14 @@ import tickIcon from './images/tick.png';
 const Filter = React.createClass({
     displayName: 'Filter',
 
-    propTypes: {
-        filterCursor: BaobabPropTypes.cursor.isRequired,
-        filterPatients: React.PropTypes.func.isRequired,
+    contextTypes: {
+        cursors: React.PropTypes.shape({
+            patients: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+        }),
+        services: React.PropTypes.shape({
+            patientsService: React.PropTypes.func.isRequired,
+        }),
     },
 
     getInitialState() {
@@ -30,7 +35,7 @@ const Filter = React.createClass({
     },
 
     onPathPendingPress() {
-        const filter = this.props.filterCursor;
+        const filter = this.context.cursors.filter;
 
         if (filter.get('pathPending')) {
             filter.pathPending.set(false);
@@ -38,7 +43,13 @@ const Filter = React.createClass({
             filter.pathPending.set(true);
         }
 
-        this.props.filterPatients();
+        this.filterPatients();
+    },
+
+    async filterPatients() {
+        const queryParams = this.context.cursors.filter.get();
+
+        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
     },
 
     toggleFilter() {
@@ -48,15 +59,15 @@ const Filter = React.createClass({
     },
 
     onCancel() {
-        const filter = this.props.filterCursor;
+        const filter = this.context.cursors.filter;
 
         filter.pathPending.set(false);
-        this.props.filterPatients();
+        this.filterPatients();
     },
 
     render() {
         const { isOpened } = this.state;
-        const filter = this.props.filterCursor.get();
+        const filter = this.context.cursors.filter.get();
         const { pathPending } = filter;
 
         return (
