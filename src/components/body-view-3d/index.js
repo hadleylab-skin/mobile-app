@@ -9,7 +9,7 @@ const NativeBodyView3D = requireNativeComponent('BodyView', BodyView3D);
 export const BodyView3D = React.createClass({
     propTypes: {
         sex: PropTypes.oneOf(['male', 'female']),
-        moles: PropTypes.array,
+        moles: PropTypes.array, // eslint-disable-line
         onBodyPartSelected: PropTypes.func,
         onMoleAdded: PropTypes.func,
         onMoleSelected: PropTypes.func,
@@ -29,7 +29,7 @@ export const BodyView3D = React.createClass({
 
     _onBodyPartSelected(data) {
         if (this.props.onBodyPartSelected) {
-        this.props.onBodyPartSelected(data);
+            this.props.onBodyPartSelected(data);
         }
     },
 
