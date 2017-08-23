@@ -1,14 +1,20 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     View,
 } from 'react-native';
-import { BodyView3D } from 'components';
+import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
+import DistantPhoto from './components/distant-photo';
+import s from './styles';
 
 const model = {
-    tree: {},
+    tree: {
+        selectedMole: {},
+        distantPhotos: [],
+    },
 };
 
 export const AnatomicalSiteWidget = schema(model)(React.createClass({
@@ -17,14 +23,33 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
         }),
     },
 
+    onMoleSelected(data) {
+        console.log('onMoleSelected', data);
+
+        this.props.tree.selectedMole.set(data);
+    },
+
+    onBodyPartSelected(data) {
+        console.log('onBodyPartSelected', data);
+
+        this.props.tree.selectedMole.set({});
+    },
+
     onMoleAdded(data) {
         console.log('onMoleAdded', data);
+
+        this.props.tree.selectedMole.set({});
+    },
+
+    onContinuePress() {
+        const data = this.props.tree.selectedMole.get();
 
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
@@ -35,9 +60,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
     async onSubmitMolePhoto(data, uri) {
         const moleData = {
-            anatomicalSite: data.bodyPart,
-            positionX: data.x,
-            positionY: data.y,
+            ...data,
             uri,
         };
 
@@ -54,18 +77,32 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     render() {
-        const sex = 'female';
+        const { cursors } = this.context;
+        const selectedMole = this.props.tree.selectedMole.get();
+        const currentPatientPk = cursors.currentPatientPk.get();
+        const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
+        const sex = patientData.sex === 'f' ? 'female' : 'male';
         const moles = ['a', 'b'];
 
         return (
-            <View style={{ flex: 1, paddingTop: 64 }}>
+            <View style={s.container}>
                 <BodyView3D
                     sex={sex}
                     moles={moles}
-                    onBodyPartSelected={(data) => console.log('onBodyPartSelected', data)}
+                    onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}
-                    onMoleSelected={(data) => console.log('onMoleAdded', data)}
+                    onMoleSelected={this.onMoleSelected}
                 />
+                <DistantPhoto tree={this.props.tree.distantPhotos} />
+                <View style={s.footer}>
+                    {!_.isEmpty(selectedMole) ?
+                        <Button
+                            type="rect"
+                            title="Continue to close-up photo"
+                            onPress={this.onContinuePress}
+                        />
+                    : null}
+                </View>
             </View>
         );
     },
