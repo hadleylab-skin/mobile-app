@@ -382,10 +382,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private func setupCamera()
     {
-        camera.automaticallyAdjustsZRange = true
-        camera.usesOrthographicProjection = true
-        camera.orthographicScale = 5
-//        camera.zNear = 0.1
+//        camera.automaticallyAdjustsZRange = true
+//        camera.usesOrthographicProjection = true
+//        camera.orthographicScale = 5
+        camera.zNear = 0.1
 
         cameraNode.camera = camera
         scene.rootNode.addChildNode(cameraNode)
