@@ -43,7 +43,7 @@ enum CameraTarget
 {
     func bodyView(_ bodyView: BodyView3D, bodyNodeSelected bodyPart: String?)
     func bodyView(_ bodyView: BodyView3D, nevusAdded nevus: Nevus)
-    func bodyView(_ bodyView: BodyView3D, nevusSelected nevusId: String?)
+    func bodyView(_ bodyView: BodyView3D, nevusSelected nevus: Nevus)
 }
 
 class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
@@ -65,7 +65,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
   
     private func updateModel()
     {}
-    
+  
+    private let backgroundView = RadialGradientView()
     private let sceneView = SCNView()
     private let controlsView = ControlsView()
     private let bodyNodeLabel = UILabel()
@@ -88,7 +89,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     private var selectedBodyNodeLO: BodyNode! {
         didSet {
             updateBodyNodeLabel()
-            let name = selectedBodyNodeLO?.name ?? "none"
+            let name = selectedBodyNodeLO?.displayName ?? "none"
             delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
@@ -381,6 +382,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private func setupCamera()
     {
+        camera.automaticallyAdjustsZRange = true
+        camera.usesOrthographicProjection = true
+        camera.orthographicScale = 5
+//        camera.zNear = 0.1
+
         cameraNode.camera = camera
         scene.rootNode.addChildNode(cameraNode)
 
@@ -410,9 +416,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private func setupRootBodyNodeCameraMotion()
     {
-        let bodyCenterLocal = rootBodyNode.node.boundingSphere.center
+        var bodyCenterLocal = rootBodyNode.node.boundingSphere.center
+        bodyCenterLocal.x = 0
+      
         let bodyCenterWorld = rootBodyNode.node.convertPosition(bodyCenterLocal, to: scene.rootNode)
-        
+      
         rootBodyNode.cameraMotion =
             EllipsoidalMotionWithFlexibleFocusPoint(center: SCNVector3ToGLKVector3(bodyCenterWorld),
                                                     axisTheta: GLKVector3Make(0, 0, 1),
@@ -426,6 +434,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                                                     maxPhi: nil,
                                                     initialCoord: (r: 20, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
                                                     velocity: (r: 5.0, theta: 0.0125, phi: 0.025))
+      
+//        if let repr = rootBodyNode.cameraMotion?.getRepresentationNode(z: 5, nx: 100, ny: 100, color: .black) {
+//            scene.rootNode.addChildNode(repr)
+//        }
     }
     
     private func setSphericalMotion(bodyNode: BodyNode,
@@ -469,6 +481,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                               maxZ: maxZ,
                               initialCoord: (r: r, phi: 0, z: z),
                               velocity: (r: 5.0, phi: 0.025, z: 0.025))
+      
+//        if let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 1, nx: 50, ny: 50, color: .black) {
+//            scene.rootNode.addChildNode(repr)
+//        }
     }
     
     private func setupCameraMotion()
@@ -511,39 +527,54 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private func setupLights()
     {
-        let flux: CGFloat = 1500
-        
-        let lightDescriptions = [
-            (flux: flux, pos: SCNVector3(0, 20, 20)),
-            (flux: flux, pos: SCNVector3(0, 20, -20)),
-            (flux: flux, pos: SCNVector3(50, 20, 0)),
-            (flux: flux, pos: SCNVector3(-50, 20, 0)),
-            (flux: flux, pos: SCNVector3(0, 200, 0)),
-            (flux: flux, pos: SCNVector3(0, -125, 0))
-        ]
-        
-        for descr in lightDescriptions
-        {
-            let light = SCNLight()
-            light.type = .omni
-            light.intensity = flux
-
-            let node = SCNNode()
-            node.light = light
-            node.position = descr.pos
-            scene.rootNode.addChildNode(node)
-        }
+//        let flux: CGFloat = 500
+//        
+//        let lightDescriptions = [
+//            (flux: flux, pos: SCNVector3(0, 20, 20)),
+//            (flux: flux, pos: SCNVector3(0, 20, -20)),
+//            (flux: flux, pos: SCNVector3(50, 20, 0)),
+//            (flux: flux, pos: SCNVector3(-50, 20, 0)),
+//            (flux: flux, pos: SCNVector3(0, 200, 0)),
+//            (flux: flux, pos: SCNVector3(0, -125, 0))
+//        ]
+//        
+//        for descr in lightDescriptions
+//        {
+//            let light = SCNLight()
+//            light.type = .omni
+//            light.intensity = flux
+//
+//            let node = SCNNode()
+//            node.light = light
+//            node.position = descr.pos
+//            scene.rootNode.addChildNode(node)
+//        }
+      
+        let dirLight = SCNLight()
+        dirLight.type = .directional
+        dirLight.intensity = 750
+        cameraNode.light = dirLight
     }
 
     private func setupViews()
     {
+        addSubview(backgroundView)
         addSubview(sceneView)
         addSubview(controlsView)
         addSubview(continueToCloseUpPhotoButton)
         insertSubview(bodyNodeLabel, belowSubview: controlsView)
 
         backgroundColor = UIColor(red: 172.0 / 255.0, green: 182.0 / 255.0, blue: 190.0 / 255.0, alpha: 1)
-        
+      
+        backgroundView.colors = [
+            UIColor(white: 1, alpha: 1),
+            UIColor(white: 1, alpha: 0.25),
+            UIColor(white: 1, alpha: 0),
+            UIColor(white: 1, alpha: 0),
+        ]
+      
+        backgroundView.locations = [ 0, 0.35, 0.75, 1 ]
+      
         controlsView.delegate = self
         controlsView.backgroundColor = UIColor(red: 125.0 / 255.0, green: 147.0 / 255.0, blue: 170.0 / 255.0, alpha: 0.34)
         controlsView.layer.cornerRadius = 0
@@ -560,7 +591,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         bodyNodeLabel.textColor = UIColor(white: 0.45, alpha: 1)
         bodyNodeLabel.font = .systemFont(ofSize: 14)
         bodyNodeLabel.textAlignment = .center
-        
+      
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+      
         controlsView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
         }
@@ -587,6 +622,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         sceneView.scene = scene
         sceneView.delegate = self
         sceneView.backgroundColor = UIColor(white: 1, alpha: 0)
+        sceneView.antialiasingMode = .multisampling4X
     }
 
     private func setupGestureRecognizers()
@@ -1070,7 +1106,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         let selectedNevus = nevusHitTest(hitResults)
         if let nevus = selectedNevus {
-            delegate?.bodyView(self, nevusSelected: nevus.id)
+            delegate?.bodyView(self, nevusSelected: nevus)
         }
       
         let didSelectNevus = (selectedNevus != nil)

@@ -1,20 +1,93 @@
 //
-//  CylindricalMotion.swift
-//  BodyView3D
+//  LegCameraMotion.swift
+//  skiniq
 //
-//  Created by mutexre on 06/08/2017.
-//  Copyright © 2017 mutexre. All rights reserved.
+//  Created by mutexre on 21/08/2017.
+//  Copyright © 2017 Facebook. All rights reserved.
 //
 
 import SceneKit
 
-class CylindricalMotion: CameraMotion
+class LegCameraMotion: CameraMotion
+{
+//    private enum Segment {
+//        case cyl1
+//        case torus
+//        case cyl2
+//        case sphere
+//    }
+
+    private var cyl1: CylindricalMotion
+    private var torus: ToroidalMotion
+    private var cyl2: CylindricalMotion
+    private var sphere: SphericalMotion
+  
+//    var currentSegment: Segment =
+  
+    init(start: GLKVector3,
+         axisZ: GLKVector3,
+         axisY: GLKVector3,
+         cylLen1: Float,
+         cylLen2: Float,
+         torusR: Float,
+         minR: Float,
+         maxR: Float)
+    {
+        cyl1 = CylindricalMotion(start: start,
+                                 axisZ: axisZ,
+                                 axisR: axisY,
+                                 minR: minR,
+                                 maxR: maxR,
+                                 minPhi: nil,
+                                 maxPhi: nil,
+                                 minZ: 0,
+                                 maxZ: cylLen1,
+                                 initialCoord: (r: 0, phi: 0, z: 0),
+                                 velocity: (r: 0.01, phi: 0.01, z: 0.01))
+      
+        let axisZ_norm = GLKVector3Normalize(axisZ)
+        let axisY_norm = GLKVector3Normalize(axisY)
+      
+        let torusCenter = GLKVector3Add(start, GLKVector3MultiplyScalar(axisZ_norm, cylLen1))
+        let torusAxisZ = GLKVector3CrossProduct(axisZ_norm, axisY_norm)
+      
+        torus = ToroidalMotion(center: torusCenter,
+                               axisZ: torusAxisZ,
+                               axisR1: axisY,
+                               R1: torusR,
+                               minR2: minR,
+                               maxR2: maxR,
+                               minTheta: -Float.pi / 3,
+                               maxTheta: +Float.pi / 3,
+                               minPhi: nil,
+                               maxPhi: nil,
+                               initialCoord: (R2: 2, theta: 0, phi: 0),
+                               velocity: (R2: 0.01, theta: 0.01, phi: 0.01))
+      
+        cyl2 = CylindricalMotion(start: start,
+                                 axisZ: axisZ,
+                                 axisR: axisY,
+                                 minR: minR,
+                                 maxR: maxR,
+                                 minPhi: nil,
+                                 maxPhi: nil,
+                                 minZ: 0,
+                                 maxZ: cylLen1,
+                                 initialCoord: (r: 0, phi: 0, z: 0),
+                                 velocity: (r: 0.01, phi: 0.01, z: 0.01))
+
+//        sphere = SphericalMotion(center: <#T##GLKVector3#>, axisTheta: <#T##GLKVector3#>, axisPhi: <#T##GLKVector3#>, minR: <#T##Float?#>, maxR: <#T##Float?#>, minTheta: <#T##Float?#>, maxTheta: <#T##Float?#>, minPhi: <#T##Float?#>, maxPhi: <#T##Float?#>, initialCoord: <#T##SphericalMotion.Coord#>, velocity: <#T##SphericalMotion.Coord#>)
+    }
+}
+
+class LegCameraMotion2: CameraMotion
 {
     typealias Coord = (r: Float, phi: Float, z: Float)
     
     var start: GLKVector3
     var axisZ: GLKVector3
     var axisR: GLKVector3
+    var cylinderHeight: Float?
     var minR: Float?
     var maxR: Float?
     var minPhi: Float?
@@ -111,7 +184,7 @@ class CylindricalMotion: CameraMotion
         
         return pivot
     }
-  
+    
     func reset() {
         currentCoord = initialCoord
     }
@@ -157,32 +230,5 @@ class CylindricalMotion: CameraMotion
     
     func moveToPosition(_ position: GLKVector3) -> Bool {
         return false
-    }
-  
-    func getRepresentationVertices(z: Float, nx: Int, ny: Int) -> [GLKVector3]?
-    {
-        guard let minZ = minZ,
-              let maxZ = maxZ
-        else {
-            return nil
-        }
-      
-        let minPhi = self.minPhi ?? 0
-        let maxPhi = self.maxPhi ?? 2 * Float.pi
-      
-        let rangeZ = 0..<ny
-        let rangePhi = 0..<nx
-      
-        let vertices: [GLKVector3] =
-          rangeZ.flatMap { (zIndex: Int) -> [GLKVector3] in
-              return rangePhi.map { (phiIndex: Int) -> GLKVector3 in
-                  let coord = (r: z,
-                             phi: minPhi + (maxPhi - minPhi) * Float(phiIndex) / Float(nx),
-                               z: minZ + (maxZ - minZ) * Float(zIndex) / Float(ny))
-                  return self.convert(coord)
-            }
-        }
-      
-        return vertices
     }
 }

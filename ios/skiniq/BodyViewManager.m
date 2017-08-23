@@ -26,35 +26,40 @@ RCT_EXPORT_MODULE()
   return view;
 }
 
++ (NSDictionary*)nevusDict:(Nevus*)nevus
+{
+  return @{
+    @"id": nevus.id,
+    @"anatomicalSite": nevus.bodyNode.name,
+    @"faceIndex": @(nevus.faceIndex),
+    @"positionX": @(nevus.coord.x),
+    @"positionY": @(nevus.coord.y)
+  };
+}
+
 RCT_EXPORT_VIEW_PROPERTY(sex, NSString);
 RCT_EXPORT_VIEW_PROPERTY(moles, NSArray);
 
 - (void)bodyView:(BodyView3D*)bodyView bodyNodeSelected:(NSString*)bodyNodeName
 {
-  RCTEventEmitter* eventEmitter = [_bridge moduleForName:EVENT_EMITTER_CLASS];
-  [eventEmitter sendEventWithName:BODY_PART_SELECTED_EVENT body:@{
+  RCTEventEmitter* eventEmitter = [_bridge moduleForName: EVENT_EMITTER_CLASS];
+  [eventEmitter sendEventWithName: BODY_PART_SELECTED_EVENT body: @{
     @"name": bodyNodeName
   }];
 }
 
 - (void)bodyView:(BodyView3D*)bodyView nevusAdded:(Nevus*)nevus
 {
-  RCTEventEmitter* eventEmitter = [_bridge moduleForName:EVENT_EMITTER_CLASS];
-  [eventEmitter sendEventWithName:MOLE_ADDED_EVENT body:@{
-    @"id": nevus.id,
-    @"bodyPart": nevus.bodyNode.name,
-    @"faceIndex": @(nevus.faceIndex),
-    @"x": @(nevus.coord.x),
-    @"y": @(nevus.coord.y)
-  }];
+  RCTEventEmitter* eventEmitter = [_bridge moduleForName: EVENT_EMITTER_CLASS];
+  NSDictionary* dict = [BodyViewManager nevusDict:nevus];
+  [eventEmitter sendEventWithName: MOLE_ADDED_EVENT body: dict];
 }
 
-- (void)bodyView:(BodyView3D*)bodyView nevusSelected:(NSString*)nevusId
+- (void)bodyView:(BodyView3D*)bodyView nevusSelected:(Nevus*)nevus
 {
-  RCTEventEmitter* eventEmitter = [_bridge moduleForName:EVENT_EMITTER_CLASS];
-  [eventEmitter sendEventWithName:MOLE_SELECTED_EVENT body:@{
-    @"id": nevusId
-  }];
+  RCTEventEmitter* eventEmitter = [_bridge moduleForName: EVENT_EMITTER_CLASS];
+  NSDictionary* dict = [BodyViewManager nevusDict:nevus];
+  [eventEmitter sendEventWithName: MOLE_SELECTED_EVENT body: dict];
 }
 
 @end

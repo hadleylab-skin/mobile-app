@@ -96,7 +96,7 @@ import SceneKit
         
         material.lightingModel = .physicallyBased
         material.metalness.contents = 0
-        material.roughness.contents = 0.5
+        material.roughness.contents = 0.45
         
         geometry.materials = [ material ]
     }

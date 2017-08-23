@@ -1,5 +1,5 @@
 //
-//  SphericalMotion.swift
+//  CylindricalMotion.swift
 //  BodyView3D
 //
 //  Created by mutexre on 06/08/2017.
@@ -8,65 +8,75 @@
 
 import SceneKit
 
-class SphericalMotion: CameraMotion
+class ToroidalMotion: CameraMotion
 {
-    typealias Coord = (r: Float, theta: Float, phi: Float)
+    typealias Coord = (R2: Float, theta: Float, phi: Float)
     
     var center: GLKVector3
-    var axisTheta: GLKVector3
-    var axisPhi: GLKVector3
-    var minR: Float?
-    var maxR: Float?
+    var axisZ: GLKVector3
+    var axisR1: GLKVector3
+    var R1: Float
+  
+    var minR2: Float?
+    var maxR2: Float?
     var minTheta: Float?
     var maxTheta: Float?
     var minPhi: Float?
     var maxPhi: Float?
+  
     var initialCoord: Coord
     var velocity: Coord
-    
-    internal var currentCoord: Coord
     
     var position: GLKVector3 {
         return convert(currentCoord)
     }
-    
+  
     var pivot: GLKMatrix4 {
         return computePivot(currentCoord)
     }
     
-    internal var axisTheta_norm: GLKVector3 {
-        return GLKVector3Normalize(axisTheta)
+    private var currentCoord: Coord
+    
+    private var axisZ_norm: GLKVector3 {
+        return GLKVector3Normalize(axisZ)
     }
     
-    internal var axisPhi_norm: GLKVector3 {
-        return GLKVector3Normalize(axisPhi)
+    private var axisR1_norm: GLKVector3  {
+        return GLKVector3Normalize(axisR1)
     }
-    
-    init(center: GLKVector3, axisTheta: GLKVector3, axisPhi: GLKVector3,
-         minR: Float?, maxR: Float?,
+  
+    init(center: GLKVector3,
+         axisZ: GLKVector3,
+         axisR1: GLKVector3,
+         R1: Float,
+         minR2: Float?, maxR2: Float?,
          minTheta: Float?, maxTheta: Float?,
          minPhi: Float?, maxPhi: Float?,
          initialCoord: Coord,
          velocity: Coord)
     {
         self.center = center
-        self.axisTheta = axisTheta
-        self.axisPhi = axisPhi
-        self.minR = minR
-        self.maxR = maxR
+        self.axisZ = axisZ
+        self.axisR1 = axisR1
+        self.R1 = R1
+      
+        self.minR2 = minR2
+        self.maxR2 = maxR2
         self.minTheta = minTheta
         self.maxTheta = maxTheta
         self.minPhi = minPhi
         self.maxPhi = maxPhi
+      
         self.initialCoord = initialCoord
         self.velocity = velocity
+      
         currentCoord = initialCoord
         reset()
     }
-
+    
 //    private func convert(_ xyz: GLKVector3) -> Coord
 //    {
-//        let v = GLKVector3Make(xyz.x - center.x, xyz.y - center.y, xyz.z - center.z)
+//        let v = GLKVector3Make(xyz.x - start.x, xyz.y - start.y, xyz.z - start.z)
 //        let dot_v_axisZ = GLKVector3DotProduct(v, axisZ_norm)
 //        let z = dot_v_axisZ
 //        
@@ -85,30 +95,31 @@ class SphericalMotion: CameraMotion
     
     internal func convert(_ coord: Coord) -> GLKVector3
     {
-        var r = GLKVector3MultiplyScalar(axisPhi_norm, coord.r)
-        
-        var rotation = GLKMatrix4Rotate(GLKMatrix4Identity,
-                                        coord.theta,
-                                        axisTheta_norm.x,
-                                        axisTheta_norm.y,
-                                        axisTheta_norm.z)
-        
-        r = GLKMatrix4MultiplyVector3(rotation, r)
-        
-        rotation = GLKMatrix4Rotate(GLKMatrix4Identity,
-                                    coord.phi,
-                                    axisPhi_norm.x,
-                                    axisPhi_norm.y,
-                                    axisPhi_norm.z)
-        
-        r = GLKMatrix4MultiplyVector3(rotation, r)
-        
-        return GLKVector3Add(center, r)
+        let r1 = GLKVector3MultiplyScalar(axisR1_norm, R1)
+        let r2 = GLKVector3MultiplyScalar(axisR1_norm, coord.R2)
+      
+        let v = GLKVector3CrossProduct(axisR1_norm, axisZ_norm)
+        let r2_rotation = GLKMatrix3Rotate(GLKMatrix3Identity, coord.phi, v.x, v.y, v.z)
+        let r2_rotated = GLKMatrix3MultiplyVector3(r2_rotation, r2)
+      
+        let r1_plus_r2 = GLKVector3Add(r1, r2_rotated)
+        let r1_plus_r2_rotation = GLKMatrix3Rotate(GLKMatrix3Identity, coord.theta, axisZ_norm.x, axisZ_norm.y, axisZ_norm.z)
+        let r1_plus_r2_rotated = GLKMatrix3MultiplyVector3(r1_plus_r2_rotation, r1_plus_r2)
+      
+        return r1_plus_r2_rotated
+      
+//        let rv = GLKVector3MultiplyScalar(axisR2_norm, coord.r)
+//        
+//        let rotation = GLKMatrix3Rotate(GLKMatrix3Identity, coord.phi, axisZ_norm.x, axisZ_norm.y, axisZ_norm.z)
+//        let rv_rotated = GLKMatrix3MultiplyVector3(rotation, rv)
+//        let zv_plus_rv_rotated = GLKVector3Add(zv, rv_rotated)
+//        
+//        return GLKVector3Add(start, zv_plus_rv_rotated)
     }
     
-    internal func computePivot(_ coord: Coord) -> GLKMatrix4
+    private func computePivot(_ coord: Coord) -> GLKMatrix4
     {
-        let centerCoord = Coord(r: 0, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi)
+        let centerCoord = Coord(R2: 0, theta: coord.theta, phi: 0)
         let xyz = convert(coord)
         let centerXyz = convert(centerCoord)
         
@@ -116,35 +127,30 @@ class SphericalMotion: CameraMotion
                                          centerXyz.x - xyz.x,
                                          centerXyz.y - xyz.y,
                                          centerXyz.z - xyz.z,
-                                         axisPhi.x, axisPhi.y, axisPhi.z)
+                                         axisZ.x, axisZ.y, axisZ.z)
         
         return pivot
     }
-
+    
     func reset() {
         currentCoord = initialCoord
     }
     
     func toggleFrontBack() {
-        currentCoord.phi = (sin(currentCoord.phi) < 0 ? +1 : -1) * 0.5 * Float.pi
+        currentCoord.phi = cos(currentCoord.phi) > 0 ? Float.pi : 0
     }
-
-    private func calcR(delta: Float) -> Float
+    
+    func move(translation: GLKVector3)
     {
-        var r = currentCoord.r + velocity.r * delta
-        
-        r = max(r, minR ?? 0)
+        var R2 = currentCoord.R2 + velocity.R2 * translation.z
 
-        if let maxR = maxR {
-            r = min(r, maxR)
+        R2 = max(R2, minR2 ?? 0)
+
+        if let maxR2 = maxR2 {
+            R2 = min(R2, maxR2)
         }
-        
-        return r
-    }
-
-    private func calcTheta(delta: Float) -> Float
-    {
-        var theta = currentCoord.theta - velocity.theta * delta
+      
+        var theta = currentCoord.theta - velocity.theta * translation.x
         
         if let minTheta = minTheta {
             theta = max(theta, minTheta)
@@ -153,13 +159,8 @@ class SphericalMotion: CameraMotion
         if let maxTheta = maxTheta {
             theta = min(theta, maxTheta)
         }
-        
-        return theta
-    }
-    
-    private func calcPhi(delta: Float) -> Float
-    {
-        var phi = currentCoord.phi - velocity.phi * delta
+      
+        var phi = currentCoord.phi - velocity.phi * translation.y
         
         if let minPhi = minPhi {
             phi = max(phi, minPhi)
@@ -169,14 +170,9 @@ class SphericalMotion: CameraMotion
             phi = min(phi, maxPhi)
         }
         
-        return phi
-    }
-    
-    func move(translation: GLKVector3)
-    {
-        currentCoord.r = calcR(delta: translation.z)
-        currentCoord.theta = calcTheta(delta: translation.y)
-        currentCoord.phi = calcPhi(delta: translation.x)
+        currentCoord.R2 = R2
+        currentCoord.theta = theta
+        currentCoord.phi = phi
     }
     
     func moveToPosition(_ position: GLKVector3) -> Bool {
@@ -197,9 +193,9 @@ class SphericalMotion: CameraMotion
         let vertices: [GLKVector3] =
           rangeTheta.flatMap { (thetaIndex: Int) -> [GLKVector3] in
               return rangePhi.map { (phiIndex: Int) -> GLKVector3 in
-                  let coord = (r: z,
-                           theta: minTheta + (maxTheta - minTheta) * Float(thetaIndex) / Float(ny),
-                             phi: minPhi + (maxPhi - minPhi) * Float(phiIndex) / Float(nx))
+                  let coord = (R2: z,
+                            theta: minTheta + (maxTheta - minTheta) * Float(thetaIndex) / Float(ny),
+                              phi: minPhi + (maxPhi - minPhi) * Float(phiIndex) / Float(nx))
                 
                   return self.convert(coord)
               }
