@@ -23,7 +23,7 @@ export function getAnatomicalSitesService(token) {
     return (patientPk, cursor) => {
         const _service = buildGetService(
             `/api/v1/patient/${patientPk}/anatomical_site/`,
-            dehydrateAnatomicalSites,
+            _.identity,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);

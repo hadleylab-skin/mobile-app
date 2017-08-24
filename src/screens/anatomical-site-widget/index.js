@@ -2,6 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import {
     View,
+    Text,
+    ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
@@ -10,15 +12,20 @@ import schema from 'libs/state';
 import DistantPhoto from './components/distant-photo';
 import s from './styles';
 
-const model = {
-    tree: {
-        selectedMole: {},
-        distantPhotos: [],
-    },
+const model = (props, context) => {
+    const patientPk = context.cursors.currentPatientPk.get();
+
+    return {
+        tree: (cursor) => context.services.getAnatomicalSitesService(patientPk, cursor),
+    };
 };
 
 export const AnatomicalSiteWidget = schema(model)(React.createClass({
     displayName: 'AnatomicalSiteWidget',
+
+    propTypes: {
+        onAddingComplete: React.PropTypes.func.isRequired,
+    },
 
     contextTypes: {
         cursors: React.PropTypes.shape({
@@ -27,33 +34,41 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         }),
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
+            getAnatomicalSitesService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    getInitialState() {
+        return {
+            selectedMole: {},
+            distantPhotos: [],
+        };
     },
 
     onMoleSelected(data) {
         console.log('onMoleSelected', data);
 
-        this.props.tree.selectedMole.set(data);
+        this.setState({ selectedMole: data });
     },
 
     onBodyPartSelected(data) {
         console.log('onBodyPartSelected', data);
 
-        this.props.tree.selectedMole.set({});
+        this.setState({ selectedMole: {} });
     },
 
     onMoleAdded(data) {
         console.log('onMoleAdded', data);
 
-        this.props.tree.selectedMole.set({});
+        this.setState({ selectedMole: {} });
     },
 
     onContinuePress() {
-        const data = this.props.tree.selectedMole.get();
+        const { selectedMole } = this.state;
 
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
-                this.onSubmitMolePhoto(data, response.uri);
+                this.onSubmitMolePhoto(selectedMole, response.uri);
             }
         });
     },
@@ -64,23 +79,29 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             uri,
         };
 
-        console.log('moleData', moleData);
-
-        /*const service = this.context.services.addMoleService;
+        const service = this.context.services.addMoleService;
         const patientPk = this.context.cursors.currentPatientPk.get();
         const result = await service(patientPk, this.props.tree.mole, moleData);
 
         if (result.status === 'Succeed') {
-            this.onMoleAddedSuccessfully();
             this.props.onAddingComplete();
-        }*/
+        }
+    },
+
+    onDistantPhotoAdded(photo) {
+        let { distantPhotos } = this.state;
+
+        distantPhotos.push(photo);
+
+        this.setState({ distantPhotos });
     },
 
     render() {
         const { cursors } = this.context;
-        const selectedMole = this.props.tree.selectedMole.get();
+        const { selectedMole, distantPhotos } = this.state;
         const currentPatientPk = cursors.currentPatientPk.get();
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
+        const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
         const sex = patientData.sex === 'f' ? 'female' : 'male';
         const moles = ['a', 'b'];
 
@@ -93,7 +114,16 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     onMoleAdded={this.onMoleAdded}
                     onMoleSelected={this.onMoleSelected}
                 />
-                <DistantPhoto tree={this.props.tree.distantPhotos} />
+                {isMoleLoading ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                : null}
+                <DistantPhoto distantPhotos={distantPhotos} onDistantPhotoAdded={this.onDistantPhotoAdded} />
                 <View style={s.footer}>
                     {!_.isEmpty(selectedMole) ?
                         <Button
@@ -111,7 +141,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 export function getAnatomicalSiteWidgetRoute({ title, ...props }, context) {
     return {
         component: AnatomicalSiteWidget,
-        title: title || 'Add photo',
+        title: title || 'Select Location',
         onLeftButtonPress: () => {
             if (props.onBackPress) {
                 props.onBackPress();

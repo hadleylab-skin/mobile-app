@@ -7,24 +7,28 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import schema from 'libs/state';
 import s from './styles';
 
 import plusIcon from './images/plus.png';
 
-const DistantPhoto = schema({})(React.createClass({
+const DistantPhoto = React.createClass({
     displayName: 'DistantPhoto',
+
+    propTypes: {
+        onDistantPhotoAdded: React.PropTypes.func.isRequired,
+        distantPhotos: React.PropTypes.arrayOf(React.PropTypes.string),
+    },
 
     onButtonPress() {
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
-                this.props.tree.push(response.uri);
+                this.props.onDistantPhotoAdded(response.uri);
             }
         });
     },
 
     render() {
-        const photos = this.props.tree.get();
+        const { distantPhotos } = this.props;
 
         return (
             <View style={s.container}>
@@ -34,7 +38,7 @@ const DistantPhoto = schema({})(React.createClass({
                         <Text style={s.buttonText}>Distant photo</Text>
                     </View>
                 </TouchableOpacity>
-                {_.map(photos, (photo, index) => (
+                {_.map(distantPhotos, (photo, index) => (
                     <Image
                         key={index}
                         source={{ uri: photo }}
@@ -45,6 +49,6 @@ const DistantPhoto = schema({})(React.createClass({
             </View>
         );
     },
-}));
+});
 
 export default DistantPhoto;

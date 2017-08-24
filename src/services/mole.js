@@ -76,10 +76,15 @@ export function getMoleService(token) {
 function hydrateMoleData(mole) {
     let data = new FormData();
 
-    data.append('anatomicalSite', mole.anatomicalSite);
-    data.append('positionX', mole.positionX);
-    data.append('positionY', mole.positionY);
+    const positionInfo = { x: mole.positionX, y: mole.positionY };
+
+    data.append('anatomicalSite', _.kebabCase(mole.anatomicalSite));
+    data.append('positionInfo', JSON.stringify(positionInfo));
     data.append('photo', hydrateImage(mole.uri));
+
+    if (mole.patientAnatomicalSite) {
+        data.append('patientAnatomicalSite', mole.patientAnatomicalSite);
+    }
 
     return data;
 }

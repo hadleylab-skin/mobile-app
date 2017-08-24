@@ -58,7 +58,8 @@ const AnatomicalSite = schema({})(React.createClass({
 
     render() {
         const { cursors, mainNavigator } = this.context;
-        const { anatomicalSite, patientAnatomicalSite, positionX, positionY } = this.props.tree.get('data');
+        const { anatomicalSite, patientAnatomicalSite, positionInfo } = this.props.tree.get('data');
+        const { x: positionX, y: positionY } = positionInfo;
         const imageName = _.camelCase(anatomicalSite.data.pk);
         let position = { positionX, positionY };
         const isLoading = this.props.tree.get('status') === 'Loading';
