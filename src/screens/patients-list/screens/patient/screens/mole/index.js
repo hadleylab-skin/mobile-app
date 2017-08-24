@@ -28,6 +28,7 @@ export const Mole = schema({})(React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            doctor: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
             getMoleService: React.PropTypes.func.isRequired,
@@ -115,6 +116,7 @@ export const Mole = schema({})(React.createClass({
 
     render() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
         const images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
@@ -139,7 +141,9 @@ export const Mole = schema({})(React.createClass({
                         />
                         {currentImage && currentImage.data.dateCreated ?
                             <View>
-                                <Prediction {...currentImage.data} />
+                                {canSeePrediction ?
+                                    <Prediction {...currentImage.data} />
+                                : null}
                                 <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
                                 <InfoFields
                                     tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
