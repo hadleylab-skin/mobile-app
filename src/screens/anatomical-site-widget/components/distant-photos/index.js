@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -7,16 +8,21 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import { getDistantPhotoRoute } from './screens/distant-photo';
 import s from './styles';
 
 import plusIcon from './images/plus.png';
 
-const DistantPhoto = React.createClass({
-    displayName: 'DistantPhoto',
+const DistantPhotos = React.createClass({
+    displayName: 'DistantPhotos',
 
     propTypes: {
-        anatomicalSites: React.PropTypes.object, // eslint-disable-line
+        anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
         currentAnatomicalSite: React.PropTypes.string,
+    },
+
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     onButtonPress() {
@@ -28,16 +34,14 @@ const DistantPhoto = React.createClass({
     },
 
     render() {
-        const { anatomicalSites, currentAnatomicalSite } = this.props;
+        const { anatomicalSitesCursor, currentAnatomicalSite } = this.props;
+        const anatomicalSites = anatomicalSitesCursor.get();
+        const { mainNavigator } = this.context;
         let distantPhotos = [];
-
-        console.log('currentAnatomicalSite', currentAnatomicalSite);
 
         if (anatomicalSites.data) {
             distantPhotos = anatomicalSites.data[currentAnatomicalSite];
         }
-
-        console.log('distantPhotos', distantPhotos);
 
         return (
             <View style={s.container}>
@@ -48,16 +52,24 @@ const DistantPhoto = React.createClass({
                     </View>
                 </TouchableOpacity>
                 {_.map(distantPhotos, (photo, index) => (
-                    <Image
+                    <TouchableOpacity
                         key={index}
-                        source={{ uri: photo.data.distantPhoto.thumbnail }}
-                        resizeMode="cover"
-                        style={s.photo}
-                    />
+                        onPress={() => mainNavigator.push(
+                            getDistantPhotoRoute({
+                                tree: anatomicalSitesCursor.select('data', currentAnatomicalSite, index, 'data'),
+                            }, this.context)
+                        )}
+                    >
+                        <Image
+                            source={{ uri: photo.data.distantPhoto.thumbnail }}
+                            resizeMode="cover"
+                            style={s.photo}
+                        />
+                    </TouchableOpacity>
                 ))}
             </View>
         );
     },
 });
 
-export default DistantPhoto;
+export default DistantPhotos;

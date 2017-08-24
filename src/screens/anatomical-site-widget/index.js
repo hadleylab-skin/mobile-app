@@ -8,7 +8,7 @@ import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
-import DistantPhoto from './components/distant-photo';
+import DistantPhotos from './components/distant-photos';
 import s from './styles';
 
 const model = (props, context) => {
@@ -117,8 +117,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         />
                     </View>
                 : null}
-                <DistantPhoto
-                    anatomicalSites={this.props.tree.anatomicalSites.get()}
+                <DistantPhotos
+                    anatomicalSitesCursor={this.props.tree.anatomicalSites}
                     currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
                 />
                 <View style={s.footer}>
