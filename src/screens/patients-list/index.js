@@ -47,7 +47,6 @@ const PatientsListScreen = schema({})(React.createClass({
         return {
             ds: ds.cloneWithRows(patients),
             canUpdate: true,
-            isLoading: false,
         };
     },
 
@@ -77,7 +76,6 @@ const PatientsListScreen = schema({})(React.createClass({
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
-        const showLoader = this.state.isLoading;
         const isSucced = status === 'Succeed';
         const queryParams = cursors.filter.get();
 
@@ -91,7 +89,7 @@ const PatientsListScreen = schema({})(React.createClass({
                     <Filter />
                     <Search searchCursor={this.props.searchCursor} />
                 </View>
-                {showLoader || status === 'Loading' ?
+                {status === 'Loading' ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating
