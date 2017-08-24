@@ -30,7 +30,7 @@ RCT_EXPORT_MODULE()
 {
   return @{
     @"id": nevus.id,
-    @"anatomicalSite": nevus.bodyNode.name,
+    @"anatomicalSite": nevus.bodyNode.displayName,
     @"faceIndex": @(nevus.faceIndex),
     @"positionX": @(nevus.coord.x),
     @"positionY": @(nevus.coord.y)
