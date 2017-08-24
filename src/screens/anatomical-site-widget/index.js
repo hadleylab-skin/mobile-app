@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import {
     View,
-    Text,
     ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
@@ -16,7 +15,10 @@ const model = (props, context) => {
     const patientPk = context.cursors.currentPatientPk.get();
 
     return {
-        tree: (cursor) => context.services.getAnatomicalSitesService(patientPk, cursor),
+        tree: {
+            anatomicalSites: (cursor) => context.services.getAnatomicalSitesService(patientPk, cursor),
+            mole: {},
+        },
     };
 };
 
@@ -41,14 +43,14 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     getInitialState() {
         return {
             selectedMole: {},
-            distantPhotos: [],
+            currentAnatomicalSite: '',
         };
     },
 
     onMoleSelected(data) {
         console.log('onMoleSelected', data);
 
-        this.setState({ selectedMole: data });
+        this.setState({ selectedMole: data, currentAnatomicalSite: data.anatomicalSite });
     },
 
     onBodyPartSelected(data) {
@@ -60,7 +62,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     onMoleAdded(data) {
         console.log('onMoleAdded', data);
 
-        this.setState({ selectedMole: {} });
+        this.setState({ selectedMole: {}, currentAnatomicalSite: data.anatomicalSite });
     },
 
     onContinuePress() {
@@ -88,21 +90,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         }
     },
 
-    onDistantPhotoAdded(photo) {
-        let { distantPhotos } = this.state;
-
-        distantPhotos.push(photo);
-
-        this.setState({ distantPhotos });
-    },
-
     render() {
         const { cursors } = this.context;
-        const { selectedMole, distantPhotos } = this.state;
+        const { selectedMole, currentAnatomicalSite } = this.state;
         const currentPatientPk = cursors.currentPatientPk.get();
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
-        const sex = patientData.sex === 'f' ? 'female' : 'male';
+        const sex = patientData && patientData.sex === 'f' ? 'female' : 'male';
         const moles = ['a', 'b'];
 
         return (
@@ -123,7 +117,10 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         />
                     </View>
                 : null}
-                <DistantPhoto distantPhotos={distantPhotos} onDistantPhotoAdded={this.onDistantPhotoAdded} />
+                <DistantPhoto
+                    anatomicalSites={this.props.tree.anatomicalSites.get()}
+                    currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
+                />
                 <View style={s.footer}>
                     {!_.isEmpty(selectedMole) ?
                         <Button

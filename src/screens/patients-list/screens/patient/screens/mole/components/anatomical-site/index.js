@@ -126,7 +126,7 @@ const AnatomicalSite = schema({})(React.createClass({
                                 getAnatomicalSiteWidgetRoute({
                                     title: 'Select site',
                                     tree: cursors.patientsMoles.select(
-                                        cursors.currentPatientPk.get(), 'anatomicalSites'
+                                        cursors.currentPatientPk.get(), 'widgetData'
                                     ),
                                     onlyChangeAnatomicalSite: true,
                                     currentAnatomicalSite: anatomicalSite.data.pk,

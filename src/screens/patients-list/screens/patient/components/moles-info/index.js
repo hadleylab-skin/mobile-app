@@ -10,7 +10,7 @@ import s from './styles';
 
 export const MolesInfo = React.createClass({
     propTypes: {
-        anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired, //eslint-disable-line
+        widgetDataCursor: BaobabPropTypes.cursor.isRequired, //eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
         checkConsent: React.PropTypes.func.isRequired, //eslint-disable-line
     },
@@ -24,7 +24,7 @@ export const MolesInfo = React.createClass({
         if (isConsentValid) {
             this.context.mainNavigator.push(
                 getAnatomicalSiteWidgetRoute({
-                    tree: this.props.anatomicalSitesCursor,
+                    tree: this.props.widgetDataCursor,
                     onAddingComplete: this.props.onAddingComplete,
                 }, this.context));
         }
