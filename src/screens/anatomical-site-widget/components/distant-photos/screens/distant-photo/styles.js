@@ -24,4 +24,9 @@ export default StyleSheet.create({
         bottom: 0,
         justifyContent: 'center',
     },
+    dot: {
+        position: 'absolute',
+        marginLeft: -9,
+        marginTop: -9,
+    },
 });
