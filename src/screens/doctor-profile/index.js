@@ -8,20 +8,12 @@ import {
 import { InfoField, Switch, Title, Updater } from 'components';
 import schema from 'libs/state';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { createNewKeyPair, getKeyPairStatus, encryptRSA, decryptRSA, encryptAES, decryptAES } from 'services/keypair';
+import { createNewKeyPair, getKeyPairStatus } from 'services/keypair';
 import s from './styles';
 
 const model = {
     tree: {
         keyPairStatus: getKeyPairStatus,
-        rsa: {
-            text: 'hello world',
-            plain: true,
-        },
-        aes: {
-            text: 'hello world',
-            plain: true,
-        },
     },
 };
 
@@ -53,22 +45,6 @@ export const DoctorProfile = schema(model)(React.createClass({
         createNewKeyPair(this.props.tree.keyPairStatus);
     },
 
-    async updateTextRSA() {
-        const cursor = this.props.tree.rsa;
-        const fn = cursor.get('plain') ? encryptRSA : decryptRSA;
-        const text = await fn(cursor.get('text'));
-        cursor.text.set(text);
-        cursor.plain.apply((state) => !state);
-    },
-
-    updateTextAES() {
-        const cursor = this.props.tree.aes;
-        const fn = cursor.get('plain') ? encryptAES : decryptAES;
-        const text = fn(cursor.get('text'), 'secret key 123');
-        cursor.text.set(text);
-        cursor.plain.apply((state) => !state);
-    },
-
     renderCryptographyInfo() {
         const status = this.props.tree.keyPairStatus.status.get();
         if (status === 'Loading') {
@@ -78,17 +54,11 @@ export const DoctorProfile = schema(model)(React.createClass({
                 </Text>
             );
         } if (status === 'Exists') {
-            const text = this.props.tree.rsa.get('text');
             return (
                 <View>
                     <Text>
                         RSA key is up to date
                     </Text>
-                    <InfoField
-                        title={text}
-                        hasNoBorder
-                        onPress={this.updateTextRSA}
-                    />
                 </View>
             );
         } else if (status === 'Failure') {
@@ -161,24 +131,13 @@ export const DoctorProfile = schema(model)(React.createClass({
                     />
                 </View>
                 { this.renderCryptographyInfo() }
-                <View>
-                    <Text>
-                        AES key
-                    </Text>
+                <View style={s.logout}>
                     <InfoField
-                        title={this.props.tree.aes.text.get()}
+                        title={'Log out'}
                         hasNoBorder
-                        onPress={this.updateTextAES}
+                        onPress={this.props.logout}
                     />
                 </View>
-                {/* <View style={s.logout}>
-                    <InfoField
-                    title={'Log out'}
-                    hasNoBorder
-                    onPress={this.props.logout}
-                    />
-                    </View>
-                  */}
             </Updater>
         );
     },
