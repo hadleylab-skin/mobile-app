@@ -63,19 +63,20 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     onMoleSelected(data) {
         console.log('onMoleSelected', data);
 
-        this.setState({ selectedMole: data, currentAnatomicalSite: data.anatomicalSite });
+        this.setState({ selectedMole: data });
     },
 
     onBodyPartSelected(data) {
         console.log('onBodyPartSelected', data);
+        const currentAnatomicalSite = data.name === 'none' ? '' : data.name;
 
-        this.setState({ selectedMole: {} });
+        this.setState({ selectedMole: {}, currentAnatomicalSite });
     },
 
     onMoleAdded(data) {
         console.log('onMoleAdded', data);
 
-        this.setState({ selectedMole: {}, currentAnatomicalSite: data.anatomicalSite });
+        this.setState({ selectedMole: {} });
     },
 
     onContinuePress(data) {
@@ -130,12 +131,14 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         />
                     </View>
                 : null}
-                <DistantPhotos
-                    anatomicalSitesCursor={this.props.tree.anatomicalSites}
-                    currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
-                    onContinuePress={this.onContinuePress}
-                    moleCursor={this.props.tree.select('mole')}
-                />
+                {currentAnatomicalSite ?
+                    <DistantPhotos
+                        anatomicalSitesCursor={this.props.tree.anatomicalSites}
+                        currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
+                        onContinuePress={this.onContinuePress}
+                        moleCursor={this.props.tree.select('mole')}
+                    />
+                : null}
                 <View style={s.footer}>
                     {!_.isEmpty(selectedMole) ?
                         <Button
