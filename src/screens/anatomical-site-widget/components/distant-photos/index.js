@@ -20,6 +20,8 @@ const DistantPhotos = React.createClass({
     propTypes: {
         anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
         currentAnatomicalSite: React.PropTypes.string,
+        onContinuePress: React.PropTypes.func.isRequired,
+        moleCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -95,6 +97,9 @@ const DistantPhotos = React.createClass({
                                                 currentAnatomicalSite,
                                                 index, 'data'
                                             ),
+                                            currentAnatomicalSite,
+                                            onContinuePress: this.props.onContinuePress,
+                                            moleCursor: this.props.moleCursor,
                                         }, this.context));
                                     }
                                 }}

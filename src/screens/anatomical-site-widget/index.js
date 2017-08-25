@@ -33,6 +33,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
         }),
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,
@@ -45,6 +46,18 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             selectedMole: {},
             currentAnatomicalSite: '',
         };
+    },
+
+    async componentWillMount() {
+        this.context.cursors.patientsMoles.on('update', this.onPatientsMolesUpdate);
+    },
+
+    componentWillUnmount() {
+        this.context.cursors.patientsMoles.off('update', this.onPatientsMolesUpdate);
+    },
+
+    onPatientsMolesUpdate() {
+        this.forceUpdate();
     },
 
     onMoleSelected(data) {
@@ -65,18 +78,18 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         this.setState({ selectedMole: {}, currentAnatomicalSite: data.anatomicalSite });
     },
 
-    onContinuePress() {
+    onContinuePress(data) {
         const { selectedMole } = this.state;
 
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
-                this.onSubmitMolePhoto(selectedMole, response.uri);
+                this.onSubmitMolePhoto(data || selectedMole, response.uri);
             }
         });
     },
 
     async onSubmitMolePhoto(data, uri) {
-        const moleData = {
+        let moleData = {
             ...data,
             uri,
         };
@@ -120,6 +133,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                 <DistantPhotos
                     anatomicalSitesCursor={this.props.tree.anatomicalSites}
                     currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
+                    onContinuePress={this.onContinuePress}
+                    moleCursor={this.props.tree.select('mole')}
                 />
                 <View style={s.footer}>
                     {!_.isEmpty(selectedMole) ?
