@@ -6,6 +6,7 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { getDistantPhotoRoute } from './screens/distant-photo';
@@ -23,14 +24,42 @@ const DistantPhotos = React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: React.PropTypes.shape({
+            addAnatomicalSitePhotoService: React.PropTypes.func.isRequired,
+        }),
     },
 
     onButtonPress() {
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
-                console.log('uri', response.uri);
+                this.onAddDistantPhoto(response.uri);
             }
         });
+    },
+
+    async onAddDistantPhoto(uri) {
+        const { cursors, services } = this.context;
+        const { currentAnatomicalSite, anatomicalSitesCursor } = this.props;
+        const data = {
+            anatomicalSite: currentAnatomicalSite,
+            uri,
+        };
+
+        const service = services.addAnatomicalSitePhotoService;
+        const patientPk = cursors.currentPatientPk.get();
+        const distantPhotos = anatomicalSitesCursor.get('data', currentAnatomicalSite);
+
+        const distantPhotoCursor = anatomicalSitesCursor.select(
+            'data',
+            currentAnatomicalSite,
+            distantPhotos ? distantPhotos.length : 0
+        );
+
+        distantPhotoCursor.set({ data: {} });
+        await service(patientPk, distantPhotoCursor, data);
     },
 
     render() {
@@ -40,7 +69,7 @@ const DistantPhotos = React.createClass({
         let distantPhotos = [];
 
         if (anatomicalSites.data) {
-            distantPhotos = anatomicalSites.data[currentAnatomicalSite];
+            distantPhotos = _.sortBy(anatomicalSites.data[currentAnatomicalSite], (item) => item.data.pk);
         }
 
         return (
@@ -51,22 +80,41 @@ const DistantPhotos = React.createClass({
                         <Text style={s.buttonText}>Distant photo</Text>
                     </View>
                 </TouchableOpacity>
-                {_.map(distantPhotos, (photo, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        onPress={() => mainNavigator.push(
-                            getDistantPhotoRoute({
-                                tree: anatomicalSitesCursor.select('data', currentAnatomicalSite, index, 'data'),
-                            }, this.context)
-                        )}
-                    >
-                        <Image
-                            source={{ uri: photo.data.distantPhoto.thumbnail }}
-                            resizeMode="cover"
-                            style={s.photo}
-                        />
-                    </TouchableOpacity>
-                ))}
+                {_.map(distantPhotos, (photo, index) => {
+                    const hasPhoto = photo.data && photo.data.distantPhoto;
+
+                    return (
+                        <View style={{ marginTop: 5 }} key={index}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (hasPhoto) {
+                                        mainNavigator.push(
+                                        getDistantPhotoRoute({
+                                            tree: anatomicalSitesCursor.select(
+                                                'data',
+                                                currentAnatomicalSite,
+                                                index, 'data'
+                                            ),
+                                        }, this.context));
+                                    }
+                                }}
+                                activeOpacity={hasPhoto ? 0.2 : 1}
+                                style={s.photoWrapper}
+                            >
+                                {hasPhoto ?
+                                    <Image
+                                        source={{ uri: photo.data.distantPhoto.thumbnail }}
+                                        resizeMode="cover"
+                                        style={s.photo}
+                                    />
+                                : null}
+                                <View style={s.activityIndicator}>
+                                    <ActivityIndicator animating color="#FF1D70" />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    );
+                })}
             </View>
         );
     },

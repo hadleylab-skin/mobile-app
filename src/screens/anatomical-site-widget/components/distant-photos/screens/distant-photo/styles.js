@@ -6,4 +6,11 @@ export default StyleSheet.create({
         paddingTop: 64,
         position: 'relative',
     },
+    activityIndicator: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 100,
+        alignItems: 'center',
+    },
 });

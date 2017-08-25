@@ -4,6 +4,7 @@ import {
     View,
     Image,
     Dimensions,
+    ActivityIndicator,
 } from 'react-native';
 import s from './styles';
 
@@ -45,6 +46,13 @@ const DistantPhoto = schema(model)(React.createClass({
 
         return (
             <View style={s.container}>
+                <View style={s.activityIndicator}>
+                    <ActivityIndicator
+                        animating
+                        size="large"
+                        color="#FF1D70"
+                    />
+                </View>
                 <Image
                     source={{ uri: distantPhoto.fullSize }}
                     resizeMode="contain"

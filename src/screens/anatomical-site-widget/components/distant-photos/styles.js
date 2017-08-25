@@ -21,9 +21,24 @@ export default StyleSheet.create({
         textAlign: 'center',
         marginTop: 3,
     },
+    photoWrapper: {
+        width: 60,
+        height: 60,
+        position: 'relative',
+        backgroundColor: 'rgba(0,0,0,0.05)',
+    },
     photo: {
         width: 60,
         height: 60,
-        marginTop: 5,
+        zIndex: 1,
+    },
+    activityIndicator: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
