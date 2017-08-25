@@ -27,6 +27,7 @@ const PatientListItem = React.createClass({
                 thumbnail: React.PropTypes.string,
             }),
             lastUpload: React.PropTypes.string,
+            hidden: React.PropTypes.bool,
         }).isRequired,
         goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: React.PropTypes.func.isRequired,
@@ -54,8 +55,12 @@ const PatientListItem = React.createClass({
 
     render() {
         const { cursors, services, mainNavigator } = this.context;
-        const { firstName, lastName, lastUpload, photo, pk } = this.props.data;
+        const { firstName, lastName, lastUpload, photo, pk, hidden } = this.props.data;
         const totalImages = this.props.data.molesImagesCount;
+
+        if (hidden) {
+            return null;
+        }
 
         return (
             <View style={s.container}>

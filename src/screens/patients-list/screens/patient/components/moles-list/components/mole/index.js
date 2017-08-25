@@ -26,6 +26,7 @@ export const Mole = React.createClass({
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
             addMolePhotoService: React.PropTypes.func.isRequired,
@@ -75,10 +76,12 @@ export const Mole = React.createClass({
         const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
 
         if (result.status === 'Succeed') {
+            const queryParams = cursors.filter.get();
+
             imagesCursor.unset(pk);
             imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
 
-            await services.patientsService(cursors.patients);
+            await services.patientsService(cursors.patients, queryParams);
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles')

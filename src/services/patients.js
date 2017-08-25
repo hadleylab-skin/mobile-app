@@ -36,11 +36,45 @@ function dehydratePatients(patients) {
     return convertListToDict(wrapItemsAsRemoteData(data));
 }
 
+function concatParams(data) {
+    let params = '';
+
+    _.map(data, (item, key) => {
+        if (!item) {
+            return;
+        }
+
+        const paramKey = _.snakeCase(key);
+        let value = item;
+
+        if (typeof value === 'boolean') {
+            value = _.upperFirst(`${value}`);
+        }
+
+        if (params.length > 0) {
+            params += '&' + paramKey + '=' + value;
+        } else {
+            params += paramKey + '=' + value;
+        }
+    });
+
+    return params;
+}
+
 export function patientsService(token) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
-    return buildGetService('/api/v1/patient/', dehydratePatients, _.merge({}, defaultHeaders, headers));
+
+    return (cursor, params) => {
+        const service = buildGetService(
+            `/api/v1/patient/?${concatParams(params)}`,
+            dehydratePatients,
+            _.merge({}, defaultHeaders, headers)
+        );
+
+        return service(cursor);
+    };
 }
 
 function hydratePatientData(patientData) {
@@ -116,7 +150,7 @@ export function updatePatientService(token) {
     };
 }
 
-function hydrateConsentData(base64IMage){
+function hydrateConsentData(base64IMage) {
     let data = new FormData();
     data.append('signature', base64IMage);
     return data;
