@@ -26,7 +26,7 @@ class ToroidalMotion: CameraMotion
   
     var initialCoord: Coord
     var velocity: Coord
-    
+  
     var position: GLKVector3 {
         return convert(currentCoord)
     }
@@ -34,7 +34,34 @@ class ToroidalMotion: CameraMotion
     var pivot: GLKMatrix4 {
         return computePivot(currentCoord)
     }
-    
+
+    typealias T = CameraMotion
+
+    var prev: CameraMotion?
+    var next: CameraMotion?
+  
+    var zoomMode: CameraZoomMode {
+        return .translate
+    }
+  
+    var start: GLKVector3? {
+        guard let theta = minTheta else {
+            return nil
+        }
+      
+        let coord = getCentralCoord(theta: theta)
+        return convert(coord)
+    }
+  
+    var end: GLKVector3? {
+        guard let theta = maxTheta else {
+            return nil
+        }
+      
+        let coord = getCentralCoord(theta: theta)
+        return convert(coord)
+    }
+  
     private var currentCoord: Coord
     
     private var axisZ_norm: GLKVector3 {
@@ -43,6 +70,10 @@ class ToroidalMotion: CameraMotion
     
     private var axisR1_norm: GLKVector3  {
         return GLKVector3Normalize(axisR1)
+    }
+  
+    private func getCentralCoord(theta: Float) -> Coord {
+        return (R2: 0, theta: theta, phi: 0)
     }
   
     init(center: GLKVector3,
@@ -73,7 +104,38 @@ class ToroidalMotion: CameraMotion
         currentCoord = initialCoord
         reset()
     }
-    
+  
+    convenience init(origin: GLKVector3,
+                     dirToCenter: GLKVector3,
+                     dir: GLKVector3,
+                     R1: Float,
+                     minR2: Float?, maxR2: Float?,
+                     minTheta: Float?, maxTheta: Float?,
+                     minPhi: Float?, maxPhi: Float?,
+                     initialCoord: Coord,
+                     velocity: Coord)
+    {
+        let axisR1 = GLKVector3MultiplyScalar(dirToCenter, -1)
+
+        let dirToCenterNorm = GLKVector3Normalize(dirToCenter)
+        let center = GLKVector3Add(origin, GLKVector3MultiplyScalar(dirToCenterNorm, R1))
+      
+        let axisZ = GLKVector3CrossProduct(dir, dirToCenter)
+      
+        self.init(center: center,
+                  axisZ: axisZ,
+                  axisR1: axisR1,
+                  R1: R1,
+                  minR2: minR2,
+                  maxR2: maxR2,
+                  minTheta: minTheta,
+                  maxTheta: maxTheta,
+                  minPhi: minPhi,
+                  maxPhi: maxPhi,
+                  initialCoord: initialCoord,
+                  velocity: velocity)
+    }
+  
 //    private func convert(_ xyz: GLKVector3) -> Coord
 //    {
 //        let v = GLKVector3Make(xyz.x - start.x, xyz.y - start.y, xyz.z - start.z)
@@ -107,14 +169,6 @@ class ToroidalMotion: CameraMotion
         let r1_plus_r2_rotated = GLKMatrix3MultiplyVector3(r1_plus_r2_rotation, r1_plus_r2)
       
         return r1_plus_r2_rotated
-      
-//        let rv = GLKVector3MultiplyScalar(axisR2_norm, coord.r)
-//        
-//        let rotation = GLKMatrix3Rotate(GLKMatrix3Identity, coord.phi, axisZ_norm.x, axisZ_norm.y, axisZ_norm.z)
-//        let rv_rotated = GLKMatrix3MultiplyVector3(rotation, rv)
-//        let zv_plus_rv_rotated = GLKVector3Add(zv, rv_rotated)
-//        
-//        return GLKVector3Add(start, zv_plus_rv_rotated)
     }
     
     private func computePivot(_ coord: Coord) -> GLKMatrix4
@@ -140,7 +194,7 @@ class ToroidalMotion: CameraMotion
         currentCoord.phi = cos(currentCoord.phi) > 0 ? Float.pi : 0
     }
     
-    func move(translation: GLKVector3)
+    func move(_ translation: GLKVector3) -> Bool
     {
         var R2 = currentCoord.R2 + velocity.R2 * translation.z
 
@@ -173,6 +227,8 @@ class ToroidalMotion: CameraMotion
         currentCoord.R2 = R2
         currentCoord.theta = theta
         currentCoord.phi = phi
+      
+        return false
     }
     
     func moveToPosition(_ position: GLKVector3) -> Bool {

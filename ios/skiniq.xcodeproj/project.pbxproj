@@ -588,15 +588,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		928197111F4589CE003A93E4 /* BodyView3D */ = {
+		9214ED951F4F53030043CC56 /* React */ = {
 			isa = PBXGroup;
 			children = (
-				92EBB3B01F46AFDB003DD4EE /* Camera Motion */,
-				92EBB3B51F46AFDB003DD4EE /* Models */,
-				92EBB3B91F46AFDB003DD4EE /* Views */,
 				929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */,
 				92EBB3C51F46B017003DD4EE /* BodyViewManager.h */,
 				92EBB3C61F46B017003DD4EE /* BodyViewManager.m */,
+			);
+			name = React;
+			sourceTree = "<group>";
+		};
+		928197111F4589CE003A93E4 /* BodyView3D */ = {
+			isa = PBXGroup;
+			children = (
+				9214ED951F4F53030043CC56 /* React */,
+				92EBB3B01F46AFDB003DD4EE /* Camera Motion */,
+				92EBB3B51F46AFDB003DD4EE /* Models */,
+				92EBB3B91F46AFDB003DD4EE /* Views */,
 			);
 			name = BodyView3D;
 			sourceTree = "<group>";

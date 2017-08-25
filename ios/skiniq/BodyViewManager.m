@@ -46,6 +46,7 @@ RCT_EXPORT_VIEW_PROPERTY(moles, NSArray);
   [eventEmitter sendEventWithName: BODY_PART_SELECTED_EVENT body: @{
     @"name": bodyNodeName
   }];
+  NSLog(@">>> node selected: %@", bodyNodeName);
 }
 
 - (void)bodyView:(BodyView3D*)bodyView nevusAdded:(Nevus*)nevus

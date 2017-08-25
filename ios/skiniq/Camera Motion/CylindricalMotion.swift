@@ -12,7 +12,7 @@ class CylindricalMotion: CameraMotion
 {
     typealias Coord = (r: Float, phi: Float, z: Float)
     
-    var start: GLKVector3
+    var origin: GLKVector3
     var axisZ: GLKVector3
     var axisR: GLKVector3
     var minR: Float?
@@ -23,7 +23,7 @@ class CylindricalMotion: CameraMotion
     var maxZ: Float?
     var initialCoord: Coord
     var velocity: Coord
-    
+  
     var position: GLKVector3 {
         return convert(currentCoord)
     }
@@ -31,7 +31,30 @@ class CylindricalMotion: CameraMotion
     var pivot: GLKMatrix4 {
         return computePivot(currentCoord)
     }
-    
+
+    var zoomMode: CameraZoomMode {
+        return .translate
+    }
+
+    var prev: CameraMotion?
+    var next: CameraMotion?
+
+    var start: GLKVector3? {
+        guard let minZ = minZ else {
+            return nil
+        }
+      
+        return GLKVector3Add(origin, GLKVector3MultiplyScalar(axisZ, minZ))
+    }
+  
+    var end: GLKVector3? {
+        guard let maxZ = maxZ else {
+            return nil
+        }
+      
+        return GLKVector3Add(origin, GLKVector3MultiplyScalar(axisZ, maxZ))
+    }
+  
     private var currentCoord: Coord
     
     private var axisZ_norm: GLKVector3 {
@@ -42,7 +65,7 @@ class CylindricalMotion: CameraMotion
         return GLKVector3Normalize(axisR)
     }
     
-    init(start: GLKVector3,
+    init(origin: GLKVector3,
          axisZ: GLKVector3, axisR: GLKVector3,
          minR: Float?, maxR: Float?,
          minPhi: Float?, maxPhi: Float?,
@@ -50,7 +73,7 @@ class CylindricalMotion: CameraMotion
          initialCoord: Coord,
          velocity: Coord)
     {
-        self.start = start
+        self.origin = origin
         self.axisZ = axisZ
         self.axisR = axisR
         self.minR = minR
@@ -65,25 +88,25 @@ class CylindricalMotion: CameraMotion
         reset()
     }
     
-//    private func convert(_ xyz: GLKVector3) -> Coord
-//    {
-//        let v = GLKVector3Make(xyz.x - start.x, xyz.y - start.y, xyz.z - start.z)
-//        let dot_v_axisZ = GLKVector3DotProduct(v, axisZ_norm)
-//        let z = dot_v_axisZ
-//        
-//        let lenV = GLKVector3Length(v)
-//        let r = sqrt(lenV * lenV - z * z)
-//        
-//        let zv = GLKVector3MultiplyScalar(axisZ_norm, z)
-//        let rv = GLKVector3Subtract(v, zv)
-//        let lenRv = GLKVector3Length(rv)
-//        let dot_rv_axisR = GLKVector3DotProduct(rv, axisR_norm)
-//        let cos = dot_rv_axisR / lenRv
-//        let phi = acos(cos)
-//        
-//        return (r:r, phi:phi, z:z)
-//    }
-    
+    private func convert(_ xyz: GLKVector3) -> Coord
+    {
+        let v = GLKVector3Make(xyz.x - origin.x, xyz.y - origin.y, xyz.z - origin.z)
+        let dot_v_axisZ = GLKVector3DotProduct(v, axisZ_norm)
+        let z = dot_v_axisZ
+        
+        let lenV = GLKVector3Length(v)
+        let r = sqrt(lenV * lenV - z * z)
+        
+        let zv = GLKVector3MultiplyScalar(axisZ_norm, z)
+        let rv = GLKVector3Subtract(v, zv)
+        let len_rv = GLKVector3Length(rv)
+        let dot_rv_axisR = GLKVector3DotProduct(rv, axisR_norm)
+        let cos = dot_rv_axisR / len_rv
+        let phi = acos(cos)
+        
+        return (r: r, phi: phi, z: z)
+    }
+  
     internal func convert(_ coord: Coord) -> GLKVector3
     {
         print(coord.phi)
@@ -94,7 +117,7 @@ class CylindricalMotion: CameraMotion
         let rv_rotated = GLKMatrix3MultiplyVector3(rotation, rv)
         let zv_plus_rv_rotated = GLKVector3Add(zv, rv_rotated)
         
-        return GLKVector3Add(start, zv_plus_rv_rotated)
+        return GLKVector3Add(origin, zv_plus_rv_rotated)
     }
     
     private func computePivot(_ coord: Coord) -> GLKMatrix4
@@ -120,41 +143,94 @@ class CylindricalMotion: CameraMotion
         currentCoord.phi = cos(currentCoord.phi) > 0 ? Float.pi : 0
     }
     
-    func move(translation: GLKVector3)
+    func move(_ translation: GLKVector3) -> Bool
     {
-        var r = currentCoord.r + velocity.r * translation.z
-
-        r = max(r, minR ?? 0)
+        let r = currentCoord.r + velocity.r * translation.z
+        let phi = currentCoord.phi - velocity.phi * translation.x
+        let z = currentCoord.z + velocity.z * translation.y
+      
+        let coord = (r: r, phi: phi, z: z)
+        var outOfBounds: Bool
+        (currentCoord, outOfBounds) = clamp(coord)
+      
+        return outOfBounds
+    }
+  
+    private func clamp(_ coord: Coord) -> (coord: Coord, outOfBounds: Bool)
+    {
+        var clampedCoord = coord
+      
+        let cR = clampR(&clampedCoord)
+        let cPhi = clampPhi(&clampedCoord)
+        let cZ = clampZ(&clampedCoord)
+        let outOfBounds = cR || cPhi || cZ
+      
+        return (clampedCoord, outOfBounds)
+    }
+  
+    private func clampR(_ coord: inout Coord) -> Bool
+    {
+        var outOfBounds = false
+      
+        if let minR = minR {
+            if coord.r < minR {
+                coord.r = minR
+                outOfBounds = true
+            }
+        }
 
         if let maxR = maxR {
-            r = min(r, maxR)
+            if coord.r > maxR {
+                coord.r = maxR
+                outOfBounds = true
+            }
         }
-        
-        var phi = currentCoord.phi - velocity.phi * translation.x
-        
+      
+        return outOfBounds
+    }
+  
+    private func clampPhi(_ coord: inout Coord) -> Bool
+    {
+        var outOfBounds = false
+      
         if let minPhi = minPhi {
-            phi = max(phi, minPhi)
+            if coord.phi < minPhi {
+                coord.phi = minPhi
+                outOfBounds = true
+            }
         }
         
         if let maxPhi = maxPhi {
-            phi = min(phi, maxPhi)
+            if coord.phi > maxPhi {
+                coord.phi = maxPhi
+                outOfBounds = true
+            }
         }
-        
-        var z = currentCoord.z + velocity.z * translation.y
-        
+      
+        return outOfBounds
+    }
+  
+    private func clampZ(_ coord: inout Coord) -> Bool
+    {
+        var outOfBounds = false
+      
         if let minZ = minZ {
-            z = max(z, minZ)
+            if coord.z < minZ {
+                coord.z = minZ
+                outOfBounds = true
+            }
         }
         
         if let maxZ = maxZ {
-            z = min(z, maxZ)
+            if coord.z > maxZ {
+                coord.z = maxZ
+                outOfBounds = true
+            }
         }
-        
-        currentCoord.r = r
-        currentCoord.phi = phi
-        currentCoord.z = z
+      
+        return outOfBounds
     }
-    
+  
     func moveToPosition(_ position: GLKVector3) -> Bool {
         return false
     }

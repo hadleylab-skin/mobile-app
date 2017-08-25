@@ -22,23 +22,6 @@ enum CameraTarget
     case bodyNode(BodyNode)
 }
 
-@objc class NevusInfo: NSObject
-{
-    var id: String = ""
-    var bodyNodeName: String
-    var triangleIndex: Int
-    var x: Float
-    var y: Float
-    
-    init(bodyNodeName: String, triangleIndex: Int, x: Float, y: Float)
-    {
-        self.bodyNodeName = bodyNodeName
-        self.triangleIndex = triangleIndex
-        self.x = x
-        self.y = y
-    }
-}
-
 @objc protocol BodyViewDelegate
 {
     func bodyView(_ bodyView: BodyView3D, bodyNodeSelected bodyPart: String?)
@@ -97,6 +80,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     private var selectedBodyNodeHI: BodyNode? {
         didSet {
             updateBodyNodeLabel()
+//            let name = selectedBodyNodeHI?.displayName ?? "none"
+//            delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
     
@@ -386,6 +371,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
 //        camera.usesOrthographicProjection = true
 //        camera.orthographicScale = 5
         camera.zNear = 0.1
+        camera.yFov = 60
 
         cameraNode.camera = camera
         scene.rootNode.addChildNode(cameraNode)
@@ -464,13 +450,13 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     }
     
     private func setVerticalCylindricalMotion(bodyNode: BodyNode,
-                                              start: GLKVector3,
+                                              origin: GLKVector3,
                                               axis: GLKVector3,
                                               minR: Float, maxR: Float, r: Float,
                                               minZ: Float, maxZ: Float, z: Float)
     {
         bodyNode.cameraMotion =
-            CylindricalMotion(start: start,
+            CylindricalMotion(origin: origin,
                               axisZ: axis,
                               axisR: GLKVector3Make(0, 0, 1),
                               minR: minR,
@@ -501,25 +487,25 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                            maxTheta: 0.7 * Float.pi)
         
         setVerticalCylindricalMotion(bodyNode: armR,
-                                     start: GLKVector3Make(-4.25, -1.75, 0),
+                                     origin: GLKVector3Make(-4.25, -1.75, 0),
                                      axis: GLKVector3Make(+0.35, 1, 0),
                                      minR: 2.75, maxR: 10, r: 5,
                                      minZ: 0, maxZ: 7, z: 0)
         
         setVerticalCylindricalMotion(bodyNode: armL,
-                                     start: GLKVector3Make(+4.25, -1.75, 0),
+                                     origin: GLKVector3Make(+4.25, -1.75, 0),
                                      axis: GLKVector3Make(-0.35, 1, 0),
                                      minR: 2.75, maxR: 10, r: 5,
                                      minZ: 0, maxZ: 7, z: 0)
         
         setVerticalCylindricalMotion(bodyNode: legR,
-                                     start: GLKVector3Make(-1, -6, 0),
+                                     origin: GLKVector3Make(-1, -6, 0),
                                      axis: GLKVector3Make(0, 1, 0),
                                      minR: 2.75, maxR: 10, r: 10,
                                      minZ: -5, maxZ: 5, z: 0)
         
         setVerticalCylindricalMotion(bodyNode: legL,
-                                     start: GLKVector3Make(+1, -6, 0),
+                                     origin: GLKVector3Make(+1, -6, 0),
                                      axis: GLKVector3Make(0, 1, 0),
                                      minR: 2.75, maxR: 10, r: 10,
                                      minZ: -5, maxZ: 5, z: 0)
@@ -983,6 +969,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             selectedBodyNodeHI?.selected = false
             bodyNode.selected = true
             selectedBodyNodeHI = bodyNode
+          
+            let name = bodyNode.displayName ?? "none"
+            delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
 
@@ -1060,8 +1049,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             return;
         }
         
-        let tr = GLKVector3Make(dx, dy, 0)
-        motion.move(translation: tr)
+        let translation = GLKVector3Make(dx, dy, 0)
+        motion.move(translation)
         motion.updateNode(cameraNode)
     }
     
@@ -1076,13 +1065,22 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         if pinch.state == .began {
             lastPinchScale = nil
         }
+      
+        switch motion.zoomMode
+        {
+        case .translate:
+            let ds = pinchScale - (lastPinchScale ?? pinchScale)
+          
+            let translation = GLKVector3Make(0, 0, -ds)
+            motion.move(translation)
+            motion.updateNode(cameraNode)
         
-        let ds = pinchScale - (lastPinchScale ?? pinchScale)
-        
-        let tr = GLKVector3Make(0, 0, -ds)
-        motion.move(translation: tr)
-        motion.updateNode(cameraNode)
-        
+        case .fov:
+            var fov = camera.yFov * Double((lastPinchScale ?? pinchScale) / pinchScale)
+            fov = max(min(fov, 60), 15)
+            camera.yFov = fov
+        }
+      
         lastPinchScale = pinchScale
     }
     
@@ -1101,7 +1099,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         hitResults.forEach {
             let name = $0.node.name ?? "-"
-            print(">>> \(name)")
+//            print(">>> \(name)")
         }
         
         let selectedNevus = nevusHitTest(hitResults)
@@ -1197,7 +1195,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             
             hitTestResults.forEach {
                 let name = $0.node.name ?? "-"
-                print(">>> \(name)")
+//                print(">>> \(name)")
             }
         }
     }

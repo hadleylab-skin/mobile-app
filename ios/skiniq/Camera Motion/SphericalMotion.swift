@@ -25,7 +25,7 @@ class SphericalMotion: CameraMotion
     var velocity: Coord
     
     internal var currentCoord: Coord
-    
+  
     var position: GLKVector3 {
         return convert(currentCoord)
     }
@@ -33,7 +33,14 @@ class SphericalMotion: CameraMotion
     var pivot: GLKMatrix4 {
         return computePivot(currentCoord)
     }
-    
+  
+    var zoomMode: CameraZoomMode {
+        return .translate
+    }
+
+    var prev: CameraMotion?
+    var next: CameraMotion?
+  
     internal var axisTheta_norm: GLKVector3 {
         return GLKVector3Normalize(axisTheta)
     }
@@ -172,11 +179,12 @@ class SphericalMotion: CameraMotion
         return phi
     }
     
-    func move(translation: GLKVector3)
+    func move(_ translation: GLKVector3) -> Bool
     {
         currentCoord.r = calcR(delta: translation.z)
         currentCoord.theta = calcTheta(delta: translation.y)
         currentCoord.phi = calcPhi(delta: translation.x)
+        return false
     }
     
     func moveToPosition(_ position: GLKVector3) -> Bool {

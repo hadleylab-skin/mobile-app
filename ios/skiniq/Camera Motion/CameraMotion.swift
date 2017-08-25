@@ -5,15 +5,29 @@
 
 import SceneKit
 
+enum CameraZoomMode
+{
+    case translate
+    case fov
+}
+
+//protocol CameraMotionDelegate
+//{
+//    func cameraMotion(_ cameraMotion: CameraMotion, )
+//}
+
 protocol CameraMotion
 {
     var position: GLKVector3 { get }
     var pivot: GLKMatrix4 { get }
+    var zoomMode: CameraZoomMode { get }
+
+//    var prev: CameraMotion? { get set }
+//    var next: CameraMotion? { get set }
   
     func reset()
     func toggleFrontBack()
-    func move(translation: GLKVector3)
-//    func moveToPosition(_ position: GLKVector3) -> Bool
+    func move(_ translation: GLKVector3) -> Bool
 
     func getRepresentationVertices(z: Float, nx: Int, ny: Int) -> [GLKVector3]?
 }
