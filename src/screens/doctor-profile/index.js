@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
 import {
     View,
@@ -6,27 +7,31 @@ import {
     Image,
 } from 'react-native';
 import { InfoField, Switch, Title, Updater } from 'components';
+import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import schema from 'libs/state';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { createNewKeyPair, getKeyPairStatus } from 'services/keypair';
 import s from './styles';
 
-const model = {
-    tree: {
-        keyPairStatus: getKeyPairStatus,
-    },
-};
-
-export const DoctorProfile = schema(model)(React.createClass({
+export const DoctorProfile = schema({})(React.createClass({
     propTypes: {
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         logout: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         services: React.PropTypes.shape({
             updateDoctorService: React.PropTypes.func.isRequired,
             getDoctorService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    openCryptoConfiguration() {
+        this.context.mainNavigator.push(
+            getCryptoConfigurationRoute({
+                doctorCursor: this.props.tree,
+                keyPairStatusCursor: this.props.keyPairStatusCursor,
+            }));
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -40,50 +45,6 @@ export const DoctorProfile = schema(model)(React.createClass({
         unitsOfLengthCursor.set(unit);
         await service(this.props.tree, { unitsOfLength: unit });
     },
-
-    regenerateRSAKeypair() {
-        createNewKeyPair(this.props.tree.keyPairStatus);
-    },
-
-    renderCryptographyInfo() {
-        const status = this.props.tree.keyPairStatus.status.get();
-        if (status === 'Loading') {
-            return (
-                <Text>
-                    Loading
-                </Text>
-            );
-        } if (status === 'Exists') {
-            return (
-                <View>
-                    <Text>
-                        RSA key is up to date
-                    </Text>
-                </View>
-            );
-        } else if (status === 'Failure') {
-            const error = this.props.tree.keyPairStatus.error.get();
-            return (
-                <View>
-                    <Text>Error</Text>
-                    <Text>{JSON.stringify(error)}</Text>
-                    <InfoField
-                        title={'Regenerate RSA keypair'}
-                        hasNoBorder
-                        onPress={this.regenerateRSAKeypair}
-                    />
-                </View>
-            );
-        }
-        return (
-            <InfoField
-                title={'Generate RSA keypair'}
-                hasNoBorder
-                onPress={this.regenerateRSAKeypair}
-            />
-        );
-    },
-
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.tree.get('data');
 
@@ -130,7 +91,11 @@ export const DoctorProfile = schema(model)(React.createClass({
                         }
                     />
                 </View>
-                { this.renderCryptographyInfo() }
+                <InfoField
+                    title={'Gryptography configuration'}
+                    hasNoBorder
+                    onPress={this.openCryptoConfiguration}
+                />
                 <View style={s.logout}>
                     <InfoField
                         title={'Log out'}

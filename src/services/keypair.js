@@ -51,27 +51,39 @@ export function decryptAES(ciphertext, key) {
 
 export async function getKeyPairStatus(cursor) {
     cursor.set({ status: 'Loading' });
+    let data;
     try {
         const keys = await getKeyPair();
-        cursor.set({ status: keys.publicKey && keys.privateKey ? 'Exists' : 'DoesNotExists' });
+        data = {
+            status: keys.publicKey && keys.privateKey ? 'Exists' : 'DoesNotExists',
+            ...keys,
+        };
     } catch (error) {
-        cursor.set({
+        data = {
             status: 'Failure',
             error,
-        });
+        };
     }
+    cursor.set(data);
+    return data;
 }
 
 export async function createNewKeyPair(cursor) {
     cursor.set('status', 'Loading');
+    let data;
     try {
-        await createKeyPair();
-        cursor.set({ status: 'Exists' });
+        const keys = await createKeyPair();
+        data = {
+            status: 'Exists',
+            ...keys,
+        };
     } catch (error) {
-        cursor.set({
+        data = {
             status: 'Failure',
             error,
-        });
+        };
     }
+    cursor.set(data);
+    return data;
 }
 
