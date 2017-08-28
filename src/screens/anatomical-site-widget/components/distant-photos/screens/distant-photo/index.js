@@ -42,11 +42,16 @@ const DistantPhoto = schema(model)(React.createClass({
         return {
             positionX: null,
             positionY: null,
+            isLoading: false,
         };
     },
 
     async componentWillMount() {
-        this.context.cursors.patientsMoles.on('update', this.onPatientsMolesUpdate);
+        const { moleCursor } = this.props;
+        const patientMolesCursor = this.getPatientMolesCursor();
+
+        patientMolesCursor.on('update', this.onPatientsMolesUpdate);
+        moleCursor.on('update', this.onMoleUpdate);
     },
 
     componentDidMount() {
@@ -56,11 +61,38 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     componentWillUnmount() {
-        this.context.cursors.patientsMoles.off('update', this.onPatientsMolesUpdate);
+        const { moleCursor } = this.props;
+        const patientMolesCursor = this.getPatientMolesCursor();
+
+        patientMolesCursor.off('update', this.onPatientsMolesUpdate);
+        moleCursor.off('update', this.onMoleUpdate);
+    },
+
+    getPatientMolesCursor() {
+        const { cursors } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
+        const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
+
+        return patientMolesCursor;
     },
 
     onPatientsMolesUpdate() {
         this.forceUpdate();
+
+        const patientMolesCursor = this.getPatientMolesCursor();
+        const patientMoles = patientMolesCursor.get();
+
+        if (patientMoles.status === 'Succeed') {
+            this.setState({ positionX: null, positionY: null, isLoading: false });
+        }
+    },
+
+    onMoleUpdate() {
+        const mole = this.props.moleCursor.get();
+
+        if (mole.status === 'Loading') {
+            this.setState({ isLoading: true });
+        }
     },
 
     getImageSize(photo) {
@@ -79,9 +111,8 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     getMoles() {
-        const { cursors } = this.context;
-        const patientPk = cursors.currentPatientPk.get();
-        const patientMoles = cursors.patientsMoles.get(patientPk, 'moles', 'data');
+        const patientMolesCursor = this.getPatientMolesCursor();
+        const patientMoles = patientMolesCursor.get('data');
 
         const moles = _.groupBy(patientMoles, (mole) => {
             const anatomicalSitesLength = mole.data.anatomicalSites.length;
@@ -93,28 +124,42 @@ const DistantPhoto = schema(model)(React.createClass({
         return moles;
     },
 
+    onContinuePress() {
+        const { positionX, positionY } = this.state;
+        const { currentAnatomicalSite } = this.props;
+        const { pk } = this.props.tree.get();
+
+        this.props.onContinuePress({
+            anatomicalSite: currentAnatomicalSite,
+            patientAnatomicalSite: pk,
+            positionX,
+            positionY,
+        });
+    },
+
     render() {
         const { distantPhoto, pk } = this.props.tree.get();
         const { width, height } = this.props.tree.get('imageSize');
-        const { positionX, positionY } = this.state;
-        const { currentAnatomicalSite, moleCursor } = this.props;
-        const isMoleLoading = moleCursor.get('status') === 'Loading';
+        const { positionX, positionY, isLoading } = this.state;
+        const { currentAnatomicalSite } = this.props;
 
         const moles = this.getMoles();
         const currentAnatomicalSiteMoles = moles[currentAnatomicalSite] || [];
 
-        console.log('moles', moles);
-
         return (
             <View style={s.container}>
-                <View style={[s.activityIndicator, { zIndex: isMoleLoading ? 2 : 0 }]}>
+                <View style={[s.activityIndicator, { zIndex: isLoading ? 2 : 0 }]}>
                     <ActivityIndicator
                         animating
                         size="large"
                         color="#FF1D70"
                     />
                 </View>
-                <MolePicker onMolePick={this.onMolePick}>
+                <MolePicker
+                    onMolePick={this.onMolePick}
+                    positionX={positionX}
+                    positionY={positionY}
+                >
                     <Image
                         source={{ uri: distantPhoto.fullSize }}
                         resizeMode="contain"
@@ -142,12 +187,7 @@ const DistantPhoto = schema(model)(React.createClass({
                         <Button
                             type="rect"
                             title="Continue to close-up photo"
-                            onPress={() => this.props.onContinuePress({
-                                anatomicalSite: currentAnatomicalSite,
-                                patientAnatomicalSite: pk,
-                                positionX,
-                                positionY,
-                            })}
+                            onPress={this.onContinuePress}
                         />
                     : null}
                 </View>

@@ -13,48 +13,35 @@ const MolePicker = schema({})(React.createClass({
 
     propTypes: {
         onMolePick: React.PropTypes.func.isRequired,
-        clearDot: React.PropTypes.bool,
         children: React.PropTypes.node.isRequired,
         disabled: React.PropTypes.bool,
-    },
-
-    getInitialState() {
-        return {
-            locationX: null,
-            locationY: null,
-        };
-    },
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.clearDot !== nextProps.clearDot && nextProps.clearDot) {
-            this.addDotlocation(null, null);
-        }
+        positionX: React.PropTypes.number,
+        positionY: React.PropTypes.number,
     },
 
     onPress(event) {
-        const { locationX, locationY } = event.nativeEvent;
+        const { locationX: positionX, locationY: positionY } = event.nativeEvent;
 
         if (this.props.disabled) {
             return;
         }
 
-        this.addDotlocation(locationX, locationY);
+        this.addDotlocation(positionX, positionY);
     },
 
-    addDotlocation(locationX, locationY) {
-        this.setState({ locationX, locationY });
-        this.props.onMolePick(locationX, locationY);
+    addDotlocation(positionX, positionY) {
+        this.props.onMolePick(positionX, positionY);
     },
 
     render() {
-        const { locationX, locationY } = this.state;
+        const { positionX, positionY } = this.props;
 
         return (
             <TouchableWithoutFeedback onPress={(event) => this.onPress(event)}>
                 <View style={s.container}>
                     {this.props.children}
-                    {locationX && locationY ?
-                        <Image source={dotImage} style={[s.dot, { left: locationX, top: locationY }]} />
+                    {positionX && positionY ?
+                        <Image source={dotImage} style={[s.dot, { left: positionX, top: positionY }]} />
                     : null}
                 </View>
             </TouchableWithoutFeedback>
