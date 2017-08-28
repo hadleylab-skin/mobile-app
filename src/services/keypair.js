@@ -5,6 +5,8 @@ import CryptoJS from 'crypto-js';
 const { RNSecretManager } = NativeModules;
 
 const iv = CryptoJS.enc.Latin1.parse('{+!%i=]%Y/upi8!Z');
+const padding = CryptoJS.pad.Pkcs7;
+const mode = CryptoJS.mode.CBC;
 
 export async function getKeyPair() {
     const keys = await RNSecretManager.getKeyPair();
@@ -41,11 +43,11 @@ export async function decryptRSA(data) {
 }
 
 export function encryptAES(data, key) {
-    return CryptoJS.AES.encrypt(data, key, { iv }).toString();
+    return CryptoJS.AES.encrypt(data, key, { iv, mode, padding }).toString();
 }
 
 export function decryptAES(ciphertext, key) {
-    const bytes = CryptoJS.AES.decrypt(ciphertext, key, { iv });
+    const bytes = CryptoJS.AES.decrypt(ciphertext, key, { iv, mode, padding });
     return bytes.toString(CryptoJS.enc.Utf8);
 }
 

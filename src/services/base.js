@@ -5,10 +5,10 @@ export function checkStatus(response) {
         return response;
     }
     return response.json().then((data) => {
-        const error = new Error(response.statusText);
-        error.response = response;
-        error.data = data;
-        throw error;
+        throw {
+            response,
+            data,
+        };
     });
 }
 
@@ -28,9 +28,10 @@ export function buildGetService(path,
         try {
             let response = await fetch(`${url}${path}`,
                                        { headers }).then(checkStatus);
-            let data = await response.json();
+            const data = await response.json();
+            const dehydratedData = await dehydrate(data);
             result = {
-                data: dehydrate(data),
+                data: dehydratedData,
                 status: 'Succeed',
             };
         } catch (error) {
@@ -53,8 +54,9 @@ export function buildPostService(path,
         cursor.set('status', 'Loading');
         let result = {};
 
+        const body = await hydrate(data);
         const payload = {
-            body: hydrate(data),
+            body,
             method,
             headers,
         };
@@ -62,9 +64,10 @@ export function buildPostService(path,
         try {
             let response = await fetch(`${url}${path}`, payload).then(checkStatus);
             let respData = await response.json();
+            const dehydratedData = await dehydrate(respData);
             result = {
-                data: dehydrate(respData),
                 status: 'Succeed',
+                data: dehydratedData,
             };
             cursor.set(result);
         } catch (error) {

@@ -1,12 +1,7 @@
 import _ from 'lodash';
+import CryptoJS from 'crypto-js';
 import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData, hydrateImage } from './base';
-
-function dehydrateMrn(item) {
-    return _.merge(
-        {},
-        item,
-        { mrn: `${typeof item.mrn === 'number' ? item.mrn : ''}` });
-}
+import { encryptAES, encryptRSA, decryptAES, decryptRSA, getKeyPair } from './keypair';
 
 function dehydrateConsent(item) {
     return _.merge(
@@ -20,18 +15,27 @@ function dehydrateConsent(item) {
     );
 }
 
-function dehydratePatientData(data) {
-    return dehydrateConsent(dehydrateMrn(data));
+const needEncryption = ['firstName', 'lastName', 'mrn', 'dateOfBirth'];
+
+async function dehydratePatientData(data) {
+    let dehydratedData = { ...dehydrateConsent(data) };
+    const aesKey = await decryptRSA(dehydratedData.encryptedKey);
+    _.forEach(_.pickBy(dehydratedData), (value, key) => {
+        if (_.includes(needEncryption, key) && value !== '') {
+            dehydratedData[key] = decryptAES(value, aesKey);
+        }
+    });
+    return dehydratedData;
 }
 
 function convertListToDict(list) {
     return _.keyBy(list, (patient) => patient.data.pk);
 }
 
-function dehydratePatients(patients) {
-    const data = _.map(
+async function dehydratePatients(patients) {
+    const data = await Promise.all(_.map(
         patients,
-        dehydratePatientData);
+        dehydratePatientData));
 
     return convertListToDict(wrapItemsAsRemoteData(data));
 }
@@ -77,27 +81,34 @@ export function patientsService(token) {
     };
 }
 
-function hydratePatientData(patientData) {
+async function hydratePatientData(patientData) {
     let data = new FormData();
+    debugger;
+    const aesKey = Math.random().toString(36).substring(2);
+    console.log("key: ", aesKey);
+    const encryptedKey = await encryptRSA(aesKey);
+    data.append('encryptedKey', encryptedKey);
 
     _.forEach(_.pickBy(patientData), (value, key) => {
         if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
-            return;
-        }
-
-        if (key === 'mrn') {
-            data.append(key, parseInt(value, 10));
-
+            // skip empty data
             return;
         }
 
         if (key === 'photo') {
             data.append('photo', hydrateImage(value.thumbnail));
-
             return;
         }
 
-        data.append(key, value);
+        if (_.includes(needEncryption, key)) {
+            data.append(key, encryptAES(value, aesKey));
+        } else {
+            data.append(key, value);
+        }
+
+        if (key === 'mrn') {
+            data.append('mrnHash', CryptoJS.MD5(value).toString());
+        }
     });
 
     return data;
@@ -128,7 +139,7 @@ export function createPatientService(token) {
         '/api/v1/patient/',
         'POST',
         hydratePatientData,
-        _.identity,
+        dehydratePatientData,
         _.merge({}, defaultHeaders, headers)
     );
 }
