@@ -71,7 +71,7 @@ const DistantPhotos = React.createClass({
         let distantPhotos = [];
 
         if (anatomicalSites.data) {
-            distantPhotos = _.sortBy(anatomicalSites.data[currentAnatomicalSite], (item) => item.data.pk);
+            distantPhotos = anatomicalSites.data[currentAnatomicalSite];
         }
 
         return (

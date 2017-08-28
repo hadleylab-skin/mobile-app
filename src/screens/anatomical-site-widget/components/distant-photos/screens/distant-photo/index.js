@@ -6,10 +6,13 @@ import {
     Image,
     Dimensions,
     ActivityIndicator,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import BaobabPropTypes from 'baobab-prop-types';
+import ImagePicker from 'react-native-image-picker';
 import { Button } from 'components';
-import dotImage from 'components/icons/dot/dot.png';
+import dotImagePink from 'components/icons/dot/dot.png';
+import dotImageYellow from 'components/icons/dot-yellow/dot-yellow.png';
 import MolePicker from './components/mole-picker';
 import s from './styles';
 
@@ -34,7 +37,15 @@ const DistantPhoto = schema(model)(React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
-            patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+            patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: React.PropTypes.shape({
+            addMolePhotoService: React.PropTypes.func.isRequired,
+            getMolePhotoService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -43,6 +54,7 @@ const DistantPhoto = schema(model)(React.createClass({
             positionX: null,
             positionY: null,
             isLoading: false,
+            selectedMole: {},
         };
     },
 
@@ -107,7 +119,7 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     onMolePick(positionX, positionY) {
-        this.setState({ positionX, positionY });
+        this.setState({ positionX, positionY, selectedMole: {} });
     },
 
     getMoles() {
@@ -125,22 +137,77 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     onContinuePress() {
-        const { positionX, positionY } = this.state;
+        const { positionX, positionY, selectedMole } = this.state;
         const { currentAnatomicalSite } = this.props;
         const { pk } = this.props.tree.get();
 
-        this.props.onContinuePress({
-            anatomicalSite: currentAnatomicalSite,
-            patientAnatomicalSite: pk,
-            positionX,
-            positionY,
+        if (!_.isEmpty(selectedMole)) {
+            this.addMolePhoto();
+        } else {
+            this.props.onContinuePress({
+                anatomicalSite: currentAnatomicalSite,
+                patientAnatomicalSite: pk,
+                positionX,
+                positionY,
+            });
+        }
+    },
+
+    addMolePhoto() {
+        ImagePicker.launchCamera({}, (response) => {
+            if (response.uri) {
+                this.onSubmitMolePhoto(response.uri);
+            }
         });
+    },
+
+    async onSubmitMolePhoto(uri) {
+        const { cursors, services } = this.context;
+        const molePk = this.state.selectedMole.pk;
+        const service = services.addMolePhotoService;
+        const patientPk = cursors.currentPatientPk.get();
+        const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
+        const imagesCursor = moleCursor.select('data', 'images');
+
+        const pk = -1;
+        imagesCursor.select(pk).set({ data: { pk }, status: 'Loading' });
+
+        this.setState({ isLoading: true });
+
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
+
+        if (result.status === 'Succeed') {
+            this.setState({ isLoading: false, selectedMole: {} });
+            imagesCursor.unset(pk);
+            imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
+
+            await services.patientsService(cursors.patients);
+            await services.getPatientMolesService(
+                patientPk,
+                cursors.patientsMoles.select(patientPk, 'moles')
+            );
+            await services.getMolePhotoService(
+                patientPk,
+                molePk,
+                result.data.pk,
+                imagesCursor.select(result.data.pk)
+            );
+        }
+
+        if (result.status === 'Failure') {
+            this.setState({ isLoading: false, selectedMole: {} });
+            imagesCursor.unset(pk);
+        }
+    },
+
+    onMolePress(data) {
+        this.setState({ positionX: null, positionY: null, selectedMole: data });
     },
 
     render() {
         const { distantPhoto, pk } = this.props.tree.get();
         const { width, height } = this.props.tree.get('imageSize');
-        const { positionX, positionY, isLoading } = this.state;
+        const { positionX, positionY, isLoading, selectedMole } = this.state;
         const { currentAnatomicalSite } = this.props;
 
         const moles = this.getMoles();
@@ -172,18 +239,20 @@ const DistantPhoto = schema(model)(React.createClass({
                             return null;
                         }
 
+                        const isSelected = _.isEqual(mole.data, this.state.selectedMole);
+
                         return (
-                            <Image
-                                key={index}
-                                source={dotImage}
-                                style={[s.dot, { left, top }]}
-                            />
+                            <View key={index} style={[s.dot, { left, top }]}>
+                                <TouchableWithoutFeedback onPress={() => this.onMolePress(mole.data)}>
+                                    <Image source={isSelected ? dotImageYellow : dotImagePink} />
+                                </TouchableWithoutFeedback>
+                            </View>
                         );
                     })}
                 </MolePicker>
 
                 <View style={s.footer}>
-                    {positionX && positionY ?
+                    {(positionX && positionY) || !_.isEmpty(selectedMole) ?
                         <Button
                             type="rect"
                             title="Continue to close-up photo"

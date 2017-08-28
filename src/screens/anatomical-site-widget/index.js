@@ -33,7 +33,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
-            patientsMoles: React.PropTypes.object.isRequired, // eslint-disable-line
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
             addMoleService: React.PropTypes.func.isRequired,

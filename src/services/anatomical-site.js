@@ -6,6 +6,10 @@ function dehydrateAnatomicalSites(items) {
 
     data = _.groupBy(data, (item) => item.data.anatomicalSite);
 
+    _.mapKeys(data, (anatomicalSite, key) => {
+        data[key] = _.sortBy(anatomicalSite, (item) => item.data.pk);
+    });
+
     return data;
 }
 
