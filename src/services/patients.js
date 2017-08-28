@@ -83,9 +83,7 @@ export function patientsService(token) {
 
 async function hydratePatientData(patientData) {
     let data = new FormData();
-    debugger;
     const aesKey = Math.random().toString(36).substring(2);
-    console.log("key: ", aesKey);
     const encryptedKey = await encryptRSA(aesKey);
     data.append('encryptedKey', encryptedKey);
 
