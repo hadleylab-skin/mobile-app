@@ -38,6 +38,9 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B3258D4A164C35A951DF0D /* libRSSignatureCapture.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		9214ED971F50271B0043CC56 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214ED961F50271B0043CC56 /* LinkedList.swift */; };
+		9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */; };
+		9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */; };
 		9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */; };
 		9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */; };
 		929B2F6F1F468156001686EA /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 929B2F6E1F468156001686EA /* JavaScriptCore.framework */; };
@@ -305,6 +308,8 @@
 		6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.debug.xcconfig"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		9214ED961F50271B0043CC56 /* LinkedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LinkedList.swift; path = skiniq/LinkedList.swift; sourceTree = SOURCE_ROOT; };
+		9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToroidalMotion.swift; sourceTree = "<group>"; };
 		9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
@@ -466,6 +471,7 @@
 				928197111F4589CE003A93E4 /* BodyView3D */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				9214ED961F50271B0043CC56 /* LinkedList.swift */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				92EBB3C81F46B061003DD4EE /* art.scnassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -618,6 +624,7 @@
 				92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */,
 				9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */,
 				9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */,
+				9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */,
 			);
 			name = "Camera Motion";
 			path = "skiniq/Camera Motion";
@@ -1163,8 +1170,10 @@
 				92EBB3BD1F46AFDB003DD4EE /* CylindricalMotion.swift in Sources */,
 				92EBB3BF1F46AFDB003DD4EE /* SphericalMotion.swift in Sources */,
 				92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */,
+				9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */,
 				929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */,
 				92EBB3C01F46AFDB003DD4EE /* Body.swift in Sources */,
+				9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */,
 				92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */,
 				92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */,
 				9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */,
@@ -1174,6 +1183,7 @@
 				92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */,
+				9214ED971F50271B0043CC56 /* LinkedList.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

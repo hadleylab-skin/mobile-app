@@ -3,6 +3,9 @@
 //  Copyright © 2017 Facebook. All rights reserved.
 //
 
+import QuartzCore
+import UIKit
+
 class RadialGradientLayer: CALayer
 {
     var center: CGPoint {

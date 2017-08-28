@@ -96,7 +96,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             showContinueToCloseUpPhotoButton = (selectedNevus != nil)
         }
     }
-    
+  
+    private let defaultFov = 60.0
+  
     private var lastPanCoord: CGPoint?
     private var lastPinchScale: Float?
     
@@ -371,7 +373,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
 //        camera.usesOrthographicProjection = true
 //        camera.orthographicScale = 5
         camera.zNear = 0.1
-        camera.yFov = 60
+        camera.yFov = 70
 
         cameraNode.camera = camera
         scene.rootNode.addChildNode(cameraNode)
@@ -400,7 +402,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         bodyNodesControlViewItems[legL] = ControlsView.Item.legL
     }
     
-    private func setupRootBodyNodeCameraMotion()
+    private func setupRootBodyNodeCameraMotion(visualize: Bool = false)
     {
         var bodyCenterLocal = rootBodyNode.node.boundingSphere.center
         bodyCenterLocal.x = 0
@@ -411,72 +413,199 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             EllipsoidalMotionWithFlexibleFocusPoint(center: SCNVector3ToGLKVector3(bodyCenterWorld),
                                                     axisTheta: GLKVector3Make(0, 0, 1),
                                                     axisPhi: GLKVector3Make(0, 1, 0),
+                                                    up: GLKVector3Make(0, 1, 0),
                                                     scale: GLKVector3Make(1.05, 1.3, 1),
                                                     minR: 5,
                                                     maxR: 25,
                                                     minTheta: 0.05 * Float.pi,
                                                     maxTheta: 0.95 * Float.pi,
-                                                    minPhi: nil,
-                                                    maxPhi: nil,
                                                     initialCoord: (r: 20, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
                                                     velocity: (r: 5.0, theta: 0.0125, phi: 0.025))
       
-//        if let repr = rootBodyNode.cameraMotion?.getRepresentationNode(z: 5, nx: 100, ny: 100, color: .black) {
-//            scene.rootNode.addChildNode(repr)
-//        }
+        if visualize, let repr = rootBodyNode.cameraMotion?.getRepresentationNode(z: 5, nx: 100, ny: 100, color: .black) {
+            scene.rootNode.addChildNode(repr)
+        }
     }
     
     private func setSphericalMotion(bodyNode: BodyNode,
                                     center: GLKVector3,
                                     minR: Float, maxR: Float, r: Float,
                                     minTheta: Float = 0.1 * Float.pi,
-                                    maxTheta: Float = 0.9 * Float.pi)
+                                    maxTheta: Float = 0.9 * Float.pi,
+                                    visualize: Bool = false)
     {
-        let center = bodyNode.node.boundingSphere.center
+        var center = bodyNode.node.boundingSphere.center
+        center.x = 0
+        
         let pos = bodyNode.node.convertPosition(center, to: scene.rootNode)
 
         bodyNode.cameraMotion =
             SphericalMotion(center: SCNVector3ToGLKVector3(pos),
                             axisTheta: GLKVector3Make(0, 0, 1),
                             axisPhi: GLKVector3Make(0, 1, 0),
+                            up: GLKVector3Make(0, 1, 0),
                             minR: minR,
                             maxR: maxR,
                             minTheta: minTheta,
                             maxTheta: maxTheta,
-                            minPhi: nil,
-                            maxPhi: nil,
                             initialCoord: (r: r, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
                             velocity: (r: 5.0, theta: 0.025, phi: 0.05))
+
+        if visualize, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 1, nx: 50, ny: 50, color: .black) {
+            scene.rootNode.addChildNode(repr)
+        }
     }
-    
-    private func setVerticalCylindricalMotion(bodyNode: BodyNode,
-                                              origin: GLKVector3,
-                                              axis: GLKVector3,
-                                              minR: Float, maxR: Float, r: Float,
-                                              minZ: Float, maxZ: Float, z: Float)
+  
+    private func setupArmCameraMotion(bodyNode: BodyNode,
+                                      origin: GLKVector3,
+                                      axisZ: GLKVector3,
+                                      axisY: GLKVector3,
+                                      targetPoints: [(x: Float, pos: GLKVector3)],
+                                      showSurface: Bool = false,
+                                      showTargets: Bool = false)
     {
-        bodyNode.cameraMotion =
-            CylindricalMotion(origin: origin,
-                              axisZ: axis,
-                              axisR: GLKVector3Make(0, 0, 1),
-                              minR: minR,
-                              maxR: maxR,
-                              minPhi: nil,
-                              maxPhi: nil,
-                              minZ: minZ,
-                              maxZ: maxZ,
-                              initialCoord: (r: r, phi: 0, z: z),
-                              velocity: (r: 5.0, phi: 0.025, z: 0.025))
+        let axisY_proj_on_axisZ = GLKVector3DotProduct(axisZ, axisY) / GLKVector3Length(axisZ)
+        let axisY = GLKVector3Subtract(axisY, GLKVector3MultiplyScalar(GLKVector3Normalize(axisZ), axisY_proj_on_axisZ))
       
-//        if let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 1, nx: 50, ny: 50, color: .black) {
-//            scene.rootNode.addChildNode(repr)
-//        }
-    }
+        let dot = GLKVector3DotProduct(axisZ, axisY)
+        assert(dot < 0.0001)
+      
+        bodyNode.cameraMotion =
+            ArmCameraMotion(origin: origin,
+                            axisZ: axisZ,
+                            axisY: axisY,
+                            cylinderH1: 2,
+                            cylinderH2: 2.5,
+                            torusR: 4,
+                            r: 4,
+                            angle: 0.2 * Float.pi / 2,
+                            initialFov: defaultFov,
+                            minFov: 15,
+                            maxFov: 80,
+                            targetPoints: targetPoints)
+      
+        if showSurface, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 3, nx: 150, ny: 50, color: .black) {
+            scene.rootNode.addChildNode(repr)
+        }
     
-    private func setupCameraMotion()
+        if showTargets
+        {
+            for p in targetPoints {
+                let ball = BodyView3D.createBall(size: 0.15, color: .red)
+                scene.rootNode.addChildNode(ball)
+                ball.position = SCNVector3FromGLKVector3(p.pos)
+            }
+        }
+    }
+  
+    private func setupArmsCameraMotion()
     {
-        setupRootBodyNodeCameraMotion()
+        let rightTargetPoints: [(x: Float, pos: GLKVector3)] = [
+            (0.0, GLKVector3Make(-2, 5, -0.5)),
+            (1.0, GLKVector3Make(-2.75, 3, -0.65)),
+            (2.0, GLKVector3Make(-3.25, 1.8, -0.7)),
+            (3.0, GLKVector3Make(-4.1, -0.5, -0.25)),
+//            (3.0, GLKVector3Make(-4.0, -1.0, 0)),
+            (4.0, GLKVector3Make(-4.25, -1.25, 0))
+        ]
+      
+        setupArmCameraMotion(bodyNode: armR,
+                             origin: GLKVector3Make(-2, 5, -0.5),
+                             axisZ: GLKVector3Make(-1.25, -3.2, -0.2),
+                             axisY: GLKVector3Make(0.25, 0, 1),
+                             targetPoints: rightTargetPoints,
+                             showSurface: false,
+                             showTargets: false)
+
+        let leftTargetPoints = rightTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
+        }
         
+        setupArmCameraMotion(bodyNode: armL,
+                             origin: GLKVector3Make(2, 5, -0.5),
+                             axisZ: GLKVector3Make(1.25, -3.2, -0.2),
+                             axisY: GLKVector3Make(-0.25, 0, 1),
+                             targetPoints: leftTargetPoints,
+                             showSurface: false,
+                             showTargets: false)
+    }
+  
+    private func setupLegCameraMotion(bodyNode: BodyNode,
+                                      origin: GLKVector3,
+                                      axisZ: GLKVector3,
+                                      axisY: GLKVector3,
+                                      targetPoints: [(x: Float, pos: GLKVector3)],
+                                      showSurface: Bool = false,
+                                      showTargets: Bool = false)
+    {
+        let axisY_proj_on_axisZ = GLKVector3DotProduct(axisZ, axisY) / GLKVector3Length(axisZ)
+        let axisY = GLKVector3Subtract(axisY, GLKVector3MultiplyScalar(GLKVector3Normalize(axisZ), axisY_proj_on_axisZ))
+      
+        let dot = GLKVector3DotProduct(axisZ, axisY)
+        assert(dot < 0.0001)
+      
+        bodyNode.cameraMotion =
+            LegCameraMotion(origin: origin,
+                            axisZ: axisZ,
+                            axisY: axisY,
+                            cylinderH: 4.5,
+                            torusR: 4,
+                            r: 4,
+                            angle: (2 / 3) * Float.pi / 2,
+                            initialFov: defaultFov,
+                            minFov: 15,
+                            maxFov: 80,
+                            targetPoints: targetPoints)
+      
+        if showSurface, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 3, nx: 200, ny: 100, color: .black) {
+            scene.rootNode.addChildNode(repr)
+        }
+    
+        if showTargets
+        {
+            for p in targetPoints {
+                let ball = BodyView3D.createBall(size: 0.15, color: .red)
+                scene.rootNode.addChildNode(ball)
+                ball.position = SCNVector3FromGLKVector3(p.pos)
+            }
+        }
+    }
+  
+    private func setupLegsCameraMotion()
+    {
+        let rightLegPoints: [(x: Float, pos: GLKVector3)] = [
+            (0.0, GLKVector3Make(-1, -2, -0.25)),
+            (1.0, GLKVector3Make(-1.15, -5.5, -0.3)),
+            (1.75, GLKVector3Make(-1.3, -10.25, -0.5)),
+            (2.0, GLKVector3Make(-1.4, -10.4, 0.15)),
+            (3.0, GLKVector3Make(-1.5, -10.5, 0.75))
+        ]
+      
+        setupLegCameraMotion(bodyNode: legR,
+                             origin: GLKVector3Make(-1, -2, -0.25),
+                             axisZ: GLKVector3Make(-0.025, -1, -0.1),
+                             axisY: GLKVector3Make(-0.25, 0, 1),
+                             targetPoints: rightLegPoints,
+                             showTargets: false)
+
+        let leftLegPoints = rightLegPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
+        }
+        
+        setupLegCameraMotion(bodyNode: legL,
+                             origin: GLKVector3Make(1, -2, -0.25),
+                             axisZ: GLKVector3Make(0.025, -1, -0.1),
+                             axisY: GLKVector3Make(0.25, 0, 1),
+                             targetPoints: leftLegPoints,
+                             showTargets: false)
+    }
+  
+    private func setupHeadCameraMotion()
+    {
         let headCenterLocal = head.node.boundingSphere.center
         let headCenterWorld = head.node.convertPosition(headCenterLocal, to: scene.rootNode)
         
@@ -485,30 +614,40 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                            minR: 3, maxR: 8, r: 5,
                            minTheta: 0.25 * Float.pi,
                            maxTheta: 0.7 * Float.pi)
+    }
+  
+    private func setupCameraMotion()
+    {
+        setupRootBodyNodeCameraMotion()
+        setupHeadCameraMotion()
+        setupArmsCameraMotion()
+        setupLegsCameraMotion()
+    }
+    
+    private let cameraTargetDebugPoint: SCNNode =
+        BodyView3D.createBall(size: 0.15, color: .green)
+
+    private func setupCameraTargetDebugPoint()
+    {
+        scene.rootNode.addChildNode(cameraTargetDebugPoint)
+        cameraTargetDebugPoint.isHidden = true
+    }
+    
+    private func updateCameraTargetDebugPoint(_ motion: CameraMotion)
+    {
+        cameraTargetDebugPoint.position = SCNVector3FromGLKVector3(motion.target)
+    }
+    
+    private static func createBall(size: Float, color: UIColor) -> SCNNode
+    {
+        let m = SCNMaterial()
+        m.lightingModel = .blinn
+        m.diffuse.contents = color
+
+        let g = SCNSphere(radius: CGFloat(size))
+        g.materials = [ m ]
         
-        setVerticalCylindricalMotion(bodyNode: armR,
-                                     origin: GLKVector3Make(-4.25, -1.75, 0),
-                                     axis: GLKVector3Make(+0.35, 1, 0),
-                                     minR: 2.75, maxR: 10, r: 5,
-                                     minZ: 0, maxZ: 7, z: 0)
-        
-        setVerticalCylindricalMotion(bodyNode: armL,
-                                     origin: GLKVector3Make(+4.25, -1.75, 0),
-                                     axis: GLKVector3Make(-0.35, 1, 0),
-                                     minR: 2.75, maxR: 10, r: 5,
-                                     minZ: 0, maxZ: 7, z: 0)
-        
-        setVerticalCylindricalMotion(bodyNode: legR,
-                                     origin: GLKVector3Make(-1, -6, 0),
-                                     axis: GLKVector3Make(0, 1, 0),
-                                     minR: 2.75, maxR: 10, r: 10,
-                                     minZ: -5, maxZ: 5, z: 0)
-        
-        setVerticalCylindricalMotion(bodyNode: legL,
-                                     origin: GLKVector3Make(+1, -6, 0),
-                                     axis: GLKVector3Make(0, 1, 0),
-                                     minR: 2.75, maxR: 10, r: 10,
-                                     minZ: -5, maxZ: 5, z: 0)
+        return SCNNode(geometry: g)
     }
     
     private func setupLights()
@@ -560,6 +699,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         ]
       
         backgroundView.locations = [ 0, 0.35, 0.75, 1 ]
+//        backgroundView.isHidden = true
       
         controlsView.delegate = self
         controlsView.backgroundColor = UIColor(red: 125.0 / 255.0, green: 147.0 / 255.0, blue: 170.0 / 255.0, alpha: 0.34)
@@ -635,6 +775,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         setupCameraMotion()
         setupLights()
         setupGestureRecognizers()
+//        setupDebugPoints()
+        setupCameraTargetDebugPoint()
         lookAtCameraTarget(.front)
     }
 
@@ -679,9 +821,14 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         highlightBodyNode(bodyNode)
         
-        if let motion = bodyNode.cameraMotion {
+        if let motion = bodyNode.cameraMotion
+        {
+            let fov = Double(motion.initialFov ?? defaultFov)
+            camera.yFov = fov
+          
             motion.reset()
             motion.updateNode(cameraNode)
+            updateCameraTargetDebugPoint(motion)
         }
     }
     
@@ -692,10 +839,13 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         guard let motion = rootBodyNode.cameraMotion as? SphericalMotion else {
             return
         }
-        
+      
+        camera.yFov = defaultFov
+      
         motion.initialCoord.phi = (front ? 0.5 : -0.5) * Float.pi
         motion.reset()
         motion.updateNode(cameraNode)
+        updateCameraTargetDebugPoint(motion)
     }
 
     private func lookAtCameraTarget(_ target: CameraTarget)
@@ -748,6 +898,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         if let bodyNode = bodyNode
         {
             bodyNode.opacity = 1
+//            bodyNode.node.isHidden = false
             makeAllNodeTransparentExceptNode(bodyNode)
         }
         else
@@ -759,7 +910,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     private func makeAllNodeTransparentExceptNode(_ node: BodyNode)
     {
         rootBodyNode.children.filter { $0 != node }.forEach {
-            $0.opacity = 0.025
+            $0.opacity = 0.02
+//            $0.node.isHidden = true
         }
     }
 
@@ -767,6 +919,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         rootBodyNode.children.forEach {
             $0.opacity = 1
+//            $0.node.isHidden = false
         }
     }
 
@@ -835,10 +988,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         let faceIndex = hitTestResult.faceIndex
         let coord = hitTestResult.localCoordinates
         
-        print(">> Geometry index: \(hitTestResult.geometryIndex)");
-        print(">> Face index: \(faceIndex)");
-        print(">> Coord: x=\(coord.x), y=\(coord.y), z=\(coord.z)");
-        
+//        debugPrint(">> Geometry index: \(hitTestResult.geometryIndex)");
+//        debugPrint(">> Face index: \(faceIndex)");
+//        debugPrint(">> Coord: x=\(coord.x), y=\(coord.y), z=\(coord.z)");
+      
         guard let geometry = bodyNode.node.geometry else {
             return
         }
@@ -850,7 +1003,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         for src in geometry.geometrySources
         {
-//                print(">> Geometry source: semantic=\(src.semantic) count=\(src.vectorCount)")
+//                debugPrint(">> Geometry source: semantic=\(src.semantic) count=\(src.vectorCount)")
 
             if src.semantic == .normal {
                 normalSource = src
@@ -861,10 +1014,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             }
         }
         
-        for e in geometryElements {
-            print(">> Geometry element: type=\(e.primitiveType), count=\(e.primitiveCount), bytesPerIndex=\(e.bytesPerIndex)")
-        }
-        
+//        for e in geometryElements {
+//            debugPrint(">> Geometry element: type=\(e.primitiveType), count=\(e.primitiveCount), bytesPerIndex=\(e.bytesPerIndex)")
+//        }
+      
 // Obtain vertices from face
 
         let geometryElement = geometryElements.first!
@@ -879,7 +1032,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             geometryElement.data.copyBytes(to: ptr, from: range)
         }
         
-        print(">> ijk = \(ijk[0]) \(ijk[1]) \(ijk[2])")
+//        debugPrint(">> ijk = \(ijk[0]) \(ijk[1]) \(ijk[2])")
 
 // Obtain tex coords
     
@@ -900,7 +1053,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                     uvSource.data.copyBytes(to: ptr, from: range)
                 }
                 
-                print(">> uv[\(i)]: \(uv[0]) \(uv[1])")
+//                debugPrint(">> uv[\(i)]: \(uv[0]) \(uv[1])")
             }
         }
         
@@ -912,8 +1065,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             assert(normalSource.bytesPerComponent == 4)
             assert(normalSource.componentsPerVector == 3)
             
-            print(">> Normals vectorCount = \(normalSource.vectorCount)")
-            
+//            debugPrint(">> Normals vectorCount = \(normalSource.vectorCount)")
+          
             for i in 0..<3
             {
                 var normal = [Float](repeating: 0, count: 3)
@@ -927,7 +1080,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                 
                 normals.append(SCNVector3Make(normal[0], normal[1], normal[2]))
                 
-                print(">> normal[\(i)]: \(normal[0]) \(normal[1]) \(normal[2])")
+//                debugPrint(">> normal[\(i)]: \(normal[0]) \(normal[1]) \(normal[2])")
             }
         }
         
@@ -1050,8 +1203,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
         
         let translation = GLKVector3Make(dx, dy, 0)
-        motion.move(translation)
+        _ = motion.move(translation)
         motion.updateNode(cameraNode)
+        updateCameraTargetDebugPoint(motion)
     }
     
     @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer)
@@ -1072,12 +1226,15 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             let ds = pinchScale - (lastPinchScale ?? pinchScale)
           
             let translation = GLKVector3Make(0, 0, -ds)
-            motion.move(translation)
+            _ = motion.move(translation)
             motion.updateNode(cameraNode)
+            updateCameraTargetDebugPoint(motion)
         
         case .fov:
             var fov = camera.yFov * Double((lastPinchScale ?? pinchScale) / pinchScale)
-            fov = max(min(fov, 60), 15)
+            let minFov = Double(motion.minFov ?? 80.0)
+            let maxFov = Double(motion.maxFov ?? 15.0)
+            fov = max(min(fov, maxFov), minFov)
             camera.yFov = fov
         }
       
@@ -1095,11 +1252,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         let hitResults = sceneView.hitTest(p, options: options)
         
-        print(">> Hit results: \(hitResults.count)")
-        
+//        debugPrint(">> Hit results: \(hitResults.count)")
+      
         hitResults.forEach {
             let name = $0.node.name ?? "-"
-//            print(">>> \(name)")
+//            debugPrint(">>> \(name)")
         }
         
         let selectedNevus = nevusHitTest(hitResults)
@@ -1145,7 +1302,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     func didTap(controlsView: ControlsView, item: ControlsView.Item)
     {
-        guard item != .back else
+        if item == .back
         {
             if let bodyNode = selectedBodyNodeLO,
                let cameraMotion = bodyNode.cameraMotion
@@ -1155,12 +1312,14 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             }
             return
         }
-        
-        guard let target = cameraTargets[item] else {
-            return
+        else
+        {
+            guard let target = cameraTargets[item] else {
+                return
+            }
+            
+            lookAtCameraTarget(target)
         }
-        
-        lookAtCameraTarget(target)
     }
     
 // MARK: - SCNSceneRendererDelegate
@@ -1195,7 +1354,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             
             hitTestResults.forEach {
                 let name = $0.node.name ?? "-"
-//                print(">>> \(name)")
+//                debugPrint(">>> \(name)")
             }
         }
     }

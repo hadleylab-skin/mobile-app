@@ -12,13 +12,14 @@ class EllipsoidalMotionWithFlexibleFocusPoint: SphericalMotion
     init(center: GLKVector3,
          axisTheta: GLKVector3,
          axisPhi: GLKVector3,
+         up: GLKVector3,
          scale: GLKVector3,
-         minR: Float?,
-         maxR: Float?,
-         minTheta: Float?,
-         maxTheta: Float?,
-         minPhi: Float?,
-         maxPhi: Float?,
+         minR: Float? = nil,
+         maxR: Float? = nil,
+         minTheta: Float? = nil,
+         maxTheta: Float? = nil,
+         minPhi: Float? = nil,
+         maxPhi: Float? = nil,
          initialCoord: Coord,
          velocity: Coord)
     {
@@ -26,6 +27,9 @@ class EllipsoidalMotionWithFlexibleFocusPoint: SphericalMotion
         super.init(center: center,
                    axisTheta: axisTheta,
                    axisPhi: axisPhi,
+                   up: up,
+                   upFunc: nil,
+                   targetFunc: nil,
                    minR: minR,
                    maxR: maxR,
                    minTheta: minTheta,
@@ -49,7 +53,7 @@ class EllipsoidalMotionWithFlexibleFocusPoint: SphericalMotion
         return super.convert(coord)
     }
     
-    override internal func computePivot(_ coord: Coord) -> GLKMatrix4
+    internal override func computePivot(_ coord: Coord) -> GLKMatrix4
     {
         let centerCoord = Coord(r: 0, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi)
         let xyz = convert(coord)
