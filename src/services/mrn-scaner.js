@@ -12,7 +12,7 @@ function hydrateImage(uri) {
     return data;
 }
 
-export function mrnScanerService(token) {
+export function mrnScanerService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import CryptoJS from 'crypto-js';
 import { buildGetService, buildPostService, defaultHeaders, wrapItemsAsRemoteData, hydrateImage } from './base';
-import { encryptAES, encryptRSA, decryptAES, decryptRSA, getKeyPair } from './keypair';
+import { encryptAES, encryptRSA, decryptAES, decryptRSA } from './keypair';
 
 function dehydrateConsent(item) {
     return _.merge(
@@ -65,7 +65,7 @@ function concatParams(data) {
     return params;
 }
 
-export function patientsService(token) {
+export function patientsService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -81,38 +81,49 @@ export function patientsService(token) {
     };
 }
 
-async function hydratePatientData(patientData) {
-    let data = new FormData();
-    const aesKey = Math.random().toString(36).substring(2);
-    const encryptedKey = await encryptRSA(aesKey);
-    data.append('encryptedKey', encryptedKey);
+function hydratePatientData(remoteDoctor) {
+    const doctor = remoteDoctor.data;
+    if (typeof doctor === 'undefined') {
+        throw { message: 'System error, context is not loaded' };
+    }
+    return async (patientData) => {
+        let data = new FormData();
+        const aesKey = Math.random().toString(36).substring(2);
+        let encryptionKeys = {};
+        encryptionKeys[`${doctor.pk}`] = await encryptRSA(aesKey);
 
-    _.forEach(_.pickBy(patientData), (value, key) => {
-        if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
-            // skip empty data
-            return;
+        if (doctor.myCoordinatorId) {
+            encryptionKeys[`${doctor.myCoordinatorId}`] = await encryptRSA(aesKey, doctor.coordinatorPublicKey);
         }
 
-        if (key === 'photo') {
-            data.append('photo', hydrateImage(value.thumbnail));
-            return;
-        }
+        data.append('encryptionKeys', JSON.stringify(encryptionKeys));
 
-        if (_.includes(needEncryption, key)) {
-            data.append(key, encryptAES(value, aesKey));
-        } else {
-            data.append(key, value);
-        }
+        _.forEach(_.pickBy(patientData), (value, key) => {
+            if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
+                // skip empty data
+                return;
+            }
 
-        if (key === 'mrn') {
-            data.append('mrnHash', CryptoJS.MD5(value).toString());
-        }
-    });
+            if (key === 'photo') {
+                data.append('photo', hydrateImage(value.thumbnail));
+                return;
+            }
 
-    return data;
+            if (_.includes(needEncryption, key)) {
+                data.append(key, encryptAES(value, aesKey));
+            } else {
+                data.append(key, value);
+            }
+
+            if (key === 'mrn') {
+                data.append('mrnHash', CryptoJS.MD5(value).toString());
+            }
+        });
+        return data;
+    };
 }
 
-export function getPatientService(token) {
+export function getPatientService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -126,7 +137,7 @@ export function getPatientService(token) {
     };
 }
 
-export function createPatientService(token) {
+export function createPatientService({ token, doctor }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
@@ -136,13 +147,13 @@ export function createPatientService(token) {
     return buildPostService(
         '/api/v1/patient/',
         'POST',
-        hydratePatientData,
+        hydratePatientData(doctor),
         dehydratePatientData,
         _.merge({}, defaultHeaders, headers)
     );
 }
 
-export function updatePatientService(token) {
+export function updatePatientService({ token, doctor }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
@@ -152,7 +163,7 @@ export function updatePatientService(token) {
     return (patientPk, cursor, data) => {
         const _updatePatient = buildPostService(`/api/v1/patient/${patientPk}/`,
             'PATCH',
-            hydratePatientData,
+            hydratePatientData(doctor),
             dehydratePatientData,
             _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
@@ -165,7 +176,7 @@ function hydrateConsentData(base64IMage) {
     return data;
 }
 
-export function updatePatientConsentService(token) {
+export function updatePatientConsentService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',

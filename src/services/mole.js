@@ -11,7 +11,7 @@ function dehydratePatientMoles(moles) {
     return convertListToDict(wrapItemsAsRemoteData(data));
 }
 
-export function getPatientMolesService(token) {
+export function getPatientMolesService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -58,7 +58,7 @@ function dehydrateMoleData(data) {
     return newData;
 }
 
-export function getMoleService(token) {
+export function getMoleService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -84,7 +84,7 @@ function hydrateMoleData(mole) {
     return data;
 }
 
-export function addMoleService(token) {
+export function addMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
@@ -121,7 +121,7 @@ function dehydrateUpdateMoleData(mole) {
     return data;
 }
 
-export function updateMoleService(token) {
+export function updateMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',

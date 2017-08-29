@@ -150,7 +150,7 @@ export default React.createClass({
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
         return (
             <ServiceProvider
-                token={this.props.tokenCursor.get('data', 'token')}
+                token={this.props.tokenCursor.get('data')}
                 style={{ flex: 1 }}
             >
 
