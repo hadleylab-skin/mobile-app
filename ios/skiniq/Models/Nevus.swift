@@ -13,6 +13,12 @@ import SceneKit
         case texturedRect
     }
 
+    enum State {
+        case normal
+        case selected
+        case newlyAdded
+    }
+
     var id: String
     weak var bodyNode: BodyNode?
     var faceIndex: Int
@@ -20,52 +26,80 @@ import SceneKit
     var direction: SCNVector3
     var node: SCNNode!
     
-    var selected: Bool = false
+//    var selected: Bool = false
+//    {
+//        didSet
+//        {
+//            let duration = 0.1
+//            
+//            SCNTransaction.begin()
+//            SCNTransaction.animationDuration = duration
+//            updateSelected()
+//            SCNTransaction.commit()
+//            
+//            let scale: CGFloat = (selected ? 1.5 : 1)
+//            let action = SCNAction.scale(to:scale, duration:duration)
+//            
+//            node.runAction(action)
+//        }
+//    }
+  
+    var state: State
     {
-        didSet
-        {
-            let duration = 0.1
-            
-            SCNTransaction.begin()
-            SCNTransaction.animationDuration = duration
-            updateSelected()
-            SCNTransaction.commit()
-            
-            let scale: CGFloat = (selected ? 1.5 : 1)
-            let action = SCNAction.scale(to:scale, duration:duration)
-            
-            node.runAction(action)
+        didSet {
+            updateState()
         }
     }
-    
+  
+    private let colors: [State:UIColor] = [
+        .normal: .red,
+        .selected: .yellow,
+        .newlyAdded: .green
+    ]
+  
+    private let scales: [State:Float] = [
+        .normal: 1,
+        .selected: 1.5,
+        .newlyAdded: 1.5
+    ]
+  
+    private func updateState()
+    {
+        material.emission.contents = colors[state]
+      
+        let s = scales[state] ?? 1
+        node.scale = SCNVector3Make(s, s, s)
+    }
+  
     private var appearance: Appearance = .texturedRect
-    
-    private let defaultColor: UIColor = .red
-    private let selectedColor: UIColor = .yellow
     
     private var material = SCNMaterial()
     private var pivot: SCNMatrix4!
     
-    init(bodyNode: BodyNode,
+    init(id: String? = nil,
+         bodyNode: BodyNode,
          faceIndex: Int,
          coord: SCNVector3,
-         direction: SCNVector3,
-         appearance: Appearance,
-         alwaysVisible: Bool = true)
+         direction: SCNVector3 = SCNVector3Zero,
+         appearance: Appearance = .texturedRect,
+         alwaysVisible: Bool = true,
+         state: State = .normal)
     {
-        self.id = UUID().uuidString
+        self.id = id ?? UUID().uuidString
         self.bodyNode = bodyNode
         self.faceIndex = faceIndex
         self.coord = coord
         self.direction = direction
         self.appearance = appearance
+        self.state = state
       
         super.init()
         
         setupNode()
         setupMaterial()
         setupPivot()
-        updateSelected()
+//        updateSelected()
+        updateState()
         
         material.readsFromDepthBuffer = !alwaysVisible
         node.pivot = (alwaysVisible ? SCNMatrix4Identity : pivot)
@@ -139,10 +173,10 @@ import SceneKit
         node.geometry?.materials = [ material ]
     }
     
-    private func updateSelected() {
-        material.emission.contents = (selected ? selectedColor : defaultColor)
-    }
-    
+//    private func updateSelected() {
+//        material.emission.contents = (selected ? selectedColor : defaultColor)
+//    }
+  
 // MARK: - Hashable
 
 //    var hashValue: Int {

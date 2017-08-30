@@ -40,9 +40,118 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
     }
   
-    var moles: NSArray? {
+    var removeMole: Bool = false {
         didSet {
-            print("")
+            if removeMole {
+                print("Removed new mole")
+                newNevus = nil
+            }
+        }
+    }
+  
+    private func showNevi(for bodyNode: BodyNode?)
+    {
+        guard let bodyNode = bodyNode else
+        {
+            nevi.forEach { nevus in
+                nevus.node.isHidden = true
+            }
+            return
+        }
+      
+        nevi.forEach { nevus in
+            nevus.node.isHidden = (nevus.bodyNode != bodyNode)
+        }
+    }
+  
+    private var newNevus: Nevus?
+    {
+        didSet
+        {
+            if let old = oldValue, let node = old.node
+            {
+                node.removeFromParentNode()
+                old.bodyNode?.remove(nevus: old)
+                neviByNode.removeValue(forKey: node)
+                nevi.remove(old)
+            }
+          
+            guard let nevus = newNevus, let node = nevus.node else {
+                return
+            }
+          
+            nevus.state = .newlyAdded
+          
+            neviRootNode.addChildNode(node)
+            nevus.bodyNode?.add(nevus: nevus)
+
+            let lookAt = SCNLookAtConstraint(target: cameraNode)
+          
+//            let zoomTransform = { (node: SCNNode, matrix: SCNMatrix4) -> SCNMatrix4 in
+//                let pos = node.convertPosition(SCNVector3Zero, to: self.cameraNode)
+//                let dx = pos.x
+//                let dy = pos.y
+//                let dz = pos.z
+//                let dist = sqrt(dx * dx + dy * dy + dz * dz)
+//              
+//                let tg = 10 / dist
+//                let angularSize = atan(tg)
+//                let s: Float = 1.0 / angularSize
+//              
+//                return SCNMatrix4Scale(matrix, s, s, s)
+//            }
+//          
+//            let zoom = SCNTransformConstraint(inWorldSpace: false, with: zoomTransform)
+          
+            node.constraints = [ lookAt ] //, zoom ]
+
+            nevi.insert(nevus)
+            neviByNode[node] = nevus
+          
+            delegate?.bodyView(self, nevusAdded: nevus)
+        }
+    }
+  
+    var moles: NSArray?
+    {
+        didSet
+        {
+            removeAllNevi()
+          
+            guard let moles = moles else {
+                return
+            }
+          
+            for m in moles
+            {
+                guard let m = m as? [String:Any],
+                      let id = m["id"] as? String,
+                      let anatomicalSite = m["anatomicalSite"] as? String,
+                      let faceIndex = m["faceIndex"] as? Int,
+                      let positionX = m["positionX"] as? Float,
+                      let positionY = m["positionY"] as? Float,
+                      let bodyNode = bodyNodesByName[anatomicalSite]
+                else {
+                    return
+                }
+              
+                let nevus = Nevus(id: id, bodyNode: bodyNode, faceIndex: faceIndex,
+                                  coord: SCNVector3Make(positionX, positionY, 0),
+                                  state: .newlyAdded)
+              
+                neviRootNode.addChildNode(nevus.node)
+                bodyNode.add(nevus: nevus)
+
+                let lookAt = SCNLookAtConstraint(target: cameraNode)
+                nevus.node.constraints = [ lookAt ]
+
+                nevi.insert(nevus)
+                neviByNode[nevus.node] = nevus
+              
+                if let bodyNode = selectedBodyNodeHI {
+                    showNevi(for: bodyNode)
+                }
+            }
         }
     }
   
@@ -80,6 +189,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     private var selectedBodyNodeHI: BodyNode? {
         didSet {
             updateBodyNodeLabel()
+            showNevi(for: selectedBodyNodeHI)
+            newNevus = nil
 //            let name = selectedBodyNodeHI?.displayName ?? "none"
 //            delegate?.bodyView(self, bodyNodeSelected: name)
         }
@@ -449,7 +560,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                             minTheta: minTheta,
                             maxTheta: maxTheta,
                             initialCoord: (r: r, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
-                            velocity: (r: 5.0, theta: 0.025, phi: 0.05))
+                            velocity: (r: 5.0, theta: 0.025, phi: 0.02))
 
         if visualize, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 1, nx: 50, ny: 50, color: .black) {
             scene.rootNode.addChildNode(repr)
@@ -889,8 +1000,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         selectedBodyNodeHI?.selected = false
         selectedBodyNodeHI = nil
         
-        selectedNevus?.selected = false
+//        selectedNevus?.selected = false
+        selectedNevus?.state = .normal
         selectedNevus = nil
+      
+        newNevus?.state = .normal
     }
     
     private func highlightBodyNode(_ bodyNode: BodyNode?)
@@ -982,7 +1096,19 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         return nil
     }
-    
+  
+    private func removeAllNevi()
+    {
+        for nevus in nevi
+        {
+            nevus.node.removeFromParentNode()
+            nevus.bodyNode?.remove(nevus: nevus)
+            neviByNode.removeValue(forKey: nevus.node)
+        }
+      
+        nevi.removeAll()
+    }
+  
     private func addNevus(bodyNode: BodyNode, hitTestResult: SCNHitTestResult)
     {
         let faceIndex = hitTestResult.faceIndex
@@ -1092,17 +1218,19 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                           direction: normals.first!,
                           appearance: .texturedRect,
                           alwaysVisible: true)
-      
-        neviRootNode.addChildNode(nevus.node)
-        bodyNode.add(nevus: nevus)
 
-        let lookAt = SCNLookAtConstraint(target: cameraNode)
-        nevus.node.constraints = [ lookAt ]
-
-        nevi.insert(nevus)
-        neviByNode[nevus.node] = nevus
+        newNevus = nevus
       
-        delegate?.bodyView(self, nevusAdded: nevus)
+//        neviRootNode.addChildNode(nevus.node)
+//        bodyNode.add(nevus: nevus)
+//
+//        let lookAt = SCNLookAtConstraint(target: cameraNode)
+//        nevus.node.constraints = [ lookAt ]
+//
+//        nevi.insert(nevus)
+//        neviByNode[nevus.node] = nevus
+//      
+//        delegate?.bodyView(self, nevusAdded: nevus)
     }
     
     private func handleHitHigh(_ bodyNode: BodyNode, _ hitTestResult: SCNHitTestResult, _ didSelectNevus: Bool)
@@ -1113,7 +1241,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             {
                 addNevus(bodyNode: bodyNode, hitTestResult: hitTestResult)
                 
-                selectedNevus?.selected = false
+//                selectedNevus?.selected = false
+                selectedNevus?.state = .normal
                 selectedNevus = nil
             }
         }
@@ -1136,11 +1265,16 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         if let nevusNode = nevusHitResult?.node,
            let nevus = neviByNode[nevusNode],
-           selectedNevus != nevus
+           selectedNevus != nevus,
+           nevus.state != .newlyAdded
         {
-            selectedNevus?.selected = false
+//            selectedNevus?.selected = false
+            selectedNevus?.state = .normal
+          
             selectedNevus = nevus
-            nevus.selected = true
+//            nevus.selected = true
+            nevus.state = .selected
+          
             return nevus
         }
         
@@ -1274,7 +1408,23 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         else if selectedBodyNodeLO == rootBodyNode,
                 let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: trunk)
         {
-            handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
+            if let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: rootBodyNode),
+               r.bodyNode.parent != trunk,
+               let item = findControlsViewItem(r.bodyNode),
+               let target = cameraTargets[item]
+            {
+                print("\(r.bodyNode.name)")
+                controlsView.selectedItem = item
+                
+//                SCNTransaction.begin()
+//                SCNTransaction.animationDuration = 0.5
+                lookAtCameraTarget(target)
+//                SCNTransaction.commit()
+            }
+            else
+            {
+                handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
+            }
         }
         else if selectedBodyNodeLO == rootBodyNode,
                 let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: rootBodyNode),
@@ -1290,10 +1440,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             {
                 controlsView.selectedItem = item
                 
-                SCNTransaction.begin()
-                SCNTransaction.animationDuration = 0.5
+//                SCNTransaction.begin()
+//                SCNTransaction.animationDuration = 0.5
                 lookAtCameraTarget(target)
-                SCNTransaction.commit()
+//                SCNTransaction.commit()
             }
         }
     }

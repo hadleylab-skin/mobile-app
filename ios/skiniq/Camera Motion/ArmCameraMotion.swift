@@ -125,7 +125,7 @@ class ArmCameraMotion: CameraMotion
                                minTheta: 0,
                                maxTheta: angle,
                                initialCoord: (r2: r, theta: 0, phi: 0),
-                               velocity: (r2: 0, theta: 0.005, phi: 0.02))
+                               velocity: (r2: 0, theta: 0.003, phi: 0.02))
       
         let cylinder2_axisZ = torus.getTangentVector(theta: angle)
         let cylinder2_axisR = torus.getRadiusVector(theta: angle)
@@ -155,7 +155,7 @@ class ArmCameraMotion: CameraMotion
                                      minTheta: 0.15 * Float.pi / 2,
                                      maxTheta: Float.pi / 2,
                                      initialCoord: (r: r, theta: 0, phi: 0),
-                                     velocity: (r: 0, theta: -0.02, phi: -0.02))
+                                     velocity: (r: 0, theta: -0.01, phi: -0.02))
       
         segment = .cylinder1
         

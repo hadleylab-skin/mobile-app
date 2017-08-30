@@ -33,7 +33,8 @@ RCT_EXPORT_MODULE()
     @"anatomicalSite": nevus.bodyNode.displayName,
     @"faceIndex": @(nevus.faceIndex),
     @"positionX": @(nevus.coord.x),
-    @"positionY": @(nevus.coord.y)
+    @"positionY": @(nevus.coord.y),
+    @"positionZ": @(nevus.coord.z)
   };
 }
 
