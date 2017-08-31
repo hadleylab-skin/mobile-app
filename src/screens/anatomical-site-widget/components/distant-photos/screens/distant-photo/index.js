@@ -11,6 +11,7 @@ import {
 import BaobabPropTypes from 'baobab-prop-types';
 import ImagePicker from 'react-native-image-picker';
 import { Button } from 'components';
+import { convertMoleToSave, convertMoleToDisplay } from 'libs/misc';
 import dotImagePink from 'components/icons/dot/dot.png';
 import dotImageYellow from 'components/icons/dot-yellow/dot-yellow.png';
 import MolePicker from './components/mole-picker';
@@ -136,10 +137,18 @@ const DistantPhoto = schema(model)(React.createClass({
         return moles;
     },
 
+    getPositionToSave() {
+        const { positionX, positionY } = this.state;
+        const { width, height } = this.props.tree.get('imageSize');
+
+        return convertMoleToSave(positionX, positionY, width, height);
+    },
+
     onContinuePress() {
-        const { positionX, positionY, selectedMole } = this.state;
+        const { selectedMole } = this.state;
         const { currentAnatomicalSite } = this.props;
         const { pk } = this.props.tree.get();
+        const position = this.getPositionToSave();
 
         if (!_.isEmpty(selectedMole)) {
             this.addMolePhoto();
@@ -147,8 +156,7 @@ const DistantPhoto = schema(model)(React.createClass({
             this.props.onContinuePress({
                 anatomicalSite: currentAnatomicalSite,
                 patientAnatomicalSite: pk,
-                positionX,
-                positionY,
+                positionInfo: { ...position },
             });
         }
     },
@@ -204,6 +212,13 @@ const DistantPhoto = schema(model)(React.createClass({
         this.setState({ positionX: null, positionY: null, selectedMole: data });
     },
 
+    getMolePosition(mole) {
+        const { width, height } = this.props.tree.get('imageSize');
+        const { positionX, positionY } = mole.data.positionInfo;
+
+        return convertMoleToDisplay(positionX, positionY, width, height);
+    },
+
     render() {
         const { distantPhoto, pk } = this.props.tree.get();
         const { width, height } = this.props.tree.get('imageSize');
@@ -232,8 +247,9 @@ const DistantPhoto = schema(model)(React.createClass({
                         resizeMode="contain"
                         style={{ width, height }}
                     />
-                    {_.map(currentAnatomicalSiteMoles, (mole, index) => {
-                        const { x: left, y: top } = mole.data.positionInfo;
+                    {width && height ? _.map(currentAnatomicalSiteMoles, (mole, index) => {
+                        const position = this.getMolePosition(mole);
+                        const { positionX: left, positionY: top } = position;
 
                         if (mole.data.patientAnatomicalSite !== pk) {
                             return null;
@@ -248,7 +264,7 @@ const DistantPhoto = schema(model)(React.createClass({
                                 </TouchableWithoutFeedback>
                             </View>
                         );
-                    })}
+                    }) : null}
                 </MolePicker>
 
                 <View style={s.footer}>

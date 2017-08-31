@@ -63,7 +63,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     onMoleSelected(data) {
         console.log('onMoleSelected', data);
 
-        this.setState({ selectedMole: data });
+        this.setState({
+            selectedMole: {
+                anatomicalSite: data.anatomicalSite,
+                patientAnatomicalSite: null,
+                positionInfo: data,
+            },
+        });
     },
 
     onBodyPartSelected(data) {
@@ -76,7 +82,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     onMoleAdded(data) {
         console.log('onMoleAdded', data);
 
-        this.setState({ selectedMole: {} });
+        this.setState({
+            selectedMole: {
+                anatomicalSite: data.anatomicalSite,
+                patientAnatomicalSite: null,
+                positionInfo: data,
+            },
+        });
     },
 
     onContinuePress(data) {
@@ -104,6 +116,28 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         }
     },
 
+    getPatientMolesCursor() {
+        const { cursors } = this.context;
+        const patientPk = cursors.currentPatientPk.get();
+        const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
+
+        return patientMolesCursor;
+    },
+
+    getMoles() {
+        const patientMolesCursor = this.getPatientMolesCursor();
+        const patientMoles = patientMolesCursor.get('data');
+
+        const moles =
+            _.map(
+                _.reject(patientMoles, (mole) => !mole.data || mole.data.patientAnatomicalSite),
+                (mole) => mole.data.positionInfo);
+
+        const groupedMoles = _.groupBy(moles, (mole) => _.kebabCase(mole.anatomicalSite));
+
+        return groupedMoles;
+    },
+
     render() {
         const { cursors } = this.context;
         const { selectedMole, currentAnatomicalSite } = this.state;
@@ -111,13 +145,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
         const sex = patientData && patientData.sex === 'f' ? 'female' : 'male';
-        const moles = ['a', 'b'];
+        const moles = this.getMoles();
 
         return (
             <View style={s.container}>
                 <BodyView3D
                     sex={sex}
-                    moles={moles}
+                    moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
                     onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}
                     onMoleSelected={this.onMoleSelected}

@@ -27,7 +27,7 @@ export default StyleSheet.create({
     dot: {
         position: 'absolute',
         marginLeft: -9,
-        marginTop: 18,
+        marginTop: -9,
     },
     site: {
         position: 'relative',
