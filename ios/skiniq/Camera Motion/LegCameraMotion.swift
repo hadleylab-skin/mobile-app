@@ -7,10 +7,21 @@ import SceneKit
 
 class LegCameraMotion: CameraMotion
 {
+    struct Config
+    {
+        var origin: GLKVector3
+        var axisZ: GLKVector3
+        var axisY: GLKVector3
+        var r: Float
+        var cylinderH: Float
+        var angle: Float
+        var targetPoints: [TargetPoint]
+    }
+    
     var r: Float
     var cylinderH: Float
     var angle: Float
-    var targetPoints: [(Float, GLKVector3)]
+    var targetPoints: [TargetPoint]
   
     var position: GLKVector3 {
         return currentMotionController.position
@@ -161,7 +172,6 @@ class LegCameraMotion: CameraMotion
         }
     
         let pos = (x - a!.0) / (b!.0 - a!.0)
-        print("\(x) \(a!.0) \(b!.0) \(pos)")
         
         return mix(a: a!.1, b: b!.1, x: pos)
     }
@@ -186,8 +196,6 @@ class LegCameraMotion: CameraMotion
         guard dxyz.x != 0 || dxyz.y != 0 else {
             return GLKVector3Make(0, 0, 0)
         }
-      
-        print("dx = \(dxyz.x) dy = \(dxyz.y)")
       
         switch segment
         {

@@ -7,6 +7,18 @@ import SceneKit
 
 class ArmCameraMotion: CameraMotion
 {
+    struct Config
+    {
+        var origin: GLKVector3
+        var axisZ: GLKVector3
+        var axisY: GLKVector3
+        var r: Float
+        var cylinderH1: Float
+        var cylinderH2: Float
+        var angle: Float
+        var targetPoints: [TargetPoint]
+    }
+    
     var r: Float
     var cylinderH1: Float
     var cylinderH2: Float
@@ -184,7 +196,6 @@ class ArmCameraMotion: CameraMotion
         }
     
         let pos = (x - a!.0) / (b!.0 - a!.0)
-        print("\(x) \(a!.0) \(b!.0) \(pos)")
         
         return mix(a: a!.1, b: b!.1, x: pos)
     }
@@ -209,8 +220,6 @@ class ArmCameraMotion: CameraMotion
         guard dxyz.x != 0 || dxyz.y != 0 else {
             return GLKVector3Make(0, 0, 0)
         }
-      
-        print("dx = \(dxyz.x) dy = \(dxyz.y)")
       
         switch segment
         {

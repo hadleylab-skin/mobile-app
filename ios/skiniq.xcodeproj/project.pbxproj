@@ -49,7 +49,7 @@
 		92EBB3BD1F46AFDB003DD4EE /* CylindricalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */; };
 		92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */; };
 		92EBB3BF1F46AFDB003DD4EE /* SphericalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */; };
-		92EBB3C01F46AFDB003DD4EE /* Body.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B61F46AFDB003DD4EE /* Body.swift */; };
+		92EBB3C01F46AFDB003DD4EE /* BodyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B61F46AFDB003DD4EE /* BodyModel.swift */; };
 		92EBB3C11F46AFDB003DD4EE /* BodyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */; };
 		92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B81F46AFDB003DD4EE /* Nevus.swift */; };
 		92EBB3C31F46AFDB003DD4EE /* BodyView3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */; };
@@ -319,7 +319,7 @@
 		92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CylindricalMotion.swift; sourceTree = "<group>"; };
 		92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EllipsoidalMotionWithFlexibleFocusPoint.swift; sourceTree = "<group>"; };
 		92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SphericalMotion.swift; sourceTree = "<group>"; };
-		92EBB3B61F46AFDB003DD4EE /* Body.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Body.swift; sourceTree = "<group>"; };
+		92EBB3B61F46AFDB003DD4EE /* BodyModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyModel.swift; sourceTree = "<group>"; };
 		92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyNode.swift; sourceTree = "<group>"; };
 		92EBB3B81F46AFDB003DD4EE /* Nevus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nevus.swift; sourceTree = "<group>"; };
 		92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyView3D.swift; sourceTree = "<group>"; };
@@ -633,7 +633,7 @@
 		92EBB3B51F46AFDB003DD4EE /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				92EBB3B61F46AFDB003DD4EE /* Body.swift */,
+				92EBB3B61F46AFDB003DD4EE /* BodyModel.swift */,
 				92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */,
 				92EBB3B81F46AFDB003DD4EE /* Nevus.swift */,
 			);
@@ -1172,7 +1172,7 @@
 				92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */,
 				9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */,
 				929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */,
-				92EBB3C01F46AFDB003DD4EE /* Body.swift in Sources */,
+				92EBB3C01F46AFDB003DD4EE /* BodyModel.swift in Sources */,
 				9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */,
 				92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */,
 				92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */,

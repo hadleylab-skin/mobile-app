@@ -11,6 +11,8 @@ enum CameraZoomMode
     case fov
 }
 
+typealias TargetPoint = (x: Float, pos: GLKVector3)
+
 protocol CameraMotion
 {
     typealias UpFunc = (GLKVector3, GLKVector3) -> GLKVector3 // return non-native coord
@@ -37,39 +39,6 @@ protocol CameraMotion
 
     func getRepresentationVertexGroups(z: Float, nx: Int, ny: Int) -> [[GLKVector3]]
 }
-
-//class CameraMotion1
-//{
-//    var position: GLKVector3 {
-//        preconditionFailure("This method must be overridden")
-//    }
-//  
-//    var pivot: GLKMatrix4 {
-//        preconditionFailure("This method must be overridden")
-//    }
-//  
-//    var zoomMode: CameraZoomMode = .translate
-//
-//    var initialFov: Float?
-//    var minFov: Float?
-//    var maxFov: Float?
-//  
-//    func reset() {
-//        preconditionFailure("This method must be overridden")
-//    }
-//  
-//    func toggleFrontBack() {
-//        preconditionFailure("This method must be overridden")
-//    }
-//  
-//    func move(_ translation: GLKVector3) -> GLKVector3 {
-//        preconditionFailure("This method must be overridden")
-//    }
-//
-//    func getRepresentationVertexGroups(z: Float, nx: Int, ny: Int) -> [[GLKVector3]] {
-//      preconditionFailure("This method must be overridden")
-//    }
-//}
 
 extension CameraMotion
 {
@@ -151,19 +120,4 @@ extension CameraMotion
       
         return (result, remainder)
     }
-    
-//    internal func computePivot(_ eye: Coord) -> GLKMatrix4
-//    {
-//        let eyeXyz = convert(eye)
-//        var targetXyz = getDefaultTarget(coord: eye)
-//        let up = upFunc?(position, nativePosition) ?? self.up
-//        
-//        let pivot = GLKMatrix4MakeLookAt(0, 0, 0,
-//                                         targetXyz.x - eyeXyz.x,
-//                                         targetXyz.y - eyeXyz.y,
-//                                         targetXyz.z - eyeXyz.z,
-//                                         up.x, up.y, up.z)
-//        
-//        return pivot
-//    }
 }

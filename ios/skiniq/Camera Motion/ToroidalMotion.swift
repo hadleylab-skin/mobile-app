@@ -157,7 +157,7 @@ class ToroidalMotion: CameraMotion
                      initialCoord: Coord,
                      velocity: Coord)
     {
-        debugPrint("origin = ", origin.x, origin.y, origin.z)
+//        debugPrint("origin = ", origin.x, origin.y, origin.z)
       
         let axisR1 = GLKVector3MultiplyScalar(dirToCenter, -1)
 
@@ -166,7 +166,7 @@ class ToroidalMotion: CameraMotion
       
         let axisZ = GLKVector3CrossProduct(dir, dirToCenter)
       
-        debugPrint("center = \(center.x) \(center.y) \(center.z)")
+//        debugPrint("center = \(center.x) \(center.y) \(center.z)")
       
         self.init(center: center,
                   axisZ: axisZ,

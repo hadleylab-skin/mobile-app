@@ -33,10 +33,37 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
 {
     var delegate: BodyViewDelegate?
   
-    var sex: String = "male" {
+    private var models: [String:BodyModel] = [:]
+  
+    private var currentModel: BodyModel?
+    {
         didSet {
-            print("Sex selected: \(sex)")
-            updateModel()
+            oldValue?.rootNode.removeFromParentNode()
+            oldValue?.debugNode.removeFromParentNode()
+            updateCurrentModel()
+        }
+    }
+  
+    private func updateCurrentModel()
+    {
+        guard let model = currentModel else {
+            return
+        }
+        
+        commonRootNode.addChildNode(model.rootNode)
+        scene.rootNode.addChildNode(model.debugNode)
+        neviRootNode.transform = model.rootNode.transform
+    }
+  
+    var sex: String = "male" {
+        didSet
+        {
+            guard let model = models[sex] else {
+                print("Model not found")
+                return
+            }
+          
+            currentModel = model
         }
     }
   
@@ -130,7 +157,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                       let faceIndex = m["faceIndex"] as? Int,
                       let positionX = m["positionX"] as? Float,
                       let positionY = m["positionY"] as? Float,
-                      let bodyNode = bodyNodesByName[anatomicalSite]
+                      let bodyNode = currentModel?.lookupBodyNode(name: anatomicalSite) //bodyNodesByName[anatomicalSite]
                 else {
                     return
                 }
@@ -155,9 +182,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
     }
   
-    private func updateModel()
-    {}
-  
     private let backgroundView = RadialGradientView()
     private let sceneView = SCNView()
     private let controlsView = ControlsView()
@@ -165,23 +189,15 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private let scene = SCNScene()
     private let commonRootNode = SCNNode()
-    private var bodyRootNode: SCNNode!
     private let neviRootNode = SCNNode()
     
     private let camera = SCNCamera()
     private let cameraNode = SCNNode()
-    private var cameraTargets: [ControlsView.Item:CameraTarget] = [:]
-    private var bodyNodesControlViewItems: [BodyNode:ControlsView.Item] = [:]
-    
-    private var bodys: [Body] = []
-    private var body: Body?
-    
-    private var rootBodyNode: BodyNode!
-    
+  
     private var selectedBodyNodeLO: BodyNode! {
         didSet {
             updateBodyNodeLabel()
-            let name = selectedBodyNodeLO?.displayName ?? "none"
+            let name = selectedBodyNodeLO?.name ?? "none"
             delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
@@ -191,13 +207,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             updateBodyNodeLabel()
             showNevi(for: selectedBodyNodeHI)
             newNevus = nil
-//            let name = selectedBodyNodeHI?.displayName ?? "none"
-//            delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
-    
-    private var bodyNodesByNode = [SCNNode:BodyNode]()
-    private var bodyNodesByName = [String:BodyNode]()
     
     private var nevi = Set<Nevus>()
     private var neviByNode = [SCNNode:Nevus]()
@@ -215,274 +226,205 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private var rotation: SCNMatrix4 = SCNMatrix4Identity
     private var scale: SCNMatrix4 = SCNMatrix4Identity
-    
-    private var head: BodyNode!
-    private var face: BodyNode!
-    private var occipitalScalp: BodyNode!
-
-    private var trunk: BodyNode!
-    private var upperChestR: BodyNode!
-    private var upperChestL: BodyNode!
-    private var upperBackR: BodyNode!
-    private var upperBackL: BodyNode!
-    private var upperAbdomenR: BodyNode!
-    private var upperAbdomenL: BodyNode!
-    private var lowerAbdomenR: BodyNode!
-    private var lowerAbdomenL: BodyNode!
-    private var lowerBackR: BodyNode!
-    private var lowerBackL: BodyNode!
-    private var buttockR: BodyNode!
-    private var buttockL: BodyNode!
-    
-    private var armR: BodyNode!
-    private var posteriorShoulderR: BodyNode!
-    private var dorsalHandR: BodyNode!
-    private var anteriorUpperArmR: BodyNode!
-    private var posteriorForearmR: BodyNode!
-    private var anteriorForearmR: BodyNode!
-    private var elbowR: BodyNode!
-    private var anteriorShoulderR: BodyNode!
-    private var antecubitalFossaR: BodyNode!
-    private var posteriorUpperArmR: BodyNode!
-    private var palmR: BodyNode!
-    
-    private var armL: BodyNode!
-    private var posteriorShoulderL: BodyNode!
-    private var dorsalHandL: BodyNode!
-    private var anteriorUpperArmL: BodyNode!
-    private var posteriorForearmL: BodyNode!
-    private var anteriorForearmL: BodyNode!
-    private var elbowL: BodyNode!
-    private var anteriorShoulderL: BodyNode!
-    private var antecubitalFossaL: BodyNode!
-    private var posteriorUpperArmL: BodyNode!
-    private var palmL: BodyNode!
-    
-    private var legR: BodyNode!
-    private var anteriorThighR: BodyNode!
-    private var posteriorThighR: BodyNode!
-    private var popitealFossaR: BodyNode!
-    private var kneeR: BodyNode!
-    private var proximalLowerLegR: BodyNode!
-    private var proximalCalfR: BodyNode!
-    private var distalLowerFootR: BodyNode!
-    private var distalCalfR: BodyNode!
-    private var dorsalFootR: BodyNode!
-    private var heelR: BodyNode!
-    
-    private var legL: BodyNode!
-    private var anteriorThighL: BodyNode!
-    private var posteriorThighL: BodyNode!
-    private var popitealFossaL: BodyNode!
-    private var kneeL: BodyNode!
-    private var proximalLowerLegL: BodyNode!
-    private var proximalCalfL: BodyNode!
-    private var distalLowerFootL: BodyNode!
-    private var distalCalfL: BodyNode!
-    private var dorsalFootL: BodyNode!
-    private var heelL: BodyNode!
-    
+  
     private let continueToCloseUpPhotoButton = UIButton()
     private let continueToCloseUpPhotoButtonHeight = 50.0
     private var continueToCloseUpPhotoButtonBottomOffset: Constraint?
+    
+    private let showTargetPoints = false
     
 // MARK: - Setup
     
     private func setupNodes()
     {
-        try! loadBody()
-        
         scene.rootNode.addChildNode(commonRootNode)
-        commonRootNode.addChildNode(bodyRootNode)
         commonRootNode.addChildNode(neviRootNode)
         
         let s = 0.275
         commonRootNode.scale = SCNVector3(s, s, s)
-        
-        neviRootNode.transform = bodyRootNode.transform
     }
-    
-    private func processBodyNodesRecursively(bodyNode: BodyNode)
+  
+    private func setupMaleBodyModel()
     {
-        if let name = bodyNode.name {
-            bodyNodesByName[name] = bodyNode
-        }
+        let bodyCenter = GLKVector3Make(0, -1, 0)
+        let headCenter = GLKVector3Make(0, 7.5, 0)
+        let rightArmOrigin = GLKVector3Make(-2, 5, -0.5)
+        let leftArmOrigin = GLKVector3Make(2, 5, -0.5)
+        let rightLegOrigin = GLKVector3Make(-1, -2, -0.25)
+        let leftLegOrigin = GLKVector3Make(-1, -2, -0.25)
         
-        bodyNodesByNode[bodyNode.node] = bodyNode
-        
-        bodyNode.children.forEach {
-            processBodyNodesRecursively(bodyNode: $0)
-        }
-    }
-    
-    private func loadBody() throws
-    {
-        guard let bodyScene = SCNScene(named: "art.scnassets/Body.scn") else {
-            throw LoadError.sceneNotFound
+        let rightArmTargetPoints: [TargetPoint] = [
+            (0.0, rightArmOrigin),
+            (1.0, GLKVector3Make(-2.75, 3, -0.65)),
+            (2.0, GLKVector3Make(-3.25, 1.8, -0.7)),
+            (3.0, GLKVector3Make(-4.1, -0.5, -0.25)),
+            (4.0, GLKVector3Make(-4.25, -1.25, 0))
+        ]
+      
+        let leftArmTargetPoints = rightArmTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
         }
 
-        bodyRootNode = bodyScene.rootNode.childNode(withName: "Whole Body", recursively: false)
-        
-        guard let bodyRootNode = bodyRootNode else {
-            throw LoadError.invalidScene
+        let rightLegTargetPoints: [TargetPoint] = [
+            (0.0, rightLegOrigin),
+            (1.0, GLKVector3Make(-1.15, -5.5, -0.3)),
+            (1.75, GLKVector3Make(-1.3, -10.25, -0.5)),
+            (2.0, GLKVector3Make(-1.4, -10.4, 0.15)),
+            (3.0, GLKVector3Make(-1.5, -10.5, 0.75))
+        ]
+      
+        let leftLegTargetPoints = rightLegTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
         }
+
+        let rightArmConfig =
+            ArmCameraMotion.Config(origin: rightArmOrigin,
+                                   axisZ: GLKVector3Make(-1.25, -3.2, -0.2),
+                                   axisY: GLKVector3Make(0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH1: 2,
+                                   cylinderH2: 2.5,
+                                   angle: 0.2 * Float.pi / 2,
+                                   targetPoints: rightArmTargetPoints)
+
+        let leftArmConfig =
+            ArmCameraMotion.Config(origin: leftArmOrigin,
+                                   axisZ: GLKVector3Make(1.25, -3.2, -0.2),
+                                   axisY: GLKVector3Make(-0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH1: 2,
+                                   cylinderH2: 2.5,
+                                   angle: 0.2 * Float.pi / 2,
+                                   targetPoints: leftArmTargetPoints)
         
-        rootBodyNode = BodyNode(bodyRootNode)
+        let rightLegConfig =
+            LegCameraMotion.Config(origin: rightLegOrigin,
+                                   axisZ: GLKVector3Make(-0.025, -1, -0.1),
+                                   axisY: GLKVector3Make(-0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH: 4.5,
+                                   angle: (2 / 3) * Float.pi / 2,
+                                   targetPoints: rightLegTargetPoints)
         
-        guard let rootBodyNode = rootBodyNode else {
-            throw LoadError.invalidScene
-        }
-        
-        processBodyNodesRecursively(bodyNode: rootBodyNode)
-        
-        rootBodyNode.children.forEach {
-            $0.flatten = true
-        }
+        let leftLegConfig =
+            LegCameraMotion.Config(origin: leftLegOrigin,
+                                   axisZ: GLKVector3Make(0.025, -1, -0.1),
+                                   axisY: GLKVector3Make(0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH: 4.5,
+                                   angle: (2 / 3) * Float.pi / 2,
+                                   targetPoints: leftLegTargetPoints)
+
+        models["male"] =
+            try! BodyModel(assetName: "art.scnassets/Male.scn",
+                           bodyCenter: bodyCenter,
+                           headCenter: headCenter,
+                           rightArmConfig: rightArmConfig,
+                           leftArmConfig: leftArmConfig,
+                           rightLegConfig: rightLegConfig,
+                           leftLegConfig: leftLegConfig,
+                           showTargetPoints: showTargetPoints)
     }
-    
-    private func setupSpecialNodes()
+  
+    private func setupFemaleBodyModel()
     {
-        head = bodyNodesByName["Head"]
-        face = bodyNodesByName["Face"]
-        occipitalScalp = bodyNodesByName["Occipital Scalp"]
+        let bodyCenter = GLKVector3Make(0, -1, 0)
+        let headCenter = GLKVector3Make(0, 6.75, 0)
+        let rightArmOrigin = GLKVector3Make(-1.75, 4, -0.5)
+        let leftArmOrigin = GLKVector3Make(1.75, 4, -0.5)
+        let rightLegOrigin = GLKVector3Make(-1.0, -2, -0.25)
+        let leftLegOrigin = GLKVector3Make(1.0, -2, -0.25)
         
-        trunk = bodyNodesByName["Trunk"]
-        upperChestR = bodyNodesByName["Upper Chest R"]
-        upperChestL = bodyNodesByName["Upper Chest L"]
-        upperBackR = bodyNodesByName["Upper Back R"]
-        upperBackL = bodyNodesByName["Upper Back L"]
-        upperAbdomenR = bodyNodesByName["Upper Abdomen R"]
-        upperAbdomenL = bodyNodesByName["Upper Abdomen L"]
-        lowerAbdomenR = bodyNodesByName["Lower Abdomen R"]
-        lowerAbdomenL = bodyNodesByName["Lower Abdomen L"]
-        lowerBackR = bodyNodesByName["Lower Back R"]
-        lowerBackL = bodyNodesByName["Lower Back L"]
-        buttockR = bodyNodesByName["Buttock R"]
-        buttockL = bodyNodesByName["Buttock L"]
+        let rightArmTargetPoints: [TargetPoint] = [
+            (0.0, rightArmOrigin),
+            (1.0, GLKVector3Make(-2.25, 2.7, -0.65)),
+            (2.0, GLKVector3Make(-2.75, 1.4, -0.7)),
+            (3.0, GLKVector3Make(-3.8, -0.7, -0.25)),
+            (4.0, GLKVector3Make(-4.0, -1.5, 0))
+        ]
+      
+        let leftArmTargetPoints = rightArmTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
+        }
+
+        let rightLegTargetPoints: [TargetPoint] = [
+            (0.0, rightLegOrigin),
+            (1.0, GLKVector3Make(-1.0, -5.5, -0.3)),
+            (1.75, GLKVector3Make(-1.0, -10.25, -0.5)),
+            (2.0, GLKVector3Make(-1.1, -10.4, 0.15)),
+            (3.0, GLKVector3Make(-1.2, -10.5, 0.75))
+        ]
+      
+        let leftLegTargetPoints = rightLegTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
+            var p = p
+            p.pos.x = -p.pos.x
+            return p
+        }
+
+        let rightArmConfig =
+            ArmCameraMotion.Config(origin: rightArmOrigin,
+                                   axisZ: GLKVector3Make(-1.25, -3.2, -0.2),
+                                   axisY: GLKVector3Make(0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH1: 2,
+                                   cylinderH2: 2,
+                                   angle: 0.2 * Float.pi / 2,
+                                   targetPoints: rightArmTargetPoints)
+
+        let leftArmConfig =
+            ArmCameraMotion.Config(origin: leftArmOrigin,
+                                   axisZ: GLKVector3Make(1.25, -3.2, -0.2),
+                                   axisY: GLKVector3Make(-0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH1: 2,
+                                   cylinderH2: 2,
+                                   angle: 0.2 * Float.pi / 2,
+                                   targetPoints: leftArmTargetPoints)
         
-        armR = bodyNodesByName["Arm R"]
-        posteriorShoulderR = bodyNodesByName["Posterior Shoulder R"]
-        dorsalHandR = bodyNodesByName["Dorsal Hand R"]
-        anteriorUpperArmR = bodyNodesByName["Anterior Upper Arm R"]
-        posteriorForearmR = bodyNodesByName["Posterior Forearm R"]
-        anteriorForearmR = bodyNodesByName["Anterior Forearm R"]
-        elbowR = bodyNodesByName["Elbow R"]
-        anteriorShoulderR = bodyNodesByName["Anterior Shoulder R"]
-        antecubitalFossaR = bodyNodesByName["Antecubital Fossa R"]
-        posteriorUpperArmR = bodyNodesByName["Posterior Upper Arm R"]
-        palmR = bodyNodesByName["Palm R"]
-    
-        armL = bodyNodesByName["Arm L"]
-        posteriorShoulderL = bodyNodesByName["Posterior Shoulder L"]
-        dorsalHandL = bodyNodesByName["Dorsal Hand L"]
-        anteriorUpperArmL = bodyNodesByName["Anterior Upper Arm L"]
-        posteriorForearmL = bodyNodesByName["Posterior Forearm L"]
-        anteriorForearmL = bodyNodesByName["Anterior Forearm L"]
-        elbowL = bodyNodesByName["Elbow L"]
-        anteriorShoulderL = bodyNodesByName["Anterior Shoulder L"]
-        antecubitalFossaL = bodyNodesByName["Antecubital Fossa L"]
-        posteriorUpperArmL = bodyNodesByName["Posterior Upper Arm L"]
-        palmL = bodyNodesByName["Palm L"]
-    
-        legR = bodyNodesByName["Leg R"]
-        anteriorThighR = bodyNodesByName["Anterior Thigh R"]
-        posteriorThighR = bodyNodesByName["Posterior Thigh R"]
-        popitealFossaR = bodyNodesByName["Popiteal Fossa R"]
-        kneeR = bodyNodesByName["Knee R"]
-        proximalLowerLegR = bodyNodesByName["Proximal Lower Leg R"]
-        proximalCalfR = bodyNodesByName["Proximal Calf R"]
-        distalLowerFootR = bodyNodesByName["Distal Lower Foot R"]
-        distalCalfR = bodyNodesByName["Distal Calf R"]
-        dorsalFootR = bodyNodesByName["Dorsal Foot R"]
-        heelR = bodyNodesByName["Heel R"]
-    
-        legL = bodyNodesByName["Leg L"]
-        anteriorThighL = bodyNodesByName["Anterior Thigh L"]
-        posteriorThighL = bodyNodesByName["Posterior Thigh L"]
-        popitealFossaL = bodyNodesByName["Popiteal Fossa L"]
-        kneeL = bodyNodesByName["Knee L"]
-        proximalLowerLegL = bodyNodesByName["Proximal Lower Leg L"]
-        proximalCalfL = bodyNodesByName["Proximal Calf L"]
-        distalLowerFootL = bodyNodesByName["Distal Lower Foot L"]
-        distalCalfL = bodyNodesByName["Distal Calf L"]
-        dorsalFootL = bodyNodesByName["Dorsal Foot L"]
-        heelL = bodyNodesByName["Heel L"]
+        let rightLegConfig =
+            LegCameraMotion.Config(origin: rightLegOrigin,
+                                   axisZ: GLKVector3Make(-0.025, -1, -0.1),
+                                   axisY: GLKVector3Make(-0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH: 3.5,
+                                   angle: (2 / 3) * Float.pi / 2,
+                                   targetPoints: rightLegTargetPoints)
+        
+        let leftLegConfig =
+            LegCameraMotion.Config(origin: leftLegOrigin,
+                                   axisZ: GLKVector3Make(0.025, -1, -0.1),
+                                   axisY: GLKVector3Make(0.25, 0, 1),
+                                   r: 4,
+                                   cylinderH: 3.5,
+                                   angle: (2 / 3) * Float.pi / 2,
+                                   targetPoints: leftLegTargetPoints)
+
+        models["female"] =
+            try! BodyModel(assetName: "art.scnassets/Female.scn",
+                           bodyCenter: bodyCenter,
+                           headCenter: headCenter,
+                           rightArmConfig: rightArmConfig,
+                           leftArmConfig: leftArmConfig,
+                           rightLegConfig: rightLegConfig,
+                           leftLegConfig: leftLegConfig,
+                           showTargetPoints: showTargetPoints)
     }
-    
-    private func setupDisplayNames()
+  
+    private func setupBodyModels()
     {
-        head.displayName = "Head"
-        face.displayName = "Face"
-        occipitalScalp.displayName = "Occipital Scalp"
-        
-        trunk.displayName = "Trunk"
-        upperChestR.displayName = "Right Upper Chest"
-        upperChestL.displayName = "Left Upper Chest"
-        upperBackR.displayName = "Right Upper Back"
-        upperBackL.displayName = "Left Upper Back"
-        upperAbdomenR.displayName = "Right Upper Abdomen"
-        upperAbdomenL.displayName = "Left Upper Abdomen"
-        lowerAbdomenR.displayName = "Right Lower Abdomen"
-        lowerAbdomenL.displayName = "Left Lower Abdomen"
-        lowerBackR.displayName = "Right Lower Back"
-        lowerBackL.displayName = "Left Lower Back"
-        buttockR.displayName = "Right Buttock"
-        buttockL.displayName = "Left Buttock"
-        
-        armR.displayName = "Right Arm"
-        posteriorShoulderR.displayName = "Right Posterior Shoulder"
-        dorsalHandR.displayName = "Right Dorsal Hand"
-        anteriorUpperArmR.displayName = "Right Anterior Upper Arm"
-        posteriorForearmR.displayName = "Right Posterior Forearm"
-        anteriorForearmR.displayName = "Right Anterior Forearm"
-        elbowR.displayName = "Right Elbow"
-        anteriorShoulderR.displayName = "Right Anterior Shoulder"
-        antecubitalFossaR.displayName = "Right Antecubital Fossa"
-        posteriorUpperArmR.displayName = "Right Posterior Upper Arm"
-        palmR.displayName = "Right Palm"
-        
-        armL.displayName = "Left Arm"
-        posteriorShoulderL.displayName = "Left Posterior Shoulder"
-        dorsalHandL.displayName = "Left Dorsal Hand"
-        anteriorUpperArmL.displayName = "Left Anterior Upper Arm"
-        posteriorForearmL.displayName = "Left Posterior Forearm"
-        anteriorForearmL.displayName = "Left Anterior Forearm"
-        elbowL.displayName = "Left Elbow"
-        anteriorShoulderL.displayName = "Left Anterior Shoulder"
-        antecubitalFossaL.displayName = "Left Antecubital Fossa"
-        posteriorUpperArmL.displayName = "Left Posterior Upper Arm"
-        palmL.displayName = "Left Palm"
-        
-        legR.displayName = "Right Leg"
-        anteriorThighR.displayName = "Right Anterior Thigh"
-        posteriorThighR.displayName = "Right Posterior Thigh"
-        popitealFossaR.displayName = "Right Popiteal Fossa"
-        kneeR.displayName = "Right Knee"
-        proximalLowerLegR.displayName = "Right Proximal Lower Leg"
-        proximalCalfR.displayName = "Right Proximal Calf"
-        distalLowerFootR.displayName = "Right Distal Lower Foot"
-        distalCalfR.displayName = "Right Distal Calf"
-        dorsalFootR.displayName = "Right Dorsal Foot"
-        heelR.displayName = "Right Heel"
-        
-        legL.displayName = "Left Leg"
-        anteriorThighL.displayName = "Left Anterior Thigh"
-        posteriorThighL.displayName = "Left Posterior Thigh"
-        popitealFossaL.displayName = "Left Popiteal Fossa"
-        kneeL.displayName = "Left Knee"
-        proximalLowerLegL.displayName = "Left Proximal Lower Leg"
-        proximalCalfL.displayName = "Left Proximal Calf"
-        distalLowerFootL.displayName = "Left Distal Lower Foot"
-        distalCalfL.displayName = "Left Distal Calf"
-        dorsalFootL.displayName = "Left Dorsal Foot"
-        heelL.displayName = "Left Heel"
+        setupMaleBodyModel()
+        setupFemaleBodyModel()
+        currentModel = models["female"]
     }
     
     private func setupCamera()
     {
-//        camera.automaticallyAdjustsZRange = true
-//        camera.usesOrthographicProjection = true
-//        camera.orthographicScale = 5
         camera.zNear = 0.1
         camera.yFov = 70
 
@@ -492,251 +434,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         lookAtWholeBody(front: true)
     }
     
-    private func setupCameraTargets()
-    {
-        cameraTargets[.body] = .front
-        cameraTargets[.head] = .bodyNode(head)
-        cameraTargets[.armR] = .bodyNode(armR)
-        cameraTargets[.armL] = .bodyNode(armL)
-        cameraTargets[.legR] = .bodyNode(legR)
-        cameraTargets[.legL] = .bodyNode(legL)
-        cameraTargets[.back] = .back
-    }
-    
-    private func setupBodyNodesControlViewItems()
-    {
-        bodyNodesControlViewItems[rootBodyNode] = ControlsView.Item.body
-        bodyNodesControlViewItems[head] = ControlsView.Item.head
-        bodyNodesControlViewItems[armR] = ControlsView.Item.armR
-        bodyNodesControlViewItems[armL] = ControlsView.Item.armL
-        bodyNodesControlViewItems[legR] = ControlsView.Item.legR
-        bodyNodesControlViewItems[legL] = ControlsView.Item.legL
-    }
-    
-    private func setupRootBodyNodeCameraMotion(visualize: Bool = false)
-    {
-        var bodyCenterLocal = rootBodyNode.node.boundingSphere.center
-        bodyCenterLocal.x = 0
-      
-        let bodyCenterWorld = rootBodyNode.node.convertPosition(bodyCenterLocal, to: scene.rootNode)
-      
-        rootBodyNode.cameraMotion =
-            EllipsoidalMotionWithFlexibleFocusPoint(center: SCNVector3ToGLKVector3(bodyCenterWorld),
-                                                    axisTheta: GLKVector3Make(0, 0, 1),
-                                                    axisPhi: GLKVector3Make(0, 1, 0),
-                                                    up: GLKVector3Make(0, 1, 0),
-                                                    scale: GLKVector3Make(1.05, 1.3, 1),
-                                                    minR: 5,
-                                                    maxR: 25,
-                                                    minTheta: 0.05 * Float.pi,
-                                                    maxTheta: 0.95 * Float.pi,
-                                                    initialCoord: (r: 20, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
-                                                    velocity: (r: 5.0, theta: 0.0125, phi: 0.025))
-      
-        if visualize, let repr = rootBodyNode.cameraMotion?.getRepresentationNode(z: 5, nx: 100, ny: 100, color: .black) {
-            scene.rootNode.addChildNode(repr)
-        }
-    }
-    
-    private func setSphericalMotion(bodyNode: BodyNode,
-                                    center: GLKVector3,
-                                    minR: Float, maxR: Float, r: Float,
-                                    minTheta: Float = 0.1 * Float.pi,
-                                    maxTheta: Float = 0.9 * Float.pi,
-                                    visualize: Bool = false)
-    {
-        var center = bodyNode.node.boundingSphere.center
-        center.x = 0
-        
-        let pos = bodyNode.node.convertPosition(center, to: scene.rootNode)
-
-        bodyNode.cameraMotion =
-            SphericalMotion(center: SCNVector3ToGLKVector3(pos),
-                            axisTheta: GLKVector3Make(0, 0, 1),
-                            axisPhi: GLKVector3Make(0, 1, 0),
-                            up: GLKVector3Make(0, 1, 0),
-                            minR: minR,
-                            maxR: maxR,
-                            minTheta: minTheta,
-                            maxTheta: maxTheta,
-                            initialCoord: (r: r, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
-                            velocity: (r: 5.0, theta: 0.025, phi: 0.02))
-
-        if visualize, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 1, nx: 50, ny: 50, color: .black) {
-            scene.rootNode.addChildNode(repr)
-        }
-    }
-  
-    private func setupArmCameraMotion(bodyNode: BodyNode,
-                                      origin: GLKVector3,
-                                      axisZ: GLKVector3,
-                                      axisY: GLKVector3,
-                                      targetPoints: [(x: Float, pos: GLKVector3)],
-                                      showSurface: Bool = false,
-                                      showTargets: Bool = false)
-    {
-        let axisY_proj_on_axisZ = GLKVector3DotProduct(axisZ, axisY) / GLKVector3Length(axisZ)
-        let axisY = GLKVector3Subtract(axisY, GLKVector3MultiplyScalar(GLKVector3Normalize(axisZ), axisY_proj_on_axisZ))
-      
-        let dot = GLKVector3DotProduct(axisZ, axisY)
-        assert(dot < 0.0001)
-      
-        bodyNode.cameraMotion =
-            ArmCameraMotion(origin: origin,
-                            axisZ: axisZ,
-                            axisY: axisY,
-                            cylinderH1: 2,
-                            cylinderH2: 2.5,
-                            torusR: 4,
-                            r: 4,
-                            angle: 0.2 * Float.pi / 2,
-                            initialFov: defaultFov,
-                            minFov: 15,
-                            maxFov: 80,
-                            targetPoints: targetPoints)
-      
-        if showSurface, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 3, nx: 150, ny: 50, color: .black) {
-            scene.rootNode.addChildNode(repr)
-        }
-    
-        if showTargets
-        {
-            for p in targetPoints {
-                let ball = BodyView3D.createBall(size: 0.15, color: .red)
-                scene.rootNode.addChildNode(ball)
-                ball.position = SCNVector3FromGLKVector3(p.pos)
-            }
-        }
-    }
-  
-    private func setupArmsCameraMotion()
-    {
-        let rightTargetPoints: [(x: Float, pos: GLKVector3)] = [
-            (0.0, GLKVector3Make(-2, 5, -0.5)),
-            (1.0, GLKVector3Make(-2.75, 3, -0.65)),
-            (2.0, GLKVector3Make(-3.25, 1.8, -0.7)),
-            (3.0, GLKVector3Make(-4.1, -0.5, -0.25)),
-//            (3.0, GLKVector3Make(-4.0, -1.0, 0)),
-            (4.0, GLKVector3Make(-4.25, -1.25, 0))
-        ]
-      
-        setupArmCameraMotion(bodyNode: armR,
-                             origin: GLKVector3Make(-2, 5, -0.5),
-                             axisZ: GLKVector3Make(-1.25, -3.2, -0.2),
-                             axisY: GLKVector3Make(0.25, 0, 1),
-                             targetPoints: rightTargetPoints,
-                             showSurface: false,
-                             showTargets: false)
-
-        let leftTargetPoints = rightTargetPoints.map { p -> (x: Float, pos: GLKVector3) in
-            var p = p
-            p.pos.x = -p.pos.x
-            return p
-        }
-        
-        setupArmCameraMotion(bodyNode: armL,
-                             origin: GLKVector3Make(2, 5, -0.5),
-                             axisZ: GLKVector3Make(1.25, -3.2, -0.2),
-                             axisY: GLKVector3Make(-0.25, 0, 1),
-                             targetPoints: leftTargetPoints,
-                             showSurface: false,
-                             showTargets: false)
-    }
-  
-    private func setupLegCameraMotion(bodyNode: BodyNode,
-                                      origin: GLKVector3,
-                                      axisZ: GLKVector3,
-                                      axisY: GLKVector3,
-                                      targetPoints: [(x: Float, pos: GLKVector3)],
-                                      showSurface: Bool = false,
-                                      showTargets: Bool = false)
-    {
-        let axisY_proj_on_axisZ = GLKVector3DotProduct(axisZ, axisY) / GLKVector3Length(axisZ)
-        let axisY = GLKVector3Subtract(axisY, GLKVector3MultiplyScalar(GLKVector3Normalize(axisZ), axisY_proj_on_axisZ))
-      
-        let dot = GLKVector3DotProduct(axisZ, axisY)
-        assert(dot < 0.0001)
-      
-        bodyNode.cameraMotion =
-            LegCameraMotion(origin: origin,
-                            axisZ: axisZ,
-                            axisY: axisY,
-                            cylinderH: 4.5,
-                            torusR: 4,
-                            r: 4,
-                            angle: (2 / 3) * Float.pi / 2,
-                            initialFov: defaultFov,
-                            minFov: 15,
-                            maxFov: 80,
-                            targetPoints: targetPoints)
-      
-        if showSurface, let repr = bodyNode.cameraMotion?.getRepresentationNode(z: 3, nx: 200, ny: 100, color: .black) {
-            scene.rootNode.addChildNode(repr)
-        }
-    
-        if showTargets
-        {
-            for p in targetPoints {
-                let ball = BodyView3D.createBall(size: 0.15, color: .red)
-                scene.rootNode.addChildNode(ball)
-                ball.position = SCNVector3FromGLKVector3(p.pos)
-            }
-        }
-    }
-  
-    private func setupLegsCameraMotion()
-    {
-        let rightLegPoints: [(x: Float, pos: GLKVector3)] = [
-            (0.0, GLKVector3Make(-1, -2, -0.25)),
-            (1.0, GLKVector3Make(-1.15, -5.5, -0.3)),
-            (1.75, GLKVector3Make(-1.3, -10.25, -0.5)),
-            (2.0, GLKVector3Make(-1.4, -10.4, 0.15)),
-            (3.0, GLKVector3Make(-1.5, -10.5, 0.75))
-        ]
-      
-        setupLegCameraMotion(bodyNode: legR,
-                             origin: GLKVector3Make(-1, -2, -0.25),
-                             axisZ: GLKVector3Make(-0.025, -1, -0.1),
-                             axisY: GLKVector3Make(-0.25, 0, 1),
-                             targetPoints: rightLegPoints,
-                             showTargets: false)
-
-        let leftLegPoints = rightLegPoints.map { p -> (x: Float, pos: GLKVector3) in
-            var p = p
-            p.pos.x = -p.pos.x
-            return p
-        }
-        
-        setupLegCameraMotion(bodyNode: legL,
-                             origin: GLKVector3Make(1, -2, -0.25),
-                             axisZ: GLKVector3Make(0.025, -1, -0.1),
-                             axisY: GLKVector3Make(0.25, 0, 1),
-                             targetPoints: leftLegPoints,
-                             showTargets: false)
-    }
-  
-    private func setupHeadCameraMotion()
-    {
-        let headCenterLocal = head.node.boundingSphere.center
-        let headCenterWorld = head.node.convertPosition(headCenterLocal, to: scene.rootNode)
-        
-        setSphericalMotion(bodyNode: head,
-                           center: SCNVector3ToGLKVector3(headCenterWorld),
-                           minR: 3, maxR: 8, r: 5,
-                           minTheta: 0.25 * Float.pi,
-                           maxTheta: 0.7 * Float.pi)
-    }
-  
-    private func setupCameraMotion()
-    {
-        setupRootBodyNodeCameraMotion()
-        setupHeadCameraMotion()
-        setupArmsCameraMotion()
-        setupLegsCameraMotion()
-    }
-    
     private let cameraTargetDebugPoint: SCNNode =
-        BodyView3D.createBall(size: 0.15, color: .green)
+        createBall(size: 0.15, color: .green)
 
     private func setupCameraTargetDebugPoint()
     {
@@ -749,43 +448,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         cameraTargetDebugPoint.position = SCNVector3FromGLKVector3(motion.target)
     }
     
-    private static func createBall(size: Float, color: UIColor) -> SCNNode
-    {
-        let m = SCNMaterial()
-        m.lightingModel = .blinn
-        m.diffuse.contents = color
-
-        let g = SCNSphere(radius: CGFloat(size))
-        g.materials = [ m ]
-        
-        return SCNNode(geometry: g)
-    }
-    
     private func setupLights()
     {
-//        let flux: CGFloat = 500
-//        
-//        let lightDescriptions = [
-//            (flux: flux, pos: SCNVector3(0, 20, 20)),
-//            (flux: flux, pos: SCNVector3(0, 20, -20)),
-//            (flux: flux, pos: SCNVector3(50, 20, 0)),
-//            (flux: flux, pos: SCNVector3(-50, 20, 0)),
-//            (flux: flux, pos: SCNVector3(0, 200, 0)),
-//            (flux: flux, pos: SCNVector3(0, -125, 0))
-//        ]
-//        
-//        for descr in lightDescriptions
-//        {
-//            let light = SCNLight()
-//            light.type = .omni
-//            light.intensity = flux
-//
-//            let node = SCNNode()
-//            node.light = light
-//            node.position = descr.pos
-//            scene.rootNode.addChildNode(node)
-//        }
-      
         let dirLight = SCNLight()
         dirLight.type = .directional
         dirLight.intensity = 750
@@ -848,14 +512,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             make.height.equalTo(22)
         }
         
-//        continueToCloseUpPhotoButton.snp.makeConstraints { make in
-//            make.left.right.equalToSuperview()
-//            make.height.equalTo(continueToCloseUpPhotoButtonHeight)
-////            continueToCloseUpPhotoButtonBottomOffset = make.bottom.equalToSuperview().offset(continueToCloseUpPhotoButtonHeight).constraint
-//        }
-        
-//        updateContinueToCloseUpPhotoButton()
-        
         sceneView.scene = scene
         sceneView.delegate = self
         sceneView.backgroundColor = UIColor(white: 1, alpha: 0)
@@ -878,15 +534,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         setupViews()
         setupNodes()
-        setupSpecialNodes()
-        setupDisplayNames()
+        setupBodyModels()
         setupCamera()
-        setupCameraTargets()
-        setupBodyNodesControlViewItems()
-        setupCameraMotion()
         setupLights()
         setupGestureRecognizers()
-//        setupDebugPoints()
         setupCameraTargetDebugPoint()
         lookAtCameraTarget(.front)
     }
@@ -903,11 +554,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
 
 // MARK: Close-up photo button
 
-    private var showContinueToCloseUpPhotoButton: Bool = false {
-        didSet {
-//            updateContinueToCloseUpPhotoButton()
-        }
-    }
+    private var showContinueToCloseUpPhotoButton = false
 
     private func updateContinueToCloseUpPhotoButton()
     {
@@ -947,7 +594,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         highlightBodyNode(nil)
         
-        guard let motion = rootBodyNode.cameraMotion as? SphericalMotion else {
+        guard let motion = currentModel?.rootBodyNode.cameraMotion as? SphericalMotion else {
             return
         }
       
@@ -964,23 +611,23 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         switch target
         {
             case .front:
-                guard selectedBodyNodeLO != rootBodyNode else {
+                guard selectedBodyNodeLO != currentModel?.rootBodyNode else {
                     return
                 }
                 
                 lookAtWholeBody(front: true)
                 highlightBodyNode(nil)
-                selectedBodyNodeLO = rootBodyNode
+                selectedBodyNodeLO = currentModel?.rootBodyNode
                 controlsView.selectedItem = .body
             
             case .back:
-                guard selectedBodyNodeLO != rootBodyNode else {
+                guard selectedBodyNodeLO != currentModel?.rootBodyNode else {
                     return
                 }
                 
                 lookAtWholeBody(front: false)
                 highlightBodyNode(nil)
-                selectedBodyNodeLO = rootBodyNode
+                selectedBodyNodeLO = currentModel?.rootBodyNode
                 controlsView.selectedItem = .body
             
             case .bodyNode(let bodyNode):
@@ -992,7 +639,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                 highlightBodyNode(bodyNode)
                 selectedBodyNodeLO = bodyNode
                 
-                if let item = bodyNodesControlViewItems[bodyNode] {
+                if let item = currentModel?.bodyNodesControlViewItems[bodyNode] {
                     controlsView.selectedItem = item
                 }
         }
@@ -1013,33 +660,17 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         {
             bodyNode.opacity = 1
 //            bodyNode.node.isHidden = false
-            makeAllNodeTransparentExceptNode(bodyNode)
+            currentModel?.makeAllNodeTransparentExceptNode(bodyNode)
         }
         else
         {
-            makeAllNodesOpaque()
-        }
-    }
-
-    private func makeAllNodeTransparentExceptNode(_ node: BodyNode)
-    {
-        rootBodyNode.children.filter { $0 != node }.forEach {
-            $0.opacity = 0.02
-//            $0.node.isHidden = true
-        }
-    }
-
-    private func makeAllNodesOpaque()
-    {
-        rootBodyNode.children.forEach {
-            $0.opacity = 1
-//            $0.node.isHidden = false
+            currentModel?.makeAllNodesOpaque()
         }
     }
 
     private func findControlsViewItem(_ bodyNode: BodyNode) -> ControlsView.Item?
     {
-        if let item = bodyNodesControlViewItems[bodyNode] {
+        if let item = currentModel?.bodyNodesControlViewItems[bodyNode] {
             return item
         }
         
@@ -1061,7 +692,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         {
             let node = hit.node
             
-            guard let bodyNode = bodyNodesByNode[node],
+            guard let bodyNode = currentModel?.lookupBodyNode(sceneNode: node),
                   let dist = bodyNode.getDistanceToParent(parent)
             else {
                 continue
@@ -1252,7 +883,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             bodyNode.selected = true
             selectedBodyNodeHI = bodyNode
           
-            let name = bodyNode.displayName ?? "none"
+            let name = bodyNode.name ?? "none"
             delegate?.bodyView(self, bodyNodeSelected: name)
         }
     }
@@ -1286,7 +917,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     private func updateBodyNodeLabel(_ bodyNode: BodyNode?)
     {
         guard let bodyNode = bodyNode,
-              bodyNode != rootBodyNode
+              bodyNode != currentModel?.rootBodyNode
         else
         {
             UIView.animate(withDuration: 0.15) {
@@ -1299,7 +930,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         UIView.animate(withDuration: 0.25) {
             self.bodyNodeLabel.alpha = 1
         }
-        bodyNodeLabel.text = bodyNode.displayName ?? bodyNode.name
+        bodyNodeLabel.text = bodyNode.name ?? bodyNode.name
     }
     
     private func updateBodyNodeLabel()
@@ -1377,6 +1008,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     @objc private func handleTap(_ tap: UIGestureRecognizer)
     {
+        guard let currentModel = currentModel else {
+            return
+        }
+      
         let p = tap.location(in: sceneView)
         
         let options: [SCNHitTestOption:Any] = [
@@ -1400,18 +1035,18 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
       
         let didSelectNevus = (selectedNevus != nil)
         
-        if selectedBodyNodeLO != rootBodyNode,
+        if selectedBodyNodeLO != currentModel.rootBodyNode,
            let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: selectedBodyNodeLO)
         {
             handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
         }
-        else if selectedBodyNodeLO == rootBodyNode,
-                let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: trunk)
+        else if selectedBodyNodeLO == currentModel.rootBodyNode,
+                let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.trunk)
         {
-            if let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: rootBodyNode),
-               r.bodyNode.parent != trunk,
+            if let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
+               r.bodyNode.parent != currentModel.trunk,
                let item = findControlsViewItem(r.bodyNode),
-               let target = cameraTargets[item]
+               let target = currentModel.cameraTargets[item]
             {
                 print("\(r.bodyNode.name)")
                 controlsView.selectedItem = item
@@ -1426,17 +1061,18 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                 handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
             }
         }
-        else if selectedBodyNodeLO == rootBodyNode,
-                let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: rootBodyNode),
+        else if selectedBodyNodeLO == currentModel.rootBodyNode,
+                let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
                 (r.bodyNode.name == "Posterior Neck" || r.bodyNode.name == "Anterior Neck and Middle Chest")
         {
             handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
         }
         else
         {
-            if let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: rootBodyNode),
+            if let rootBodyNode = currentModel.rootBodyNode,
+               let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
                let item = findControlsViewItem(r.bodyNode),
-               let target = cameraTargets[item]
+               let target = currentModel.cameraTargets[item]
             {
                 controlsView.selectedItem = item
                 
@@ -1452,6 +1088,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     func didTap(controlsView: ControlsView, item: ControlsView.Item)
     {
+        guard let currentModel = currentModel else {
+            return
+        }
+        
         if item == .back
         {
             if let bodyNode = selectedBodyNodeLO,
@@ -1464,52 +1104,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
         else
         {
-            guard let target = cameraTargets[item] else {
+            guard let target = currentModel.cameraTargets[item] else {
                 return
             }
             
             lookAtCameraTarget(target)
         }
-    }
-    
-// MARK: - SCNSceneRendererDelegate
-    
-    private func updateNeviVisibility()
-    {
-        let options: [String:Any] = [
-            SCNHitTestOption.categoryBitMask.rawValue: 1,
-            SCNHitTestOption.firstFoundOnly.rawValue: true,
-            SCNHitTestOption.boundingBoxOnly.rawValue: false
-        ]
-        
-        let cameraPos = cameraNode.convertPosition(SCNVector3Zero, to: scene.rootNode)
-        
-        nevi.forEach { (nevus: Nevus) in
-            guard let node = nevus.node else {
-                return
-            }
-            
-            let nevusPos = node.convertPosition(SCNVector3Zero, to: scene.rootNode)
-            let p = SCNVector3Make(cameraPos.x + 2 * (nevusPos.x - cameraPos.x),
-                                   cameraPos.y + 2 * (nevusPos.y - cameraPos.y),
-                                   cameraPos.z + 2 * (nevusPos.z - cameraPos.z))
-            
-            let hitTestResults = scene.rootNode.hitTestWithSegment(from: cameraPos, to: p, options: options)
-            
-            if let hit = hitTestResults.first {
-                node.isHidden = (hit.node == node)
-            }
-            
-//            node.isHidden = !hitTestResults.isEmpty
-            
-            hitTestResults.forEach {
-                let name = $0.node.name ?? "-"
-//                debugPrint(">>> \(name)")
-            }
-        }
-    }
-    
-    public func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-//        updateNeviVisibility()
     }
 }

@@ -18,8 +18,6 @@ import SceneKit
         }
     }
 
-    var displayName: String?
-
     var nevi = Set<Nevus>()
     
     var opacity: CGFloat
@@ -39,7 +37,7 @@ import SceneKit
     var selected: Bool = false {
         didSet {
             color = (selected ? selectedColor : defaultColor)
-//            material.emission.contents = (selected ? UIColor.red : 0)
+            children.forEach { $0.selected = self.selected }
         }
     }
     
@@ -97,6 +95,8 @@ import SceneKit
         material.lightingModel = .physicallyBased
         material.metalness.contents = 0
         material.roughness.contents = 0.45
+//        material.normal.contents = "NormalMap"
+//        material.transparency = 0.15
         
         geometry.materials = [ material ]
     }
@@ -168,16 +168,6 @@ import SceneKit
         return nil
     }
     
-// MARK: - Hashable
-
-//    var hashValue: Int {
-//        return node.hashValue
-//    }
-//
-//    static func == (lhs: BodyNode, rhs: BodyNode) -> Bool {
-//        return lhs.hashValue == rhs.hashValue
-//    }
-  
 // MARK: -
 
     private let neviRootNode = SCNNode()
