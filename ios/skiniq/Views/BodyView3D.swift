@@ -251,7 +251,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         let rightArmOrigin = GLKVector3Make(-2, 5, -0.5)
         let leftArmOrigin = GLKVector3Make(2, 5, -0.5)
         let rightLegOrigin = GLKVector3Make(-1, -2, -0.25)
-        let leftLegOrigin = GLKVector3Make(-1, -2, -0.25)
+        let leftLegOrigin = GLKVector3Make(1, -2, -0.25)
         
         let rightArmTargetPoints: [TargetPoint] = [
             (0.0, rightArmOrigin),
@@ -420,7 +420,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         setupMaleBodyModel()
         setupFemaleBodyModel()
-        currentModel = models["female"]
+        currentModel = models["male"]
     }
     
     private func setupCamera()

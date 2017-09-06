@@ -94,7 +94,7 @@ import SceneKit
         
         material.lightingModel = .physicallyBased
         material.metalness.contents = 0
-        material.roughness.contents = 0.45
+        material.roughness.contents = 0.5
 //        material.normal.contents = "NormalMap"
 //        material.transparency = 0.15
         
