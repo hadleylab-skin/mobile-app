@@ -68,7 +68,7 @@ class ControlsView: UIView
             (Item.armL, "left-hand", h),
             (Item.legR, "right-foot", h),
             (Item.legL, "left-foot", h),
-            (Item.back, "reverse", 0.75 * h)
+            (Item.back, "reverse", h)
         ]
         
         for i in items
