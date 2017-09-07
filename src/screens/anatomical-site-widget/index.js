@@ -30,6 +30,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
@@ -45,6 +46,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         return {
             selectedMole: {},
             currentAnatomicalSite: '',
+            isNewMoleRemoved: false,
         };
     },
 
@@ -112,6 +114,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const result = await service(patientPk, this.props.tree.mole, moleData);
 
         if (result.status === 'Succeed') {
+            this.setState({ selectedMole: {} });
             this.props.onAddingComplete();
         }
     },
@@ -155,6 +158,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                     onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}
                     onMoleSelected={this.onMoleSelected}
+                    removeMole={this.state.isNewMoleRemoved}
                 />
                 {isMoleLoading ?
                     <View style={s.activityIndicator}>
@@ -171,6 +175,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         currentAnatomicalSite={_.kebabCase(currentAnatomicalSite)}
                         onContinuePress={this.onContinuePress}
                         moleCursor={this.props.tree.select('mole')}
+                        hideMoleOnModel={() => this.setState({ isNewMoleRemoved: true, selectedMole: {} })}
+                        showMoleOnModel={() => this.setState({ isNewMoleRemoved: false })}
                     />
                 : null}
                 <View style={s.footer}>

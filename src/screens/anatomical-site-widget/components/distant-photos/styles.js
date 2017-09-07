@@ -3,8 +3,9 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     container: {
         position: 'absolute',
-        left: 5,
+        left: 0,
         top: 140,
+        bottom: 10,
     },
     button: {
         width: 60,

@@ -7,6 +7,7 @@ import {
     Image,
     TouchableOpacity,
     ActivityIndicator,
+    ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { getDistantPhotoRoute } from './screens/distant-photo';
@@ -22,6 +23,8 @@ const DistantPhotos = React.createClass({
         currentAnatomicalSite: React.PropTypes.string,
         onContinuePress: React.PropTypes.func.isRequired,
         moleCursor: BaobabPropTypes.cursor.isRequired,
+        hideMoleOnModel: React.PropTypes.func.isRequired,
+        showMoleOnModel: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -34,7 +37,14 @@ const DistantPhotos = React.createClass({
         }),
     },
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.currentAnatomicalSite !== this.props.currentAnatomicalSite && this.scrollView) {
+            this.scrollView.scrollTo({ x: 0, y: 0, animated: false });
+        }
+    },
+
     onButtonPress() {
+        this.props.hideMoleOnModel();
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
                 this.onAddDistantPhoto(response.uri);
@@ -76,50 +86,59 @@ const DistantPhotos = React.createClass({
 
         return (
             <View style={s.container}>
-                <TouchableOpacity onPress={this.onButtonPress}>
-                    <View style={s.button}>
-                        <Image source={plusIcon} />
-                        <Text style={s.buttonText}>Distant photo</Text>
-                    </View>
-                </TouchableOpacity>
-                {_.map(distantPhotos, (photo, index) => {
-                    const hasPhoto = photo.data && photo.data.distantPhoto;
-
-                    return (
-                        <View style={{ marginTop: 5 }} key={index}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (hasPhoto) {
-                                        mainNavigator.push(
-                                        getDistantPhotoRoute({
-                                            tree: anatomicalSitesCursor.select(
-                                                'data',
-                                                currentAnatomicalSite,
-                                                index, 'data'
-                                            ),
-                                            currentAnatomicalSite,
-                                            onContinuePress: this.props.onContinuePress,
-                                            moleCursor: this.props.moleCursor,
-                                        }, this.context));
-                                    }
-                                }}
-                                activeOpacity={hasPhoto ? 0.2 : 1}
-                                style={s.photoWrapper}
-                            >
-                                {hasPhoto ?
-                                    <Image
-                                        source={{ uri: photo.data.distantPhoto.thumbnail }}
-                                        resizeMode="cover"
-                                        style={s.photo}
-                                    />
-                                : null}
-                                <View style={s.activityIndicator}>
-                                    <ActivityIndicator animating color="#FF1D70" />
-                                </View>
-                            </TouchableOpacity>
+                <ScrollView
+                    ref={(ref) => { this.scrollView = ref; }}
+                    scrollEventThrottle={200}
+                    contentContainerStyle={{ paddingBottom: 60, paddingLeft: 5 }}
+                    scrollIndicatorInsets={{ right: 58, bottom: 60 }}
+                >
+                    <TouchableOpacity onPress={this.onButtonPress}>
+                        <View style={s.button}>
+                            <Image source={plusIcon} />
+                            <Text style={s.buttonText}>Distant photo</Text>
                         </View>
-                    );
-                })}
+                    </TouchableOpacity>
+                    {_.map(distantPhotos, (photo, index) => {
+                        const hasPhoto = photo.data && photo.data.distantPhoto;
+
+                        return (
+                            <View style={{ marginTop: 5 }} key={index}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (hasPhoto) {
+                                            this.props.hideMoleOnModel();
+                                            mainNavigator.push(
+                                            getDistantPhotoRoute({
+                                                tree: anatomicalSitesCursor.select(
+                                                    'data',
+                                                    currentAnatomicalSite,
+                                                    index, 'data'
+                                                ),
+                                                currentAnatomicalSite,
+                                                onContinuePress: this.props.onContinuePress,
+                                                moleCursor: this.props.moleCursor,
+                                                showMoleOnModel: this.props.showMoleOnModel,
+                                            }, this.context));
+                                        }
+                                    }}
+                                    activeOpacity={hasPhoto ? 0.2 : 1}
+                                    style={s.photoWrapper}
+                                >
+                                    {hasPhoto ?
+                                        <Image
+                                            source={{ uri: photo.data.distantPhoto.thumbnail }}
+                                            resizeMode="cover"
+                                            style={s.photo}
+                                        />
+                                    : null}
+                                    <View style={s.activityIndicator}>
+                                        <ActivityIndicator animating color="#FF1D70" />
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        );
+                    })}
+                </ScrollView>
             </View>
         );
     },

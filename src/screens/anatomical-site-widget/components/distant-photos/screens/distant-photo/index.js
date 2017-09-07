@@ -286,12 +286,7 @@ export function getDistantPhotoRoute(props, context) {
         component: DistantPhoto,
         title: 'Add Lesion',
         onLeftButtonPress: () => {
-            if (props.onBackPress) {
-                props.onBackPress();
-
-                return;
-            }
-
+            props.showMoleOnModel();
             context.mainNavigator.pop();
         },
         navigationBarHidden: false,
