@@ -6,23 +6,12 @@ export default StyleSheet.create({
     },
     preview: {
         position: 'relative',
-    },
-    previewImage: {
         overflow: 'hidden',
         height: 140,
-    },
-    previewDefault: {
-        paddingTop: 10,
-        paddingBottom: 10,
         borderTopWidth: 0.5,
-        borderTopColor: '#DADADA',
+        borderTopColor: '#D1D1D6',
         borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
-        alignItems: 'center',
-    },
-    defaultImageWrapper: {
-        position: 'relative',
-        backgroundColor: '#fff',
+        borderBottomColor: '#D1D1D6',
     },
     dot: {
         position: 'absolute',
@@ -38,11 +27,6 @@ export default StyleSheet.create({
         fontSize: 15,
         lineHeight: 17,
         color: '#ACB5BE',
-    },
-    siteArrow: {
-        width: 8,
-        height: 13,
-        marginLeft: 8,
     },
     activityIndicator: {
         position: 'absolute',
