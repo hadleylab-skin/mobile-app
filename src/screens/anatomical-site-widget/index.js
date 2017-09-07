@@ -27,6 +27,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
     propTypes: {
         onAddingComplete: React.PropTypes.func.isRequired,
+        sex: React.PropTypes.string,
     },
 
     contextTypes: {
@@ -147,7 +148,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const currentPatientPk = cursors.currentPatientPk.get();
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
         const isMoleLoading = this.props.tree.select('mole', 'status').get() === 'Loading';
-        const sex = patientData && patientData.sex === 'f' ? 'female' : 'male';
+        const sex = this.props.sex === 'f' || (patientData && patientData.sex === 'f') ? 'female' : 'male';
         const moles = this.getMoles();
 
         return (

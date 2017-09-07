@@ -13,6 +13,7 @@ export const BodyView3D = React.createClass({
         onBodyPartSelected: PropTypes.func,
         onMoleAdded: PropTypes.func,
         onMoleSelected: PropTypes.func,
+        removeMole: React.PropTypes.bool,
     },
 
     componentWillMount() {

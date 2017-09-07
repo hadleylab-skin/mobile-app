@@ -169,7 +169,7 @@ export const PatientsList = React.createClass({
         );
     },
 
-    async onPatientAdded(pk) {
+    async onPatientAdded(pk, sex) {
         const { cursors, services, mainNavigator } = this.context;
         const queryParams = cursors.filter.get();
 
@@ -179,6 +179,7 @@ export const PatientsList = React.createClass({
                 tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
                 onAddingComplete: this.onAddingComplete,
                 onBackPress: () => mainNavigator.popToTop(),
+                sex,
             }, this.context)
         );
 

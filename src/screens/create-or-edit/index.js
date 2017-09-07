@@ -175,7 +175,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
         const result = await service(this.props.tree, formData);
 
         if (result.status === 'Succeed') {
-            onActionComplete(result.data.pk);
+            onActionComplete(result.data.pk, result.data.sex);
         }
     },
 
