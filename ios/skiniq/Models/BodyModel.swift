@@ -87,14 +87,44 @@ class BodyModel
         
         processBodyNodesRecursively(bodyNode: rootBodyNode)
         
+        setupSpecialNodes()
+        setupBorders(bodyScene)
+        
         rootBodyNode.children.forEach {
             $0.flatten = true
         }
       
-        setupSpecialNodes()
         setupCameraMotion()
         setupCameraTargets()
         setupBodyNodesControlViewItems()
+    }
+  
+    private func setupBorders(_ scene: SCNScene)
+    {
+        if let border = scene.rootNode.childNode(withName: "Head Border", recursively: false) {
+            head.node.addChildNode(border)
+            border.position = SCNVector3Zero
+        }
+        
+        if let border = scene.rootNode.childNode(withName: "Left Arm Border", recursively: false) {
+            leftArm.node.addChildNode(border)
+            border.position = SCNVector3Zero
+        }
+        
+        if let border = scene.rootNode.childNode(withName: "Right Arm Border", recursively: false) {
+            rightArm.node.addChildNode(border)
+            border.position = SCNVector3Zero
+        }
+        
+        if let border = scene.rootNode.childNode(withName: "Right Leg Border", recursively: false) {
+            rightLeg.node.addChildNode(border)
+            border.position = SCNVector3Zero
+        }
+        
+        if let border = scene.rootNode.childNode(withName: "Left Leg Border", recursively: false) {
+            leftLeg.node.addChildNode(border)
+            border.position = SCNVector3Zero
+        }
     }
   
     private func setupSpecialNodes()
