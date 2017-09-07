@@ -22,6 +22,12 @@ enum CameraTarget
     case bodyNode(BodyNode)
 }
 
+enum CategoryBits : Int {
+    case flatClone = 2
+    case nevus = 4
+    case border = 8
+}
+
 @objc protocol BodyViewDelegate
 {
     func bodyView(_ bodyView: BodyView3D, bodyNodeSelected bodyPart: String?)
@@ -103,7 +109,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                 nevi.remove(old)
             }
           
-            guard let nevus = newNevus, let node = nevus.node else {
+            guard let nevus = newNevus,
+                  let node = nevus.node
+            else {
                 return
             }
           
@@ -157,14 +165,15 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                       let faceIndex = m["faceIndex"] as? Int,
                       let positionX = m["positionX"] as? Float,
                       let positionY = m["positionY"] as? Float,
-                      let bodyNode = currentModel?.lookupBodyNode(name: anatomicalSite) //bodyNodesByName[anatomicalSite]
+                      let positionZ = m["positionZ"] as? Float,
+                      let bodyNode = currentModel?.lookupBodyNode(name: anatomicalSite)
                 else {
                     return
                 }
               
                 let nevus = Nevus(id: id, bodyNode: bodyNode, faceIndex: faceIndex,
-                                  coord: SCNVector3Make(positionX, positionY, 0),
-                                  state: .newlyAdded)
+                                  coord: SCNVector3Make(positionX, positionY, positionZ),
+                                  state: .normal)
               
                 neviRootNode.addChildNode(nevus.node)
                 bodyNode.add(nevus: nevus)
@@ -175,9 +184,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                 nevi.insert(nevus)
                 neviByNode[nevus.node] = nevus
               
-                if let bodyNode = selectedBodyNodeHI {
-                    showNevi(for: bodyNode)
-                }
+                showNevi(for: selectedBodyNodeHI)
             }
         }
     }
@@ -420,7 +427,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         setupMaleBodyModel()
         setupFemaleBodyModel()
-        currentModel = models["male"]
+        currentModel = models["female"]
     }
     
     private func setupCamera()
@@ -851,17 +858,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                           alwaysVisible: true)
 
         newNevus = nevus
-      
-//        neviRootNode.addChildNode(nevus.node)
-//        bodyNode.add(nevus: nevus)
-//
-//        let lookAt = SCNLookAtConstraint(target: cameraNode)
-//        nevus.node.constraints = [ lookAt ]
-//
-//        nevi.insert(nevus)
-//        neviByNode[nevus.node] = nevus
-//      
-//        delegate?.bodyView(self, nevusAdded: nevus)
     }
     
     private func handleHitHigh(_ bodyNode: BodyNode, _ hitTestResult: SCNHitTestResult, _ didSelectNevus: Bool)
@@ -872,7 +868,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             {
                 addNevus(bodyNode: bodyNode, hitTestResult: hitTestResult)
                 
-//                selectedNevus?.selected = false
                 selectedNevus?.state = .normal
                 selectedNevus = nil
             }
@@ -897,13 +892,11 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         if let nevusNode = nevusHitResult?.node,
            let nevus = neviByNode[nevusNode],
            selectedNevus != nevus,
-           nevus.state != .newlyAdded
+           nevus.state == .normal
         {
-//            selectedNevus?.selected = false
             selectedNevus?.state = .normal
           
             selectedNevus = nevus
-//            nevus.selected = true
             nevus.state = .selected
           
             return nevus
@@ -1021,16 +1014,14 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         
         let hitResults = sceneView.hitTest(p, options: options)
         
-//        debugPrint(">> Hit results: \(hitResults.count)")
-      
         hitResults.forEach {
             let name = $0.node.name ?? "-"
-//            debugPrint(">>> \(name)")
         }
         
         let selectedNevus = nevusHitTest(hitResults)
         if let nevus = selectedNevus {
             delegate?.bodyView(self, nevusSelected: nevus)
+            newNevus = nil
         }
       
         let didSelectNevus = (selectedNevus != nil)
@@ -1050,11 +1041,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             {
                 print("\(r.bodyNode.name)")
                 controlsView.selectedItem = item
-                
-//                SCNTransaction.begin()
-//                SCNTransaction.animationDuration = 0.5
                 lookAtCameraTarget(target)
-//                SCNTransaction.commit()
             }
             else
             {
@@ -1075,11 +1062,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                let target = currentModel.cameraTargets[item]
             {
                 controlsView.selectedItem = item
-                
-//                SCNTransaction.begin()
-//                SCNTransaction.animationDuration = 0.5
                 lookAtCameraTarget(target)
-//                SCNTransaction.commit()
             }
         }
     }

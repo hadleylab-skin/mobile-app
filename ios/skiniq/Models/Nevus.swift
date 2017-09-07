@@ -129,7 +129,7 @@ import SceneKit
                 node.geometry = geometry
         }
         
-        node.categoryBitMask = 1 | 4
+        node.categoryBitMask = 1 | CategoryBits.nevus.rawValue
     }
     
     private func setupPivot()

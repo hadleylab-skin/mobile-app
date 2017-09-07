@@ -8,6 +8,7 @@ import SceneKit
 @objc class BodyNode: NSObject
 {
     var node: SCNNode
+    var borderNode: SCNNode?
     
     weak var parent: BodyNode?
     var children: Set<BodyNode> = []
@@ -64,7 +65,9 @@ import SceneKit
     init(_ node: SCNNode)
     {
         self.node = node
+        
         super.init()
+        
         setupNode()
         setupMaterial()
         reset()
@@ -95,7 +98,7 @@ import SceneKit
         material.lightingModel = .physicallyBased
         material.metalness.contents = 0
         material.roughness.contents = 0.5
-//        material.normal.contents = "NormalMap"
+//        material.normal.contents = "male-normal-map"
 //        material.transparency = 0.15
         
         geometry.materials = [ material ]
@@ -111,7 +114,7 @@ import SceneKit
         
         if let clone = flattenedClone
         {
-            clone.categoryBitMask |= 2
+            clone.categoryBitMask |= CategoryBits.flatClone.rawValue
             
             if let parent = node.parent {
                 clone.pivot = parent.transform

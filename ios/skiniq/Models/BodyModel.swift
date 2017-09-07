@@ -101,29 +101,20 @@ class BodyModel
   
     private func setupBorders(_ scene: SCNScene)
     {
-        if let border = scene.rootNode.childNode(withName: "Head Border", recursively: false) {
-            head.node.addChildNode(border)
-            border.position = SCNVector3Zero
-        }
+        let borders: [(BodyNode, String)] = [
+            (head, "Head Border"),
+            (rightArm, "Right Arm Border"),
+            (leftArm, "Left Arm Border"),
+            (rightLeg, "Right Leg Border"),
+            (leftLeg, "Left Leg Border")
+        ]
         
-        if let border = scene.rootNode.childNode(withName: "Left Arm Border", recursively: false) {
-            leftArm.node.addChildNode(border)
-            border.position = SCNVector3Zero
-        }
-        
-        if let border = scene.rootNode.childNode(withName: "Right Arm Border", recursively: false) {
-            rightArm.node.addChildNode(border)
-            border.position = SCNVector3Zero
-        }
-        
-        if let border = scene.rootNode.childNode(withName: "Right Leg Border", recursively: false) {
-            rightLeg.node.addChildNode(border)
-            border.position = SCNVector3Zero
-        }
-        
-        if let border = scene.rootNode.childNode(withName: "Left Leg Border", recursively: false) {
-            leftLeg.node.addChildNode(border)
-            border.position = SCNVector3Zero
+        for (bodyNode, borderNodeName) in borders {
+            if let borderNode = scene.rootNode.childNode(withName: borderNodeName, recursively: false) {
+                bodyNode.node.addChildNode(borderNode)
+                borderNode.categoryBitMask |= CategoryBits.border.rawValue
+                borderNode.position = SCNVector3Zero
+            }
         }
     }
   
