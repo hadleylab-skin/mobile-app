@@ -26,6 +26,7 @@ enum CategoryBits : Int {
     case flatClone = 2
     case nevus = 4
     case border = 8
+    case translucent = 16
 }
 
 @objc protocol BodyViewDelegate
@@ -668,10 +669,12 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             bodyNode.opacity = 1
 //            bodyNode.node.isHidden = false
             currentModel?.makeAllNodeTransparentExceptNode(bodyNode)
+//            currentModel?.makeAllNodeTransparentToTouchesExceptNode(bodyNode)
         }
         else
         {
             currentModel?.makeAllNodesOpaque()
+//            currentModel?.makeAllNodesOpaqueToTouches()
         }
     }
 

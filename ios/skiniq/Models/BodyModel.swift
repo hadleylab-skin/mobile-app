@@ -116,6 +116,32 @@ class BodyModel
                 borderNode.position = SCNVector3Zero
             }
         }
+        
+//        if let border = scene.rootNode.childNode(withName: "Head Border", recursively: false) {
+//            head.node.addChildNode(border)
+//            border.position = SCNVector3Zero
+//        }
+//        
+//        if let border = scene.rootNode.childNode(withName: "Left Arm Border", recursively: false) {
+//            leftArm.node.addChildNode(border)
+//            border.position = SCNVector3Zero
+//        }
+//        
+//        if let border = scene.rootNode.childNode(withName: "Right Arm Border", recursively: false) {
+//            rightArm.node.addChildNode(border)
+//            border.position = SCNVector3Zero
+//        }
+//        
+//        if let border = scene.rootNode.childNode(withName: "Right Leg Border", recursively: false) {
+//            rightLeg.node.addChildNode(border)
+//            border.position = SCNVector3Zero
+//        }
+//        
+//        if let border = scene.rootNode.childNode(withName: "Left Leg Border", recursively: false) {
+//            border.
+//            leftLeg.node.addChildNode(border)
+//            border.position = SCNVector3Zero
+//        }
     }
   
     private func setupSpecialNodes()
@@ -331,8 +357,8 @@ class BodyModel
   
     func makeAllNodeTransparentExceptNode(_ node: BodyNode)
     {
-        rootBodyNode.children.filter { $0 != node }.forEach {
-            $0.opacity = 0.02
+        rootBodyNode.children.filter { $0 != node }.forEach { (bodyNode: BodyNode) in
+            bodyNode.opacity = 0.02
 //            $0.node.isHidden = true
         }
     }
@@ -343,6 +369,30 @@ class BodyModel
             $0.opacity = 1
 //            $0.node.isHidden = false
         }
+    }
+    
+    private func makeAllNodeTransparentToTouchesExceptNode(_ node: BodyNode, startNode: BodyNode)
+    {
+        startNode.children.filter { $0 != node }.forEach { (bodyNode: BodyNode) in
+            bodyNode.node.categoryBitMask |= CategoryBits.translucent.rawValue
+            makeAllNodeTransparentToTouchesExceptNode(node, startNode: bodyNode)
+        }
+    }
+
+    func makeAllNodeTransparentToTouchesExceptNode(_ node: BodyNode) {
+        makeAllNodeTransparentToTouchesExceptNode(node, startNode: rootBodyNode)
+    }
+
+    private func makeAllNodesOpaqueToTouches(startNode: BodyNode)
+    {
+        rootBodyNode.children.forEach { (bodyNode: BodyNode) in
+            bodyNode.node.categoryBitMask &= ~CategoryBits.translucent.rawValue
+            makeAllNodesOpaqueToTouches(startNode: bodyNode)
+        }
+    }
+
+    func makeAllNodesOpaqueToTouches() {
+        makeAllNodesOpaqueToTouches(startNode: rootBodyNode)
     }
 }
 
