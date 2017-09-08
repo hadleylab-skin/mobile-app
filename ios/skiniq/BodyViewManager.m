@@ -40,6 +40,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(sex, NSString);
 RCT_EXPORT_VIEW_PROPERTY(moles, NSArray);
+RCT_EXPORT_VIEW_PROPERTY(removeMole, BOOL);
 
 - (void)bodyView:(BodyView3D*)bodyView bodyNodeSelected:(NSString*)bodyNodeName
 {

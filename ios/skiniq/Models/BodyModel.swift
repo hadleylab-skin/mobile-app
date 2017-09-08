@@ -116,32 +116,6 @@ class BodyModel
                 borderNode.position = SCNVector3Zero
             }
         }
-        
-//        if let border = scene.rootNode.childNode(withName: "Head Border", recursively: false) {
-//            head.node.addChildNode(border)
-//            border.position = SCNVector3Zero
-//        }
-//        
-//        if let border = scene.rootNode.childNode(withName: "Left Arm Border", recursively: false) {
-//            leftArm.node.addChildNode(border)
-//            border.position = SCNVector3Zero
-//        }
-//        
-//        if let border = scene.rootNode.childNode(withName: "Right Arm Border", recursively: false) {
-//            rightArm.node.addChildNode(border)
-//            border.position = SCNVector3Zero
-//        }
-//        
-//        if let border = scene.rootNode.childNode(withName: "Right Leg Border", recursively: false) {
-//            rightLeg.node.addChildNode(border)
-//            border.position = SCNVector3Zero
-//        }
-//        
-//        if let border = scene.rootNode.childNode(withName: "Left Leg Border", recursively: false) {
-//            border.
-//            leftLeg.node.addChildNode(border)
-//            border.position = SCNVector3Zero
-//        }
     }
   
     private func setupSpecialNodes()
