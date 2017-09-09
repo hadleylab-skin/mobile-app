@@ -58,12 +58,16 @@ const DistantPhotos = React.createClass({
 
         const service = services.addAnatomicalSitePhotoService;
         const patientPk = cursors.currentPatientPk.get();
-        const distantPhotos = anatomicalSitesCursor.get('data', currentAnatomicalSite);
+        const distantPhotos = anatomicalSitesCursor.get('data', currentAnatomicalSite) || [];
+
+        if (distantPhotos.length === 0) {
+            anatomicalSitesCursor.select('data', currentAnatomicalSite).set([]);
+        }
 
         const distantPhotoCursor = anatomicalSitesCursor.select(
             'data',
             currentAnatomicalSite,
-            distantPhotos ? distantPhotos.length : 0
+            distantPhotos.length
         );
 
         distantPhotoCursor.set({ data: {} });
@@ -77,8 +81,10 @@ const DistantPhotos = React.createClass({
         let distantPhotos = [];
 
         if (anatomicalSites.data) {
-            distantPhotos = anatomicalSites.data[currentAnatomicalSite];
+            distantPhotos = anatomicalSites.data[currentAnatomicalSite] || [];
         }
+
+        console.log('distantPhotos', distantPhotos);
 
         return (
             <View style={s.container}>

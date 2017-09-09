@@ -207,8 +207,6 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const sex = this.props.sex === 'f' || (patientData && patientData.sex === 'f') ? 'female' : 'male';
         const moles = this.getMoles();
 
-        console.log('selectedMole', selectedMole);
-
         return (
             <View style={s.container}>
                 <BodyView3D
@@ -238,7 +236,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                             this.setState({ isNewMoleRemoved: true });
                             this.resetSelectedMole();
                         }}
-                        resetSelectedMole={this.resetSelectedMole}
+                        resetSelectedMole={() => this.props.tree.selectedMole.data.set({})}
                         showMoleOnModel={() => this.setState({ isNewMoleRemoved: false })}
                         onContinuePress={this.onContinuePress}
                     />
