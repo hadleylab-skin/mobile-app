@@ -9,7 +9,6 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import BaobabPropTypes from 'baobab-prop-types';
-import ImagePicker from 'react-native-image-picker';
 import { Button } from 'components';
 import { convertMoleToSave, convertMoleToDisplay } from 'libs/misc';
 import dotImagePink from 'components/icons/dot/dot.png';
@@ -31,22 +30,15 @@ const DistantPhoto = schema(model)(React.createClass({
 
     propTypes: {
         currentAnatomicalSite: React.PropTypes.string,
-        onContinuePress: React.PropTypes.func.isRequired,
         moleCursor: BaobabPropTypes.cursor.isRequired,
+        selectedMoleCursor: BaobabPropTypes.cursor.isRequired,
+        onContinuePress: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
-            patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-            patientsMoleImages: BaobabPropTypes.cursor.isRequired,
-        }),
-        services: React.PropTypes.shape({
-            addMolePhotoService: React.PropTypes.func.isRequired,
-            getMolePhotoService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -54,17 +46,13 @@ const DistantPhoto = schema(model)(React.createClass({
         return {
             positionX: null,
             positionY: null,
-            isLoading: false,
-            selectedMole: {},
         };
     },
 
-    async componentWillMount() {
-        const { moleCursor } = this.props;
+    componentWillMount() {
         const patientMolesCursor = this.getPatientMolesCursor();
 
         patientMolesCursor.on('update', this.onPatientsMolesUpdate);
-        moleCursor.on('update', this.onMoleUpdate);
     },
 
     componentDidMount() {
@@ -74,11 +62,9 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     componentWillUnmount() {
-        const { moleCursor } = this.props;
         const patientMolesCursor = this.getPatientMolesCursor();
 
         patientMolesCursor.off('update', this.onPatientsMolesUpdate);
-        moleCursor.off('update', this.onMoleUpdate);
     },
 
     getPatientMolesCursor() {
@@ -96,15 +82,7 @@ const DistantPhoto = schema(model)(React.createClass({
         const patientMoles = patientMolesCursor.get();
 
         if (patientMoles.status === 'Succeed') {
-            this.setState({ positionX: null, positionY: null, isLoading: false });
-        }
-    },
-
-    onMoleUpdate() {
-        const mole = this.props.moleCursor.get();
-
-        if (mole.status === 'Loading') {
-            this.setState({ isLoading: true });
+            this.setState({ positionX: null, positionY: null });
         }
     },
 
@@ -120,7 +98,21 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     onMolePick(positionX, positionY) {
-        this.setState({ positionX, positionY, selectedMole: {} });
+        this.setState({ positionX, positionY });
+        const { currentAnatomicalSite } = this.props;
+        const position = this.getPositionToSave(positionX, positionY);
+
+        this.props.selectedMoleCursor.data.set({
+            anatomicalSite: currentAnatomicalSite,
+            patientAnatomicalSite: this.props.tree.get('pk'),
+            positionInfo: { ...position },
+        });
+    },
+
+    getPositionToSave(positionX, positionY) {
+        const { width, height } = this.props.tree.get('imageSize');
+
+        return convertMoleToSave(positionX, positionY, width, height);
     },
 
     getMoles() {
@@ -137,82 +129,14 @@ const DistantPhoto = schema(model)(React.createClass({
         return moles;
     },
 
-    getPositionToSave() {
-        const { positionX, positionY } = this.state;
-        const { width, height } = this.props.tree.get('imageSize');
-
-        return convertMoleToSave(positionX, positionY, width, height);
-    },
-
-    onContinuePress() {
-        const { selectedMole } = this.state;
-        const { currentAnatomicalSite } = this.props;
-        const { pk } = this.props.tree.get();
-        const position = this.getPositionToSave();
-
-        if (!_.isEmpty(selectedMole)) {
-            this.addMolePhoto();
-        } else {
-            this.props.onContinuePress({
-                anatomicalSite: currentAnatomicalSite,
-                patientAnatomicalSite: pk,
-                positionInfo: { ...position },
-            });
-        }
-    },
-
-    addMolePhoto() {
-        ImagePicker.launchCamera({}, (response) => {
-            if (response.uri) {
-                this.onSubmitMolePhoto(response.uri);
-            }
+    onExistingMolePress(data) {
+        this.setState({ positionX: null, positionY: null });
+        this.props.selectedMoleCursor.data.set({
+            pk: data.pk,
         });
     },
 
-    async onSubmitMolePhoto(uri) {
-        const { cursors, services } = this.context;
-        const molePk = this.state.selectedMole.pk;
-        const service = services.addMolePhotoService;
-        const patientPk = cursors.currentPatientPk.get();
-        const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
-        const imagesCursor = moleCursor.select('data', 'images');
-
-        const pk = -1;
-        imagesCursor.select(pk).set({ data: { pk }, status: 'Loading' });
-
-        this.setState({ isLoading: true });
-
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
-
-        if (result.status === 'Succeed') {
-            this.setState({ isLoading: false, selectedMole: {} });
-            imagesCursor.unset(pk);
-            imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
-
-            await services.patientsService(cursors.patients);
-            await services.getPatientMolesService(
-                patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
-            );
-            await services.getMolePhotoService(
-                patientPk,
-                molePk,
-                result.data.pk,
-                imagesCursor.select(result.data.pk)
-            );
-        }
-
-        if (result.status === 'Failure') {
-            this.setState({ isLoading: false, selectedMole: {} });
-            imagesCursor.unset(pk);
-        }
-    },
-
-    onMolePress(data) {
-        this.setState({ positionX: null, positionY: null, selectedMole: data });
-    },
-
-    getMolePosition(mole) {
+    getExistingMolePosition(mole) {
         const { width, height } = this.props.tree.get('imageSize');
         const { positionX, positionY } = mole.data.positionInfo;
 
@@ -222,15 +146,19 @@ const DistantPhoto = schema(model)(React.createClass({
     render() {
         const { distantPhoto, pk } = this.props.tree.get();
         const { width, height } = this.props.tree.get('imageSize');
-        const { positionX, positionY, isLoading, selectedMole } = this.state;
-        const { currentAnatomicalSite } = this.props;
+        const { positionX, positionY } = this.state;
+        const { currentAnatomicalSite, moleCursor } = this.props;
+        const selectedMole = this.props.selectedMoleCursor.get();
+
+        const isMoleLoading = selectedMole.status === 'Loading' ||
+            moleCursor.get('status') === 'Loading';
 
         const moles = this.getMoles();
         const currentAnatomicalSiteMoles = moles[currentAnatomicalSite] || [];
 
         return (
             <View style={s.container}>
-                <View style={[s.activityIndicator, { zIndex: isLoading ? 2 : 0 }]}>
+                <View style={[s.activityIndicator, { zIndex: isMoleLoading ? 2 : 0 }]}>
                     <ActivityIndicator
                         animating
                         size="large"
@@ -248,18 +176,18 @@ const DistantPhoto = schema(model)(React.createClass({
                         style={{ width, height }}
                     />
                     {width && height ? _.map(currentAnatomicalSiteMoles, (mole, index) => {
-                        const position = this.getMolePosition(mole);
+                        const position = this.getExistingMolePosition(mole);
                         const { positionX: left, positionY: top } = position;
 
                         if (mole.data.patientAnatomicalSite !== pk) {
                             return null;
                         }
 
-                        const isSelected = _.isEqual(mole.data, this.state.selectedMole);
+                        const isSelected = _.isEqual(mole.data.pk, selectedMole.data.pk);
 
                         return (
                             <View key={index} style={[s.dot, { left, top }]}>
-                                <TouchableWithoutFeedback onPress={() => this.onMolePress(mole.data)}>
+                                <TouchableWithoutFeedback onPress={() => this.onExistingMolePress(mole.data)}>
                                     <Image source={isSelected ? dotImageYellow : dotImagePink} />
                                 </TouchableWithoutFeedback>
                             </View>
@@ -268,11 +196,11 @@ const DistantPhoto = schema(model)(React.createClass({
                 </MolePicker>
 
                 <View style={s.footer}>
-                    {(positionX && positionY) || !_.isEmpty(selectedMole) ?
+                    {!_.isEmpty(selectedMole.data) ?
                         <Button
                             type="rect"
                             title="Continue to close-up photo"
-                            onPress={this.onContinuePress}
+                            onPress={this.props.onContinuePress}
                         />
                     : null}
                 </View>
@@ -287,6 +215,7 @@ export function getDistantPhotoRoute(props, context) {
         title: 'Add Lesion',
         onLeftButtonPress: () => {
             props.showMoleOnModel();
+            props.resetSelectedMole();
             context.mainNavigator.pop();
         },
         navigationBarHidden: false,

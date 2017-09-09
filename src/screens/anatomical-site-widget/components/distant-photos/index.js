@@ -21,10 +21,7 @@ const DistantPhotos = React.createClass({
     propTypes: {
         anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
         currentAnatomicalSite: React.PropTypes.string,
-        onContinuePress: React.PropTypes.func.isRequired,
-        moleCursor: BaobabPropTypes.cursor.isRequired,
         hideMoleOnModel: React.PropTypes.func.isRequired,
-        showMoleOnModel: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -44,7 +41,6 @@ const DistantPhotos = React.createClass({
     },
 
     onButtonPress() {
-        this.props.hideMoleOnModel();
         ImagePicker.launchCamera({}, (response) => {
             if (response.uri) {
                 this.onAddDistantPhoto(response.uri);
@@ -115,9 +111,7 @@ const DistantPhotos = React.createClass({
                                                     index, 'data'
                                                 ),
                                                 currentAnatomicalSite,
-                                                onContinuePress: this.props.onContinuePress,
-                                                moleCursor: this.props.moleCursor,
-                                                showMoleOnModel: this.props.showMoleOnModel,
+                                                ...this.props,
                                             }, this.context));
                                         }
                                     }}
