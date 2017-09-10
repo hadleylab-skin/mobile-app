@@ -42,22 +42,10 @@ import SceneKit
         }
     }
     
-    var flatten: Bool = false
+    func flatten()
     {
-        didSet
-        {
-            if flatten
-            {
-                createFlattenedCloneIfNeeded()
-                flattenedClone?.isHidden = false
-                node.isHidden = true
-            }
-            else
-            {
-                flattenedClone?.isHidden = true
-                node.isHidden = false
-            }
-        }
+        createFlattenedCloneIfNeeded()
+        node.isHidden = true
     }
 
 // MARK: -
@@ -190,5 +178,5 @@ import SceneKit
         }
     }
     
-    private var flattenedClone: SCNNode?
+    var flattenedClone: SCNNode?
 }

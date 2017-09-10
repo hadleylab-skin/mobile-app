@@ -207,6 +207,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             updateBodyNodeLabel()
             let name = selectedBodyNodeLO?.name ?? "none"
             delegate?.bodyView(self, bodyNodeSelected: name)
+            
+            oldValue?.borderNode?.isHidden = true
+            selectedBodyNodeLO?.borderNode?.isHidden = false
         }
     }
     
@@ -428,7 +431,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         setupMaleBodyModel()
         setupFemaleBodyModel()
-        currentModel = models["female"]
+        currentModel = models["male"]
     }
     
     private func setupCamera()
@@ -482,7 +485,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         ]
       
         backgroundView.locations = [ 0, 0.35, 0.75, 1 ]
-//        backgroundView.isHidden = true
       
         controlsView.delegate = self
         controlsView.backgroundColor = UIColor(red: 125.0 / 255.0, green: 147.0 / 255.0, blue: 170.0 / 255.0, alpha: 0.34)
@@ -655,7 +657,6 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         selectedBodyNodeHI?.selected = false
         selectedBodyNodeHI = nil
         
-//        selectedNevus?.selected = false
         selectedNevus?.state = .normal
         selectedNevus = nil
       
@@ -667,14 +668,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         if let bodyNode = bodyNode
         {
             bodyNode.opacity = 1
-//            bodyNode.node.isHidden = false
             currentModel?.makeAllNodeTransparentExceptNode(bodyNode)
-//            currentModel?.makeAllNodeTransparentToTouchesExceptNode(bodyNode)
         }
-        else
-        {
+        else {
             currentModel?.makeAllNodesOpaque()
-//            currentModel?.makeAllNodesOpaqueToTouches()
         }
     }
 
@@ -1059,7 +1056,7 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
         else
         {
-            if let rootBodyNode = currentModel.rootBodyNode,
+            if selectedBodyNodeLO == currentModel.rootBodyNode,
                let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
                let item = findControlsViewItem(r.bodyNode),
                let target = currentModel.cameraTargets[item]

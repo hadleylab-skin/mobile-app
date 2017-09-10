@@ -91,7 +91,7 @@ class BodyModel
         setupBorders(bodyScene)
         
         rootBodyNode.children.forEach {
-            $0.flatten = true
+            $0.flatten()
         }
       
         setupCameraMotion()
@@ -109,11 +109,14 @@ class BodyModel
             (leftLeg, "Left Leg Border")
         ]
         
-        for (bodyNode, borderNodeName) in borders {
+        for (bodyNode, borderNodeName) in borders
+        {
             if let borderNode = scene.rootNode.childNode(withName: borderNodeName, recursively: false) {
-                bodyNode.node.addChildNode(borderNode)
+                rootNode.addChildNode(borderNode)
+                bodyNode.borderNode = borderNode
                 borderNode.categoryBitMask |= CategoryBits.border.rawValue
                 borderNode.position = SCNVector3Zero
+                borderNode.isHidden = true
             }
         }
     }
@@ -333,7 +336,6 @@ class BodyModel
     {
         rootBodyNode.children.filter { $0 != node }.forEach { (bodyNode: BodyNode) in
             bodyNode.opacity = 0.02
-//            $0.node.isHidden = true
         }
     }
 
@@ -341,32 +343,7 @@ class BodyModel
     {
         rootBodyNode.children.forEach {
             $0.opacity = 1
-//            $0.node.isHidden = false
         }
-    }
-    
-    private func makeAllNodeTransparentToTouchesExceptNode(_ node: BodyNode, startNode: BodyNode)
-    {
-        startNode.children.filter { $0 != node }.forEach { (bodyNode: BodyNode) in
-            bodyNode.node.categoryBitMask |= CategoryBits.translucent.rawValue
-            makeAllNodeTransparentToTouchesExceptNode(node, startNode: bodyNode)
-        }
-    }
-
-    func makeAllNodeTransparentToTouchesExceptNode(_ node: BodyNode) {
-        makeAllNodeTransparentToTouchesExceptNode(node, startNode: rootBodyNode)
-    }
-
-    private func makeAllNodesOpaqueToTouches(startNode: BodyNode)
-    {
-        rootBodyNode.children.forEach { (bodyNode: BodyNode) in
-            bodyNode.node.categoryBitMask &= ~CategoryBits.translucent.rawValue
-            makeAllNodesOpaqueToTouches(startNode: bodyNode)
-        }
-    }
-
-    func makeAllNodesOpaqueToTouches() {
-        makeAllNodesOpaqueToTouches(startNode: rootBodyNode)
     }
 }
 
