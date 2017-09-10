@@ -60,6 +60,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         commonRootNode.addChildNode(model.rootNode)
         scene.rootNode.addChildNode(model.debugNode)
         neviRootNode.transform = model.rootNode.transform
+      
+        lookAtCameraTarget(.front)
     }
   
     var sex: String = "male" {
@@ -438,6 +440,10 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         camera.zNear = 0.1
         camera.yFov = 70
+//        camera.motionBlurIntensity = 1.0
+//        camera.focalDistance = 10
+//        camera.focalSize = 3
+//        camera.focalBlurRadius = 10
 
         cameraNode.camera = camera
         scene.rootNode.addChildNode(cameraNode)
