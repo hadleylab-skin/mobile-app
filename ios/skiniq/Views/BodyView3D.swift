@@ -438,8 +438,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     
     private func setupCamera()
     {
-        camera.zNear = 0.1
-        camera.yFov = 70
+        camera.zNear = 0.01
+        camera.zFar = 45
+        camera.yFov = 60
 //        camera.motionBlurIntensity = 1.0
 //        camera.focalDistance = 10
 //        camera.focalSize = 3
