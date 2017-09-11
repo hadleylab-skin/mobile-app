@@ -56,8 +56,8 @@
 		92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */; };
 		92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3C61F46B017003DD4EE /* BodyViewManager.m */; };
 		92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
+		ABBCF99FA8844CAFAFCF55B1 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A1C523549F429F8AA0E8C9 /* libRNBlur.a */; };
 		D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BB745C65464683A71EF3F9 /* libRNImagePicker.a */; };
-		F83C30F6E40A4589895FEF44 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B349AA8E5AFF476B947FAB05 /* libRNBlur.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -264,16 +264,16 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
-		BF48A1B91F4AEB0F006E2995 /* PBXContainerItemProxy */ = {
+		BF345F471F66C9E800DB5F14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */;
+			containerPortal = 69F57A798B274018BAA5F8D7 /* RNBlur.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = A68BD7BC1BC31318005F02DF;
 			remoteInfo = RNBlur;
 		};
-		BF48A1BB1F4AEB0F006E2995 /* PBXContainerItemProxy */ = {
+		BF345F491F66C9E800DB5F14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */;
+			containerPortal = 69F57A798B274018BAA5F8D7 /* RNBlur.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 64D1BD361EEFE88700F3F219;
 			remoteInfo = "RNBlur-tvOS";
@@ -305,6 +305,7 @@
 		33BB745C65464683A71EF3F9 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		611B9049CE9FBF1F6FFFBFFF /* Pods_Skin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		69F57A798B274018BAA5F8D7 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.debug.xcconfig"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -327,6 +328,7 @@
 		92EBB3C51F46B017003DD4EE /* BodyViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BodyViewManager.h; path = skiniq/BodyViewManager.h; sourceTree = SOURCE_ROOT; };
 		92EBB3C61F46B017003DD4EE /* BodyViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BodyViewManager.m; path = skiniq/BodyViewManager.m; sourceTree = SOURCE_ROOT; };
 		92EBB3C81F46B061003DD4EE /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; name = art.scnassets; path = skiniq/art.scnassets; sourceTree = "<group>"; };
+		B3A1C523549F429F8AA0E8C9 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		B5B3258D4A164C35A951DF0D /* libRSSignatureCapture.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRSSignatureCapture.a; sourceTree = "<group>"; };
 		CF03FB6D640144939D3FB5D3 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		E59046236241445F94C6CC66 /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 				D175BD02DBB24E7E8E0790F5 /* libRNImagePicker.a in Frameworks */,
 				6328016575C147DB95A8B5C2 /* libRSSignatureCapture.a in Frameworks */,
 				19CD97505E6174B052F4AC63 /* Pods_Skin.framework in Frameworks */,
+				ABBCF99FA8844CAFAFCF55B1 /* libRNBlur.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,7 +558,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				CF03FB6D640144939D3FB5D3 /* RNImagePicker.xcodeproj */,
 				E59046236241445F94C6CC66 /* RSSignatureCapture.xcodeproj */,
-				8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */,
+				69F57A798B274018BAA5F8D7 /* RNBlur.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -650,6 +653,15 @@
 			);
 			name = Views;
 			path = skiniq/Views;
+			sourceTree = "<group>";
+		};
+		BF345F2A1F66C9E800DB5F14 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF345F481F66C9E800DB5F14 /* libRNBlur.a */,
+				BF345F4A1F66C9E800DB5F14 /* libRNBlur.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		EB3E295CB01886ADFF362B4C /* Pods */ = {
@@ -815,8 +827,8 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = BF48A19C1F4AEB0E006E2995 /* Products */;
-					ProjectRef = 8A60F0C22AD24704B5D2991B /* RNBlur.xcodeproj */;
+					ProductGroup = BF345F2A1F66C9E800DB5F14 /* Products */;
+					ProjectRef = 69F57A798B274018BAA5F8D7 /* RNBlur.xcodeproj */;
 				},
 				{
 					ProductGroup = 5E4A517E1E68379B00F5C52D /* Products */;
@@ -1027,18 +1039,18 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BF48A1BA1F4AEB0F006E2995 /* libRNBlur.a */ = {
+		BF345F481F66C9E800DB5F14 /* libRNBlur.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNBlur.a;
-			remoteRef = BF48A1B91F4AEB0F006E2995 /* PBXContainerItemProxy */;
+			remoteRef = BF345F471F66C9E800DB5F14 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BF48A1BC1F4AEB0F006E2995 /* libRNBlur.a */ = {
+		BF345F4A1F66C9E800DB5F14 /* libRNBlur.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNBlur.a;
-			remoteRef = BF48A1BB1F4AEB0F006E2995 /* PBXContainerItemProxy */;
+			remoteRef = BF345F491F66C9E800DB5F14 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1246,12 +1258,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1276,12 +1290,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1304,6 +1320,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WBWE6BMMKE;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+				);
 				INFOPLIST_FILE = skiniq/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1327,6 +1347,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WBWE6BMMKE;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+				);
 				INFOPLIST_FILE = skiniq/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1358,11 +1382,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1392,11 +1418,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1427,6 +1455,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.skiniq-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1451,6 +1480,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.skiniq-tvOSTests";
