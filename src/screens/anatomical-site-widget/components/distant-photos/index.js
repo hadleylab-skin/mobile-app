@@ -84,8 +84,6 @@ const DistantPhotos = React.createClass({
             distantPhotos = anatomicalSites.data[currentAnatomicalSite] || [];
         }
 
-        console.log('distantPhotos', distantPhotos);
-
         return (
             <View style={s.container}>
                 <ScrollView

@@ -116,6 +116,9 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     async onSubmitNewMole(data, uri) {
+        const selectedMoleCursor = this.props.tree.selectedMole;
+        selectedMoleCursor.status.set('Loading');
+
         let moleData = {
             ...data,
             uri,
@@ -126,8 +129,11 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const result = await service(patientPk, this.props.tree.mole, moleData);
 
         if (result.status === 'Succeed') {
-            this.resetSelectedMole();
-            this.props.onAddingComplete();
+            const addingCompleteResult = await this.props.onAddingComplete();
+
+            if (addingCompleteResult.status === 'Succeed') {
+                this.resetSelectedMole();
+            }
         }
     },
 
@@ -163,7 +169,6 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             );
 
             if (molesResult.status === 'Succeed') {
-                selectedMoleCursor.status.set('Succeed');
                 this.resetSelectedMole();
             }
         }

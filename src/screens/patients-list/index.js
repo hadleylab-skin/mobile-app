@@ -163,10 +163,13 @@ export const PatientsList = React.createClass({
         const queryParams = cursors.filter.get();
 
         await services.patientsService(cursors.patients, queryParams);
-        await services.getPatientMolesService(
+        const result = await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles')
         );
+        const status = result.status;
+
+        return { status };
     },
 
     async onPatientAdded(pk, sex) {
