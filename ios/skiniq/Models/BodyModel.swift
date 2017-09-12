@@ -114,7 +114,7 @@ class BodyModel
             if let borderNode = scene.rootNode.childNode(withName: borderNodeName, recursively: false) {
                 rootNode.addChildNode(borderNode)
                 bodyNode.borderNode = borderNode
-                borderNode.categoryBitMask |= CategoryBits.border.rawValue
+                borderNode.categoryBitMask = 1 | CategoryBits.border.rawValue
                 borderNode.position = SCNVector3Zero
                 borderNode.isHidden = true
             }

@@ -147,9 +147,13 @@ import SceneKit
         
         while node != nil
         {
-            if node!.parent == parent {
+            if node == parent {
                 return count
             }
+            
+//            if node!.parent == parent {
+//                return count
+//            }
             
             count = count + 1
             
