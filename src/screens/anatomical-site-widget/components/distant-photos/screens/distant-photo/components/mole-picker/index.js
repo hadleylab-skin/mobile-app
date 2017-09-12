@@ -15,6 +15,7 @@ const MolePicker = schema({})(React.createClass({
         onMolePick: React.PropTypes.func.isRequired,
         children: React.PropTypes.node.isRequired,
         disabled: React.PropTypes.bool,
+        style: React.PropTypes.object.isRequired, // eslint-disable-line
         positionX: React.PropTypes.number,
         positionY: React.PropTypes.number,
     },
@@ -38,7 +39,7 @@ const MolePicker = schema({})(React.createClass({
 
         return (
             <TouchableWithoutFeedback onPress={(event) => this.onPress(event)}>
-                <View style={s.container}>
+                <View style={[s.container, this.props.style]}>
                     {this.props.children}
                     {positionX && positionY ?
                         <Image source={dotImage} style={[s.dot, { left: positionX, top: positionY }]} />

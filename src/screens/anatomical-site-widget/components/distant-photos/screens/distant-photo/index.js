@@ -87,11 +87,12 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     getImageSize(photo) {
-        const windowWidth = Dimensions.get('window').width;
+        const windowHeight = Dimensions.get('window').height;
+        const paddingTop = 64;
 
         Image.getSize(photo, (photoWidth, photoHeight) => {
-            const width = windowWidth;
-            const height = (width / photoWidth) * photoHeight;
+            const height = windowHeight - paddingTop;
+            const width = (height / photoHeight) * photoWidth;
 
             this.props.tree.select('imageSize').set({ width, height });
         });
@@ -144,6 +145,7 @@ const DistantPhoto = schema(model)(React.createClass({
     },
 
     render() {
+        const windowWidth = Dimensions.get('window').width;
         const { distantPhoto, pk } = this.props.tree.get();
         const { width, height } = this.props.tree.get('imageSize');
         const { positionX, positionY } = this.state;
@@ -169,10 +171,10 @@ const DistantPhoto = schema(model)(React.createClass({
                     onMolePick={this.onMolePick}
                     positionX={positionX}
                     positionY={positionY}
+                    style={{ width, height, marginLeft: ((width - windowWidth) / 2) * -1 }}
                 >
                     <Image
                         source={{ uri: distantPhoto.fullSize }}
-                        resizeMode="contain"
                         style={{ width, height }}
                     />
                     {width && height ? _.map(currentAnatomicalSiteMoles, (mole, index) => {
