@@ -113,7 +113,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             }
           
             guard let nevus = newNevus,
-                  let node = nevus.node
+                  let node = nevus.node,
+                  let modelRootNode = currentModel?.rootBodyNode.node
             else {
                 return
             }
@@ -121,6 +122,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
             nevus.state = .newlyAdded
           
             neviRootNode.addChildNode(node)
+            node.position = modelRootNode.convertPosition(nevus.coord, to: neviRootNode)
+            
             nevus.bodyNode?.add(nevus: nevus)
 
             let lookAt = SCNLookAtConstraint(target: cameraNode)
@@ -169,7 +172,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                       let positionX = m["positionX"] as? Float,
                       let positionY = m["positionY"] as? Float,
                       let positionZ = m["positionZ"] as? Float,
-                      let bodyNode = currentModel?.lookupBodyNode(name: anatomicalSite)
+                      let bodyNode = currentModel?.lookupBodyNode(name: anatomicalSite),
+                      let modelRootNode = currentModel?.rootBodyNode.node
                 else {
                     return
                 }
@@ -179,6 +183,8 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
                                   state: .normal)
               
                 neviRootNode.addChildNode(nevus.node)
+                nevus.node.position = modelRootNode.convertPosition(nevus.coord, to: neviRootNode)
+              
                 bodyNode.add(nevus: nevus)
 
                 let lookAt = SCNLookAtConstraint(target: cameraNode)
@@ -756,17 +762,19 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
   
     private func addNevus(bodyNode: BodyNode, hitTestResult: SCNHitTestResult)
     {
+        let node = bodyNode.node
+        
+        guard let geometry = node.geometry else {
+            return
+        }
+        
         let faceIndex = hitTestResult.faceIndex
-        let coord = hitTestResult.localCoordinates
+        let coord = node.convertPosition(hitTestResult.localCoordinates, to: currentModel?.rootBodyNode.node)
         
 //        debugPrint(">> Geometry index: \(hitTestResult.geometryIndex)");
 //        debugPrint(">> Face index: \(faceIndex)");
 //        debugPrint(">> Coord: x=\(coord.x), y=\(coord.y), z=\(coord.z)");
       
-        guard let geometry = bodyNode.node.geometry else {
-            return
-        }
-        
         let geometryElements = geometry.geometryElements
         
         var normalSource: SCNGeometrySource?

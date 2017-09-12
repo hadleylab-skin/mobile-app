@@ -25,24 +25,6 @@ import SceneKit
     var coord: SCNVector3
     var direction: SCNVector3
     var node: SCNNode!
-    
-//    var selected: Bool = false
-//    {
-//        didSet
-//        {
-//            let duration = 0.1
-//            
-//            SCNTransaction.begin()
-//            SCNTransaction.animationDuration = duration
-//            updateSelected()
-//            SCNTransaction.commit()
-//            
-//            let scale: CGFloat = (selected ? 1.5 : 1)
-//            let action = SCNAction.scale(to:scale, duration:duration)
-//            
-//            node.runAction(action)
-//        }
-//    }
   
     var state: State
     {
@@ -98,7 +80,6 @@ import SceneKit
         setupNode()
         setupMaterial()
         setupPivot()
-//        updateSelected()
         updateState()
         
         material.readsFromDepthBuffer = !alwaysVisible
@@ -134,10 +115,10 @@ import SceneKit
     
     private func setupPivot()
     {
-        let s: Float = 0.05
-        node.position = SCNVector3Make(coord.x + direction.x * s,
-                                       coord.y + direction.y * s,
-                                       coord.z + direction.z * s)
+//        let s: Float = 0.05
+//        node.position = SCNVector3Make(coord.x + direction.x * s,
+//                                       coord.y + direction.y * s,
+//                                       coord.z + direction.z * s)
         
         let m = GLKMatrix4MakeLookAt(0, 0, 0, direction.x, direction.y, direction.z, 0, 0, 1)
         pivot = SCNMatrix4FromGLKMatrix4(m)
@@ -172,18 +153,4 @@ import SceneKit
         
         node.geometry?.materials = [ material ]
     }
-    
-//    private func updateSelected() {
-//        material.emission.contents = (selected ? selectedColor : defaultColor)
-//    }
-  
-// MARK: - Hashable
-
-//    var hashValue: Int {
-//        return node.hashValue
-//    }
-//    
-//    static func == (lhs: Nevus, rhs: Nevus) -> Bool {
-//        return lhs.hashValue == rhs.hashValue
-//    }
 }

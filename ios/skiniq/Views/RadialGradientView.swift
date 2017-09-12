@@ -49,6 +49,10 @@ class RadialGradientLayer: CALayer
         super.init()
     }
 
+    override init(layer: Any) {
+        super.init(layer: layer)
+    }
+
     override func draw(in ctx: CGContext) {
         ctx.saveGState()
         let colorSpace = CGColorSpaceCreateDeviceRGB()
