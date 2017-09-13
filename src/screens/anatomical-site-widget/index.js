@@ -131,7 +131,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         if (result.status === 'Succeed') {
             const addingCompleteResult = await this.props.onAddingComplete();
 
-            if (addingCompleteResult.status === 'Succeed') {
+            if (!addingCompleteResult || addingCompleteResult.status === 'Succeed') {
                 this.resetSelectedMole();
             }
         }
