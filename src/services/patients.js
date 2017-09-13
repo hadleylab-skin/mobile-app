@@ -86,7 +86,7 @@ function hydratePatientData(remoteDoctor) {
     if (typeof doctor === 'undefined') {
         throw { message: 'System error, context is not loaded' };
     }
-    return async (patientData) => {
+    return async ({ doctors, ...patientData }) => {
         let data = new FormData();
         const aesKey = Math.random().toString(36).substring(2);
         let encryptionKeys = {};
@@ -95,6 +95,14 @@ function hydratePatientData(remoteDoctor) {
         if (doctor.myCoordinatorId) {
             encryptionKeys[`${doctor.myCoordinatorId}`] = await encryptRSA(aesKey, doctor.coordinatorPublicKey);
         }
+
+        await Promise.all(_.map(doctors, async (doctorId) => {
+            if (!encryptionKeys[`${doctorId}`]) {
+                encryptionKeys[`${doctorId}`] = await encryptRSA(
+                    aesKey,
+                    doctor.myDoctorsPublicKeys[`${doctorId}`]);
+            }
+        }));
 
         data.append('encryptionKeys', JSON.stringify(encryptionKeys));
 
