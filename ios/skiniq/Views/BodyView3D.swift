@@ -1065,7 +1065,9 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         }
         else if selectedBodyNodeLO == currentModel.rootBodyNode,
                 let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
-                (r.bodyNode.name == "Posterior Neck" || r.bodyNode.name == "Anterior Neck and Middle Chest")
+                (r.bodyNode.name == "Posterior Neck" ||
+                 r.bodyNode.name == "Anterior Neck" ||
+                 r.bodyNode.name == "Middle Chest")
         {
             handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
         }
