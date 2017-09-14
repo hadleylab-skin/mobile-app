@@ -575,6 +575,26 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
         setup()
     }
 
+    deinit {
+        print(">>> Deinit")
+    }
+
+    override func removeFromSuperview()
+    {
+        print(">>> Remove from superview")
+      
+        super.removeFromSuperview()
+      
+        models.removeAll()
+        currentModel = nil
+        commonRootNode.removeFromParentNode()
+        neviRootNode.removeFromParentNode()
+        nevi.removeAll()
+        selectedNevus = nil
+        selectedBodyNodeLO = nil
+        selectedBodyNodeHI = nil
+    }
+
 // MARK: Close-up photo button
 
     private var showContinueToCloseUpPhotoButton = false
