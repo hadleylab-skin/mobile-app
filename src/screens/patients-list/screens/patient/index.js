@@ -73,7 +73,6 @@ export const Patient = schema(model)(React.createClass({
         const molesCursor = this.props.tree.select('moles');
         const patientCursor = this.props.patientCursor.data;
 
-
         return (
             <Updater
                 service={this.updatePatientScreen}

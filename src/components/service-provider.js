@@ -44,5 +44,7 @@ ServiceProvider.childContextTypes = {
 };
 
 ServiceProvider.propTypes = {
-    token: React.PropTypes.string.isRequired,
+    token: React.PropTypes.shape({
+        token: React.PropTypes.string.isRequired,
+    }).isRequired,
 };

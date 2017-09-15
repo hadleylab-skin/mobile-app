@@ -11,6 +11,7 @@ import { Input, Button, StartScreen, ClickableText, Form } from 'components';
 import tree from 'libs/tree';
 import schema from 'libs/state';
 import { loginService } from 'services/login';
+import { getKeyPairStatus } from 'services/keypair';
 import ResetPassword from './screens/reset-password';
 import SignUp from './screens/sign-up';
 import s from './styles';
@@ -24,6 +25,7 @@ const SignInComponent = React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     async submit() {
@@ -34,6 +36,10 @@ const SignInComponent = React.createClass({
                 'Login',
                 'Wrong email or password');
         }
+        getKeyPairStatus(
+            this.props.keyPairStatusCursor,
+            result.data.doctor.data,
+            this.props.tree.get('password'));
     },
 
     goToSignUp() {
@@ -127,6 +133,7 @@ export class Login extends React.Component {
                     passProps: {
                         tree: this.props.tree,
                         tokenCursor: this.props.tokenCursor,
+                        keyPairStatusCursor: this.props.keyPairStatusCursor,
                     },
                 }}
                 style={{ flex: 1 }}

@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders, hydrateImage } from './base';
 
-function hydrateMolePhotoData(uri) {
+function hydrateMolePhotoData({ uri, age }) {
     let data = new FormData();
 
     data.append('photo', hydrateImage(uri));
+    data.append('age', age);
 
     return data;
 }
@@ -16,7 +17,7 @@ function dehydrateMolePhotoData(data) {
     newData.info = {
         data: {
             biopsy,
-            biopsyData: JSON.parse(biopsyData),
+            biopsyData,
             clinicalDiagnosis,
             pathDiagnosis,
         },
@@ -26,7 +27,7 @@ function dehydrateMolePhotoData(data) {
     return newData;
 }
 
-export function addMolePhotoService(token) {
+export function addMolePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
@@ -44,7 +45,7 @@ export function addMolePhotoService(token) {
     };
 }
 
-export function getMolePhotoService(token) {
+export function getMolePhotoService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -86,7 +87,7 @@ function dehydrateUpdateMolePhotoData(imageData) {
     return data;
 }
 
-export function updateMolePhotoService(token) {
+export function updateMolePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',

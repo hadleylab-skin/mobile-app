@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { buildPostService, buildGetService, defaultHeaders } from './base';
 
-export function getDoctorService(token) {
+export function getDoctorService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -16,7 +16,7 @@ export function getDoctorService(token) {
     };
 }
 
-export function updateDoctorService(token) {
+export function updateDoctorService({ token }) {
     const headers = {
         Accept: 'application/json',
         Authorization: `JWT ${token}`,

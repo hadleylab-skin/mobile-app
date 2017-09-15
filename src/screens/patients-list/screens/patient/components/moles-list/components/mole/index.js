@@ -6,6 +6,7 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    Alert,
 } from 'react-native';
 import moment from 'moment';
 import arrowImage from 'components/icons/arrow/arrow.png';
@@ -26,6 +27,7 @@ export const Mole = React.createClass({
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
+            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
         }),
         services: React.PropTypes.shape({
             addMolePhotoService: React.PropTypes.func.isRequired,
@@ -72,13 +74,18 @@ export const Mole = React.createClass({
         const pk = this.getNotExistingPk(-1);
         imagesCursor.select(pk).set({ data: { pk }, status: 'Loading' });
 
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
+        const dateOfBirth = this.context.cursors.patients.data.select(
+            this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
 
         if (result.status === 'Succeed') {
+            const queryParams = cursors.filter.get();
+
             imagesCursor.unset(pk);
             imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
 
-            await services.patientsService(cursors.patients);
+            await services.patientsService(cursors.patients, queryParams);
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles')
@@ -93,6 +100,7 @@ export const Mole = React.createClass({
 
         if (result.status === 'Failure') {
             imagesCursor.unset(pk);
+            Alert.alert('Server error', JSON.stringify(result.error));
         }
     },
 

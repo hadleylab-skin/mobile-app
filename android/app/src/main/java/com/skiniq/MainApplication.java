@@ -1,9 +1,10 @@
 package com.skiniq;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.RNRSA.RNRSAPackage;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.rssignaturecapture.RSSignatureCapturePackage;
 import com.imagepicker.ImagePickerPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
@@ -20,7 +21,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
-    protected boolean getUseDeveloperSupport() {
+    public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
     }
 
@@ -28,6 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNRSAPackage(),
+            new BlurViewPackage(),
             new RSSignatureCapturePackage(),
             new ImagePickerPackage(),
             new RCTCameraPackage()
