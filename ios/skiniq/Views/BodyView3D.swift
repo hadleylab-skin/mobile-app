@@ -476,8 +476,13 @@ class BodyView3D: UIView, ControlsViewDelegate, SCNSceneRendererDelegate
     {
         let dirLight = SCNLight()
         dirLight.type = .directional
-        dirLight.intensity = 750
+        dirLight.intensity = 650
         cameraNode.light = dirLight
+      
+        let ambient = SCNLight()
+        ambient.type = .ambient
+        ambient.intensity = 150
+        scene.rootNode.light = ambient
     }
 
     private func setupViews()
