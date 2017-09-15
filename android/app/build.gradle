@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-rsa-native')
     compile project(':react-native-blur')
     compile project(':react-native-signature-capture')
     compile project(':react-native-image-picker')

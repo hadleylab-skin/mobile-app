@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
 import {
     View,
@@ -6,20 +7,31 @@ import {
     Image,
 } from 'react-native';
 import { InfoField, Switch, Title, Updater } from 'components';
+import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import schema from 'libs/state';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
 
 export const DoctorProfile = schema({})(React.createClass({
     propTypes: {
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         logout: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         services: React.PropTypes.shape({
             updateDoctorService: React.PropTypes.func.isRequired,
             getDoctorService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    openCryptoConfiguration() {
+        this.context.mainNavigator.push(
+            getCryptoConfigurationRoute({
+                doctorCursor: this.props.tree,
+                keyPairStatusCursor: this.props.keyPairStatusCursor,
+            }));
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -33,7 +45,6 @@ export const DoctorProfile = schema({})(React.createClass({
         unitsOfLengthCursor.set(unit);
         await service(this.props.tree, { unitsOfLength: unit });
     },
-
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.tree.get('data');
 
@@ -80,6 +91,11 @@ export const DoctorProfile = schema({})(React.createClass({
                         }
                     />
                 </View>
+                <InfoField
+                    title={'Gryptography configuration'}
+                    hasNoBorder
+                    onPress={this.openCryptoConfiguration}
+                />
                 <View style={s.logout}>
                     <InfoField
                         title={'Log out'}

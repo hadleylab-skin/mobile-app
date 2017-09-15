@@ -6,6 +6,7 @@ import {
     Text,
     Image,
     TouchableOpacity,
+    Alert,
 } from 'react-native';
 import moment from 'moment';
 import arrowImage from 'components/icons/arrow/arrow.png';
@@ -73,7 +74,10 @@ export const Mole = React.createClass({
         const pk = this.getNotExistingPk(-1);
         imagesCursor.select(pk).set({ data: { pk }, status: 'Loading' });
 
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
+        const dateOfBirth = this.context.cursors.patients.data.select(
+            this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
 
         if (result.status === 'Succeed') {
             const queryParams = cursors.filter.get();
@@ -96,6 +100,7 @@ export const Mole = React.createClass({
 
         if (result.status === 'Failure') {
             imagesCursor.unset(pk);
+            Alert.alert('Server error', JSON.stringify(result.error));
         }
     },
 

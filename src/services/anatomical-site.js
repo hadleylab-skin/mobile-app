@@ -15,7 +15,7 @@ function dehydrateAnatomicalSites(items) {
     )));
 }
 
-export function getAnatomicalSitesService(token) {
+export function getAnatomicalSitesService({ token }) {
     const headers = {
         Authorization: `JWT ${token}`,
     };
@@ -39,7 +39,7 @@ function hydrateData(anatomicalSite) {
     return data;
 }
 
-export function addAnatomicalSitePhotoService(token) {
+export function addAnatomicalSitePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',

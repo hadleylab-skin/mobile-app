@@ -11,6 +11,7 @@ import Main from 'screens/main';
 const model = {
     tree: {
         token: '',
+        keyPairStatus: {},
         loginScreen: {},
         mainScreen: {},
     },
@@ -20,10 +21,15 @@ function App(props) {
     const tokenCursor = props.tree.token;
     const loginScreen = props.tree.loginScreen;
     const mainScreen = props.tree.mainScreen;
+    const keyPairStatusCursor = props.tree.keyPairStatus;
 
     if (tokenCursor.get('status') !== 'Succeed') {
         return (
-            <Login tokenCursor={tokenCursor} tree={loginScreen} />
+            <Login
+                tree={loginScreen}
+                tokenCursor={tokenCursor}
+                keyPairStatusCursor={keyPairStatusCursor}
+            />
         );
     }
 
@@ -31,6 +37,7 @@ function App(props) {
         <Main
             tree={mainScreen}
             tokenCursor={tokenCursor}
+            keyPairStatusCursor={keyPairStatusCursor}
         />
     );
 }

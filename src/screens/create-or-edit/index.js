@@ -1,6 +1,7 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
+    Alert,
     View,
     Text,
     Image,
@@ -172,10 +173,18 @@ const CreateOrEditPatient = schema(model)(React.createClass({
     async saveAndCallback(formData) {
         const { service, onActionComplete } = this.props;
 
-        const result = await service(this.props.tree, formData);
+        const doctors = this.props.dataCursor ? this.props.dataCursor.doctors.get() : [];
+        const result = await service(this.props.tree, { doctors, ...formData });
 
         if (result.status === 'Succeed') {
             onActionComplete(result.data.pk);
+        } else {
+            const mrnError = _.join(result.error.data.mrnHash || [], ',');
+            if (mrnError) {
+                Alert.alert('Save Error', mrnError);
+            } else {
+                Alert.alert('Server Error', JSON.stringify(result.error));
+            }
         }
     },
 

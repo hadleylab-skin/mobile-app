@@ -3,6 +3,7 @@ package com.skiniq;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.RNRSA.RNRSAPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.rssignaturecapture.RSSignatureCapturePackage;
 import com.imagepicker.ImagePickerPackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNRSAPackage(),
             new BlurViewPackage(),
             new RSSignatureCapturePackage(),
             new ImagePickerPackage(),

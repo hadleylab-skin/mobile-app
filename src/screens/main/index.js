@@ -12,6 +12,7 @@ import { ServiceProvider } from 'components';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { CameraMenu } from 'screens/camera-menu';
+import { CryptoConfiguration } from 'screens/crypto-config';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
@@ -40,6 +41,7 @@ const Main = schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
@@ -89,9 +91,9 @@ const Main = schema(model)(React.createClass({
                     >
                         <DoctorProfile
                             tree={this.props.tokenCursor.select('data', 'doctor')}
+                            keyPairStatusCursor={this.props.keyPairStatusCursor}
                             logout={() => {
-                                this.props.tree.set({});
-                                this.props.tokenCursor.set('');
+                                this.props.tree.tree.set({});
                             }}
                         />
                     </TabBarIOS.Item>
@@ -110,7 +112,9 @@ export default React.createClass({
     displayName: 'MainNavigator',
 
     propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     childContextTypes: {
@@ -142,23 +146,45 @@ export default React.createClass({
     },
 
     render() {
+        const keyPairStatusCursor = this.props.keyPairStatusCursor;
+        const { status, firstTime } = keyPairStatusCursor.get();
         return (
             <ServiceProvider
-                token={this.props.tokenCursor.get('data', 'token')}
+                token={this.props.tokenCursor.get('data')}
                 style={{ flex: 1 }}
             >
-                <NavigatorIOS
-                    ref={(ref) => { this.mainNavigator = ref; }}
-                    initialRoute={{
-                        component: Main,
-                        title: 'Patients',
-                        navigationBarHidden: true,
-                        tintColor: '#FF2D55',
-                        passProps: this.props,
-                    }}
-                    style={{ flex: 1 }}
-                    barTintColor="#fff"
-                />
+                {
+                    (status !== 'Succeed' && firstTime)
+                    ?
+                    (
+                        status === 'Loading'
+                        ?
+                            null
+                        :
+                        (
+                            <CryptoConfiguration
+                                standAlone
+                                doctorCursor={this.props.tokenCursor.data.doctor}
+                                keyPairStatusCursor={keyPairStatusCursor}
+                            />
+                        )
+                    )
+                    :
+                    (
+                        <NavigatorIOS
+                            ref={(ref) => { this.mainNavigator = ref; }}
+                            initialRoute={{
+                                component: Main,
+                                title: 'Patients',
+                                navigationBarHidden: true,
+                                tintColor: '#FF2D55',
+                                passProps: this.props,
+                            }}
+                            style={{ flex: 1 }}
+                            barTintColor="#fff"
+                        />
+                    )
+                }
             </ServiceProvider>
         );
     },
