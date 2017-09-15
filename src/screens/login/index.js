@@ -107,8 +107,8 @@ const SignInComponent = React.createClass({
 function SignInScreen(props) {
     const model = {
         tree: {
-            username: 'ir4y.ix@gmail.com',
-            password: '1q2w3e4r5t6y',
+            username: '',
+            password: '',
         },
     };
     const loginScreenCursor = tree.login;
