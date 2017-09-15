@@ -36,7 +36,7 @@ function dehydrateMoleData(data) {
         newImage.info = {
             data: {
                 biopsy,
-                biopsyData: JSON.parse(biopsyData),
+                biopsyData,
                 clinicalDiagnosis,
                 pathDiagnosis,
             },
