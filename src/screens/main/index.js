@@ -93,8 +93,7 @@ const Main = schema(model)(React.createClass({
                             tree={this.props.tokenCursor.select('data', 'doctor')}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                             logout={() => {
-                                this.props.tree.set({});
-                                this.props.tokenCursor.set('');
+                                this.props.tree.tree.set({});
                             }}
                         />
                     </TabBarIOS.Item>
@@ -148,20 +147,27 @@ export default React.createClass({
 
     render() {
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
+        const { status, firstTime } = keyPairStatusCursor.get();
         return (
             <ServiceProvider
                 token={this.props.tokenCursor.get('data')}
                 style={{ flex: 1 }}
             >
-
                 {
-                    keyPairStatusCursor.get('status') !== 'Exists'
+                    (status !== 'Succeed' && firstTime)
                     ?
                     (
-                        <CryptoConfiguration
-                            doctorCursor={this.props.tokenCursor.data.doctor}
-                            keyPairStatusCursor={keyPairStatusCursor}
-                        />
+                        status === 'Loading'
+                        ?
+                            null
+                        :
+                        (
+                            <CryptoConfiguration
+                                standAlone
+                                doctorCursor={this.props.tokenCursor.data.doctor}
+                                keyPairStatusCursor={keyPairStatusCursor}
+                            />
+                        )
                     )
                     :
                     (

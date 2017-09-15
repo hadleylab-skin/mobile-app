@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import { RSA } from 'react-native-rsa-native';
 import CryptoJS from 'crypto-js';
+import _ from 'lodash';
 
 const { RNSecretManager } = NativeModules;
 
@@ -51,14 +52,27 @@ export function decryptAES(ciphertext, key) {
     return bytes.toString(CryptoJS.enc.Utf8);
 }
 
-export async function getKeyPairStatus(cursor) {
-    cursor.set({ status: 'Loading' });
+export async function getKeyPairStatus(cursor, doctor, password) {
+    const firstTime = _.isEmpty(cursor.get());
+    cursor.set({ status: 'Loading', firstTime });
     let data;
     try {
         const keys = await getKeyPair();
+        const remotePrivateKey = decryptAES(doctor.privateKey, password);
+        const remotePublicKey = doctor.publicKey;
+
+        const keyPairStatus = {
+            exported: !_.isEmpty(remotePrivateKey),
+            publicMatch: remotePublicKey === keys.publicKey,
+            privateMatch: remotePrivateKey === keys.privateKey,
+        };
+
+        const status = keyPairStatus.publicMatch ? 'Succeed' : 'Failure';
+
         data = {
-            status: keys.publicKey && keys.privateKey ? 'Exists' : 'DoesNotExists',
-            ...keys,
+            status,
+            keyPairStatus,
+            data: { ...keys },
         };
     } catch (error) {
         data = {
@@ -66,7 +80,7 @@ export async function getKeyPairStatus(cursor) {
             error,
         };
     }
-    cursor.set(data);
+    cursor.set({ firstTime, ...data });
     return data;
 }
 

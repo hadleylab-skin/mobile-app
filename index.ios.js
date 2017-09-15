@@ -3,7 +3,6 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     AppRegistry,
 } from 'react-native';
-import { getKeyPairStatus } from 'services/keypair';
 import schema from 'libs/state.js';
 import tree from 'libs/tree';
 import { Login } from 'screens/login';
@@ -12,7 +11,7 @@ import Main from 'screens/main';
 const model = {
     tree: {
         token: '',
-        keyPairStatus: getKeyPairStatus,
+        keyPairStatus: {},
         loginScreen: {},
         mainScreen: {},
     },
@@ -26,7 +25,11 @@ function App(props) {
 
     if (tokenCursor.get('status') !== 'Succeed') {
         return (
-            <Login tokenCursor={tokenCursor} tree={loginScreen} />
+            <Login
+                tree={loginScreen}
+                tokenCursor={tokenCursor}
+                keyPairStatusCursor={keyPairStatusCursor}
+            />
         );
     }
 
