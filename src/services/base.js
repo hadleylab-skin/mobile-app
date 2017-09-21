@@ -63,7 +63,10 @@ export function buildPostService(path,
 
         try {
             let response = await fetch(`${url}${path}`, payload).then(checkStatus);
-            let respData = await response.json();
+            let respData;
+            if (response.status !== 204) {
+                respData = await response.json();
+            }
             const dehydratedData = await dehydrate(respData);
             result = {
                 status: 'Succeed',

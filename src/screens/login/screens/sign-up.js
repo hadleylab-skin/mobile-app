@@ -1,65 +1,182 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+import _ from 'lodash';
 import {
     Alert,
     View,
-    StyleSheet,
+    Text,
+    PickerIOS,
 } from 'react-native';
-import { Input, Button, StartScreen, ClickableText } from 'components';
-import tree from 'libs/tree';
+import BaobabPropTypes from 'baobab-prop-types';
+import { Input, Button, StartScreen,
+         ClickableText, Form, Switch,
+} from 'components';
+import schema from 'libs/state';
+import { handleFormSubmitError } from 'libs/form';
+import { signUpSerice } from 'services/auth';
+import { getSitesService } from 'services/constants';
 import s from '../styles';
 
-function submit() {
-    Alert.alert(
-        'Sign Up',
-        'Something went wrong');
-}
+const model = {
+    tree: {
+        form: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            site: '',
+        },
+        belongToGroup: false,
+        picker: {},
+        availableSites: {},
+        result: {},
+    },
+};
 
-export default class SignUp extends Component {
-    static propTypes = {
-        navigator: PropTypes.object.isRequired,
-    }
+const SignUp = schema(model)(React.createClass({
+    propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
 
-    goBack = () => {
-        this.props.navigator.pop()
-    }
+    componentWillMount() {
+        this.props.tree.set(model.tree);
+        getSitesService(this.props.tree.availableSites);
+    },
+
+    goBack() {
+        this.props.navigator.pop();
+    },
+
+    async onSubmit() {
+        let data = this.props.tree.form.get();
+        if (this.props.tree.belongToGroup.get() === false) {
+            data.site = null;
+        }
+        const result = await signUpSerice(this.props.tree.result, data);
+        if (result.status === 'Failure') {
+            handleFormSubmitError(result.error, this.form);
+            return;
+        }
+        Alert.alert(
+            'You have registered',
+            'Please check your email and follow instruction',
+            [{ text: 'OK', onPress: this.goBack }]
+        );
+    },
+
+    getOptions() {
+        const { status, data } = this.props.tree.availableSites.get();
+        if (status !== 'Succeed') {
+            return [];
+        }
+        return data;
+    },
 
     render() {
-        const firstNameCursor = tree.firstName;
-        const lastNameCursor = tree.lastName;
-        const emailCursor = tree.email;
-        const passwordCursor = tree.password;
+        const firstNameCursor = this.props.tree.form.firstName;
+        const lastNameCursor = this.props.tree.form.lastName;
+        const emailCursor = this.props.tree.form.email;
+        const passwordCursor = this.props.tree.form.password;
+        const siteCursor = this.props.tree.form.site;
+        const pickerOptions = this.getOptions();
+        const belongToGroupCursor = this.props.tree.belongToGroup;
 
         return (
             <StartScreen>
-                <Input
-                    label="First Name"
-                    cursor={firstNameCursor}
-                    returnKeyType="next"
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Input
-                    label="Last Name"
-                    cursor={lastNameCursor}
-                    returnKeyType="next"
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Input
-                    label="Email"
-                    cursor={emailCursor}
-                    returnKeyType="next"
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Input
-                    label="Password"
-                    cursor={passwordCursor}
-                    returnKeyType="done"
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Button title="Sign Up" onPress={submit} />
+                <Form
+                    ref={(ref) => { this.form = ref; }}
+                    onSubmit={this.onSubmit}
+                >
+                    <Text style={s.label}>FIRST NAME</Text>
+                    <Input
+                        label="First Name"
+                        name="firstName"
+                        cursor={firstNameCursor}
+                        returnKeyType="next"
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
+                    />
+                    <Text style={s.label}>LAST NAME</Text>
+                    <Input
+                        label="Last Name"
+                        name="lastName"
+                        cursor={lastNameCursor}
+                        returnKeyType="next"
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
+                    />
+                    <Text style={s.label}>EMAIL</Text>
+                    <Input
+                        label="Email"
+                        name="email"
+                        cursor={emailCursor}
+                        returnKeyType="next"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="email-address"
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
+                    />
+                    <Text style={s.label}>PASSWORD</Text>
+                    <Input
+                        label="Password"
+                        name="password"
+                        cursor={passwordCursor}
+                        secureTextEntry
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
+                    />
+                    <Text style={s.label}>
+                        REGISTER AS PART OF THE GROUP
+                    </Text>
+                    <View style={s.switchWrapper}>
+                        <Switch
+                            cursor={belongToGroupCursor}
+                            items={[
+                                { label: 'Yes', value: true },
+                                { label: 'No', value: false },
+                            ]}
+                        />
+                    </View>
+                    {
+                        (_.isEmpty(pickerOptions) || belongToGroupCursor.get() === false)
+                    ?
+                        null
+                    :
+                        <PickerIOS
+                            itemStyle={{ color: '#fff' }}
+                            selectedValue={siteCursor.get() || _.last(pickerOptions).pk}
+                            onValueChange={(value) => siteCursor.set(value)}
+                        >
+                            {_.map(pickerOptions, ({ pk, title }) => (
+                                <PickerIOS.Item
+                                    key={pk}
+                                    value={pk}
+                                    label={title}
+                                />
+                            ))}
+                        </PickerIOS>
+                    }
+                </Form>
+                <View style={s.button}>
+                    <Button title="Sign Up" onPress={this.onSubmit} type="white" />
+                </View>
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goBack}
@@ -70,5 +187,16 @@ export default class SignUp extends Component {
                 </View>
             </StartScreen>
         );
-    }
+    },
+}));
+
+export function getSignUpRoute(props) {
+    return {
+        component: SignUp,
+        title: 'SignUp',
+        navigationBarHidden: true,
+        passProps: {
+            tree: props.tree.signUp,
+        },
+    };
 }

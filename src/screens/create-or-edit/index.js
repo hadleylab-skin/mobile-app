@@ -268,7 +268,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                                     errorWrapperStyle={s.errorFirstName}
                                     inputStyle={[s.input, s.inputFirstName]}
                                     placeholderTextColor="#ACB5BE"
-                                    erroPlaceholderTextColor="#FC3159"
+                                    errorPlaceholderTextColor="#FC3159"
                                     name="firstName"
                                     onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
                                 />
@@ -278,7 +278,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                                     inputStyle={s.input}
                                     errorWrapperStyle={s.error}
                                     placeholderTextColor="#ACB5BE"
-                                    erroPlaceholderTextColor="#FC3159"
+                                    errorPlaceholderTextColor="#FC3159"
                                     name="lastName"
                                     onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
                                 />

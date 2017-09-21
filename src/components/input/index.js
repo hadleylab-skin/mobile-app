@@ -24,7 +24,7 @@ export const Input = schema({})(React.createClass({
         name: React.PropTypes.string,
         errorWrapperStyle: View.propTypes.style,
         errorStyle: Text.propTypes.style,
-        erroPlaceholderTextColor: React.PropTypes.string,
+        errorPlaceholderTextColor: React.PropTypes.string,
     },
 
     contextTypes: Form.childContextTypes,
@@ -137,7 +137,7 @@ export const Input = schema({})(React.createClass({
     },
 
     render() {
-        const { label, inputWrapperStyle, inputStyle, erroPlaceholderTextColor,
+        const { label, inputWrapperStyle, inputStyle, errorPlaceholderTextColor,
                 placeholderTextColor, errorStyle, errorWrapperStyle, ...props } = this.props;
 
         const movingMargin = this.animatedValue.interpolate({
@@ -163,7 +163,7 @@ export const Input = schema({})(React.createClass({
                             onChangeText={this.onChangeText}
                             onBlur={this.syncCursor}
                             onFocus={this.onFocus}
-                            placeholderTextColor={this.state.errorMessage ? erroPlaceholderTextColor : placeholderTextColor}
+                            placeholderTextColor={this.state.errorMessage ? errorPlaceholderTextColor : placeholderTextColor}
                             value={this.state.value}
                             onSubmitEditing={this.onSubmitEditing}
                             {...props}
