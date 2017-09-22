@@ -8,7 +8,7 @@ export default StyleSheet.create({
         position: 'absolute',
         top: 0,
         bottom: 0,
-        right: 15,
+        right: 5,
         justifyContent: 'center',
         maxWidth: 170,
         backgroundColor: '#fff',

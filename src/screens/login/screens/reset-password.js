@@ -1,45 +1,87 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+import _ from 'lodash';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
+    Text,
     Alert,
     View,
-    StyleSheet,
 } from 'react-native';
-import { Input, Button, StartScreen, ClickableText } from 'components';
-import tree from 'libs/tree';
+import { Input, Button, StartScreen, ClickableText, Form } from 'components';
+import { resetPasswordSerice } from 'services/auth';
+import schema from 'libs/state';
+import { handleFormSubmitError } from 'libs/form';
 import s from '../styles';
 
-function submit() {
-    Alert.alert(
-        'Reset password',
-        'Wrong email');
-}
 
-const route = {
-    title: 'Login',
-    navigationBarHidden: true,
-}
+const model = {
+    tree: {
+        form: {
+            email: '',
+        },
+        result: {
+        },
+    },
+};
 
-export default class ResetPassword extends Component {
-    static propTypes = {
-        navigator: PropTypes.object.isRequired,
-    }
+const ResetPassword = schema(model)(React.createClass({
+    propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
 
-    goBack = () => {
-        this.props.navigator.pop()
-    }
+    componentWillMount() {
+        this.props.tree.set(model);
+    },
+
+    goBack() {
+        this.props.navigator.pop();
+    },
+
+    async onSubmit() {
+        const result = await resetPasswordSerice(
+            this.props.tree.result,
+            this.props.tree.form.get());
+
+        if (result.status === 'Succeed') {
+            Alert.alert(
+                'You password was reseted',
+                'Please check your email and follow instruction',
+                [{ text: 'OK', onPress: this.goBack }]
+            );
+            return;
+        }
+        handleFormSubmitError(result.error, this.form, () => 'email');
+    },
 
     render() {
-        const emailCursor = tree.email;
+        const emailCursor = this.props.tree.form.email;
 
         return (
             <StartScreen>
-                <Input
-                    label="Email"
-                    cursor={emailCursor}
-                    inputWrapperStyle={s.inputWrapper}
-                    inputStyle={s.input}
-                />
-                <Button title="Reset" onPress={submit} />
+                <Form
+                    ref={(ref) => { this.form = ref; }}
+                    onSubmit={this.onSubmit}
+                >
+                    <Text style={s.label}>EMAIL</Text>
+                    <Input
+                        label="Email"
+                        name="email"
+                        cursor={emailCursor}
+                        inputWrapperStyle={s.inputWrapper}
+                        inputStyle={s.input}
+                        returnKeyType="done"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="email-address"
+                        placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
+                    />
+                </Form>
+                <View style={s.button}>
+                    <Button title="Reset" onPress={this.onSubmit} type="white" />
+                </View>
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goBack}
@@ -50,5 +92,16 @@ export default class ResetPassword extends Component {
                 </View>
             </StartScreen>
         );
-    }
+    },
+}));
+
+export function getResetPasswordRoute(props) {
+    return {
+        component: ResetPassword,
+        title: 'Reset Password',
+        navigationBarHidden: true,
+        passProps: {
+            tree: props.tree.resetPassword,
+        },
+    };
 }

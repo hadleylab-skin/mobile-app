@@ -1,40 +1,43 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
+import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
-    Alert,
     View,
     Text,
     NavigatorIOS,
 } from 'react-native';
 import { Input, Button, StartScreen, ClickableText, Form } from 'components';
-import tree from 'libs/tree';
 import schema from 'libs/state';
-import { loginService } from 'services/login';
+import { handleFormSubmitError } from 'libs/form';
+import { loginService } from 'services/auth';
 import { getKeyPairStatus } from 'services/keypair';
-import ResetPassword from './screens/reset-password';
-import SignUp from './screens/sign-up';
+import { getResetPasswordRoute, getSignUpRoute } from './screens';
 import s from './styles';
 
-const route = {
-    title: 'Login',
-    navigationBarHidden: true,
+const model = {
+    tree: {
+        form: {
+            username: '',
+            password: '',
+        },
+        signUp: {},
+        resetPassword: {},
+    },
 };
 
-const SignInComponent = React.createClass({
+const Login = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
-        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
+        tokenCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     async submit() {
-        const result = await loginService(this.props.tokenCursor, this.props.tree.get());
+        const result = await loginService(this.props.tokenCursor, this.props.tree.form.get());
 
         if (result.status === 'Failure') {
-            Alert.alert(
-                'Login',
-                'Wrong email or password');
+            handleFormSubmitError(result.error, this.form);
+            return;
         }
         getKeyPairStatus(
             this.props.keyPairStatusCursor,
@@ -43,23 +46,27 @@ const SignInComponent = React.createClass({
     },
 
     goToSignUp() {
-        this.props.navigator.push(_.merge({}, route, { component: SignUp }));
+        this.props.navigator.push(getSignUpRoute(this.props));
     },
 
     goToResetPassword() {
-        this.props.navigator.push(_.merge({}, route, { component: ResetPassword }));
+        this.props.navigator.push(getResetPasswordRoute(this.props));
     },
 
     render() {
-        const usernameCursor = this.props.tree.username;
-        const passwordCursor = this.props.tree.password;
+        const usernameCursor = this.props.tree.form.username;
+        const passwordCursor = this.props.tree.form.password;
 
         return (
             <StartScreen>
-                <Form onSubmit={this.submit}>
+                <Form
+                    ref={(ref) => { this.form = ref; }}
+                    onSubmit={this.submit}
+                >
                     <Text style={s.label}>EMAIL</Text>
                     <Input
                         label="Email"
+                        name="username"
                         keyboardType="email-address"
                         autoCapitalize="none"
                         returnKeyType="next"
@@ -68,22 +75,28 @@ const SignInComponent = React.createClass({
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
                     />
                     <Text style={s.label}>PASSWORD</Text>
                     <Input
                         label="Password"
+                        name="password"
                         returnKeyType="done"
                         cursor={passwordCursor}
                         inputWrapperStyle={s.inputWrapper}
                         inputStyle={s.input}
                         secureTextEntry
                         placeholderTextColor="rgba(255,255,255,0.7)"
+                        errorStyle={s.error}
+                        errorWrapperStyle={s.errorWrapper}
+                        errorPlaceholderTextColor="#fff"
                     />
                 </Form>
                 <View style={s.button}>
                     <Button title="Login" onPress={this.submit} type="white" />
                 </View>
-                {/*
                 <View style={{ marginTop: 42 }}>
                     <ClickableText
                         onPress={this.goToSignUp}
@@ -98,46 +111,23 @@ const SignInComponent = React.createClass({
                         clickableAreaStyles={s.clickableArea}
                     />
                 </View>
-                */}
             </StartScreen>
         );
     },
-});
+}));
 
-function SignInScreen(props) {
-    const model = {
-        tree: {
-            username: '',
-            password: '',
-        },
-    };
-    const loginScreenCursor = tree.login;
-    const Component = schema(model)(SignInComponent);
-    return (
-        <Component
-            {...props}
-            tree={loginScreenCursor}
-            tokenCursor={props.tokenCursor}
-        />
-    );
-}
-
-export class Login extends React.Component {
+export const LoginScreen = React.createClass({
     render() {
         return (
             <NavigatorIOS
                 initialRoute={{
-                    component: SignInScreen,
+                    component: Login,
                     title: 'Login',
                     navigationBarHidden: true,
-                    passProps: {
-                        tree: this.props.tree,
-                        tokenCursor: this.props.tokenCursor,
-                        keyPairStatusCursor: this.props.keyPairStatusCursor,
-                    },
+                    passProps: { ...this.props },
                 }}
                 style={{ flex: 1 }}
             />
         );
-    }
-}
+    },
+});

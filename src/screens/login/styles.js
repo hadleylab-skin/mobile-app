@@ -32,4 +32,17 @@ export default StyleSheet.create({
     button: {
         flexDirection: 'row',
     },
+
+    switchWrapper: {
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: 'flex-end',
+    },
+
+    errorWrapper: {
+        backgroundColor: 'transparent',
+    },
+    error: {
+        color: '#fff',
+    },
 });
