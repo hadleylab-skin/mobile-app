@@ -3,10 +3,10 @@ package com.skiniq;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.RNRSA.RNRSAPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.rssignaturecapture.RSSignatureCapturePackage;
-import com.imagepicker.ImagePickerPackage;
+import com.RNRSA.RNRSAPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -29,10 +29,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNRSAPackage(),
+            new ImagePickerPackage(),
             new BlurViewPackage(),
             new RSSignatureCapturePackage(),
-            new ImagePickerPackage(),
+            new RNRSAPackage(),
             new RCTCameraPackage()
       );
     }

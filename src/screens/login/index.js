@@ -42,7 +42,7 @@ const Login = schema(model)(React.createClass({
         getKeyPairStatus(
             this.props.keyPairStatusCursor,
             result.data.doctor.data,
-            this.props.tree.get('password'));
+            this.props.tree.form.get('password'));
     },
 
     goToSignUp() {
