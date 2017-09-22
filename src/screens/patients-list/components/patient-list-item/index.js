@@ -74,7 +74,7 @@ const PatientListItem = React.createClass({
                             if (isConsentValid) {
                                 mainNavigator.push(
                                     getAnatomicalSiteWidgetRoute({
-                                        tree: cursors.patientsMoles.select(pk, 'anatomicalSites'),
+                                        tree: cursors.patientsMoles.select(pk, 'widgetData'),
                                         onAddingComplete: this.props.onAddingComplete,
                                     }, this.context)
                                 );

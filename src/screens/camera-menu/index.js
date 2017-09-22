@@ -96,7 +96,7 @@ export const CameraMenu = schema({})(React.createClass({
                     cursors.currentPatientPk.set(pk);
                     mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
-                            tree: cursors.patientsMoles.select('data', pk, 'anatomicalSites'),
+                            tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
                             onAddingComplete: this.onAddingComplete,
                             onBackPress: () => mainNavigator.popToTop(),
                         }, this.context)

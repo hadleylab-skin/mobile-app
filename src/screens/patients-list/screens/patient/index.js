@@ -15,7 +15,7 @@ import s from './styles';
 
 const model = {
     tree: {
-        anatomicalSites: {},
+        widgetData: {},
         moles: {},
     },
 };
@@ -69,7 +69,7 @@ export const Patient = schema(model)(React.createClass({
     },
 
     render() {
-        const anatomicalSitesCursor = this.props.tree.select('anatomicalSites');
+        const widgetDataCursor = this.props.tree.select('widgetData');
         const molesCursor = this.props.tree.select('moles');
         const patientCursor = this.props.patientCursor.data;
 
@@ -87,7 +87,7 @@ export const Patient = schema(model)(React.createClass({
                     />
                     <MolesInfo
                         checkConsent={this.checkConsent}
-                        anatomicalSitesCursor={anatomicalSitesCursor}
+                        widgetDataCursor={widgetDataCursor}
                         onAddingComplete={this.props.onAddingComplete}
                     />
                     <MolesList

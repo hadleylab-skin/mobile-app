@@ -163,22 +163,26 @@ export const PatientsList = React.createClass({
         const queryParams = cursors.filter.get();
 
         await services.patientsService(cursors.patients, queryParams);
-        await services.getPatientMolesService(
+        const result = await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles')
         );
+        const status = result.status;
+
+        return { status };
     },
 
-    async onPatientAdded(pk) {
+    async onPatientAdded(pk, sex) {
         const { cursors, services, mainNavigator } = this.context;
         const queryParams = cursors.filter.get();
 
         cursors.currentPatientPk.set(pk);
         mainNavigator.push(
             getAnatomicalSiteWidgetRoute({
-                tree: cursors.patientsMoles.select('data', pk, 'anatomicalSites'),
+                tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
                 onAddingComplete: this.onAddingComplete,
                 onBackPress: () => mainNavigator.popToTop(),
+                sex,
             }, this.context)
         );
 
