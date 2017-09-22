@@ -13,11 +13,6 @@ import { getKeyPairStatus } from 'services/keypair';
 import { getResetPasswordRoute, getSignUpRoute } from './screens';
 import s from './styles';
 
-const route = {
-    title: 'Login',
-    navigationBarHidden: true,
-};
-
 const model = {
     tree: {
         form: {
