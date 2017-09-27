@@ -79,6 +79,7 @@ function hydrateMoleData(mole) {
     data.append('anatomicalSite', _.kebabCase(mole.anatomicalSite));
     data.append('positionInfo', JSON.stringify(mole.positionInfo));
     data.append('photo', hydrateImage(mole.uri));
+    data.append('age', mole.age);
 
     if (mole.patientAnatomicalSite) {
         data.append('patientAnatomicalSite', mole.patientAnatomicalSite);

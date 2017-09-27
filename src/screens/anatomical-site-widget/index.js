@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import {
     View,
     ActivityIndicator,
@@ -119,13 +120,18 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const selectedMoleCursor = this.props.tree.selectedMole;
         selectedMoleCursor.status.set('Loading');
 
+        const patientPk = this.context.cursors.currentPatientPk.get();
+        const dateOfBirth = this.context.cursors.patients.data.select(
+            patientPk).data.dateOfBirth.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+
         let moleData = {
             ...data,
+            age,
             uri,
         };
 
         const service = this.context.services.addMoleService;
-        const patientPk = this.context.cursors.currentPatientPk.get();
         const result = await service(patientPk, this.props.tree.mole, moleData);
 
         if (result.status === 'Succeed') {
@@ -150,7 +156,10 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
         selectedMoleCursor.status.set('Loading');
 
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), uri);
+        const dateOfBirth = this.context.cursors.patients.data.select(
+            this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
 
         if (result.status === 'Succeed') {
             imagesCursor.unset(pk);
