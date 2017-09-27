@@ -35,7 +35,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
         if (result.status === 'Failure') {
             Alert.alert('Error', JSON.stringify(result.error));
         }
-        const password = this.props.doctorCursor.tree.get('login', 'password');
+        const password = this.props.doctorCursor.tree.get('loginScreen', 'form', 'password');
         await getKeyPairStatus(
             this.props.keyPairStatusCursor,
             this.props.doctorCursor.data.get(),
@@ -43,7 +43,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
     },
 
     async exportSettingsChange(value) {
-        const password = this.props.doctorCursor.tree.get('loginScreen','form','password')
+        const password = this.props.doctorCursor.tree.get('loginScreen', 'form', 'password');
         let keys = await getKeyPair();
         if (!value) {
             keys.privateKey = '';
