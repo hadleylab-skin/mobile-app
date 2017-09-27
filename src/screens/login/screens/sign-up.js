@@ -38,9 +38,13 @@ const SignUp = schema(model)(React.createClass({
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
-    componentWillMount() {
+    async componentWillMount() {
         this.props.tree.set(model.tree);
-        getSitesService(this.props.tree.availableSites);
+        const result = await getSitesService(this.props.tree.availableSites);
+        const lastOption = _.last(result.data);
+        if (lastOption) {
+            this.props.tree.form.site.set(lastOption.pk);
+        }
     },
 
     goBack() {
@@ -48,7 +52,7 @@ const SignUp = schema(model)(React.createClass({
     },
 
     async onSubmit() {
-        let data = this.props.tree.form.get();
+        let data = { ...this.props.tree.form.get() };
         if (this.props.tree.belongToGroup.get() === false) {
             data.site = null;
         }
@@ -72,14 +76,56 @@ const SignUp = schema(model)(React.createClass({
         return data;
     },
 
+    renderBelongToGroupFields() {
+        const siteCursor = this.props.tree.form.site;
+        const pickerOptions = this.getOptions();
+        const belongToGroupCursor = this.props.tree.belongToGroup;
+
+        if (_.isEmpty(pickerOptions)) {
+            return null;
+        }
+        return (
+            <View>
+                <Text style={s.label}>
+                    REGISTER AS PART OF THE GROUP
+                </Text>
+                <View style={s.switchWrapper}>
+                    <Switch
+                        cursor={belongToGroupCursor}
+                        items={[
+                            { label: 'Yes', value: true },
+                            { label: 'No', value: false },
+                        ]}
+                    />
+                </View>
+                {
+                    (_.isEmpty(pickerOptions) || belongToGroupCursor.get() === false)
+                ?
+                    null
+                :
+                    <PickerIOS
+                        itemStyle={{ color: '#fff' }}
+                        selectedValue={siteCursor.get()}
+                        onValueChange={(value) => siteCursor.set(value)}
+                    >
+                        {_.map(pickerOptions, ({ pk, title }) => (
+                            <PickerIOS.Item
+                                key={pk}
+                                value={pk}
+                                label={title}
+                            />
+                        ))}
+                    </PickerIOS>
+                }
+            </View>
+        );
+    },
+
     render() {
         const firstNameCursor = this.props.tree.form.firstName;
         const lastNameCursor = this.props.tree.form.lastName;
         const emailCursor = this.props.tree.form.email;
         const passwordCursor = this.props.tree.form.password;
-        const siteCursor = this.props.tree.form.site;
-        const pickerOptions = this.getOptions();
-        const belongToGroupCursor = this.props.tree.belongToGroup;
 
         return (
             <StartScreen>
@@ -142,37 +188,7 @@ const SignUp = schema(model)(React.createClass({
                         errorWrapperStyle={s.errorWrapper}
                         errorPlaceholderTextColor="#fff"
                     />
-                    <Text style={s.label}>
-                        REGISTER AS PART OF THE GROUP
-                    </Text>
-                    <View style={s.switchWrapper}>
-                        <Switch
-                            cursor={belongToGroupCursor}
-                            items={[
-                                { label: 'Yes', value: true },
-                                { label: 'No', value: false },
-                            ]}
-                        />
-                    </View>
-                    {
-                        (_.isEmpty(pickerOptions) || belongToGroupCursor.get() === false)
-                    ?
-                        null
-                    :
-                        <PickerIOS
-                            itemStyle={{ color: '#fff' }}
-                            selectedValue={siteCursor.get() || _.last(pickerOptions).pk}
-                            onValueChange={(value) => siteCursor.set(value)}
-                        >
-                            {_.map(pickerOptions, ({ pk, title }) => (
-                                <PickerIOS.Item
-                                    key={pk}
-                                    value={pk}
-                                    label={title}
-                                />
-                            ))}
-                        </PickerIOS>
-                    }
+                    {this.renderBelongToGroupFields()}
                 </Form>
                 <View style={s.button}>
                     <Button title="Sign Up" onPress={this.onSubmit} type="white" />
