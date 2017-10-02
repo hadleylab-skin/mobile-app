@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state.js';
 import tree from 'libs/tree';
-import { Login } from 'screens/login';
+import { LoginScreen } from 'screens/login';
 import Main from 'screens/main';
 
 const model = {
@@ -25,7 +25,7 @@ function App(props) {
 
     if (tokenCursor.get('status') !== 'Succeed') {
         return (
-            <Login
+            <LoginScreen
                 tree={loginScreen}
                 tokenCursor={tokenCursor}
                 keyPairStatusCursor={keyPairStatusCursor}

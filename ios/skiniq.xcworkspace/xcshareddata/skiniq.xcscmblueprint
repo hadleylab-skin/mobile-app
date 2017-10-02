@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5F7ABA7C8B52ABE24EFAC94453EA1DC84842C028",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5F7ABA7C8B52ABE24EFAC94453EA1DC84842C028" : 9223372036854775807,
+    "5476098C785720BC6657E0DDEF052C82CFD15619" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "99357818-A7B8-4629-9101-CBFCC88289CF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5F7ABA7C8B52ABE24EFAC94453EA1DC84842C028" : "skiniq_melanoma_app\/",
+    "5476098C785720BC6657E0DDEF052C82CFD15619" : "3d-body-view\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "skiniq",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/skiniq.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/gitlab.bro.engineering\/skiniq\/3d-body-view.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5476098C785720BC6657E0DDEF052C82CFD15619"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/gitlab.bro.engineering\/skiniq\/skiniq_melanoma_app.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5F7ABA7C8B52ABE24EFAC94453EA1DC84842C028"
+    }
+  ]
+}

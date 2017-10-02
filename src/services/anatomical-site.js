@@ -1,18 +1,16 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders, hydrateImage, wrapItemsAsRemoteData } from './base';
 
-function convertListToDict(list) {
-    return _.keyBy(list, (item) => item.anatomicalSiteImage.data.anatomicalSite);
-}
-
 function dehydrateAnatomicalSites(items) {
-    const data = wrapItemsAsRemoteData(_.map(items));
+    let data = wrapItemsAsRemoteData(_.map(items));
 
-    return convertListToDict(_.map(data, (item) => (
-        {
-            anatomicalSiteImage: item,
-        }
-    )));
+    data = _.groupBy(data, (item) => item.data.anatomicalSite);
+
+    _.mapKeys(data, (anatomicalSite, key) => {
+        data[key] = _.sortBy(anatomicalSite, (item) => item.data.pk);
+    });
+
+    return data;
 }
 
 export function getAnatomicalSitesService({ token }) {

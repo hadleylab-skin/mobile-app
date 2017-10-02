@@ -177,7 +177,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
         const result = await service(this.props.tree, { doctors, ...formData });
 
         if (result.status === 'Succeed') {
-            onActionComplete(result.data.pk);
+            onActionComplete(result.data.pk, result.data.sex);
         } else {
             const mrnError = _.join(result.error.data.mrnHash || [], ',');
             if (mrnError) {
@@ -268,7 +268,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                                     errorWrapperStyle={s.errorFirstName}
                                     inputStyle={[s.input, s.inputFirstName]}
                                     placeholderTextColor="#ACB5BE"
-                                    erroPlaceholderTextColor="#FC3159"
+                                    errorPlaceholderTextColor="#FC3159"
                                     name="firstName"
                                     onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
                                 />
@@ -278,7 +278,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
                                     inputStyle={s.input}
                                     errorWrapperStyle={s.error}
                                     placeholderTextColor="#ACB5BE"
-                                    erroPlaceholderTextColor="#FC3159"
+                                    errorPlaceholderTextColor="#FC3159"
                                     name="lastName"
                                     onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
                                 />

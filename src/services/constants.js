@@ -1,13 +1,6 @@
 import _ from 'lodash';
 import { buildGetService, defaultHeaders } from './base';
 
-export function getAnatomicalSiteList(token) {
-    const headers = {
-        Authorization: `JWT ${token}`,
-    };
-    return buildGetService('/api/v1/constants/anatomical_sites/', _.identity, _.merge({}, defaultHeaders, headers));
-}
-
 export function getRacesList(token) {
     const headers = {
         Authorization: `JWT ${token}`,
@@ -25,3 +18,5 @@ export function getRacesList(token) {
         status: 'Succeed',
     };
 }
+
+export const getSitesService = buildGetService('/api/v1/auth/sites/');
