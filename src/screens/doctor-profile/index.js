@@ -92,7 +92,7 @@ export const DoctorProfile = schema({})(React.createClass({
                     />
                 </View>
                 <InfoField
-                    title={'Gryptography configuration'}
+                    title={'Cryptography configuration'}
                     hasNoBorder
                     onPress={this.openCryptoConfiguration}
                 />

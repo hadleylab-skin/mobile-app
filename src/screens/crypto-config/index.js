@@ -70,10 +70,10 @@ export const CryptoConfiguration = schema({})(React.createClass({
                 return (
                     <View>
                         <Text style={{ paddingTop: 10, paddingBottom: 10 }}>
-                            It's first time when you are using the app,
-                            please genetate RSA keypair.
-                            By default is stores on you iClound keychain
-                            so you can access it from all your devices
+                            Since this is your first time using the app,
+                            we must generate a RSA security key tied to an Apple account.
+                            By default the key will be stored in your iCloud keychain
+                            to provide access from all your devices.
                         </Text>
                         <Button
                             title="Generate key-pair"
@@ -124,7 +124,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
         return (
             <ScrollView style={{ margin: 50 }}>
                 <Text style={{ fontSize: 30, fontWeight: 'bold'}}>
-                    Cryptography configuaration
+                    Cryptography Configuration
                 </Text>
                 {this.renderCryptographyInfo()}
             </ScrollView>
