@@ -15,7 +15,7 @@ function dehydrateAnatomicalSites(items) {
 
 export function getAnatomicalSitesService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor) => {
@@ -41,7 +41,7 @@ export function addAnatomicalSitePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor, data) => {

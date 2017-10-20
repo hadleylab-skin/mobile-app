@@ -18,9 +18,11 @@ import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
-const model = (props) => (
+const model = (props, context) => (
     {
         tree: {
+            doctorScreenState: {},
+            siteJoinRequest: context.services.getSiteJoinRequestsService,
             currentTab: 'patients',
             currentPatientPk: null,
             patients: {},
@@ -43,6 +45,12 @@ const Main = schema(model)(React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired,
+    },
+
+    contextTypes: {
+        services: React.PropTypes.shape({
+            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
+        }),
     },
 
     render() {
@@ -90,8 +98,10 @@ const Main = schema(model)(React.createClass({
                         onPress={() => currentTabCursor.set('profile')}
                     >
                         <DoctorProfile
-                            tree={this.props.tokenCursor.select('data', 'doctor')}
+                            tree={this.props.tree.doctorScreenState}
+                            doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
+                            siteJoinRequestCursor={this.props.tree.siteJoinRequest}
                             logout={() => {
                                 this.props.tree.tree.set({});
                             }}
@@ -140,7 +150,7 @@ export default React.createClass({
                 patientsMoleImages: this.props.tree.patientsMoleImages,
                 currentPatientPk: this.props.tree.currentPatientPk,
                 racesList: this.props.tree.racesList,
-                filter: this.props.tree.racesList,
+                filter: this.props.tree.filter,
             },
         };
     },
@@ -150,7 +160,7 @@ export default React.createClass({
         const { status, firstTime } = keyPairStatusCursor.get();
         return (
             <ServiceProvider
-                token={this.props.tokenCursor.get('data')}
+                token={this.props.tokenCursor.data}
                 style={{ flex: 1 }}
             >
                 {

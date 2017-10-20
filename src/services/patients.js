@@ -67,7 +67,7 @@ function concatParams(data) {
 
 export function patientsService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (cursor, params) => {
@@ -82,7 +82,7 @@ export function patientsService({ token }) {
 }
 
 function hydratePatientData(remoteDoctor) {
-    const doctor = remoteDoctor.data;
+    const doctor = remoteDoctor.data.get();
     if (typeof doctor === 'undefined') {
         throw { message: 'System error, context is not loaded' };
     }
@@ -133,7 +133,7 @@ function hydratePatientData(remoteDoctor) {
 
 export function getPatientService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor) => {
@@ -149,7 +149,7 @@ export function createPatientService({ token, doctor }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return buildPostService(
@@ -165,7 +165,7 @@ export function updatePatientService({ token, doctor }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor, data) => {
@@ -188,7 +188,7 @@ export function updatePatientConsentService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor, data) => {

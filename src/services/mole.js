@@ -13,7 +13,7 @@ function dehydratePatientMoles(moles) {
 
 export function getPatientMolesService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor) => {
@@ -60,7 +60,7 @@ function dehydrateMoleData(data) {
 
 export function getMoleService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, cursor) => {
@@ -92,7 +92,7 @@ export function addMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor, data) => {
@@ -129,7 +129,7 @@ export function updateMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, cursor, data) => {

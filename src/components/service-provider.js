@@ -1,4 +1,5 @@
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import { View } from 'react-native';
 import _ from 'lodash';
 import services from 'services';
@@ -44,7 +45,5 @@ ServiceProvider.childContextTypes = {
 };
 
 ServiceProvider.propTypes = {
-    token: React.PropTypes.shape({
-        token: React.PropTypes.string.isRequired,
-    }).isRequired,
+    token: BaobabPropTypes.cursor.isRequired,
 };

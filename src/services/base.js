@@ -63,11 +63,11 @@ export function buildPostService(path,
 
         try {
             let response = await fetch(`${url}${path}`, payload).then(checkStatus);
-            let respData;
+            let dehydratedData = cursor.get('data');
             if (response.status !== 204) {
-                respData = await response.json();
+                const respData = await response.json();
+                dehydratedData = await dehydrate(respData);
             }
-            const dehydratedData = await dehydrate(respData);
             result = {
                 status: 'Succeed',
                 data: dehydratedData,
@@ -103,3 +103,8 @@ export function hydrateImage(uri) {
 
     return photo;
 }
+
+export function convertListToDict(list) {
+    return _.keyBy(list, (patient) => patient.data.pk);
+}
+
