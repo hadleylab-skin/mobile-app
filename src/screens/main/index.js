@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     StatusBar,
@@ -18,9 +19,11 @@ import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
-const model = (props) => (
+const model = (props, context) => (
     {
         tree: {
+            doctorScreenState: {},
+            siteJoinRequest: context.services.getSiteJoinRequestsService,
             currentTab: 'patients',
             currentPatientPk: null,
             patients: {},
@@ -45,6 +48,12 @@ const Main = schema(model)(React.createClass({
         tokenCursor: BaobabPropTypes.cursor.isRequired,
     },
 
+    contextTypes: {
+        services: React.PropTypes.shape({
+            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
+        }),
+    },
+
     render() {
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
@@ -52,6 +61,12 @@ const Main = schema(model)(React.createClass({
         const searchCursor = this.props.tree.search;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
+
+        const siteJoinRequireAction = _.chain(this.props.tree.siteJoinRequest.data.get())
+                                       .values()
+                                       .first()
+                                       .get('data.state')
+                                       .value() === 2;
 
         return (
             <View
@@ -84,14 +99,17 @@ const Main = schema(model)(React.createClass({
                         <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
+                        badge={siteJoinRequireAction ? '!' : null}
                         title="My Profile"
                         icon={profileIcon}
                         selected={currentTabCursor.get() === 'profile'}
                         onPress={() => currentTabCursor.set('profile')}
                     >
                         <DoctorProfile
-                            tree={this.props.tokenCursor.select('data', 'doctor')}
+                            tree={this.props.tree.doctorScreenState}
+                            doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
+                            siteJoinRequestCursor={this.props.tree.siteJoinRequest}
                             logout={() => {
                                 this.props.tree.tree.set({});
                             }}
@@ -140,7 +158,7 @@ export default React.createClass({
                 patientsMoleImages: this.props.tree.patientsMoleImages,
                 currentPatientPk: this.props.tree.currentPatientPk,
                 racesList: this.props.tree.racesList,
-                filter: this.props.tree.racesList,
+                filter: this.props.tree.filter,
             },
         };
     },
@@ -150,7 +168,7 @@ export default React.createClass({
         const { status, firstTime } = keyPairStatusCursor.get();
         return (
             <ServiceProvider
-                token={this.props.tokenCursor.get('data')}
+                token={this.props.tokenCursor.data}
                 style={{ flex: 1 }}
             >
                 {

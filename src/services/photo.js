@@ -31,7 +31,7 @@ export function addMolePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, cursor, data) => {
@@ -47,7 +47,7 @@ export function addMolePhotoService({ token }) {
 
 export function getMolePhotoService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, imagePk, cursor) => {
@@ -91,7 +91,7 @@ export function updateMolePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, imagePk, cursor, data) => {

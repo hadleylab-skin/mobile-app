@@ -1,5 +1,6 @@
 import { mrnScanerService } from './mrn-scaner';
-import { updateDoctorService,getDoctorService } from './doctor';
+import { updateDoctorService,
+         getDoctorService } from './doctor';
 import { getPatientMolesService,
          addMoleService,
          getMoleService,
@@ -16,6 +17,10 @@ import { patientsService,
          updatePatientService,
          updatePatientConsentService,
        } from './patients';
+import { getSiteJoinRequestsService,
+         createSiteJoinRequestService,
+         confirmSiteJoinRequestService,
+       } from './site-join-requests';
 
 
 export default {
@@ -36,4 +41,7 @@ export default {
     createPatientService,
     updatePatientService,
     updatePatientConsentService,
+    getSiteJoinRequestsService,
+    createSiteJoinRequestService,
+    confirmSiteJoinRequestService,
 };

@@ -57,4 +57,10 @@ export default StyleSheet.create({
         lineHeight: 20,
         color: 'rgba(255,255,255,0.5)',
     },
+    infoMessage: {
+        height: 50,
+        paddingTop: 5,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
 });

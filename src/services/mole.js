@@ -13,7 +13,7 @@ function dehydratePatientMoles(moles) {
 
 export function getPatientMolesService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor) => {
@@ -60,7 +60,7 @@ function dehydrateMoleData(data) {
 
 export function getMoleService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, cursor) => {
@@ -79,7 +79,9 @@ function hydrateMoleData(mole) {
     data.append('anatomicalSite', _.kebabCase(mole.anatomicalSite));
     data.append('positionInfo', JSON.stringify(mole.positionInfo));
     data.append('photo', hydrateImage(mole.uri));
-    data.append('age', mole.age);
+    if (mole.age) {
+        data.append('age', mole.age);
+    }
 
     if (mole.patientAnatomicalSite) {
         data.append('patientAnatomicalSite', mole.patientAnatomicalSite);
@@ -92,7 +94,7 @@ export function addMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, cursor, data) => {
@@ -129,7 +131,7 @@ export function updateMoleService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
     return (patientPk, molePk, cursor, data) => {

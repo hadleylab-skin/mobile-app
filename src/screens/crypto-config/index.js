@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
-import { getKeyPairStatus } from 'services/keypair';
-import { createNewKeyPair, getKeyPair, encryptAES } from 'services/keypair';
+import { getKeyPairStatus, createNewKeyPair, getKeyPair, encryptAES } from 'services/keypair';
 import s from './styles';
 
 export const CryptoConfiguration = schema({})(React.createClass({
@@ -68,8 +67,8 @@ export const CryptoConfiguration = schema({})(React.createClass({
             data = data || {};
             if (firstTime && !data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
-                    <View>
-                        <Text style={{ paddingTop: 10, paddingBottom: 10 }}>
+                    <View style={s.container}>
+                        <Text style={s.group}>
                             Since this is your first time using the app,
                             we must generate a RSA security key tied to an Apple account.
                             By default the key will be stored in your iCloud keychain
@@ -83,15 +82,15 @@ export const CryptoConfiguration = schema({})(React.createClass({
                 );
             }
             return (
-                <View style={{ paddingTop: 10 }}>
-                    <Text style={{ fontSize: 20, paddingBottom: 10 }}>Key pair Error</Text>
-                    <Text style={{ paddingBottom: 10 }}>
+                <View style={s.container}>
+                    <Text style={[s.title, s.group]}>Key pair Error</Text>
+                    <Text style={s.group}>
                         Public key from your device
                         doesn't much public key
                         you have created
                         when you login first time.
                     </Text>
-                    <Text style={{ paddingBottom: 10 }}>
+                    <Text style={s.group}>
                         Probably you are using one device for multiple accounts,
                         the app doesn't support it yet.
                     </Text>
@@ -108,7 +107,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
     renderExport() {
         const exported = this.props.keyPairStatusCursor.keyPairStatus.get('exported');
         return (
-            <View style={{ paddingTop: 10 }}>
+            <View style={s.container}>
                 <Text>Key is {exported ? '' : 'not'} exported for the web app</Text>
                 <Switch
                     onValueChange={this.exportSettingsChange}
@@ -120,10 +119,9 @@ export const CryptoConfiguration = schema({})(React.createClass({
     },
 
     render() {
-        const status = this.props.keyPairStatusCursor.status.get();
         return (
             <ScrollView style={{ margin: 50 }}>
-                <Text style={{ fontSize: 30, fontWeight: 'bold'}}>
+                <Text style={s.mainTitle}>
                     Cryptography Configuration
                 </Text>
                 {this.renderCryptographyInfo()}
