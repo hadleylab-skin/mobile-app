@@ -67,7 +67,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
             data = data || {};
             if (firstTime && !data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
-                    <View styles={s.container}>
+                    <View style={s.container}>
                         <Text style={s.group}>
                             Since this is your first time using the app,
                             we must generate a RSA security key tied to an Apple account.
