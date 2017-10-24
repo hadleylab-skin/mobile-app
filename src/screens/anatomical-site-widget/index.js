@@ -123,7 +123,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const patientPk = this.context.cursors.currentPatientPk.get();
         const dateOfBirth = this.context.cursors.patients.data.select(
             patientPk).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
 
         let moleData = {
             ...data,
