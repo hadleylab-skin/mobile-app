@@ -70,7 +70,11 @@ const SiteJoinRequest = schema({})(React.createClass({
         const isLoading = this.props.tree.result.status === 'Loading';
 
         if (_.isEmpty(pickerOptions)) {
-            return null;
+            return (
+                <View style={{ top: 200 }}>
+                    <ActivityIndicator />
+                </View>
+            );
         }
 
         return (

@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     StatusBar,
@@ -61,6 +62,12 @@ const Main = schema(model)(React.createClass({
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
+        const siteJoinRequireAction = _.chain(this.props.tree.siteJoinRequest.data.get())
+                                       .values()
+                                       .first()
+                                       .get('data.state')
+                                       .value() === 2;
+
         return (
             <View
                 style={{ flex: 1 }}
@@ -92,6 +99,7 @@ const Main = schema(model)(React.createClass({
                         <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
+                        badge={siteJoinRequireAction ? '!' : null}
                         title="My Profile"
                         icon={profileIcon}
                         selected={currentTabCursor.get() === 'profile'}

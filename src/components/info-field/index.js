@@ -9,7 +9,10 @@ import s from './styles';
 export const InfoField = React.createClass({
 
     propTypes: {
-        title: React.PropTypes.string.isRequired,
+        title: React.PropTypes.oneOfType([
+            React.PropTypes.string.isRequired,
+            React.PropTypes.node.isRequired,
+        ]),
         text: React.PropTypes.string,
         children: React.PropTypes.node,
         onPress: React.PropTypes.func,

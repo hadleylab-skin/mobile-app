@@ -159,7 +159,13 @@ export const DoctorProfile = schema(model)(React.createClass({
             case 2:
                 return (
                     <InfoField
-                        title={`Share patients with ${request.siteTitle} site`}
+                        title={
+                            <Text>
+                                <Text style={{ color: 'red' }}>! </Text>
+                                {`Share patients with ${request.siteTitle} site`}
+                                <Text style={{ color: 'red' }}> !</Text>
+                            </Text>
+                        }
                         hasNoBorder
                         onPress={this.sharePatients}
                     />
@@ -169,7 +175,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`Your patinets is shared with ${request.siteTitle} site`}
+                        {`Your patinets are shared with ${request.siteTitle} site`}
                     </Text>
                 );
 
