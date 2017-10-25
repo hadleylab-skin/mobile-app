@@ -1,9 +1,28 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Settings } from 'react-native';
 import { RSA } from 'react-native-rsa-native';
 import CryptoJS from 'crypto-js';
 import _ from 'lodash';
+import tree from 'libs/tree';
 
 const { RNSecretManager } = NativeModules;
+
+let sharedMode = Settings.get('sharedMode');
+Settings.watchKeys(
+    'sharedMode', () => {
+        sharedMode = Settings.get('sharedMode');
+        tree.set({});
+        setTimeout(() =>
+            tree.set({
+                token: {},
+                keyPairStatus: {},
+                loginScreen: {},
+                mainScreen: {},
+            }), 1000);
+    });
+
+export function getMode() {
+    return sharedMode;
+}
 
 const iv = CryptoJS.enc.Latin1.parse('{+!%i=]%Y/upi8!Z');
 const padding = CryptoJS.pad.Pkcs7;

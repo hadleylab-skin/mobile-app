@@ -21,7 +21,9 @@ function initCursor(cursor, schema) {
         if (!cursor.exists()) {
             schema(cursor);
         }
-    } else if (_.isPlainObject(schema) && !_.isArray(schema)) {
+    } else if (_.isPlainObject(schema)
+               && !_.isArray(schema)
+               && !_.isEmpty(schema)) {
         _.each(schema, (childSchema, path) => {
             initCursor(cursor.select(path), childSchema);
         });
