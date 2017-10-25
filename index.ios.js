@@ -9,16 +9,7 @@ import tree from 'libs/tree';
 import { LoginScreen } from 'screens/login';
 import Main from 'screens/main';
 
-const model = {
-    tree: {
-        token: {},
-        keyPairStatus: {},
-        loginScreen: {},
-        mainScreen: {},
-    },
-};
-
-const App = schema(model)(React.createClass({
+const App = schema({})(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
     },
@@ -59,6 +50,7 @@ function skiniq() {
     );
 }
 
+AppRegistry.registerComponent('skiniq', () => skiniq);
+
 export default skiniq;
 
-AppRegistry.registerComponent('skiniq', () => skiniq);

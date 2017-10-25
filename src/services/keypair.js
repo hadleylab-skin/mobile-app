@@ -2,7 +2,7 @@ import { NativeModules, Settings } from 'react-native';
 import { RSA } from 'react-native-rsa-native';
 import CryptoJS from 'crypto-js';
 import _ from 'lodash';
-import tree from 'libs/tree';
+import tree, { resetState } from 'libs/tree';
 
 const { RNSecretManager } = NativeModules;
 
@@ -10,17 +10,10 @@ let sharedMode = Settings.get('sharedMode');
 Settings.watchKeys(
     'sharedMode', () => {
         sharedMode = Settings.get('sharedMode');
-        tree.set({});
-        setTimeout(() =>
-            tree.set({
-                token: {},
-                keyPairStatus: {},
-                loginScreen: {},
-                mainScreen: {},
-            }), 1000);
+        resetState();
     });
 
-export function getMode() {
+export function isInSharedMode() {
     return sharedMode;
 }
 
@@ -29,6 +22,19 @@ const padding = CryptoJS.pad.Pkcs7;
 const mode = CryptoJS.mode.CBC;
 
 export async function getKeyPair() {
+    if (sharedMode) {
+        const password = tree.loginScreen.form.password.get();
+        let { privateKey, publicKey } = tree.token.data.doctor.data.get();
+        if (_.isEmpty(privateKey)) {
+            return {};
+        }
+        const keys = {
+            publicKey,
+            privateKey: decryptAES(privateKey, password),
+        };
+        return keys;
+    }
+
     const keys = await RNSecretManager.getKeyPair();
     const publicKey = keys.public;
     const privateKey = keys.private;
@@ -40,6 +46,9 @@ export async function getKeyPair() {
 }
 
 export async function createKeyPair() {
+    if (sharedMode) {
+        throw { text: 'You can\'t generate new keys at shared mode' };
+    }
     const key = await RSA.generate();
     await RNSecretManager.saveKeyPair(key.public, key.private);
     return {
@@ -104,6 +113,9 @@ export async function getKeyPairStatus(cursor, doctor, password) {
 }
 
 export async function createNewKeyPair(cursor) {
+    if (sharedMode) {
+        throw { text: 'You can\'t generate new keys at shared mode' };
+    }
     cursor.set('status', 'Loading');
     let data;
     try {

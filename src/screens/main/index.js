@@ -110,9 +110,6 @@ const Main = schema(model)(React.createClass({
                             doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                             siteJoinRequestCursor={this.props.tree.siteJoinRequest}
-                            logout={() => {
-                                this.props.tree.tree.set({});
-                            }}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

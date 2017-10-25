@@ -9,10 +9,12 @@ import {
     Alert,
 } from 'react-native';
 import schema from 'libs/state';
+import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Switch, Title, Updater } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
+import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
 const model = {
@@ -27,7 +29,6 @@ export const DoctorProfile = schema(model)(React.createClass({
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         siteJoinRequestCursor: BaobabPropTypes.cursor.isRequired,
-        logout: React.PropTypes.func.isRequired,
     },
 
     contextTypes: {
@@ -239,6 +240,11 @@ export const DoctorProfile = schema(model)(React.createClass({
                         }
                     />
                 </View>
+                {
+                isInSharedMode()
+                ?
+                null
+                :
                 <View style={s.content}>
                     <InfoField
                         title="Cryptography configuration"
@@ -246,6 +252,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                         onPress={this.openCryptoConfiguration}
                     />
                 </View>
+                }
                 <View style={s.content}>
                     {this.renderSiteJoinRequest()}
                 </View>
@@ -253,7 +260,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <InfoField
                         title={'Log out'}
                         hasNoBorder
-                        onPress={this.props.logout}
+                        onPress={resetState}
                     />
                 </View>
             </Updater>
