@@ -6,10 +6,14 @@ import {
     ScrollView,
     Switch,
     Alert,
+    Linking,
 } from 'react-native';
 import schema from 'libs/state';
+import { resetState } from 'libs/tree';
 import { Button } from 'components';
-import { getKeyPairStatus, createNewKeyPair, getKeyPair, encryptAES } from 'services/keypair';
+import { getKeyPairStatus, createNewKeyPair,
+         getKeyPair, encryptAES, isInSharedMode,
+} from 'services/keypair';
 import s from './styles';
 
 export const CryptoConfiguration = schema({})(React.createClass({
@@ -63,7 +67,28 @@ export const CryptoConfiguration = schema({})(React.createClass({
         const status = this.props.keyPairStatusCursor.status.get();
         const doctor = this.props.doctorCursor.data.get();
         if (status === 'Failure') {
-            let { firstTime, keyPairStatus, data } = this.props.keyPairStatusCursor.get();
+            if (isInSharedMode()) {
+                return (
+                    <View style={s.container}>
+                        <Text style={s.group}>
+                            The app is running is the shared mode.
+                            In this mode your private key is loaging from the server.
+                            However you don't export your private key yet.
+                        </Text>
+                        <Button
+                            title="How to export private key"
+                            onPress={() => Linking.openURL('https://api.skiniq.co/web_ui/#/how-to-share-private-key')}
+                        />
+                        <Button
+                            title="Log out"
+                            onPress={resetState}
+                        />
+
+                    </View>
+                );
+            }
+
+            let { firstTime, data } = this.props.keyPairStatusCursor.get();
             data = data || {};
             if (firstTime && !data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
@@ -96,7 +121,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
                     </Text>
                     <Button
                         title="Log out"
-                        onPress={() => this.props.keyPairStatusCursor.tree.set({})}
+                        onPress={resetState}
                     />
                 </View>
             );

@@ -36,6 +36,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* skiniqTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* skiniqTests.m */; };
+		5E05FA2F1FA069870036E62B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5E05FA2E1FA069870036E62B /* Settings.bundle */; };
 		5E8806D21F441F99007990A5 /* RNSecretManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E8806D11F441F99007990A5 /* RNSecretManager.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		70858756C7664DFB8B998E5F /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55691EE986F241A5A8D1647F /* libRNBlur.a */; };
@@ -314,6 +315,7 @@
 		2D02E47B1E0B4A5D006451C7 /* skiniq-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "skiniq-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* skiniq-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "skiniq-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55691EE986F241A5A8D1647F /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
+		5E05FA2E1FA069870036E62B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		5E067B4D1F42FDAA00498595 /* skiniq.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = skiniq.entitlements; sourceTree = "<group>"; };
 		5E8806D11F441F99007990A5 /* RNSecretManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNSecretManager.m; path = skiniq/RNSecretManager.m; sourceTree = "<group>"; };
 		5E8806EF1F441FBA007990A5 /* RNSecretManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RNSecretManager.h; path = skiniq/RNSecretManager.h; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				5E05FA2E1FA069870036E62B /* Settings.bundle */,
 				5E067B4D1F42FDAA00498595 /* skiniq.entitlements */,
 				13B07FAE1A68108700A75B9A /* skiniq */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -1122,6 +1125,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E05FA2F1FA069870036E62B /* Settings.bundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,

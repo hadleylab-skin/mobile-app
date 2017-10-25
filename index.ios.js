@@ -1,57 +1,56 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     AppRegistry,
 } from 'react-native';
-import schema from 'libs/state.js';
+import schema from 'libs/state';
 import tree from 'libs/tree';
 import { LoginScreen } from 'screens/login';
 import Main from 'screens/main';
 
-const model = {
-    tree: {
-        token: '',
-        keyPairStatus: {},
-        loginScreen: {},
-        mainScreen: {},
+const App = schema({})(React.createClass({
+    propTypes: {
+        tree: BaobabPropTypes.cursor.isRequired,
     },
-};
+    render() {
+        const tokenCursor = this.props.tree.token;
+        const loginScreen = this.props.tree.loginScreen;
+        const mainScreen = this.props.tree.mainScreen;
+        const keyPairStatusCursor = this.props.tree.keyPairStatus;
 
-function App(props) {
-    const tokenCursor = props.tree.token;
-    const loginScreen = props.tree.loginScreen;
-    const mainScreen = props.tree.mainScreen;
-    const keyPairStatusCursor = props.tree.keyPairStatus;
+        if (_.isEmpty(_.keys(this.props.tree.get()))) {
+            return null;
+        }
 
-    if (tokenCursor.get('status') !== 'Succeed') {
+        if (tokenCursor.get('status') !== 'Succeed') {
+            return (
+                <LoginScreen
+                    tree={loginScreen}
+                    tokenCursor={tokenCursor}
+                    keyPairStatusCursor={keyPairStatusCursor}
+                />
+            );
+        }
+
         return (
-            <LoginScreen
-                tree={loginScreen}
+            <Main
+                tree={mainScreen}
                 tokenCursor={tokenCursor}
                 keyPairStatusCursor={keyPairStatusCursor}
             />
         );
-    }
+    },
+}));
 
+
+function skiniq() {
     return (
-        <Main
-            tree={mainScreen}
-            tokenCursor={tokenCursor}
-            keyPairStatusCursor={keyPairStatusCursor}
-        />
+        <App tree={tree} />
     );
 }
 
-App.propTypes = {
-    tree: BaobabPropTypes.cursor.isRequired,
-};
-
-function skiniq() {
-    const Component = schema(model)(App);
-
-    return <Component tree={tree} />;
-}
+AppRegistry.registerComponent('skiniq', () => skiniq);
 
 export default skiniq;
 
-AppRegistry.registerComponent('skiniq', () => skiniq);

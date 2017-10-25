@@ -18,6 +18,18 @@ function wrapCursor(cursor) {
     return new Proxy(cursor, handler);
 }
 
-const tree = new Baobab({});
+const defaultState = {
+    token: {},
+    keyPairStatus: {},
+    loginScreen: {},
+    mainScreen: {},
+};
+const tree = new Baobab(defaultState);
+export function resetState() {
+    tree.set({});
+    setTimeout(() => tree.set(defaultState),
+               1000);
+}
+
 const patchedTree = wrapCursor(tree.select());
 export default patchedTree;
