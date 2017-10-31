@@ -16,7 +16,7 @@ export const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
-export const url = 'https://api.skiniq.co';
+export const url = 'https://skin.hadleylab.com';
 
 export function buildGetService(path,
                                 dehydrate = _.identity,

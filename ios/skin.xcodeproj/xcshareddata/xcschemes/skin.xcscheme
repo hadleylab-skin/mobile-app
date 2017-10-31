@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "skiniq.app"
+               BuildableName = "skin.app"
                BlueprintName = "Skin"
-               ReferencedContainer = "container:skiniq.xcodeproj">
+               ReferencedContainer = "container:skin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "skiniqTests.xctest"
-               BlueprintName = "skiniqTests"
-               ReferencedContainer = "container:skiniq.xcodeproj">
+               BuildableName = "skinTests.xctest"
+               BlueprintName = "skinTests"
+               ReferencedContainer = "container:skin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "skiniqTests.xctest"
-               BlueprintName = "skiniqTests"
-               ReferencedContainer = "container:skiniq.xcodeproj">
+               BuildableName = "skinTests.xctest"
+               BlueprintName = "skinTests"
+               ReferencedContainer = "container:skin.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "skiniq.app"
+            BuildableName = "skin.app"
             BlueprintName = "Skin"
-            ReferencedContainer = "container:skiniq.xcodeproj">
+            ReferencedContainer = "container:skin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -96,9 +96,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "skiniq.app"
+            BuildableName = "skin.app"
             BlueprintName = "Skin"
-            ReferencedContainer = "container:skiniq.xcodeproj">
+            ReferencedContainer = "container:skin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -112,7 +112,7 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -122,9 +122,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "skiniq.app"
+            BuildableName = "skin.app"
             BlueprintName = "Skin"
-            ReferencedContainer = "container:skiniq.xcodeproj">
+            ReferencedContainer = "container:skin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

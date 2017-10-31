@@ -44,13 +44,13 @@ const App = schema({})(React.createClass({
 }));
 
 
-function skiniq() {
+function skin() {
     return (
         <App tree={tree} />
     );
 }
 
-AppRegistry.registerComponent('skiniq', () => skiniq);
+AppRegistry.registerComponent('skin', () => skin);
 
-export default skiniq;
+export default skin;
 

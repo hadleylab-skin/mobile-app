@@ -77,7 +77,7 @@ export const CryptoConfiguration = schema({})(React.createClass({
                         </Text>
                         <Button
                             title="How to export private key"
-                            onPress={() => Linking.openURL('https://api.skiniq.co/web_ui/#/how-to-share-private-key')}
+                            onPress={() => Linking.openURL('https://skin.hadleylab.com/web_ui/#/how-to-share-private-key')}
                         />
                         <Button
                             title="Log out"

@@ -7,7 +7,7 @@
 #import <React/RCTViewManager.h>
 #import <React/RCTEventEmitter.h>
 #import <JavaScriptCore/JSContext.h>
-#import "skiniq-Swift.h"
+#import "skin-Swift.h"
 #import "BodyViewManager.h"
 
 @interface BodyViewManager : RCTViewManager<BodyViewDelegate>
