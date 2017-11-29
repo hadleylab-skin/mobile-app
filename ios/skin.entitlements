@@ -4,7 +4,7 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)software.beda.SkinIQ</string>
+		<string>$(AppIdentifierPrefix)com.hadleylab.skin</string>
 	</array>
 </dict>
 </plist>

@@ -1,9 +1,5 @@
 //
 //  RNSecretManager.m
-//  skiniq
-//
-//  Created by Илья Беда on 16/08/2017.
-//  Copyright © 2017 Facebook. All rights reserved.
 //
 
 #import <Security/Security.h>

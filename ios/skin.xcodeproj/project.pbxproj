@@ -1397,7 +1397,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = software.beda.skin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hadleylab.skin;
 				PRODUCT_NAME = skin;
 				SWIFT_OBJC_BRIDGING_HEADER = BridgingHeader.h;
 				SWIFT_VERSION = 3.0;
@@ -1429,7 +1429,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = software.beda.skin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hadleylab.skin;
 				PRODUCT_NAME = skin;
 				SWIFT_OBJC_BRIDGING_HEADER = BridgingHeader.h;
 				SWIFT_VERSION = 3.0;
