@@ -14,6 +14,7 @@ import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { CameraMenu } from 'screens/camera-menu';
 import { CryptoConfiguration } from 'screens/crypto-config';
+import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
@@ -49,13 +50,29 @@ const Main = schema(model)(React.createClass({
     },
 
     contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         services: React.PropTypes.shape({
             getSiteJoinRequestsService: React.PropTypes.func.isRequired,
+            createPatientService: React.PropTypes.func.isRequired,
         }),
         cursors: React.PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
         }),
+    },
+
+    componentWillReceiveProps(props) {
+        const doctor = this.context.cursors.doctor.get();
+        const patients = this.context.cursors.patients.get();
+        const isNeedCreateFirstPatient = patients && _.isEmpty(patients.data) && doctor.isParticipant;
+        this.context.mainNavigator.push(
+            getCreateOrEditPatientRoute({
+                tree: this.props.tree.select('newPatient'),
+                title: 'New Patient',
+                service: this.context.services.createPatientService,
+                onActionComplete: () => {},
+            }, this.context)
+        )
     },
 
     render() {
@@ -71,11 +88,6 @@ const Main = schema(model)(React.createClass({
                                        .first()
                                        .get('data.state')
                                        .value() === 2;
-
-        const doctor = this.context.cursors.doctor.get();
-        const patients = this.context.cursors.patients.get();
-        const isNeedCreateFirstPatient = patients && patients.data && doctor.isParticipant;
-        console.log(isNeedCreateFirstPatient);
 
         return (
             <View
