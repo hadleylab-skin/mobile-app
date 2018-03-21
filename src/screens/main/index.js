@@ -52,6 +52,10 @@ const Main = schema(model)(React.createClass({
         services: React.PropTypes.shape({
             getSiteJoinRequestsService: React.PropTypes.func.isRequired,
         }),
+        cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+        }),
     },
 
     render() {
@@ -67,6 +71,11 @@ const Main = schema(model)(React.createClass({
                                        .first()
                                        .get('data.state')
                                        .value() === 2;
+
+        const doctor = this.context.cursors.doctor.get();
+        const patients = this.context.cursors.patients.get();
+        const isNeedCreateFirstPatient = patients && patients.data && doctor.isParticipant;
+        console.log(isNeedCreateFirstPatient);
 
         return (
             <View
