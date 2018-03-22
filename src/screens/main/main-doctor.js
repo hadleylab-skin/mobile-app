@@ -60,12 +60,6 @@ export default schema({})(React.createClass({
                                        .get('data.state')
                                        .value() === 2;
 
-        const doctor = this.context.cursors.doctor.get();
-        const patients = this.context.cursors.patients.get();
-
-        const isNeedCreateFirstPatient = patients && patients.status === 'Succeed' &&
-            _.isEmpty(patients.data) && doctor.isParticipant;
-
         return (
             <View
                 style={{flex: 1}}

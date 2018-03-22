@@ -63,7 +63,10 @@ export default schema(model)(React.createClass({
                 navigator={this.context.mainNavigator}
                 onActionComplete={(patient) => {
                     console.log(patient);
-                    this.context.cursors.patients.push('data', patient);
+                    this.context.cursors.patients.data.set(patient.pk, {
+                        status: 'Succeed',
+                        data: patient
+                    });
                 }}
             />
         );
