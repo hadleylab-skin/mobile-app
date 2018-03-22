@@ -6,12 +6,14 @@ import {
     TabBarIOS,
     NavigatorIOS,
     View,
+    Text,
 } from 'react-native';
 import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
 import { ServiceProvider } from 'components';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
+import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
 import { CryptoConfiguration } from 'screens/crypto-config';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
@@ -20,17 +22,20 @@ import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
-const model = (props, context) => (
-    {
+const model = (props, context) => {
+    const { isParticipant } = props.tokenCursor.data.doctor.data.get();
+
+    return {
         tree: {
             doctorScreenState: {},
+            participantScreenState: {},
             siteJoinRequest: context.services.getSiteJoinRequestsService,
-            currentTab: 'patients',
+            currentTab: isParticipant ? 'profile' : 'patients',
             currentPatientPk: null,
             patients: {},
             patientsMoles: {},
             patientsMoleImages: {},
-            racesList: getRacesList(props.token),
+            racesList: getRacesList(),
             showModal: false,
             filter: {
                 pathPending: false,
@@ -38,7 +43,7 @@ const model = (props, context) => (
             search: '',
         },
     }
-);
+};
 
 const Main = schema(model)(React.createClass({
     displayName: 'Main',
@@ -64,15 +69,19 @@ const Main = schema(model)(React.createClass({
     componentWillReceiveProps(props) {
         const doctor = this.context.cursors.doctor.get();
         const patients = this.context.cursors.patients.get();
-        const isNeedCreateFirstPatient = patients && _.isEmpty(patients.data) && doctor.isParticipant;
-        this.context.mainNavigator.push(
-            getCreateOrEditPatientRoute({
-                tree: this.props.tree.select('newPatient'),
-                title: 'New Patient',
-                service: this.context.services.createPatientService,
-                onActionComplete: () => {},
-            }, this.context)
-        )
+
+        const isNeedCreateFirstPatient = patients && patients.status === 'Succeed' &&
+            _.isEmpty(patients.data) && doctor.isParticipant;
+        if (isNeedCreateFirstPatient && !_.isEmpty(this.context.mainNavigator)) {
+            this.context.mainNavigator.push(
+                getCreateOrEditPatientRoute({
+                    tree: this.props.tree.select('newPatient'),
+                    title: 'Fill patient profile',
+                    service: this.context.services.createPatientService,
+                    onActionComplete: () => {},
+                }, this.context, true)
+            )
+        }
     },
 
     render() {
@@ -89,58 +98,104 @@ const Main = schema(model)(React.createClass({
                                        .get('data.state')
                                        .value() === 2;
 
-        return (
-            <View
-                style={{ flex: 1 }}
-            >
-                <StatusBar barStyle={statusBarStyle} />
-                <TabBarIOS
-                    barTintColor="#fff"
-                    tintColor="#FC3159"
-                    unselectedItemTintColor="#ACB5BE"
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            return (
+                <View
+                    style={{ flex: 1 }}
                 >
-                    <TabBarIOS.Item
-                        title="Patients"
-                        icon={patientsIcon}
-                        selected={currentTabCursor.get() === 'patients'}
-                        onPress={() => currentTabCursor.set('patients')}
+                    <StatusBar barStyle={statusBarStyle}/>
+                    <TabBarIOS
+                        barTintColor="#fff"
+                        tintColor="#FC3159"
+                        unselectedItemTintColor="#ACB5BE"
                     >
-                        <PatientsList
-                            ref={(ref) => { this.patientsList = ref; }}
-                            tree={patientsCursor}
-                            searchCursor={searchCursor}
-                        />
-                    </TabBarIOS.Item>
-                    <TabBarIOS.Item
-                        title="Camera"
-                        icon={cameraIcon}
-                        selected={false}
-                        onPress={() => showModalCursor.set(true)}
+                        <TabBarIOS.Item
+                            badge={siteJoinRequireAction ? '!' : null}
+                            title="My Profile"
+                            icon={profileIcon}
+                            selected={currentTabCursor.get() === 'profile'}
+                            onPress={() => currentTabCursor.set('profile')}
+                        >
+                            <ParticipantProfile
+                                tree={this.props.tree.participantScreenState}
+                                doctorCursor={this.props.tokenCursor.data.doctor}
+                                patientsCursor={patientsCursor}
+                            />
+                        </TabBarIOS.Item>
+                        <TabBarIOS.Item
+                            title="Camera"
+                            icon={cameraIcon}
+                            selected={false}
+                            onPress={() => showModalCursor.set(true)}
+                        >
+                            <View/>
+                        </TabBarIOS.Item>
+                    </TabBarIOS>
+                    <CameraMenu
+                        tree={this.props.tree}
+                        visibleCursor={showModalCursor}
+                        patientsList={this.patientsList}
+                    />
+                </View>
+            )
+        } else {
+            return (
+                <View
+                    style={{flex: 1}}
+                >
+                    <StatusBar barStyle={statusBarStyle}/>
+                    <TabBarIOS
+                        barTintColor="#fff"
+                        tintColor="#FC3159"
+                        unselectedItemTintColor="#ACB5BE"
                     >
-                        <View />
-                    </TabBarIOS.Item>
-                    <TabBarIOS.Item
-                        badge={siteJoinRequireAction ? '!' : null}
-                        title="My Profile"
-                        icon={profileIcon}
-                        selected={currentTabCursor.get() === 'profile'}
-                        onPress={() => currentTabCursor.set('profile')}
-                    >
-                        <DoctorProfile
-                            tree={this.props.tree.doctorScreenState}
-                            doctorCursor={this.props.tokenCursor.data.doctor}
-                            keyPairStatusCursor={this.props.keyPairStatusCursor}
-                            siteJoinRequestCursor={this.props.tree.siteJoinRequest}
-                        />
-                    </TabBarIOS.Item>
-                </TabBarIOS>
-                <CameraMenu
-                    tree={this.props.tree}
-                    visibleCursor={showModalCursor}
-                    patientsList={this.patientsList}
-                />
-            </View>
-        );
+                        <TabBarIOS.Item
+                            title="Patients"
+                            icon={patientsIcon}
+                            selected={currentTabCursor.get() === 'patients'}
+                            onPress={() => currentTabCursor.set('patients')}
+                        >
+                            <PatientsList
+                                ref={(ref) => {
+                                    this.patientsList = ref;
+                                }}
+                                tree={patientsCursor}
+                                searchCursor={searchCursor}
+                            />
+                        </TabBarIOS.Item>
+                        <TabBarIOS.Item
+                            title="Camera"
+                            icon={cameraIcon}
+                            selected={false}
+                            onPress={() => showModalCursor.set(true)}
+                        >
+                            <View/>
+                        </TabBarIOS.Item>
+                        <TabBarIOS.Item
+                            badge={siteJoinRequireAction ? '!' : null}
+                            title="My Profile"
+                            icon={profileIcon}
+                            selected={currentTabCursor.get() === 'profile'}
+                            onPress={() => currentTabCursor.set('profile')}
+                        >
+                            <DoctorProfile
+                                tree={this.props.tree.doctorScreenState}
+                                doctorCursor={this.props.tokenCursor.data.doctor}
+                                keyPairStatusCursor={this.props.keyPairStatusCursor}
+                                siteJoinRequestCursor={this.props.tree.siteJoinRequest}
+                            />
+                        </TabBarIOS.Item>
+                    </TabBarIOS>
+                    <CameraMenu
+                        tree={this.props.tree}
+                        visibleCursor={showModalCursor}
+                        patientsList={this.patientsList}
+                    />
+                </View>
+            );
+        }
     },
 }));
 
@@ -184,6 +239,7 @@ export default React.createClass({
     render() {
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
         const { status, firstTime } = keyPairStatusCursor.get();
+
         return (
             <ServiceProvider
                 token={this.props.tokenCursor.data}

@@ -342,13 +342,13 @@ const CreateOrEditPatient = schema(model)(React.createClass({
     },
 }));
 
-export function getCreateOrEditPatientRoute(props, context) {
+export function getCreateOrEditPatientRoute(props, context, noWayBack=false) {
     return {
         component: CreateOrEditPatient,
         leftButtonTitle: 'Cancel',
         onLeftButtonPress: () => context.mainNavigator.pop(),
         title: props.title,
-        navigationBarHidden: false,
+        navigationBarHidden: noWayBack,
         tintColor: '#FF2D55',
         passProps: props,
     };
