@@ -90,7 +90,7 @@ export const CameraMenu = schema({})(React.createClass({
                 tree: this.props.tree.select('patients', 'newPatient'),
                 title: 'New Patient',
                 service: services.createPatientService,
-                onActionComplete: async (pk) => {
+                onActionComplete: async ({ pk }) => {
                     const queryParams = cursors.filter.get();
 
                     cursors.currentPatientPk.set(pk);

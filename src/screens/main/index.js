@@ -7,6 +7,7 @@ import {
     NavigatorIOS,
     View,
     Text,
+    Modal,
 } from 'react-native';
 import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
@@ -16,188 +17,10 @@ import { DoctorProfile } from 'screens/doctor-profile';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
 import { CryptoConfiguration } from 'screens/crypto-config';
-import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { CreateOrEditPatient } from 'screens/create-or-edit';
+import Main from './main';
+import MainNavigatorProvider from './main-navigator-provider';
 
-import patientsIcon from './images/patients.png';
-import cameraIcon from './images/camera.png';
-import profileIcon from './images/profile.png';
-
-const model = (props, context) => {
-    const { isParticipant } = props.tokenCursor.data.doctor.data.get();
-
-    return {
-        tree: {
-            doctorScreenState: {},
-            participantScreenState: {},
-            siteJoinRequest: context.services.getSiteJoinRequestsService,
-            currentTab: isParticipant ? 'profile' : 'patients',
-            currentPatientPk: null,
-            patients: {},
-            patientsMoles: {},
-            patientsMoleImages: {},
-            racesList: getRacesList(),
-            showModal: false,
-            filter: {
-                pathPending: false,
-            },
-            search: '',
-        },
-    }
-};
-
-const Main = schema(model)(React.createClass({
-    displayName: 'Main',
-
-    propTypes: {
-        tree: BaobabPropTypes.cursor.isRequired,
-        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
-    },
-
-    contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        services: React.PropTypes.shape({
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            createPatientService: React.PropTypes.func.isRequired,
-        }),
-        cursors: React.PropTypes.shape({
-            doctor: BaobabPropTypes.cursor.isRequired,
-            patients: BaobabPropTypes.cursor.isRequired,
-        }),
-    },
-
-    componentWillReceiveProps(props) {
-        const doctor = this.context.cursors.doctor.get();
-        const patients = this.context.cursors.patients.get();
-
-        const isNeedCreateFirstPatient = patients && patients.status === 'Succeed' &&
-            _.isEmpty(patients.data) && doctor.isParticipant;
-        if (isNeedCreateFirstPatient && !_.isEmpty(this.context.mainNavigator)) {
-            this.context.mainNavigator.push(
-                getCreateOrEditPatientRoute({
-                    tree: this.props.tree.select('newPatient'),
-                    title: 'Fill patient profile',
-                    service: this.context.services.createPatientService,
-                    onActionComplete: () => {},
-                }, this.context, true)
-            )
-        }
-    },
-
-    render() {
-        const currentTabCursor = this.props.tree.currentTab;
-        const patientsCursor = this.props.tree.patients;
-        const showModalCursor = this.props.tree.showModal;
-        const searchCursor = this.props.tree.search;
-
-        const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
-
-        const siteJoinRequireAction = _.chain(this.props.tree.siteJoinRequest.data.get())
-                                       .values()
-                                       .first()
-                                       .get('data.state')
-                                       .value() === 2;
-
-        const { isParticipant } = this.context.cursors.doctor.get();
-
-        if (isParticipant) {
-            return (
-                <View
-                    style={{ flex: 1 }}
-                >
-                    <StatusBar barStyle={statusBarStyle}/>
-                    <TabBarIOS
-                        barTintColor="#fff"
-                        tintColor="#FC3159"
-                        unselectedItemTintColor="#ACB5BE"
-                    >
-                        <TabBarIOS.Item
-                            badge={siteJoinRequireAction ? '!' : null}
-                            title="My Profile"
-                            icon={profileIcon}
-                            selected={currentTabCursor.get() === 'profile'}
-                            onPress={() => currentTabCursor.set('profile')}
-                        >
-                            <ParticipantProfile
-                                tree={this.props.tree.participantScreenState}
-                                doctorCursor={this.props.tokenCursor.data.doctor}
-                                patientsCursor={patientsCursor}
-                            />
-                        </TabBarIOS.Item>
-                        <TabBarIOS.Item
-                            title="Camera"
-                            icon={cameraIcon}
-                            selected={false}
-                            onPress={() => showModalCursor.set(true)}
-                        >
-                            <View/>
-                        </TabBarIOS.Item>
-                    </TabBarIOS>
-                    <CameraMenu
-                        tree={this.props.tree}
-                        visibleCursor={showModalCursor}
-                        patientsList={this.patientsList}
-                    />
-                </View>
-            )
-        } else {
-            return (
-                <View
-                    style={{flex: 1}}
-                >
-                    <StatusBar barStyle={statusBarStyle}/>
-                    <TabBarIOS
-                        barTintColor="#fff"
-                        tintColor="#FC3159"
-                        unselectedItemTintColor="#ACB5BE"
-                    >
-                        <TabBarIOS.Item
-                            title="Patients"
-                            icon={patientsIcon}
-                            selected={currentTabCursor.get() === 'patients'}
-                            onPress={() => currentTabCursor.set('patients')}
-                        >
-                            <PatientsList
-                                ref={(ref) => {
-                                    this.patientsList = ref;
-                                }}
-                                tree={patientsCursor}
-                                searchCursor={searchCursor}
-                            />
-                        </TabBarIOS.Item>
-                        <TabBarIOS.Item
-                            title="Camera"
-                            icon={cameraIcon}
-                            selected={false}
-                            onPress={() => showModalCursor.set(true)}
-                        >
-                            <View/>
-                        </TabBarIOS.Item>
-                        <TabBarIOS.Item
-                            badge={siteJoinRequireAction ? '!' : null}
-                            title="My Profile"
-                            icon={profileIcon}
-                            selected={currentTabCursor.get() === 'profile'}
-                            onPress={() => currentTabCursor.set('profile')}
-                        >
-                            <DoctorProfile
-                                tree={this.props.tree.doctorScreenState}
-                                doctorCursor={this.props.tokenCursor.data.doctor}
-                                keyPairStatusCursor={this.props.keyPairStatusCursor}
-                                siteJoinRequestCursor={this.props.tree.siteJoinRequest}
-                            />
-                        </TabBarIOS.Item>
-                    </TabBarIOS>
-                    <CameraMenu
-                        tree={this.props.tree}
-                        visibleCursor={showModalCursor}
-                        patientsList={this.patientsList}
-                    />
-                </View>
-            );
-        }
-    },
-}));
 
 export default React.createClass({
     displayName: 'MainNavigator',
@@ -209,7 +32,6 @@ export default React.createClass({
     },
 
     childContextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
@@ -223,7 +45,6 @@ export default React.createClass({
 
     getChildContext() {
         return {
-            mainNavigator: this.mainNavigator || {},
             cursors: {
                 doctor: this.props.tokenCursor.data.doctor.data,
                 patients: this.props.tree.patients,
@@ -236,47 +57,46 @@ export default React.createClass({
         };
     },
 
-    render() {
+    renderContent() {
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
         const { status, firstTime } = keyPairStatusCursor.get();
 
+        if (status !== 'Succeed' && firstTime) {
+            if (status === 'Loading') {
+                return null;
+            } else {
+                return (
+                    <CryptoConfiguration
+                        standAlone
+                        doctorCursor={this.props.tokenCursor.data.doctor}
+                        keyPairStatusCursor={keyPairStatusCursor}
+                    />
+                )
+            }
+        } else {
+            return (
+                <MainNavigatorProvider
+                    initialRoute={{
+                        component: Main,
+                        title: 'Patients',
+                        navigationBarHidden: true,
+                        tintColor: '#FF2D55',
+                        passProps: this.props,
+                    }}
+                    style={{ flex: 1 }}
+                    barTintColor="#fff"
+                />
+            );
+        }
+    },
+
+    render() {
         return (
             <ServiceProvider
                 token={this.props.tokenCursor.data}
                 style={{ flex: 1 }}
             >
-                {
-                    (status !== 'Succeed' && firstTime)
-                    ?
-                    (
-                        status === 'Loading'
-                        ?
-                            null
-                        :
-                        (
-                            <CryptoConfiguration
-                                standAlone
-                                doctorCursor={this.props.tokenCursor.data.doctor}
-                                keyPairStatusCursor={keyPairStatusCursor}
-                            />
-                        )
-                    )
-                    :
-                    (
-                        <NavigatorIOS
-                            ref={(ref) => { this.mainNavigator = ref; }}
-                            initialRoute={{
-                                component: Main,
-                                title: 'Patients',
-                                navigationBarHidden: true,
-                                tintColor: '#FF2D55',
-                                passProps: this.props,
-                            }}
-                            style={{ flex: 1 }}
-                            barTintColor="#fff"
-                        />
-                    )
-                }
+                {this.renderContent()}
             </ServiceProvider>
         );
     },

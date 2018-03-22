@@ -172,7 +172,7 @@ export const PatientsList = React.createClass({
         return { status };
     },
 
-    async onPatientAdded(pk, sex) {
+    async onPatientAdded({ pk, sex }) {
         const { cursors, services, mainNavigator } = this.context;
         const queryParams = cursors.filter.get();
 

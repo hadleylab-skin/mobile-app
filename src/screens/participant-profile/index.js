@@ -33,23 +33,16 @@ export const ParticipantProfile = schema(model)(React.createClass({
         }),
     },
 
-    async updateScreenData() {
-        let result = await this.context.services.getDoctorService(
-            this.props.doctorCursor);
-        if (result.status !== 'Succeed') {
-            return result;
-        }
+    async componentWillMount() {
+        const { cursors, services } = this.context;
+        await services.patientsService(cursors.patients);
     },
 
     render() {
         const { firstName, lastName, photo } = this.props.doctorCursor.get('data');
 
         return (
-            <Updater
-                service={this.updateScreenData}
-                style={s.container}
-                color="#ACB5BE"
-            >
+            <View>
                 <View style={s.info}>
                     <View style={s.pinkBg} />
                     <Image
@@ -70,7 +63,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         onPress={resetState}
                     />
                 </View>
-            </Updater>
+            </View>
         );
     },
 }));
