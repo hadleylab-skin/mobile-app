@@ -6,31 +6,15 @@ export default StyleSheet.create({
         backgroundColor: '#FAFAFA',
     },
     info: {
-        minHeight: 260,
         backgroundColor: '#FF1D70',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 15,
-        position: 'relative',
-    },
-    pinkBg: {
-        position: 'absolute',
-        top: -250,
-        left: 0,
-        height: 260,
-        right: 0,
-        backgroundColor: '#FF1D70',
-    },
-    content: {
-        backgroundColor: '#fff',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
+        paddingTop: 20,
+        paddingRight: 15,
+        paddingBottom: 15,
+        paddingLeft: 25,
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     logout: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 49,
         borderTopWidth: 0.5,
         borderTopColor: '#DADADA',
         borderBottomWidth: 0.5,
@@ -41,26 +25,20 @@ export default StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
+        marginRight: 10,
     },
-    name: {
-        marginTop: 15,
-        marginBottom: 10,
-    },
-    text: {
+    name_text: {
         fontSize: 24,
         lineHeight: 30,
         color: '#fff',
-        textAlign: 'center',
     },
-    department: {
-        fontSize: 15,
-        lineHeight: 20,
-        color: 'rgba(255,255,255,0.5)',
+    age_text: {
+        marginTop: 5,
+        fontSize: 16,
+        color: '#ccc',
     },
-    infoMessage: {
-        height: 50,
-        paddingTop: 5,
-        paddingLeft: 20,
-        paddingRight: 20,
+    button: {
+        flexDirection: 'row',
+        margin: 25,
     },
 });

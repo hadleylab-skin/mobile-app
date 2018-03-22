@@ -1,6 +1,7 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import _ from 'lodash';
+import moment from 'moment';
 import {
     View,
     Text,
@@ -9,7 +10,7 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { InfoField, Updater } from 'components';
+import { InfoField, Updater, Button } from 'components';
 import s from './styles';
 
 const model = {
@@ -38,22 +39,42 @@ export const ParticipantProfile = schema(model)(React.createClass({
         await services.patientsService(cursors.patients);
     },
 
+    goEditProfile() {
+
+    },
+
     render() {
-        const { firstName, lastName, photo } = this.props.doctorCursor.get('data');
+        const patients = this.props.patientsCursor.get();
+        if (patients.status !== 'Succeed') {
+            return (<View/>);
+        }
+
+        console.log(patients.data);
+        const patient = _.first(_.values(patients.data)).data;
+        console.log(patient);
+        const { firstName, lastName, photo, dateOfBirth } = patient;
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
 
         return (
             <View>
                 <View style={s.info}>
-                    <View style={s.pinkBg} />
                     <Image
                         style={s.photo}
                         source={defaultUserImage}
                     />
-                    <View style={s.name}>
-                        <Text style={s.text}>
+                    <View>
+                        <Text style={s.name_text}>
                             {`${firstName} ${lastName}`}
                         </Text>
+                        {age ?
+                            <Text style={s.age_text}>
+                                35 years
+                            </Text>
+                        : null}
                     </View>
+                </View>
+                <View style={s.button}>
+                    <Button title="Edit profile" onPress={this.goEditProfile} />
                 </View>
 
                 <View style={s.logout}>

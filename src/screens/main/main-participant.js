@@ -62,11 +62,11 @@ export default schema(model)(React.createClass({
                 service={this.context.services.createPatientService}
                 navigator={this.context.mainNavigator}
                 onActionComplete={(patient) => {
-                    console.log(patient);
                     this.context.cursors.patients.data.set(patient.pk, {
                         status: 'Succeed',
                         data: patient
                     });
+                    this.context.mainNavigator.popToTop();
                 }}
             />
         );
