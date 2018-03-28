@@ -5,6 +5,20 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#FAFAFA',
     },
+    inner: {
+        marginBottom: 56,
+        backgroundColor: '#fafafa',
+    },
+    activityIndicator: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     info: {
         backgroundColor: '#FF1D70',
         paddingTop: 20,

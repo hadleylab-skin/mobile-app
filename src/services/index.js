@@ -21,6 +21,8 @@ import { getSiteJoinRequestsService,
          createSiteJoinRequestService,
          confirmSiteJoinRequestService,
        } from './site-join-requests';
+import { getStudiesService
+       } from './study';
 
 
 export default {
@@ -44,4 +46,5 @@ export default {
     getSiteJoinRequestsService,
     createSiteJoinRequestService,
     confirmSiteJoinRequestService,
+    getStudiesService,
 };

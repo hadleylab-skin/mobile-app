@@ -6,15 +6,23 @@ import {
     View,
     Text,
     Image,
+    ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { InfoField, Updater, Button } from 'components';
+import { InfoField, Updater, Button, Picker } from 'components';
 import s from './styles';
 
-const model = {
-    tree: {},
+const model = (props, context) => {
+    return {
+        tree: {
+            studies: {},
+            selectedStudyPk: {},
+            studyPicker: {},
+        },
+    }
 };
 
 export const ParticipantProfile = schema(model)(React.createClass({
@@ -31,11 +39,24 @@ export const ParticipantProfile = schema(model)(React.createClass({
         }),
         services: React.PropTypes.shape({
             patientsService: React.PropTypes.func.isRequired,
+            getStudiesService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    async loadStudies() {
+        await this.context.services.getStudiesService(this.props.tree.studies);
+        const studies = this.props.tree.studies.get();
+        if (studies.status === 'Succeed') {
+            const firstStudy = _.first(studies.data);
+            if (firstStudy) {
+                this.props.tree.selectedStudyPk.set(firstStudy.pk);
+            }
+        }
     },
 
     async componentWillMount() {
         const { cursors, services } = this.context;
+        this.loadStudies();
         await services.patientsService(cursors.patients);
     },
 
@@ -45,45 +66,71 @@ export const ParticipantProfile = schema(model)(React.createClass({
 
     render() {
         const patients = this.props.patientsCursor.get();
-        if (patients.status !== 'Succeed') {
-            return (<View/>);
+        if (patients.status === 'Loading') {
+            return (
+                <View style={s.container}>
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                </View>
+            );
         }
 
-        console.log(patients.data);
+        const studies = this.props.tree.studies.get();
+        const studiesForPicker = _.map(studies.data, (item) => (
+            [item.pk, item.title]
+        ));
         const patient = _.first(_.values(patients.data)).data;
-        console.log(patient);
         const { firstName, lastName, photo, dateOfBirth } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
 
         return (
-            <View>
-                <View style={s.info}>
-                    <Image
-                        style={s.photo}
-                        source={defaultUserImage}
-                    />
-                    <View>
-                        <Text style={s.name_text}>
-                            {`${firstName} ${lastName}`}
-                        </Text>
-                        {age ?
-                            <Text style={s.age_text}>
-                                35 years
+            <View style={s.container}>
+                <ScrollView
+                    onScroll={this.onScroll}
+                    style={s.inner}
+                    ref={(ref) => { this.scrollView = ref; }}
+                >
+                    <View style={s.info}>
+                        <Image
+                            style={s.photo}
+                            source={defaultUserImage}
+                        />
+                        <View>
+                            <Text style={s.name_text}>
+                                {`${firstName} ${lastName}`}
                             </Text>
-                        : null}
+                            {age ?
+                                <Text style={s.age_text}>
+                                    {age} years
+                                </Text>
+                            : null}
+                        </View>
                     </View>
-                </View>
-                <View style={s.button}>
-                    <Button title="Edit profile" onPress={this.goEditProfile} />
-                </View>
 
-                <View style={s.logout}>
-                    <InfoField
-                        title={'Log out'}
-                        hasNoBorder
-                        onPress={resetState}
+                    <View style={s.button}>
+                        <Button title="Edit profile" onPress={this.goEditProfile} />
+                    </View>
+
+                    <Picker
+                        tree={this.props.tree.studyPicker}
+                        cursor={this.props.tree.selectedStudyPk}
+                        items={studiesForPicker}
+                        title="Studies"
                     />
-                </View>
+
+                    <View style={s.logout}>
+                        <InfoField
+                            title={'Log out'}
+                            hasNoBorder
+                            onPress={resetState}
+                        />
+                    </View>
+                </ScrollView>
             </View>
         );
     },
