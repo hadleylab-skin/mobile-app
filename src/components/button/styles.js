@@ -13,7 +13,7 @@ export default StyleSheet.create({
         textAlign: 'center',
         lineHeight: 20,
     },
-    pinkButtton: {
+    pinkButton: {
         height: 44,
         borderWidth: 1,
         borderColor: '#fc3159',
@@ -23,7 +23,7 @@ export default StyleSheet.create({
         fontSize: 15,
         color: '#fc3159',
     },
-    whiteButtton: {
+    whiteButton: {
         height: 50,
         borderWidth: 1,
         borderColor: '#fff',
@@ -33,10 +33,15 @@ export default StyleSheet.create({
         fontSize: 15,
         color: '#fff',
     },
-    rectButtton: {
+    rectButton: {
         height: 56,
         backgroundColor: '#fc3159',
         borderColor: '#fc3159',
+    },
+    greenButton: {
+        height: 56,
+        backgroundColor: '#3fc300',
+        borderColor: '#3fc300',
     },
     rectText: {
         fontSize: 16,

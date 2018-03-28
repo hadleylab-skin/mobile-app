@@ -5,9 +5,10 @@ import {
     Text,
     ScrollView
 } from 'react-native';
-import { InfoField } from 'components';
+import { InfoField, Button } from 'components';
 
 import s from '../styles';
+import ss from './styles';
 
 
 export const InviteDetailScreen = React.createClass({
@@ -20,9 +21,20 @@ export const InviteDetailScreen = React.createClass({
 
         return (
             <View style={s.container}>
-                <Text>
-                    {invite.title}
-                </Text>
+                <View style={ss.buttons}>
+                    <Button
+                        type="green"
+                        title="Approve"
+                        style={ss.button}
+                        onPress={() => {}}
+                    />
+                    <Button
+                        type="rect"
+                        title="Decline"
+                        style={ss.button}
+                        onPress={() => {}}
+                    />
+                </View>
             </View>
         );
     },

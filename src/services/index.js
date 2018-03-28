@@ -22,8 +22,11 @@ import { getSiteJoinRequestsService,
          confirmSiteJoinRequestService,
        } from './site-join-requests';
 import { getStudiesService,
-         getInvitesService,
        } from './study';
+import { getInvitesService,
+         approveInviteService,
+         declineInviteService,
+       } from './invites';
 
 
 export default {
@@ -49,4 +52,6 @@ export default {
     confirmSiteJoinRequestService,
     getStudiesService,
     getInvitesService,
+    approveInviteService,
+    declineInviteService,
 };

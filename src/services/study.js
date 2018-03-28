@@ -20,18 +20,3 @@ export function getStudiesService({ token }) {
         return _service(cursor);
     };
 }
-
-export function getInvitesService({ token }) {
-    const headers = {
-        Authorization: `JWT ${token.get()}`,
-    };
-
-    return (cursor) => {
-        const _service = buildGetService(
-            `/api/v1/study/invites/`,
-            _.identity,
-            _.merge({}, defaultHeaders, headers));
-
-        return _service(cursor);
-    };
-}

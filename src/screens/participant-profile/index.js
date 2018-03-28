@@ -13,7 +13,7 @@ import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Updater, Button, Picker } from 'components';
-import { getInvitesScreenRoute } from './invites';
+import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import s from './styles';
 
 const model = (props, context) => {
@@ -120,17 +120,25 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         <Button title="Edit profile" onPress={this.goEditProfile} />
                     </View>
 
-                    {invites ?
+                    {invites && invites.length > 0 ?
                         <InfoField
                             title={`${invites.length} pending invites`}
                             text={'>'}
-                            onPress={() =>
-                                this.context.mainNavigator.push(
-                                    getInvitesScreenRoute({
-                                        invites: invites,
-                                    }, this.context)
-                                )
-                            }
+                            onPress={() => {
+                                if (invites.length === 1) {
+                                    this.context.mainNavigator.push(
+                                        getInviteDetailScreenRoute({
+                                            invite: _.first(invites),
+                                        }, this.context)
+                                    );
+                                } else {
+                                    this.context.mainNavigator.push(
+                                        getInvitesScreenRoute({
+                                            invites: invites,
+                                        }, this.context)
+                                    );
+                                }
+                            }}
                         />
                     : null}
 

@@ -54,7 +54,7 @@ export const Button = React.createClass({
             return (
                 <CommonButton
                     {...this.props}
-                    stylesButton={s.whiteButtton}
+                    stylesButton={s.whiteButton}
                     stylesText={s.whiteText}
                     underlayColor={'rgba(255,255,255,0.2)'}
                 />
@@ -63,9 +63,18 @@ export const Button = React.createClass({
             return (
                 <CommonButton
                     {...this.props}
-                    stylesButton={s.rectButtton}
+                    stylesButton={s.rectButton}
                     stylesText={s.rectText}
                     underlayColor={'rgba(252,49,89,0.5)'}
+                />
+            );
+        } else if (type === 'green') {
+            return (
+                <CommonButton
+                    {...this.props}
+                    stylesButton={s.greenButton}
+                    stylesText={s.rectText}
+                    underlayColor={'rgba(63,195,0,0.5)'}
                 />
             );
         }
