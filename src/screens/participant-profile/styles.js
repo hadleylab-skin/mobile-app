@@ -28,13 +28,6 @@ export default StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
-    logout: {
-        borderTopWidth: 0.5,
-        borderTopColor: '#DADADA',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
-        backgroundColor: '#fff',
-    },
     photo: {
         width: 100,
         height: 100,

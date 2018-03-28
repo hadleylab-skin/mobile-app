@@ -21,14 +21,14 @@ export function getStudiesService({ token }) {
     };
 }
 
-export function getInvitesOfStudyService({ token }) {
+export function getInvitesService({ token }) {
     const headers = {
-        Authorization: `JWT ${token}`,
+        Authorization: `JWT ${token.get()}`,
     };
 
-    return (studyPk, cursor) => {
+    return (cursor) => {
         const _service = buildGetService(
-            `/api/v1/study/${studyPk}/invites/`,
+            `/api/v1/study/invites/`,
             _.identity,
             _.merge({}, defaultHeaders, headers));
 

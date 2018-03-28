@@ -13,6 +13,7 @@ import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Updater, Button, Picker } from 'components';
+import { getInvitesScreenRoute } from './invites';
 import s from './styles';
 
 const model = (props, context) => {
@@ -21,6 +22,7 @@ const model = (props, context) => {
             studies: {},
             selectedStudyPk: {},
             studyPicker: {},
+            invites: context.services.getInvitesService,
         },
     }
 };
@@ -40,6 +42,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
         services: React.PropTypes.shape({
             patientsService: React.PropTypes.func.isRequired,
             getStudiesService: React.PropTypes.func.isRequired,
+            getInvitesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -87,6 +90,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const patient = _.first(_.values(patients.data)).data;
         const { firstName, lastName, photo, dateOfBirth } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const invites = this.props.tree.invites.data.get();
 
         return (
             <View style={s.container}>
@@ -116,6 +120,20 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         <Button title="Edit profile" onPress={this.goEditProfile} />
                     </View>
 
+                    {invites ?
+                        <InfoField
+                            title={`${invites.length} pending invites`}
+                            text={'>'}
+                            onPress={() =>
+                                this.context.mainNavigator.push(
+                                    getInvitesScreenRoute({
+                                        invites: invites,
+                                    }, this.context)
+                                )
+                            }
+                        />
+                    : null}
+
                     <Picker
                         tree={this.props.tree.studyPicker}
                         cursor={this.props.tree.selectedStudyPk}
@@ -123,13 +141,10 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         title="Studies"
                     />
 
-                    <View style={s.logout}>
-                        <InfoField
-                            title={'Log out'}
-                            hasNoBorder
-                            onPress={resetState}
-                        />
-                    </View>
+                    <InfoField
+                        title={'Log out'}
+                        onPress={resetState}
+                    />
                 </ScrollView>
             </View>
         );
