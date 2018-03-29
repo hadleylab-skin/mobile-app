@@ -6,6 +6,7 @@ import {
     ScrollView
 } from 'react-native';
 import { InfoField, Button } from 'components';
+import { getConsentDocsScreenRoute } from './consent-docs';
 
 import ss from './styles';
 
@@ -15,6 +16,10 @@ export const InviteDetailScreen = React.createClass({
         invite: React.PropTypes.object.isRequired,
     },
 
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+    },
+
     render() {
         const { invite } = this.props;
         const doctor = invite.doctor;
@@ -22,11 +27,11 @@ export const InviteDetailScreen = React.createClass({
         return (
             <View style={ss.container}>
                 <InfoField
-                    title={`Doctor`}
+                    title={'Doctor'}
                     text={`${doctor.firstName} ${doctor.lastName}`}
                 />
                 <InfoField
-                    title={`Study`}
+                    title={'Study'}
                     text={invite.study.title}
                 />
                 <View style={ss.buttons}>
@@ -34,7 +39,13 @@ export const InviteDetailScreen = React.createClass({
                         type="green"
                         title="Approve"
                         style={ss.button}
-                        onPress={() => {}}
+                        onPress={() =>
+                            this.context.mainNavigator.push(
+                                getConsentDocsScreenRoute({
+                                    study: invite.study,
+                                }, this.context)
+                            )
+                        }
                     />
                     <Button
                         type="rect"

@@ -25,7 +25,7 @@ export const InvitesScreen = React.createClass({
 
         return (
             <View style={s.container}>
-                <ScrollView>
+                <ScrollView style={s.inner}>
                     {_.map(invites, (invite) => (
                         <InfoField
                             key={invite.pk}
