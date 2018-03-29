@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { InfoField, Button } from 'components';
 
-import s from '../styles';
 import ss from './styles';
 
 
@@ -18,9 +17,18 @@ export const InviteDetailScreen = React.createClass({
 
     render() {
         const { invite } = this.props;
+        const doctor = invite.doctor;
 
         return (
-            <View style={s.container}>
+            <View style={ss.container}>
+                <InfoField
+                    title={`Doctor`}
+                    text={`${doctor.firstName} ${doctor.lastName}`}
+                />
+                <InfoField
+                    title={`Study`}
+                    text={invite.study.title}
+                />
                 <View style={ss.buttons}>
                     <Button
                         type="green"

@@ -1,6 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+    container: {
+        paddingTop: 65,
+        position: 'relative',
+        flex: 1,
+        backgroundColor: '#FAFAFA',
+    },
     buttons: {
         backgroundColor: '#f1f1f1',
         borderTopWidth: 1,
