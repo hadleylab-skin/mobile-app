@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -61,6 +60,7 @@
 		92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3C61F46B017003DD4EE /* BodyViewManager.m */; };
 		92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
 		ECD284CB715E41478CDEC109 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */; };
+		6B15424E5FD2455BA9F2E084 /* libRNReactNativeDocViewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -348,6 +348,8 @@
 		92EBB3C81F46B061003DD4EE /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		9CBCA58D8EA443B2A1C3E983 /* RNRSA.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRSA.xcodeproj; path = "../node_modules/react-native-rsa-native/ios/RNRSA.xcodeproj"; sourceTree = "<group>"; };
 		AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
+		72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */ = {isa = PBXFileReference; name = "RNReactNativeDocViewer.xcodeproj"; path = "../node_modules/react-native-doc-viewer/ios/RNReactNativeDocViewer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */ = {isa = PBXFileReference; name = "libRNReactNativeDocViewer.a"; path = "libRNReactNativeDocViewer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,6 +382,7 @@
 				8E9C288FEEBC4451AFC4E571 /* libRSSignatureCapture.a in Frameworks */,
 				70858756C7664DFB8B998E5F /* libRNBlur.a in Frameworks */,
 				ECD284CB715E41478CDEC109 /* libRNImagePicker.a in Frameworks */,
+				6B15424E5FD2455BA9F2E084 /* libRNReactNativeDocViewer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,6 +610,7 @@
 				8D6FEDFE22594AADB229495F /* RSSignatureCapture.xcodeproj */,
 				637C9B845D57428191E9A9D5 /* RNBlur.xcodeproj */,
 				19A626FE1E5549D58C9EC67E /* RNImagePicker.xcodeproj */,
+				72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1323,12 +1327,14 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1354,12 +1360,14 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = skiniqTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1388,6 +1396,7 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/skin/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1420,6 +1429,7 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/skin/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1455,11 +1465,13 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1493,11 +1505,13 @@
 					"$(SRCROOT)/../node_modules/react-native-signature-capture/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "skiniq-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1530,6 +1544,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.skiniq-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1554,6 +1569,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
