@@ -5,13 +5,19 @@ import {
     Text,
     ScrollView
 } from 'react-native';
+import schema from 'libs/state';
 import { InfoField, Button } from 'components';
 import { getConsentDocsScreenRoute } from './consent-docs';
 
 import ss from './styles';
 
 
-export const InviteDetailScreen = React.createClass({
+const model = {
+    consentDocsScreen: {},
+};
+
+
+export const InviteDetailScreen = schema(model)(React.createClass({
     propTypes: {
         invite: React.PropTypes.object.isRequired,
     },
@@ -43,6 +49,7 @@ export const InviteDetailScreen = React.createClass({
                             this.context.mainNavigator.push(
                                 getConsentDocsScreenRoute({
                                     study: invite.study,
+                                    tree: this.props.tree.consentDocsScreen,
                                 }, this.context)
                             )
                         }
@@ -57,7 +64,7 @@ export const InviteDetailScreen = React.createClass({
             </View>
         );
     },
-});
+}));
 
 export function getInviteDetailScreenRoute(props, context) {
     return {

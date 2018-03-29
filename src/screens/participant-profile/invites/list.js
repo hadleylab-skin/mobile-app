@@ -5,13 +5,19 @@ import {
     Text,
     ScrollView
 } from 'react-native';
+import schema from 'libs/state';
 import { getInviteDetailScreenRoute } from './detail';
 import { InfoField } from 'components';
 
 import s from '../styles';
 
 
-export const InvitesScreen = React.createClass({
+const model = {
+    detailCursor: {}
+};
+
+
+export const InvitesScreen = schema(model)(React.createClass({
     propTypes: {
         invites: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     },
@@ -36,6 +42,7 @@ study: ${invite.study.title}`}
                                 this.context.mainNavigator.push(
                                     getInviteDetailScreenRoute({
                                         invite: invite,
+                                        tree: this.props.tree.detailCursor,
                                     }, this.context)
                                 )
                             }
@@ -45,7 +52,7 @@ study: ${invite.study.title}`}
             </View>
         );
     },
-});
+}));
 
 export function getInvitesScreenRoute(props, context) {
     return {

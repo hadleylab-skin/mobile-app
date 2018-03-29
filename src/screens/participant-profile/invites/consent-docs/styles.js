@@ -5,7 +5,7 @@ export default StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 10,
-        paddingBottom: 10,
+        paddingBottom: 20,
         fontSize: 18,
         alignSelf: 'center',
         flexWrap: "wrap",

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
@@ -9,15 +10,33 @@ import {
     ProgressViewIOS
 } from 'react-native';
 import OpenFile from 'react-native-doc-viewer';
+import schema from 'libs/state';
 import { InfoField, Button } from 'components';
+import { getSignatureRoute } from 'screens/signature';
 import s from '../styles';
 import ss from './styles';
 
 const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer);
 
-export const ConsentDocsScreen = React.createClass({
+const model = {
+    tree: {
+        consentCursor: {}
+    }
+};
+
+export const ConsentDocsScreen = schema(model)(React.createClass({
     propTypes: {
         study: React.PropTypes.object.isRequired,
+    },
+
+    contextTypes: {
+        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        cursors: React.PropTypes.shape({
+            patients: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: React.PropTypes.shape({
+            updatePatientConsentService: React.PropTypes.func.isRequired,
+        }),
     },
 
     getInitialState() {
@@ -39,6 +58,8 @@ export const ConsentDocsScreen = React.createClass({
     render() {
         const { study } = this.props;
         const { progress } = this.state;
+        const patients = this.context.cursors.patients.get();
+        const patient = _.first(_.values(patients.data)).data;
 
         if (progress > 0 && progress < 1) {
             return (
@@ -68,10 +89,34 @@ export const ConsentDocsScreen = React.createClass({
                         />
                     ))}
                 </ScrollView>
+                <View style={s.buttons}>
+                    <Button
+                        type="green"
+                        title="Accept"
+                        style={s.button}
+                        onPress={() => {
+                            this.context.mainNavigator.push(
+                                getSignatureRoute({
+                                    navigator: this.props.navigator,
+                                    onSave: async (signatureData) => {
+                                        await this.context.services.updatePatientConsentService(
+                                            patient.pk,
+                                            this.props.tree.consentCursor,
+                                            signatureData.encoded,
+                                        );
+                                        const consent = this.props.tree.consentCursor.get();
+                                        console.log(consent);
+                                        // TODO: send /approve with consent.data.pk
+                                    },
+                                })
+                            );
+                        }}
+                    />
+                </View>
             </View>
         );
     },
-});
+}));
 
 export function getConsentDocsScreenRoute(props, context) {
     return {

@@ -23,6 +23,8 @@ const model = (props, context) => {
             selectedStudyPk: {},
             studyPicker: {},
             invites: context.services.getInvitesService,
+            invitesListScreen: {},
+            invitesDetailScreen: {},
         },
     }
 };
@@ -129,12 +131,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
                                     this.context.mainNavigator.push(
                                         getInviteDetailScreenRoute({
                                             invite: _.first(invites),
+                                            tree: this.props.tree.invitesDetailScreen,
                                         }, this.context)
                                     );
                                 } else {
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
                                             invites: invites,
+                                            tree: this.props.tree.invitesListScreen,
                                         }, this.context)
                                     );
                                 }
