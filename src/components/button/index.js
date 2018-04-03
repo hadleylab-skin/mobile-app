@@ -82,7 +82,7 @@ export const Button = React.createClass({
         return (
             <CommonButton
                 {...this.props}
-                stylesButton={s.pinkButtton}
+                stylesButton={s.pinkButton}
                 stylesText={s.pinkText}
                 underlayColor={'rgba(252,49,89,0.2)'}
             />

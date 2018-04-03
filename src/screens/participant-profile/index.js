@@ -119,7 +119,9 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     </View>
 
                     <View style={s.button}>
-                        <Button title="Edit profile" onPress={this.goEditProfile} />
+                        <Button
+                            title="Edit profile"
+                            onPress={this.goEditProfile} />
                     </View>
 
                     {invites && invites.length > 0 ?
@@ -146,12 +148,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         />
                     : null}
 
-                    <Picker
-                        tree={this.props.tree.studyPicker}
-                        cursor={this.props.tree.selectedStudyPk}
-                        items={studiesForPicker}
-                        title="Studies"
-                    />
+                    {studiesForPicker.length > 0 ?
+                        <Picker
+                            tree={this.props.tree.studyPicker}
+                            cursor={this.props.tree.selectedStudyPk}
+                            items={studiesForPicker}
+                            title="Studies"
+                        />
+                    : null}
 
                     <InfoField
                         title={'Log out'}
