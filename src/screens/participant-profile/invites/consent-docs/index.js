@@ -70,7 +70,9 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
         const data = {
             consentPk,
             doctorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.publicKey),
-            coordinatorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.coordinatorPublicKey),
+            ...inviteDoctor.coordinatorPublicKey && {
+                coordinatorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.coordinatorPublicKey)
+            }
         };
         // 3. send it to server
         const result = await this.context.services.approveInviteService(
