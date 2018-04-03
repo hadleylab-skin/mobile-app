@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import React from 'react';
 import {
-    View
+    View,
+    Alert,
 } from 'react-native';
 import schema from 'libs/state';
 import { InfoField, Button } from 'components';
@@ -8,15 +10,40 @@ import { getConsentDocsScreenRoute } from './consent-docs';
 
 import ss from './styles';
 
+const model = {
+    invites: {},
+    declineInviteCursor: {}
+};
 
-
-export const InviteDetailScreen = schema({})(React.createClass({
+export const InviteDetailScreen = schema(model)(React.createClass({
     propTypes: {
         invite: React.PropTypes.object.isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        services: React.PropTypes.shape({
+            declineInviteService: React.PropTypes.func.isRequired,
+        }),
+    },
+
+    async declineInvite() {
+        const { invite } = this.props;
+
+        const result = await this.context.services.declineInviteService(
+            invite.pk,
+            this.props.tree.declineInviteCursor);
+        if (result.status === 'Succeed') {
+            const invites = _.filter(
+                this.props.tree.invites.data.get(), {
+                pk: invite.pk
+            });
+
+            this.props.tree.invites.data.set(invites);
+            this.context.mainNavigator.popToTop();
+        } else {
+            // TODO
+        }
     },
 
     render() {
@@ -51,7 +78,16 @@ export const InviteDetailScreen = schema({})(React.createClass({
                         type="rect"
                         title="Decline"
                         style={ss.button}
-                        onPress={() => {}}
+                        onPress={() => {
+                            Alert.alert(
+                                'Are you sure?',
+                                'Are you sure you want to decline the invitation?',
+                                [
+                                    {text: 'Cancel'},
+                                    {text: 'Yes', onPress: this.declineInvite}
+                                ]
+                            )
+                        }}
                     />
                 </View>
             </View>

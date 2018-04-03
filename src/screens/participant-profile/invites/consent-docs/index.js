@@ -91,6 +91,8 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
             this.props.tree.invites.data.set(invites);
             this.props.tree.studies.data.push(invite.study);
             this.context.mainNavigator.popToTop();
+        } else {
+            // TODO
         }
     },
 
