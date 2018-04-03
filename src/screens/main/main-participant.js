@@ -4,10 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     StatusBar,
     TabBarIOS,
-    NavigatorIOS,
     View,
-    Text,
-    Modal,
 } from 'react-native';
 import { getRacesList } from 'services/constants';
 import schema from 'libs/state';

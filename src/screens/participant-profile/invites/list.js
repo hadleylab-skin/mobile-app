@@ -12,12 +12,8 @@ import { InfoField } from 'components';
 import s from '../styles';
 
 
-const model = {
-    detailCursor: {}
-};
 
-
-export const InvitesScreen = schema(model)(React.createClass({
+export const InvitesScreen = schema({})(React.createClass({
     propTypes: {
         invites: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     },
@@ -42,7 +38,7 @@ study: ${invite.study.title}`}
                                 this.context.mainNavigator.push(
                                     getInviteDetailScreenRoute({
                                         invite: invite,
-                                        tree: this.props.tree.detailCursor,
+                                        tree: this.props.tree,
                                     }, this.context)
                                 )
                             }

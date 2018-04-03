@@ -20,11 +20,9 @@ const model = (props, context) => {
     return {
         tree: {
             studies: {},
-            selectedStudyPk: {},
+            selectedStudyPk: null,
             studyPicker: {},
             invites: context.services.getInvitesService,
-            invitesListScreen: {},
-            invitesDetailScreen: {},
         },
     }
 };
@@ -53,7 +51,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const studies = this.props.tree.studies.get();
         if (studies.status === 'Succeed') {
             const firstStudy = _.first(studies.data);
-            if (firstStudy) {
+            if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
                 this.props.tree.selectedStudyPk.set(firstStudy.pk);
             }
         }
@@ -133,14 +131,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
                                     this.context.mainNavigator.push(
                                         getInviteDetailScreenRoute({
                                             invite: _.first(invites),
-                                            tree: this.props.tree.invitesDetailScreen,
+                                            tree: this.props.tree,
                                         }, this.context)
                                     );
                                 } else {
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
                                             invites: invites,
-                                            tree: this.props.tree.invitesListScreen,
+                                            tree: this.props.tree,
                                         }, this.context)
                                     );
                                 }

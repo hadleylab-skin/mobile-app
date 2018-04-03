@@ -1,16 +1,6 @@
 import React from 'react';
-import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
-import {
-    StatusBar,
-    TabBarIOS,
-    NavigatorIOS,
-    View,
-    Text,
-    Modal,
-} from 'react-native';
 import { getRacesList } from 'services/constants';
-import schema from 'libs/state';
 import { ServiceProvider } from 'components';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';

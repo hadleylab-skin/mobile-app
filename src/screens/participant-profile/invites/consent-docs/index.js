@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import OpenFile from 'react-native-doc-viewer';
 import schema from 'libs/state';
+import { encryptRSA, decryptRSA } from 'services/keypair';
 import { InfoField, Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
 import s from '../styles';
@@ -20,13 +21,17 @@ const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer
 
 const model = {
     tree: {
-        consentCursor: {}
+        consentCursor: {},
+        approveInviteCursor: {},
+        studies: {},
+        invites: {},
+        selectedStudyPk: null,
     }
 };
 
 export const ConsentDocsScreen = schema(model)(React.createClass({
     propTypes: {
-        study: React.PropTypes.object.isRequired,
+        invite: React.PropTypes.object.isRequired,
     },
 
     contextTypes: {
@@ -36,6 +41,7 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
         }),
         services: React.PropTypes.shape({
             updatePatientConsentService: React.PropTypes.func.isRequired,
+            approveInviteService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -55,8 +61,40 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
         );
     },
 
+    async approveInvite(patient, consentPk) {
+        // 1. restore original AES key of patient
+        const aesKey = await decryptRSA(patient.encryptedKey);
+        // 2. encrypt it with public key of invite's doctor and don't forget about coordinator
+        const { invite } = this.props;
+        const inviteDoctor = invite.doctor;
+        const data = {
+            consentPk,
+            doctorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.publicKey),
+            coordinatorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.coordinatorPublicKey),
+        };
+        // 3. send it to server
+        const result = await this.context.services.approveInviteService(
+            invite.pk,
+            this.props.tree.approveInviteCursor,
+            data);
+        if (result.status === 'Succeed') {
+            if (this.props.tree.studies.data.get().length === 0) {
+                this.props.tree.selectedStudyPk.set(invite.study.pk);
+            }
+
+            const invites = _.filter(this.props.tree.invites.data.get(), {
+                pk: invite.pk
+            });
+
+            this.props.tree.invites.data.set(invites);
+            this.props.tree.studies.data.push(invite.study);
+            this.context.mainNavigator.popToTop();
+        }
+    },
+
     render() {
-        const { study } = this.props;
+        const { invite } = this.props;
+        const study = invite.study;
         const { progress } = this.state;
         const patients = this.context.cursors.patients.get();
         const patient = _.first(_.values(patients.data)).data;
@@ -105,8 +143,7 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
                                             signatureData.encoded,
                                         );
                                         const consent = this.props.tree.consentCursor.get();
-                                        console.log(consent);
-                                        // TODO: send /approve with consent.data.pk
+                                        this.approveInvite(patient, consent.data.pk);
                                     },
                                 })
                             );

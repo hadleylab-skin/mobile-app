@@ -1,9 +1,6 @@
-import _ from 'lodash';
 import React from 'react';
 import {
-    View,
-    Text,
-    ScrollView
+    View
 } from 'react-native';
 import schema from 'libs/state';
 import { InfoField, Button } from 'components';
@@ -12,12 +9,8 @@ import { getConsentDocsScreenRoute } from './consent-docs';
 import ss from './styles';
 
 
-const model = {
-    consentDocsScreen: {},
-};
 
-
-export const InviteDetailScreen = schema(model)(React.createClass({
+export const InviteDetailScreen = schema({})(React.createClass({
     propTypes: {
         invite: React.PropTypes.object.isRequired,
     },
@@ -48,8 +41,8 @@ export const InviteDetailScreen = schema(model)(React.createClass({
                         onPress={() =>
                             this.context.mainNavigator.push(
                                 getConsentDocsScreenRoute({
-                                    study: invite.study,
-                                    tree: this.props.tree.consentDocsScreen,
+                                    invite: invite,
+                                    tree: this.props.tree,
                                 }, this.context)
                             )
                         }
