@@ -12,8 +12,9 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { InfoField, Updater, Button, Picker } from 'components';
+import { InfoField, Updater, Button, Picker, Title } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
+import { Mole } from 'screens/patients-list/screens/patient/components/moles-list/components/mole';
 import s from './styles';
 
 const model = (props, context) => {
@@ -23,6 +24,7 @@ const model = (props, context) => {
             selectedStudyPk: null,
             studyPicker: {},
             invites: context.services.getInvitesService,
+            moles: {},
         },
     }
 };
@@ -31,18 +33,20 @@ export const ParticipantProfile = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
-        patientsCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
             patientsService: React.PropTypes.func.isRequired,
             getStudiesService: React.PropTypes.func.isRequired,
             getInvitesService: React.PropTypes.func.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -61,14 +65,69 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const { cursors, services } = this.context;
         this.loadStudies();
         await services.patientsService(cursors.patients);
+        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        this.onSelectedStudyUpdate();
+    },
+
+    componentWillUnmount() {
+        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+    },
+
+    async onSelectedStudyUpdate() {
+        const { cursors, services } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        const result = await services.getPatientMolesService(
+            currentPatientPk,
+            this.props.tree.moles);
+        cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
     },
 
     goEditProfile() {
+        // TODO
+    },
 
+    getMoles() {
+          const { cursors } = this.context;
+          const currentPatientPk = cursors.currentPatientPk.get();
+
+          return cursors.patientsMoles.select(currentPatientPk, 'moles').get();
+    },
+
+    renderMoles() {
+        const moles = this.props.tree.moles.get();
+
+        if (_.isEmpty(moles) || moles.status === 'Loading') {
+            return (
+                <ActivityIndicator
+                    animating
+                    size="large"
+                    color="#FF1D70"
+                />
+            );
+        }
+
+        const groupedMolesData = _.groupBy(moles.data, (mole) => mole.data.anatomicalSites[0].pk);
+        return _.map(groupedMolesData, (molesGroup, key) => (
+            <View key={key}>
+                <Title text={key} />
+                {_.map(molesGroup, (mole, index) => {
+                    return (
+                        <Mole
+                            key={`${key}-${index}`}
+                            checkConsent={() => true}
+                            hasBorder={index !== 0}
+                            navigator={this.context.mainNavigator}
+                            tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
+                        />
+                    );
+                })}
+            </View>
+        ));
     },
 
     render() {
-        const patients = this.props.patientsCursor.get();
+        const patients = this.context.cursors.patients.get();
         if (patients.status === 'Loading') {
             return (
                 <View style={s.container}>
@@ -154,6 +213,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
                             title="Studies"
                         />
                     : null}
+
+                    {this.renderMoles()}
 
                     <InfoField
                         title={'Log out'}

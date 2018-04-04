@@ -49,7 +49,12 @@ export default schema(model)(React.createClass({
 
     async componentWillMount() {
         const { cursors, services } = this.context;
-        await services.patientsService(cursors.patients);
+        const patients = await services.patientsService(cursors.patients);
+
+        if (patients && patients.status === 'Succeed' && !_.isEmpty(patients.data)) {
+            const patient = _.first(_.values(patients.data)).data;
+            cursors.currentPatientPk.set(patient.pk);
+        }
     },
 
     renderCreatePatient() {
@@ -71,7 +76,6 @@ export default schema(model)(React.createClass({
 
     renderMain() {
         const currentTabCursor = this.props.tree.currentTab;
-        const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
@@ -102,7 +106,6 @@ export default schema(model)(React.createClass({
                         <ParticipantProfile
                             tree={this.props.tree.participantScreenState}
                             doctorCursor={this.props.tokenCursor.data.doctor}
-                            patientsCursor={patientsCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
