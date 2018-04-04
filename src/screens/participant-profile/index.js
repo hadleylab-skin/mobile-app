@@ -12,6 +12,7 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
@@ -25,6 +26,7 @@ const model = (props, context) => {
             studyPicker: {},
             invites: context.services.getInvitesService,
             moles: {},
+            editProfileScreen: {},
         },
     }
 };
@@ -87,7 +89,18 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     goEditProfile() {
-        // TODO
+        const { cursors, services, mainNavigator } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        this.context.mainNavigator.push(
+            getCreateOrEditPatientRoute({
+                tree: this.props.tree.editProfileScreen,
+                dataCursor: this.context.cursors.patients.select('data', currentPatientPk, 'data'),
+                title: 'Edit Profile',
+                service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
+                onActionComplete: () => {},  // TODO close it and update patient data
+            }, this.context)
+        )
     },
 
     renderMoles() {
