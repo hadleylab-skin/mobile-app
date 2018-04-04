@@ -12,7 +12,7 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { InfoField, Updater, Button, Picker, Title } from 'components';
+import { InfoField, Updater, Button, Picker } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from 'screens/patients-list/screens/patient/components/moles-list/components/mole';
 import s from './styles';
@@ -110,7 +110,9 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const groupedMolesData = _.groupBy(moles.data, (mole) => mole.data.anatomicalSites[0].pk);
         return _.map(groupedMolesData, (molesGroup, key) => (
             <View key={key}>
-                <Title text={key} />
+                <Text style={s.moleGroupHeader}>
+                    {_.upperCase(key)}
+                </Text>
                 {_.map(molesGroup, (mole, index) => {
                     return (
                         <Mole
@@ -214,6 +216,9 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         />
                     : null}
 
+                    <InfoField
+                        title={'Images'}
+                    />
                     {this.renderMoles()}
 
                     <InfoField

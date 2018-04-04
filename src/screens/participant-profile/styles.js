@@ -48,4 +48,11 @@ export default StyleSheet.create({
         flexDirection: 'row',
         margin: 25,
     },
+    moleGroupHeader: {
+        marginLeft: 15,
+        marginTop: 10,
+        fontSize: 12,
+        lineHeight: 15,
+        color: '#ACB5BE',
+    },
 });
