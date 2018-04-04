@@ -28,6 +28,7 @@ export const Mole = schema({})(React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -119,7 +120,12 @@ export const Mole = schema({})(React.createClass({
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
-        const images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
+        let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
+
+        const currentStudy = this.context.cursors.currentStudyPk.get();
+        if (currentStudy) {
+            images = _.filter(images, {data: {study: currentStudy}});
+        }
 
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 

@@ -28,6 +28,7 @@ export default React.createClass({
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
             filter: React.PropTypes.object.isRequired, // eslint-disable-line
         }),
@@ -41,6 +42,7 @@ export default React.createClass({
                 patientsMoles: this.props.tree.patientsMoles,
                 patientsMoleImages: this.props.tree.patientsMoleImages,
                 currentPatientPk: this.props.tree.currentPatientPk,
+                currentStudyPk: this.props.tree.currentStudyPk,
                 racesList: this.props.tree.racesList,
                 filter: this.props.tree.filter,
             },

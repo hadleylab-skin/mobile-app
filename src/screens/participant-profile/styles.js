@@ -50,9 +50,12 @@ export default StyleSheet.create({
     },
     moleGroupHeader: {
         marginLeft: 15,
-        marginTop: 10,
+        marginTop: 5,
         fontSize: 12,
         lineHeight: 15,
         color: '#ACB5BE',
     },
+    noImagesMargin: {
+        marginBottom: 15,
+    }
 });

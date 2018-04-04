@@ -23,6 +23,7 @@ const model = (props, context) => {
             siteJoinRequest: context.services.getSiteJoinRequestsService,
             currentTab: isParticipant ? 'profile' : 'patients',
             currentPatientPk: null,
+            currentStudyPk: null,
             patients: {},
             patientsMoles: {},
             patientsMoleImages: {},

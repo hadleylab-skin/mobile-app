@@ -14,7 +14,7 @@ import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
-import { Mole } from 'screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
 import s from './styles';
 
 const model = (props, context) => {
@@ -40,6 +40,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
         cursors: React.PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -77,6 +78,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
 
+        cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+
         const result = await services.getPatientMolesService(
             currentPatientPk,
             this.props.tree.moles);
@@ -87,15 +90,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
         // TODO
     },
 
-    getMoles() {
-          const { cursors } = this.context;
-          const currentPatientPk = cursors.currentPatientPk.get();
-
-          return cursors.patientsMoles.select(currentPatientPk, 'moles').get();
-    },
-
     renderMoles() {
-        const moles = this.props.tree.moles.get();
+        let moles = this.props.tree.moles.get();
 
         if (_.isEmpty(moles) || moles.status === 'Loading') {
             return (
@@ -107,7 +103,22 @@ export const ParticipantProfile = schema(model)(React.createClass({
             );
         }
 
-        const groupedMolesData = _.groupBy(moles.data, (mole) => mole.data.anatomicalSites[0].pk);
+        const currentStudyPk = this.props.tree.selectedStudyPk.get();
+        if (currentStudyPk) {
+            moles = _.filter(moles.data, (mole) => mole.data.lastImage.study === currentStudyPk);
+        } else {
+            moles = moles.data;
+        }
+
+        if (_.isEmpty(moles)) {
+            return (
+                <Text style={[s.moleGroupHeader, s.noImagesMargin]}>
+                    No images for selected study
+                </Text>
+            )
+        }
+
+        const groupedMolesData = _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk);
         return _.map(groupedMolesData, (molesGroup, key) => (
             <View key={key}>
                 <Text style={s.moleGroupHeader}>
