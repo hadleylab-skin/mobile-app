@@ -13,6 +13,7 @@ import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
+import { AnatomicalSiteWidget } from 'screens/anatomical-site-widget';
 import { CryptoConfiguration } from 'screens/crypto-config';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
@@ -21,7 +22,8 @@ import profileIcon from './images/profile.png';
 
 
 const model = {
-    newPatient: {}
+    newPatientScreen: {},
+    addMoleScreen: {},
 };
 
 
@@ -57,10 +59,14 @@ export default schema(model)(React.createClass({
         }
     },
 
+    onAddingMoleComplete() {
+
+    },
+
     renderCreatePatient() {
         return (
             <CreateOrEditPatient
-                tree={this.props.tree.newPatient}
+                tree={this.props.tree.newPatientScreen}
                 service={this.context.services.createPatientService}
                 navigator={this.context.mainNavigator}
                 onActionComplete={(patient) => {
@@ -80,11 +86,15 @@ export default schema(model)(React.createClass({
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
+        // TODO maybe cut this down?
         const siteJoinRequireAction = _.chain(this.props.tree.siteJoinRequest.data.get())
                                        .values()
                                        .first()
                                        .get('data.state')
                                        .value() === 2;
+
+        const patients = this.context.cursors.patients.get();
+        const patient = _.get(_.first(_.values(patients.data)), 'data');
 
         return (
             <View
@@ -111,10 +121,14 @@ export default schema(model)(React.createClass({
                     <TabBarIOS.Item
                         title="Camera"
                         icon={cameraIcon}
-                        selected={false}
-                        onPress={() => showModalCursor.set(true)}
+                        selected={currentTabCursor.get() === 'camera'}
+                        onPress={() => currentTabCursor.set('camera')}
                     >
-                        <View/>
+                        <AnatomicalSiteWidget
+                            tree={this.props.tree.addMoleScreen}
+                            sex={patient ? patient.sex : 'm'}
+                            onAddingComplete={this.onAddingMoleComplete}
+                        />
                     </TabBarIOS.Item>
                 </TabBarIOS>
                 <CameraMenu
