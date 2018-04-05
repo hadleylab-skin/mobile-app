@@ -13,7 +13,7 @@ import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
-import { AnatomicalSiteWidget, getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
+import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CryptoConfiguration } from 'screens/crypto-config';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
@@ -96,14 +96,6 @@ export default schema(model)(React.createClass({
         const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
-
-        // TODO maybe cut this down?
-        const siteJoinRequireAction = _.chain(this.props.tree.siteJoinRequest.data.get())
-                                       .values()
-                                       .first()
-                                       .get('data.state')
-                                       .value() === 2;
-
         const patients = this.context.cursors.patients.get();
         const patient = _.get(_.first(_.values(patients.data)), 'data');
 
@@ -118,7 +110,6 @@ export default schema(model)(React.createClass({
                     unselectedItemTintColor="#ACB5BE"
                 >
                     <TabBarIOS.Item
-                        badge={siteJoinRequireAction ? '!' : null}
                         title="My Profile"
                         icon={profileIcon}
                         selected={currentTabCursor.get() === 'profile'}
