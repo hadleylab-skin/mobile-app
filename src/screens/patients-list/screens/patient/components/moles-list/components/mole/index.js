@@ -64,7 +64,6 @@ export const Mole = React.createClass({
     },
 
     async onSubmitMolePhoto(uri) {
-        console.log('HERE!!!!');
         const { cursors, services } = this.context;
         const molePk = this.props.tree.get('pk');
         const service = services.addMolePhotoService;
@@ -78,7 +77,12 @@ export const Mole = React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
+        const currentStudyPk = cursors.currentStudyPk.get();
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), {
+            uri,
+            age,
+            currentStudyPk,
+        });
 
         if (result.status === 'Succeed') {
             const queryParams = cursors.filter.get();
