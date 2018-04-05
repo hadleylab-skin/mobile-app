@@ -13,7 +13,7 @@ import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
-import { AnatomicalSiteWidget } from 'screens/anatomical-site-widget';
+import { AnatomicalSiteWidget, getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CryptoConfiguration } from 'screens/crypto-config';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
@@ -71,7 +71,7 @@ export default schema(model)(React.createClass({
             this.props.tree.participantScreen.moles);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
 
-        this.props.tree.currentTab.set('profile');
+        this.context.mainNavigator.popToTop();
     },
 
     renderCreatePatient() {
@@ -132,14 +132,19 @@ export default schema(model)(React.createClass({
                     <TabBarIOS.Item
                         title="Camera"
                         icon={cameraIcon}
-                        selected={currentTabCursor.get() === 'camera'}
-                        onPress={() => currentTabCursor.set('camera')}
+                        selected={false}
+                        onPress={() => {
+                            this.context.mainNavigator.push(
+                                getAnatomicalSiteWidgetRoute({
+                                    tree: this.props.tree.addMoleScreen,
+                                    sex: patient ? patient.sex : 'm',
+                                    onAddingComplete: this.onAddingMoleComplete,
+                                    rightButtonTitle: '',
+                                }, this.context)
+                            );
+                        }}
                     >
-                        <AnatomicalSiteWidget
-                            tree={this.props.tree.addMoleScreen}
-                            sex={patient ? patient.sex : 'm'}
-                            onAddingComplete={this.onAddingMoleComplete}
-                        />
+                        <View/>
                     </TabBarIOS.Item>
                 </TabBarIOS>
                 <CameraMenu
