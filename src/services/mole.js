@@ -87,6 +87,10 @@ function hydrateMoleData(mole) {
         data.append('patientAnatomicalSite', mole.patientAnatomicalSite);
     }
 
+    if (mole.currentStudyPk) {
+        data.append('study', mole.currentStudyPk);
+    }
+
     return data;
 }
 

@@ -24,6 +24,7 @@ import profileIcon from './images/profile.png';
 const model = {
     newPatientScreen: {},
     addMoleScreen: {},
+    participantScreen: {},
 };
 
 
@@ -38,14 +39,16 @@ export default schema(model)(React.createClass({
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
+            patientsMoles: BaobabPropTypes.cursor.isRequired,
+        }),
         services: React.PropTypes.shape({
             getSiteJoinRequestsService: React.PropTypes.func.isRequired,
             createPatientService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
-        }),
-        cursors: React.PropTypes.shape({
-            doctor: BaobabPropTypes.cursor.isRequired,
-            patients: BaobabPropTypes.cursor.isRequired,
+            getPatientMolesService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -59,8 +62,16 @@ export default schema(model)(React.createClass({
         }
     },
 
-    onAddingMoleComplete() {
+    async onAddingMoleComplete() {
+        const { cursors, services } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
 
+        const result = await services.getPatientMolesService(
+            currentPatientPk,
+            this.props.tree.participantScreen.moles);
+        cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
+
+        this.props.tree.currentTab.set('profile');
     },
 
     renderCreatePatient() {
@@ -114,7 +125,7 @@ export default schema(model)(React.createClass({
                         onPress={() => currentTabCursor.set('profile')}
                     >
                         <ParticipantProfile
-                            tree={this.props.tree.participantScreenState}
+                            tree={this.props.tree.participantScreen}
                             doctorCursor={this.props.tokenCursor.data.doctor}
                         />
                     </TabBarIOS.Item>

@@ -1,11 +1,16 @@
 import _ from 'lodash';
 import { buildGetService, buildPostService, defaultHeaders, hydrateImage } from './base';
 
-function hydrateMolePhotoData({ uri, age }) {
+function hydrateMolePhotoData({ uri, age, currentStudyPk }) {
     let data = new FormData();
+
+    console.log(currentStudyPk);
 
     data.append('photo', hydrateImage(uri));
     data.append('age', age);
+    if (currentStudyPk) {
+        data.append('study', currentStudyPk);
+    }
 
     return data;
 }

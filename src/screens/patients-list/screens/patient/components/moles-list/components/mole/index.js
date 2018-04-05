@@ -64,6 +64,7 @@ export const Mole = React.createClass({
     },
 
     async onSubmitMolePhoto(uri) {
+        console.log('HERE!!!!');
         const { cursors, services } = this.context;
         const molePk = this.props.tree.get('pk');
         const service = services.addMolePhotoService;
