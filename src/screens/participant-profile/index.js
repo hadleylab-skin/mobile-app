@@ -88,6 +88,12 @@ export const ParticipantProfile = schema(model)(React.createClass({
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
     },
 
+    onCompleteSaveProfile(data) {
+        const currentPatientPk = this.context.cursors.currentPatientPk.get();
+        this.context.cursors.patients.select('data', currentPatientPk, 'data').set(data);
+        this.context.mainNavigator.popToTop();
+    },
+
     goEditProfile() {
         const { cursors, services, mainNavigator } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
@@ -98,7 +104,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                 dataCursor: this.context.cursors.patients.select('data', currentPatientPk, 'data'),
                 title: 'Edit Profile',
                 service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
-                onActionComplete: () => {},  // TODO close it and update patient data
+                onActionComplete: (data) => {this.onCompleteSaveProfile(data)},
             }, this.context)
         )
     },
