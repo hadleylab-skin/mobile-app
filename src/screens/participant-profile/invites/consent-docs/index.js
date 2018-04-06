@@ -85,9 +85,9 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
                 this.props.tree.selectedStudyPk.set(invite.study.pk);
             }
 
-            const invites = _.filter(this.props.tree.invites.data.get(), {
-                pk: invite.pk
-            });
+            const invites = _.filter(
+                this.props.tree.invites.data.get(),
+                (item) => item.pk !== invite.pk);
 
             this.props.tree.invites.data.set(invites);
             this.props.tree.studies.data.push(invite.study);

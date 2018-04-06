@@ -35,9 +35,8 @@ export const InviteDetailScreen = schema(model)(React.createClass({
             this.props.tree.declineInviteCursor);
         if (result.status === 'Succeed') {
             const invites = _.filter(
-                this.props.tree.invites.data.get(), {
-                pk: invite.pk
-            });
+                this.props.tree.invites.data.get(),
+                (item) => item.pk !== invite.pk);
 
             this.props.tree.invites.data.set(invites);
             this.context.mainNavigator.popToTop();
