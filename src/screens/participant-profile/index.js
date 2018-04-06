@@ -13,6 +13,7 @@ import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
@@ -50,6 +51,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
             getStudiesService: React.PropTypes.func.isRequired,
             getInvitesService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
+            updatePatientConsentService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -101,12 +103,22 @@ export const ParticipantProfile = schema(model)(React.createClass({
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: this.props.tree.editProfileScreen,
-                dataCursor: this.context.cursors.patients.select('data', currentPatientPk, 'data'),
+                dataCursor: cursors.patients.select('data', currentPatientPk, 'data'),
                 title: 'Edit Profile',
                 service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
                 onActionComplete: (data) => {this.onCompleteSaveProfile(data)},
             }, this.context)
         )
+    },
+
+    checkConsent() {
+        const { cursors, services, mainNavigator } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        return checkConsent(
+            cursors.patients.select('data', currentPatientPk, 'data'),
+            services.updatePatientConsentService,
+            mainNavigator);
     },
 
     renderMoles() {
@@ -147,7 +159,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     return (
                         <Mole
                             key={`${key}-${index}`}
-                            checkConsent={() => true}
+                            checkConsent={this.checkConsent}
                             hasBorder={index !== 0}
                             navigator={this.context.mainNavigator}
                             tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
