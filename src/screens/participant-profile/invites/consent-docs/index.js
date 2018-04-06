@@ -4,6 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
     Text,
+    Alert,
     ScrollView,
     NativeEventEmitter,
     NativeModules,
@@ -92,7 +93,7 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
             this.props.tree.studies.data.push(invite.study);
             this.context.mainNavigator.popToTop();
         } else {
-            // TODO
+            Alert.alert('Error', JSON.stringify(result.error.data));
         }
     },
 

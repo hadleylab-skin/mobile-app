@@ -42,7 +42,7 @@ export const InviteDetailScreen = schema(model)(React.createClass({
             this.props.tree.invites.data.set(invites);
             this.context.mainNavigator.popToTop();
         } else {
-            // TODO
+            Alert.alert('Error', JSON.stringify(result.error.data));
         }
     },
 
