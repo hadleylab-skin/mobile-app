@@ -57,18 +57,14 @@ const SignUp = schema(model)(React.createClass({
         if (this.props.tree.belongToGroup.get() === false) {
             data.site = null;
         }
+        const isParticipantForm = this.props.tree.isParticipantForm.get();
 
-        console.log(data);
-
-        // let result;
-        // const isParticipantForm = this.props.tree.isParticipantForm.get();
-        // if (isParticipantForm) {
-        //     result = await signUpAsParticipantService(this.props.tree.result, data);
-        // } else {
-        //     result = await signUpService(this.props.tree.result, data);
-        // }
-
-        const result = await signUpAsParticipantService(this.props.tree.result, data);
+        let result = null;
+        if (isParticipantForm) {
+            result = await signUpAsParticipantService(this.props.tree.result, data);
+        } else {
+            result = await signUpService(this.props.tree.result, data);
+        }
 
         if (result.status === 'Failure') {
             handleFormSubmitError(result.error, this.form);

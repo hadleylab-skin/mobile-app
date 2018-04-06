@@ -23,6 +23,7 @@ export const Mole = schema({})(React.createClass({
         molePk: React.PropTypes.number.isRequired,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         checkConsent: React.PropTypes.func.isRequired,
+        hideBottomPanel: React.PropTypes.bool,
     },
 
     contextTypes: {
@@ -120,6 +121,7 @@ export const Mole = schema({})(React.createClass({
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
+        const { hideBottomPanel } = this.props;
         let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
 
         const currentStudy = this.context.cursors.currentStudyPk.get();
@@ -136,7 +138,7 @@ export const Mole = schema({})(React.createClass({
                     this.props.molePk,
                     this.props.tree,
                 )}
-                style={s.container}
+                style={hideBottomPanel ? s.container : s.containerWithMargin}
             >
                 <ScrollView scrollEventThrottle={200}>
                     <View style={s.inner}>
