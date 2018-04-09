@@ -199,7 +199,12 @@ export const ParticipantProfile = schema(model)(React.createClass({
         const invites = this.props.tree.invites.data.get();
 
         return (
-            <View style={s.container}>
+            <Updater
+                service={async () => await this.context.services.getInvitesService(
+                    this.props.tree.invites,
+                )}
+                style={s.container}
+            >
                 <ScrollView
                     onScroll={this.onScroll}
                     style={s.inner}
@@ -271,7 +276,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         onPress={resetState}
                     />
                 </ScrollView>
-            </View>
+            </Updater>
         );
     },
 }));
