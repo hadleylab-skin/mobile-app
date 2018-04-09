@@ -42,7 +42,7 @@ export default StyleSheet.create({
     formSwitchWrapper: {
         marginTop: 20,
         marginBottom: 20,
-        paddingRight: 60,
+        alignItems: 'flex-start',
     },
 
     errorWrapper: {
