@@ -136,7 +136,9 @@ export const ParticipantProfile = schema(model)(React.createClass({
 
         const currentStudyPk = this.props.tree.selectedStudyPk.get();
         if (currentStudyPk) {
-            moles = _.filter(moles.data, (mole) => mole.data.lastImage.study === currentStudyPk);
+            moles = _.filter(
+                moles.data,
+                (mole) => _.includes(mole.data.studies, currentStudyPk));
         } else {
             moles = moles.data;
         }
