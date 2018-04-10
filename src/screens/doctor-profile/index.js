@@ -11,16 +11,21 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { InfoField, Switch, Title, Updater } from 'components';
+import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
-const model = {
-    tree: {
-        siteJoinRequestScreenState: {},
-    },
+const model = (props, context) => {
+    return {
+        tree: {
+            siteJoinRequestScreenState: {},
+            studies: context.services.getStudiesService,
+            studyPicker: {},
+            selectedStudyPk: null,
+        },
+    }
 };
 
 export const DoctorProfile = schema(model)(React.createClass({
@@ -35,14 +40,29 @@ export const DoctorProfile = schema(model)(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
+            getStudiesService: React.PropTypes.func.isRequired,
             updateDoctorService: React.PropTypes.func.isRequired,
             getDoctorService: React.PropTypes.func.isRequired,
             getSiteJoinRequestsService: React.PropTypes.func.isRequired,
             confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
         }),
+    },
+
+    async componentWillMount() {
+        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        this.onSelectedStudyUpdate();
+    },
+
+    componentWillUnmount() {
+        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+    },
+
+    async onSelectedStudyUpdate() {
+        this.context.cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
     },
 
     openCryptoConfiguration() {
@@ -196,6 +216,16 @@ export const DoctorProfile = schema(model)(React.createClass({
 
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
+        const studies = this.props.tree.studies.get();
+        const studyOptions = _.flatten(
+            [
+                [[null, 'Not selected']],
+                _.map(studies.data, (study) => [
+                    study.pk,
+                    study.title,
+                ])
+            ]
+        );
 
         return (
             <Updater
@@ -240,6 +270,14 @@ export const DoctorProfile = schema(model)(React.createClass({
                         }
                     />
                 </View>
+                <View style={s.content}>
+                    <Picker
+                        tree={this.props.tree.studyPicker}
+                        cursor={this.props.tree.selectedStudyPk}
+                        items={studyOptions}
+                        title="Study"
+                    />
+                </View>
                 {
                 isInSharedMode()
                 ?
@@ -256,7 +294,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 <View style={s.content}>
                     {this.renderSiteJoinRequest()}
                 </View>
-                <View style={s.logout}>
+                <View style={s.content}>
                     <InfoField
                         title={'Log out'}
                         hasNoBorder

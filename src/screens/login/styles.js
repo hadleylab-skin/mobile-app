@@ -39,6 +39,12 @@ export default StyleSheet.create({
         alignItems: 'flex-end',
     },
 
+    formSwitchWrapper: {
+        marginTop: 20,
+        marginBottom: 20,
+        alignItems: 'flex-start',
+    },
+
     errorWrapper: {
         backgroundColor: 'transparent',
     },

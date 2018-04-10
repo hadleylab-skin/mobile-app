@@ -26,17 +26,6 @@ export default StyleSheet.create({
         borderBottomWidth: 0.5,
         borderBottomColor: '#DADADA',
     },
-    logout: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 49,
-        borderTopWidth: 0.5,
-        borderTopColor: '#DADADA',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
-        backgroundColor: '#fff',
-    },
     photo: {
         width: 100,
         height: 100,

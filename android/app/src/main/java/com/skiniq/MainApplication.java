@@ -3,6 +3,7 @@ package com.skiniq;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNReactNativeDocViewerPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.rssignaturecapture.RSSignatureCapturePackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNReactNativeDocViewerPackage(),
             new ImagePickerPackage(),
             new BlurViewPackage(),
             new RSSignatureCapturePackage(),
