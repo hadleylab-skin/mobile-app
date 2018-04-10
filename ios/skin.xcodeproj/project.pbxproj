@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -38,6 +39,7 @@
 		5E05FA2F1FA069870036E62B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5E05FA2E1FA069870036E62B /* Settings.bundle */; };
 		5E8806D21F441F99007990A5 /* RNSecretManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E8806D11F441F99007990A5 /* RNSecretManager.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		6B15424E5FD2455BA9F2E084 /* libRNReactNativeDocViewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */; };
 		70858756C7664DFB8B998E5F /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55691EE986F241A5A8D1647F /* libRNBlur.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8E9C288FEEBC4451AFC4E571 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06504095027F4A229CC8103A /* libRSSignatureCapture.a */; };
@@ -60,7 +62,6 @@
 		92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3C61F46B017003DD4EE /* BodyViewManager.m */; };
 		92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
 		ECD284CB715E41478CDEC109 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */; };
-		6B15424E5FD2455BA9F2E084 /* libRNReactNativeDocViewer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -288,6 +289,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		D1C9C453207D10EB00AD8ED6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNReactNativeDocViewer;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -314,6 +322,7 @@
 		252EA344B51F192DDE5F5588 /* Pods-Skin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* skin-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "skin-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* skin-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "skin-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeDocViewer.a; sourceTree = "<group>"; };
 		55691EE986F241A5A8D1647F /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		5E05FA2E1FA069870036E62B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		5E067B4D1F42FDAA00498595 /* skin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = skin.entitlements; sourceTree = "<group>"; };
@@ -324,6 +333,7 @@
 		637C9B845D57428191E9A9D5 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		6653BC2F83654DB296096237 /* libRNRSA.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNRSA.a; sourceTree = "<group>"; };
 		6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skin/Pods-Skin.debug.xcconfig"; sourceTree = "<group>"; };
+		72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNReactNativeDocViewer.xcodeproj; path = "../node_modules/react-native-doc-viewer/ios/RNReactNativeDocViewer.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8D6FEDFE22594AADB229495F /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
@@ -348,8 +358,6 @@
 		92EBB3C81F46B061003DD4EE /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		9CBCA58D8EA443B2A1C3E983 /* RNRSA.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRSA.xcodeproj; path = "../node_modules/react-native-rsa-native/ios/RNRSA.xcodeproj"; sourceTree = "<group>"; };
 		AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
-		72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */ = {isa = PBXFileReference; name = "RNReactNativeDocViewer.xcodeproj"; path = "../node_modules/react-native-doc-viewer/ios/RNReactNativeDocViewer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */ = {isa = PBXFileReference; name = "libRNReactNativeDocViewer.a"; path = "libRNReactNativeDocViewer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -537,6 +545,7 @@
 				06504095027F4A229CC8103A /* libRSSignatureCapture.a */,
 				55691EE986F241A5A8D1647F /* libRNBlur.a */,
 				AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */,
+				4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -707,6 +716,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		D1C9C450207D10EB00AD8ED6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D1C9C454207D10EB00AD8ED6 /* libRNReactNativeDocViewer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		EB3E295CB01886ADFF362B4C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -809,7 +826,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 4452VN45AX;
+						DevelopmentTeam = 5YKK4CX8V6;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -881,6 +898,10 @@
 				{
 					ProductGroup = 5E4EAA741F754B3B00971A54 /* Products */;
 					ProjectRef = 19A626FE1E5549D58C9EC67E /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = D1C9C450207D10EB00AD8ED6 /* Products */;
+					ProjectRef = 72CBF047DE884C79A451FB87 /* RNReactNativeDocViewer.xcodeproj */;
 				},
 				{
 					ProductGroup = 5E4EA9DA1F7545DA00971A54 /* Products */;
@@ -1110,6 +1131,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D1C9C454207D10EB00AD8ED6 /* libRNReactNativeDocViewer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNReactNativeDocViewer.a;
+			remoteRef = D1C9C453207D10EB00AD8ED6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1389,7 +1417,7 @@
 				CODE_SIGN_ENTITLEMENTS = skin.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 4452VN45AX;
+				DEVELOPMENT_TEAM = 5YKK4CX8V6;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
@@ -1422,7 +1450,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = skin.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4452VN45AX;
+				DEVELOPMENT_TEAM = 5YKK4CX8V6;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-rsa-native/ios",
