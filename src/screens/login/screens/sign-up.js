@@ -148,8 +148,8 @@ const SignUp = schema(model)(React.createClass({
                         <Switch
                             cursor={isParticipantFormCursor}
                             items={[
-                                { label: 'Practical', value: false },
-                                { label: 'Participant', value: true },
+                                { label: 'Researcher', value: false },
+                                { label: 'Patient', value: true },
                             ]}
                         />
                     </View>
