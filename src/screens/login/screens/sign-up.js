@@ -12,7 +12,7 @@ import { Input, Button, StartScreen,
 } from 'components';
 import schema from 'libs/state';
 import { handleFormSubmitError } from 'libs/form';
-import { signUpSerice } from 'services/auth';
+import { signUpService, signUpAsParticipantService } from 'services/auth';
 import { getSitesService } from 'services/constants';
 import s from '../styles';
 
@@ -26,6 +26,7 @@ const model = {
             site: '',
         },
         belongToGroup: false,
+        isParticipantForm: false,
         picker: {},
         availableSites: {},
         result: {},
@@ -56,7 +57,15 @@ const SignUp = schema(model)(React.createClass({
         if (this.props.tree.belongToGroup.get() === false) {
             data.site = null;
         }
-        const result = await signUpSerice(this.props.tree.result, data);
+        const isParticipantForm = this.props.tree.isParticipantForm.get();
+
+        let result = null;
+        if (isParticipantForm) {
+            result = await signUpAsParticipantService(this.props.tree.result, data);
+        } else {
+            result = await signUpService(this.props.tree.result, data);
+        }
+
         if (result.status === 'Failure') {
             handleFormSubmitError(result.error, this.form);
             return;
@@ -126,6 +135,8 @@ const SignUp = schema(model)(React.createClass({
         const lastNameCursor = this.props.tree.form.lastName;
         const emailCursor = this.props.tree.form.email;
         const passwordCursor = this.props.tree.form.password;
+        const isParticipantFormCursor = this.props.tree.isParticipantForm;
+        const isParticipantForm = isParticipantFormCursor.get();
 
         return (
             <StartScreen>
@@ -133,32 +144,52 @@ const SignUp = schema(model)(React.createClass({
                     ref={(ref) => { this.form = ref; }}
                     onSubmit={this.onSubmit}
                 >
-                    <Text style={s.label}>FIRST NAME</Text>
-                    <Input
-                        label="First Name"
-                        name="firstName"
-                        cursor={firstNameCursor}
-                        returnKeyType="next"
-                        inputWrapperStyle={s.inputWrapper}
-                        inputStyle={s.input}
-                        placeholderTextColor="rgba(255,255,255,0.7)"
-                        errorStyle={s.error}
-                        errorWrapperStyle={s.errorWrapper}
-                        errorPlaceholderTextColor="#fff"
-                    />
-                    <Text style={s.label}>LAST NAME</Text>
-                    <Input
-                        label="Last Name"
-                        name="lastName"
-                        cursor={lastNameCursor}
-                        returnKeyType="next"
-                        inputWrapperStyle={s.inputWrapper}
-                        inputStyle={s.input}
-                        placeholderTextColor="rgba(255,255,255,0.7)"
-                        errorStyle={s.error}
-                        errorWrapperStyle={s.errorWrapper}
-                        errorPlaceholderTextColor="#fff"
-                    />
+                    <View style={s.formSwitchWrapper}>
+                        <Switch
+                            cursor={isParticipantFormCursor}
+                            items={[
+                                { label: 'Researcher', value: false },
+                                { label: 'Patient', value: true },
+                            ]}
+                        />
+                    </View>
+
+                    {!isParticipantForm ?
+                        <View>
+                            <Text style={s.label}>FIRST NAME</Text>
+                            <Input
+                                label="First Name"
+                                name="firstName"
+                                cursor={firstNameCursor}
+                                returnKeyType="next"
+                                inputWrapperStyle={s.inputWrapper}
+                                inputStyle={s.input}
+                                placeholderTextColor="rgba(255,255,255,0.7)"
+                                errorStyle={s.error}
+                                errorWrapperStyle={s.errorWrapper}
+                                errorPlaceholderTextColor="#fff"
+                            />
+                        </View>
+                    : null}
+
+                    {!isParticipantForm ?
+                        <View>
+                            <Text style={s.label}>LAST NAME</Text>
+                            <Input
+                                label="Last Name"
+                                name="lastName"
+                                cursor={lastNameCursor}
+                                returnKeyType="next"
+                                inputWrapperStyle={s.inputWrapper}
+                                inputStyle={s.input}
+                                placeholderTextColor="rgba(255,255,255,0.7)"
+                                errorStyle={s.error}
+                                errorWrapperStyle={s.errorWrapper}
+                                errorPlaceholderTextColor="#fff"
+                            />
+                        </View>
+                    : null}
+
                     <Text style={s.label}>EMAIL</Text>
                     <Input
                         label="Email"
@@ -188,7 +219,9 @@ const SignUp = schema(model)(React.createClass({
                         errorWrapperStyle={s.errorWrapper}
                         errorPlaceholderTextColor="#fff"
                     />
-                    {this.renderBelongToGroupFields()}
+                    {!isParticipantForm ?
+                        this.renderBelongToGroupFields()
+                    : null}
                 </Form>
                 <View style={s.button}>
                     <Button title="Sign Up" onPress={this.onSubmit} type="white" />

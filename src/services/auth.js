@@ -22,6 +22,8 @@ export const loginService = buildPostService(
 export const resetPasswordSerice = buildPostService(
     '/api/v1/auth/password/reset/');
 
-export const signUpSerice = buildPostService(
+export const signUpService = buildPostService(
     '/api/v1/auth/register/');
 
+export const signUpAsParticipantService = buildPostService(
+    '/api/v1/auth/register_as_participant/');

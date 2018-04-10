@@ -59,7 +59,7 @@ const model = {
     },
 };
 
-const CreateOrEditPatient = schema(model)(React.createClass({
+export const CreateOrEditPatient = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         dataCursor: BaobabPropTypes.cursor,
@@ -177,7 +177,7 @@ const CreateOrEditPatient = schema(model)(React.createClass({
         const result = await service(this.props.tree, { doctors, ...formData });
 
         if (result.status === 'Succeed') {
-            onActionComplete(result.data.pk, result.data.sex);
+            onActionComplete(result.data);
         } else {
             const mrnError = _.join(result.error.data.mrnHash || [], ',');
             if (mrnError) {

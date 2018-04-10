@@ -36,6 +36,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
@@ -124,11 +125,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             patientPk).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
+        const currentStudyPk = this.context.cursors.currentStudyPk.get();
 
         let moleData = {
             ...data,
             age,
             uri,
+            currentStudyPk,
         };
 
         const service = this.context.services.addMoleService;
@@ -159,7 +162,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
+        const currentStudyPk = cursors.currentStudyPk.get();
+        const result = await service(
+            patientPk, molePk, imagesCursor.select(pk), {
+                uri,
+                age,
+                currentStudyPk,
+            });
 
         if (result.status === 'Succeed') {
             imagesCursor.unset(pk);

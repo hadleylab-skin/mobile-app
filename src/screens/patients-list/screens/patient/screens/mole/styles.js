@@ -5,6 +5,11 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#FAFAFA',
         paddingTop: 64,
+    },
+    containerWithMargin: {
+        flex: 1,
+        backgroundColor: '#FAFAFA',
+        paddingTop: 64,
         marginBottom: 49,
     },
     inner: {

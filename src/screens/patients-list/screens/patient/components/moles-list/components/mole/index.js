@@ -18,6 +18,7 @@ export const Mole = React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         checkConsent: React.PropTypes.func.isRequired,
         hasBorder: React.PropTypes.bool,
+        hideBottomPanel: React.PropTypes.bool,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
@@ -77,7 +78,12 @@ export const Mole = React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const result = await service(patientPk, molePk, imagesCursor.select(pk), { uri, age });
+        const currentStudyPk = cursors.currentStudyPk.get();
+        const result = await service(patientPk, molePk, imagesCursor.select(pk), {
+            uri,
+            age,
+            currentStudyPk,
+        });
 
         if (result.status === 'Succeed') {
             const queryParams = cursors.filter.get();
@@ -115,6 +121,7 @@ export const Mole = React.createClass({
                 title: anatomicalSites[anatomicalSites.length - 1].name,
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,
+                hideBottomPanel: this.props.hideBottomPanel,
                 navigator: this.props.navigator,
             })
         );
