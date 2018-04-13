@@ -15,8 +15,10 @@ import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
+import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
 const model = (props, context) => {
@@ -120,6 +122,16 @@ export const ParticipantProfile = schema(model)(React.createClass({
             services.updatePatientConsentService,
             mainNavigator);
     },
+
+    openCryptoConfiguration() {
+        this.context.mainNavigator.push(
+            getCryptoConfigurationRoute({
+                doctorCursor: this.props.doctorCursor,
+                keyPairStatusCursor: this.props.keyPairStatusCursor,
+            }));
+    },
+
+
 
     renderMoles() {
         let moles = this.props.tree.moles.get();
@@ -271,6 +283,19 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     />
                     {this.renderMoles()}
 
+                    {
+                    isInSharedMode()
+                    ?
+                    null
+                    :
+                    <View style={s.content}>
+                        <InfoField
+                            title="Cryptography configuration"
+                            hasNoBorder
+                            onPress={this.openCryptoConfiguration}
+                        />
+                    </View>
+                    }
                     <InfoField
                         title={'Log out'}
                         onPress={resetState}

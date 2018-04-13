@@ -118,6 +118,7 @@ export default schema(model)(React.createClass({
                         <ParticipantProfile
                             tree={this.props.tree.participantScreen}
                             doctorCursor={this.props.tokenCursor.data.doctor}
+                            keyPairStatusCursor={this.props.keyPairStatusCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
