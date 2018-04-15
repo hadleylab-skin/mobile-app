@@ -42,6 +42,10 @@ export const Patient = schema(model)(React.createClass({
         }),
     },
 
+    componentWillMount() {
+        this.updatePatientScreen();
+    },
+
     async updatePatientScreen() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();

@@ -7,6 +7,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    Settings,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
@@ -23,7 +24,7 @@ const model = (props, context) => {
             siteJoinRequestScreenState: {},
             studies: context.services.getStudiesService,
             studyPicker: {},
-            selectedStudyPk: null,
+            selectedStudyPk: Settings.get('selectedStudyPk'),
         },
     }
 };
@@ -52,6 +53,12 @@ export const DoctorProfile = schema(model)(React.createClass({
         }),
     },
 
+    getInitialState() {
+        return {
+            offsetY: 0,
+        };
+    },
+
     async componentWillMount() {
         this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
@@ -62,7 +69,9 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     async onSelectedStudyUpdate() {
-        this.context.cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+        const studyPk = this.props.tree.selectedStudyPk.get();
+        this.context.cursors.currentStudyPk.set(studyPk);
+        Settings.set('selectedStudyPk', studyPk);
     },
 
     openCryptoConfiguration() {
@@ -146,6 +155,11 @@ export const DoctorProfile = schema(model)(React.createClass({
         await this.updateScreenData();
         await this.context.services.patientsService(
             this.context.cursors.patients, {});
+    },
+
+    onScroll(e) {
+        const offsetY = e.nativeEvent.contentOffset.y;
+        this.setState({ offsetY });
     },
 
     renderSiteJoinRequest() {
@@ -232,6 +246,8 @@ export const DoctorProfile = schema(model)(React.createClass({
                 service={this.updateScreenData}
                 style={s.container}
                 color="#ACB5BE"
+                ref={(ref) => { this.scrollView = ref; }}
+                onScrollView={this.onScroll}
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />
@@ -276,6 +292,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                         cursor={this.props.tree.selectedStudyPk}
                         items={studyOptions}
                         title="Study"
+                        onPress={() => this.scrollView.scrollTo({ x: 0, y: offsetY + 220, animated: true })}
                     />
                 </View>
                 {

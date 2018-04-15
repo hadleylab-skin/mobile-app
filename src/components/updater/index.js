@@ -29,6 +29,7 @@ export const Updater = React.createClass({
         children: React.PropTypes.node.isRequired,
         style: React.PropTypes.number,
         color: React.PropTypes.string,
+        onScrollView: React.PropTypes.func,
     },
 
     getInitialState() {
@@ -36,6 +37,12 @@ export const Updater = React.createClass({
             isLoading: false,
             canUpdate: true,
         };
+    },
+
+    scrollTo(params) {
+        if (this.scrollView) {
+            this.scrollView.scrollTo(params);
+        }
     },
 
     render() {
@@ -57,11 +64,17 @@ export const Updater = React.createClass({
                     null
                 }
                 <ScrollView
-                    onScroll={_onScroll.bind(this)}
+                    onScroll={(e) => {
+                        _onScroll.bind(this)(e);
+                        if (this.props.onScrollView) {
+                            this.props.onScrollView(e);
+                        }
+                    }}
                     scrollEventThrottle={20}
                     automaticallyAdjustContentInsets={false}
                     style={{ flex: 1 }}
                     contentContainerStyle={{ flex: 1, position: 'relative' }}
+                    ref={(ref) => { this.scrollView = ref; }}
                 >
                     {this.props.children}
                 </ScrollView>
