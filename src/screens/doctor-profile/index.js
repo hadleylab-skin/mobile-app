@@ -74,9 +74,7 @@ export const DoctorProfile = schema(model)(React.createClass({
     async onSelectedStudyUpdate() {
         const studyPk = this.props.tree.selectedStudyPk.get();
         this.context.cursors.currentStudyPk.set(studyPk);
-        if (studyPk) {
-            await AsyncStorage.setItem('@SkinIQ:selectedStudyPk', '' + studyPk);
-        }
+        await AsyncStorage.setItem('@SkinIQ:selectedStudyPk', '' + studyPk);
     },
 
     openCryptoConfiguration() {
