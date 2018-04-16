@@ -7,6 +7,7 @@ import {
     ListView,
     ActivityIndicator,
     NavigatorIOS,
+    AsyncStorage,
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
@@ -50,9 +51,10 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     patientsToList(data) {
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        let currentStudyPk = this.context.cursors.currentStudyPk.get();
+        currentStudyPk = parseInt(currentStudyPk);
 
-        if (_.isNumber(currentStudyPk)) {
+        if (currentStudyPk) {
             data = _.filter(data, (patient, patientPk) => {
                 const studyPks = _.map(patient.data.studies, (study) => study.pk);
                 return _.includes(studyPks, currentStudyPk);
@@ -71,6 +73,10 @@ const PatientsListScreen = schema({})(React.createClass({
         await services.patientsService(cursors.patients, queryParams);
         cursors.patients.on('update', this.updateDataStore);
         cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+        const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
+        if (result) {
+            cursors.currentStudyPk.set(result);
+        }
     },
 
     componentWillUnmount() {

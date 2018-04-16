@@ -124,9 +124,11 @@ export const Mole = schema({})(React.createClass({
         const { hideBottomPanel } = this.props;
         let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
 
-        const currentStudy = this.context.cursors.currentStudyPk.get();
-        if (currentStudy) {
-            images = _.filter(images, {data: {study: currentStudy}});
+        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        if (_.isNumber(currentStudyPk)) {
+            images = _.filter(images, {data: {study: {pk: currentStudyPk}}});
+        } else {
+            images = _.filter(images, (image) => _.isEmpty(image.data.study));
         }
 
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
