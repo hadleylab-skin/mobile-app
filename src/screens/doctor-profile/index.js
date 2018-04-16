@@ -7,7 +7,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    Settings,
+    AsyncStorage,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
@@ -24,7 +24,10 @@ const model = (props, context) => {
             siteJoinRequestScreenState: {},
             studies: context.services.getStudiesService,
             studyPicker: {},
-            selectedStudyPk: Settings.get('selectedStudyPk'),
+            selectedStudyPk: async (cursor) => {
+                const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
+                cursor.set(result);
+            }
         },
     }
 };
@@ -71,7 +74,9 @@ export const DoctorProfile = schema(model)(React.createClass({
     async onSelectedStudyUpdate() {
         const studyPk = this.props.tree.selectedStudyPk.get();
         this.context.cursors.currentStudyPk.set(studyPk);
-        Settings.set('selectedStudyPk', studyPk);
+        if (studyPk) {
+            await AsyncStorage.setItem('@SkinIQ:selectedStudyPk', '' + studyPk);
+        }
     },
 
     openCryptoConfiguration() {
@@ -158,8 +163,10 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     onScroll(e) {
-        const offsetY = e.nativeEvent.contentOffset.y;
-        this.setState({ offsetY });
+        if (this.scrollView) {
+            const offsetY = e.nativeEvent.contentOffset.y;
+            this.setState({ offsetY });
+        }
     },
 
     renderSiteJoinRequest() {
@@ -229,6 +236,7 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     render() {
+        const { offsetY } = this.state;
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
         const studies = this.props.tree.studies.get();
         const studyOptions = _.flatten(
