@@ -58,7 +58,7 @@ const PatientsListScreen = schema({})(React.createClass({
                 return _.includes(studyPks, currentStudyPk);
             });
         } else {
-            data = _.filter(data, (patient, patientPk) => _.isEmpty(patient.studies));
+            data = _.filter(data, (patient, patientPk) => _.isEmpty(patient.data.studies));
         }
 
         return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
