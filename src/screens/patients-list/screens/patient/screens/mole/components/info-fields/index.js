@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -23,6 +24,7 @@ const InfoFields = schema(model)(React.createClass({
         molePk: React.PropTypes.number.isRequired,
         imagePk: React.PropTypes.number.isRequired,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        currentImage: React.PropTypes.object.isRequired,
     },
 
     contextTypes: {
@@ -184,6 +186,18 @@ const InfoFields = schema(model)(React.createClass({
         );
     },
 
+    renderStudy() {
+        const { currentImage } = this.props;
+        if (currentImage.data && !_.isEmpty(currentImage.data.study)) {
+            return (
+                <InfoField
+                    title="Study"
+                    text={currentImage.data.study.title}
+                />
+            );
+        }
+    },
+
     render() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyCursor = fieldsDataCursor.select('biopsy');
@@ -209,6 +223,8 @@ const InfoFields = schema(model)(React.createClass({
                 />
 
                 {biopsyCursor.get() ? this.renderLesionsField() : null}
+
+                {this.renderStudy()}
             </View>
         );
     },

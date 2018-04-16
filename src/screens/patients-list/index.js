@@ -51,7 +51,7 @@ const PatientsListScreen = schema({})(React.createClass({
 
     patientsToList(data) {
         const currentStudyPk = this.context.cursors.currentStudyPk.get();
-        if (currentStudyPk) {
+        if (_.isNumber(currentStudyPk)) {
             data = _.filter(data, (patient, patientPk) => {
                 const studyPks = _.map(patient.data.studies, (study) => study.pk);
                 return _.includes(studyPks, currentStudyPk);
@@ -91,9 +91,11 @@ const PatientsListScreen = schema({})(React.createClass({
     updateCurrentStudy() {
         const patients = this.patientsToList(this.context.cursors.patients.get('data'));
 
-        this.setState({
-            ds: this.state.ds.cloneWithRows(patients),
-        });
+        if (this.scrollView) {
+            this.setState({
+                ds: this.state.ds.cloneWithRows(patients),
+            });
+        }
     },
 
     renderList() {
@@ -119,6 +121,7 @@ const PatientsListScreen = schema({})(React.createClass({
                     marginBottom: 49,
                     flex: 1,
                 }}
+                ref={(ref) => { this.scrollView = ref; }}
                 dataSource={this.state.ds}
                 renderRow={(rowData) => (
                     <PatientListItem

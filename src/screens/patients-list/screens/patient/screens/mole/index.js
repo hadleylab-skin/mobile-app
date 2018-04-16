@@ -158,6 +158,7 @@ export const Mole = schema({})(React.createClass({
                                     molePk={this.props.molePk}
                                     imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
                                     navigator={this.props.navigator}
+                                    currentImage={currentImage}
                                 />
                             </View>
                         : null}
