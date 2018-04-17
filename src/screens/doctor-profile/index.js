@@ -26,7 +26,11 @@ const model = (props, context) => {
             studyPicker: {},
             selectedStudyPk: async (cursor) => {
                 const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
-                cursor.set(result);
+                if (result) {
+                    cursor.set(parseInt(result));
+                } else {
+                    cursor.set(null);
+                }
             }
         },
     }

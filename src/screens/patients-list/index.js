@@ -75,7 +75,7 @@ const PatientsListScreen = schema({})(React.createClass({
         cursors.currentStudyPk.on('update', this.updateCurrentStudy);
         const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
         if (result) {
-            cursors.currentStudyPk.set(result);
+            cursors.currentStudyPk.set(parseInt(result));
         }
     },
 
