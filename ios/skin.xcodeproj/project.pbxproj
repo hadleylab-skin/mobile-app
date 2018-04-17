@@ -43,11 +43,16 @@
 		70858756C7664DFB8B998E5F /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55691EE986F241A5A8D1647F /* libRNBlur.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8E9C288FEEBC4451AFC4E571 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06504095027F4A229CC8103A /* libRSSignatureCapture.a */; };
-		9214ED971F50271B0043CC56 /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214ED961F50271B0043CC56 /* LinkedList.swift */; };
 		9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */; };
 		9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */; };
 		9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */; };
 		9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */; };
+		92940B432085CD1A0070C578 /* BodyView3D+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */; };
+		92940B452085CD570070C578 /* BodyView3D+ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B442085CD570070C578 /* BodyView3D+ControlsView.swift */; };
+		92940B472085CE1C0070C578 /* BodyView3D+Male.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B462085CE1C0070C578 /* BodyView3D+Male.swift */; };
+		92940B492085CEBA0070C578 /* BodyView3D+Female.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B482085CEBA0070C578 /* BodyView3D+Female.swift */; };
+		92940B4B2085CFEC0070C578 /* BodyView3D+Child.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B4A2085CFEC0070C578 /* BodyView3D+Child.swift */; };
+		92940B4D2085D2B50070C578 /* BodyModel+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B4C2085D2B50070C578 /* BodyModel+Camera.swift */; };
 		929B2F6F1F468156001686EA /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 929B2F6E1F468156001686EA /* JavaScriptCore.framework */; };
 		929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */; };
 		92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */; };
@@ -310,7 +315,7 @@
 		06504095027F4A229CC8103A /* libRSSignatureCapture.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRSSignatureCapture.a; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* skiniq.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = skiniq.app; path = skin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* skin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = skin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -337,11 +342,16 @@
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8D6FEDFE22594AADB229495F /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
-		9214ED961F50271B0043CC56 /* LinkedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LinkedList.swift; path = skin/LinkedList.swift; sourceTree = SOURCE_ROOT; };
 		9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToroidalMotion.swift; sourceTree = "<group>"; };
 		9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
+		92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyView3D+Gestures.swift"; sourceTree = "<group>"; };
+		92940B442085CD570070C578 /* BodyView3D+ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyView3D+ControlsView.swift"; sourceTree = "<group>"; };
+		92940B462085CE1C0070C578 /* BodyView3D+Male.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyView3D+Male.swift"; sourceTree = "<group>"; };
+		92940B482085CEBA0070C578 /* BodyView3D+Female.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyView3D+Female.swift"; sourceTree = "<group>"; };
+		92940B4A2085CFEC0070C578 /* BodyView3D+Child.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyView3D+Child.swift"; sourceTree = "<group>"; };
+		92940B4C2085D2B50070C578 /* BodyModel+Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BodyModel+Camera.swift"; sourceTree = "<group>"; };
 		929B2F511F45B93A001686EA /* BodyViewEventEmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyViewEventEmitter.m; sourceTree = "<group>"; };
 		929B2F6E1F468156001686EA /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraMotion.swift; sourceTree = "<group>"; };
@@ -502,7 +512,6 @@
 				928197111F4589CE003A93E4 /* BodyView3D */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				9214ED961F50271B0043CC56 /* LinkedList.swift */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				92EBB3C81F46B061003DD4EE /* art.scnassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -653,7 +662,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* skiniq.app */,
+				13B07F961A680F5B00A75B9A /* skin.app */,
 				00E356EE1AD99517003FC87E /* skiniqTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* skin-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* skin-tvOSTests.xctest */,
@@ -700,6 +709,7 @@
 			isa = PBXGroup;
 			children = (
 				92EBB3B61F46AFDB003DD4EE /* BodyModel.swift */,
+				92940B4C2085D2B50070C578 /* BodyModel+Camera.swift */,
 				92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */,
 				92EBB3B81F46AFDB003DD4EE /* Nevus.swift */,
 			);
@@ -710,6 +720,11 @@
 			isa = PBXGroup;
 			children = (
 				92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */,
+				92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */,
+				92940B442085CD570070C578 /* BodyView3D+ControlsView.swift */,
+				92940B462085CE1C0070C578 /* BodyView3D+Male.swift */,
+				92940B482085CEBA0070C578 /* BodyView3D+Female.swift */,
+				92940B4A2085CFEC0070C578 /* BodyView3D+Child.swift */,
 				92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */,
 				9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */,
 			);
@@ -772,7 +787,7 @@
 			);
 			name = Skin;
 			productName = "Hello World";
-			productReference = 13B07F961A680F5B00A75B9A /* skiniq.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* skin.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* skin-tvOS */ = {
@@ -1275,22 +1290,27 @@
 			files = (
 				5E8806D21F441F99007990A5 /* RNSecretManager.m in Sources */,
 				92EBB3BD1F46AFDB003DD4EE /* CylindricalMotion.swift in Sources */,
+				92940B4B2085CFEC0070C578 /* BodyView3D+Child.swift in Sources */,
 				92EBB3BF1F46AFDB003DD4EE /* SphericalMotion.swift in Sources */,
+				92940B432085CD1A0070C578 /* BodyView3D+Gestures.swift in Sources */,
 				92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */,
 				9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */,
 				929B2F701F469D52001686EA /* BodyViewEventEmitter.m in Sources */,
 				92EBB3C01F46AFDB003DD4EE /* BodyModel.swift in Sources */,
 				9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */,
 				92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */,
+				92940B452085CD570070C578 /* BodyView3D+ControlsView.swift in Sources */,
+				92940B4D2085D2B50070C578 /* BodyModel+Camera.swift in Sources */,
 				92EBB3BC1F46AFDB003DD4EE /* CameraMotion.swift in Sources */,
 				9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */,
 				92EBB3C11F46AFDB003DD4EE /* BodyNode.swift in Sources */,
 				92EBB3C31F46AFDB003DD4EE /* BodyView3D.swift in Sources */,
+				92940B492085CEBA0070C578 /* BodyView3D+Female.swift in Sources */,
 				9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */,
 				92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				92940B472085CE1C0070C578 /* BodyView3D+Male.swift in Sources */,
 				92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */,
-				9214ED971F50271B0043CC56 /* LinkedList.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
