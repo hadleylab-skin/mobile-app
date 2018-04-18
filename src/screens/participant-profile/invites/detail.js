@@ -12,12 +12,12 @@ import ss from './styles';
 
 const model = {
     invites: {},
-    declineInviteCursor: {}
+    declineInviteCursor: {},
 };
 
 export const InviteDetailScreen = schema(model)(React.createClass({
     propTypes: {
-        invite: React.PropTypes.object.isRequired,
+        invite: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
@@ -67,7 +67,7 @@ export const InviteDetailScreen = schema(model)(React.createClass({
                         onPress={() =>
                             this.context.mainNavigator.push(
                                 getConsentDocsScreenRoute({
-                                    invite: invite,
+                                    invite,
                                     tree: this.props.tree,
                                 }, this.context)
                             )
@@ -82,10 +82,10 @@ export const InviteDetailScreen = schema(model)(React.createClass({
                                 'Are you sure?',
                                 'Are you sure you want to decline the invitation?',
                                 [
-                                    {text: 'Cancel'},
-                                    {text: 'Yes', onPress: this.declineInvite}
+                                    { text: 'Cancel' },
+                                    { text: 'Yes', onPress: this.declineInvite },
                                 ]
-                            )
+                            );
                         }}
                     />
                 </View>

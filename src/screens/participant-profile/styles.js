@@ -26,7 +26,7 @@ export default StyleSheet.create({
         paddingBottom: 15,
         paddingLeft: 25,
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     photo: {
         width: 100,
@@ -57,5 +57,5 @@ export default StyleSheet.create({
     },
     noImagesMargin: {
         marginBottom: 15,
-    }
+    },
 });

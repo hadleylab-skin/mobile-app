@@ -1,9 +1,6 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import {
-    View,
-    ScrollView,
-} from 'react-native';
+import { ScrollView } from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';

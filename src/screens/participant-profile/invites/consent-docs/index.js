@@ -27,12 +27,13 @@ const model = {
         studies: {},
         invites: {},
         selectedStudyPk: null,
-    }
+    },
 };
 
 export const ConsentDocsScreen = schema(model)(React.createClass({
     propTypes: {
-        invite: React.PropTypes.object.isRequired,
+        invite: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
@@ -52,7 +53,7 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
         };
     },
 
-    componentDidMount(){
+    componentDidMount() {
         eventEmitter.addListener(
             'RNDownloaderProgress',
             (Event) => {
@@ -72,8 +73,8 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
             consentPk,
             doctorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.publicKey),
             ...inviteDoctor.coordinatorPublicKey && {
-                coordinatorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.coordinatorPublicKey)
-            }
+                coordinatorEncryptionKey: await encryptRSA(aesKey, inviteDoctor.coordinatorPublicKey),
+            },
         };
         // 3. send it to server
         const result = await this.context.services.approveInviteService(
@@ -107,7 +108,7 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
         if (progress > 0 && progress < 1) {
             return (
                 <View style={s.container}>
-                    <ProgressViewIOS progress={progress}/>
+                    <ProgressViewIOS progress={progress} />
                 </View>
             );
         }
@@ -126,8 +127,8 @@ export const ConsentDocsScreen = schema(model)(React.createClass({
                             onPress={() => {
                                 OpenFile.openDoc([{
                                     url: consentDoc.file,
-                                    fileNameOptional: consentDoc.originalFilename || `Consent doc #${index}`
-                                }], (error, url) => {});
+                                    fileNameOptional: consentDoc.originalFilename || `Consent doc #${index}`,
+                                }], () => {});
                             }}
                         />
                     ))}

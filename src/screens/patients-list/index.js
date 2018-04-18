@@ -50,17 +50,11 @@ const PatientsListScreen = schema({})(React.createClass({
         };
     },
 
-    patientsToList(data) {
-        let currentStudyPk = this.context.cursors.currentStudyPk.get();
-        currentStudyPk = parseInt(currentStudyPk);
-        return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
-    },
-
     async componentWillMount() {
-        const { cursors, services } = this.context;
+        const { cursors } = this.context;
         const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
         if (result) {
-            const currentStudyPk = parseInt(result);
+            const currentStudyPk = parseInt(result, 10);
             if (currentStudyPk) {
                 cursors.currentStudyPk.set(currentStudyPk);
                 cursors.filter.set('study', currentStudyPk);
@@ -75,6 +69,10 @@ const PatientsListScreen = schema({})(React.createClass({
     componentWillUnmount() {
         this.context.cursors.patients.off('update', this.updateDataStore);
         this.context.cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+    },
+
+    patientsToList(data) {
+        return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
     },
 
     updateDataStore(event) {

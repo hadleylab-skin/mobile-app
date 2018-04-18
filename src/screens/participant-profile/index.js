@@ -19,23 +19,20 @@ import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
 import s from './styles';
 
-const model = (props, context) => {
-    return {
-        tree: {
-            studies: {},
-            selectedStudyPk: null,
-            studyPicker: {},
-            invites: context.services.getInvitesService,
-            moles: {},
-            editProfileScreen: {},
-        },
-    }
-};
+const model = (props, context) => ({
+    tree: {
+        studies: {},
+        selectedStudyPk: null,
+        studyPicker: {},
+        invites: context.services.getInvitesService,
+        moles: {},
+        editProfileScreen: {},
+    },
+});
 
 export const ParticipantProfile = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        doctorCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -55,17 +52,6 @@ export const ParticipantProfile = schema(model)(React.createClass({
         }),
     },
 
-    async loadStudies() {
-        await this.context.services.getStudiesService(this.props.tree.studies);
-        const studies = this.props.tree.studies.get();
-        if (studies.status === 'Succeed') {
-            const firstStudy = _.first(studies.data);
-            if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
-                this.props.tree.selectedStudyPk.set(firstStudy.pk);
-            }
-        }
-    },
-
     async componentWillMount() {
         const { cursors, services } = this.context;
         this.loadStudies();
@@ -76,6 +62,17 @@ export const ParticipantProfile = schema(model)(React.createClass({
 
     componentWillUnmount() {
         this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+    },
+
+    async loadStudies() {
+        await this.context.services.getStudiesService(this.props.tree.studies);
+        const studies = this.props.tree.studies.get();
+        if (studies.status === 'Succeed') {
+            const firstStudy = _.first(studies.data);
+            if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
+                this.props.tree.selectedStudyPk.set(firstStudy.pk);
+            }
+        }
     },
 
     async onSelectedStudyUpdate() {
@@ -97,7 +94,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     goEditProfile() {
-        const { cursors, services, mainNavigator } = this.context;
+        const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
 
         this.context.mainNavigator.push(
@@ -106,9 +103,9 @@ export const ParticipantProfile = schema(model)(React.createClass({
                 dataCursor: cursors.patients.select('data', currentPatientPk, 'data'),
                 title: 'Edit Profile',
                 service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
-                onActionComplete: (data) => {this.onCompleteSaveProfile(data)},
+                onActionComplete: (data) => { this.onCompleteSaveProfile(data); },
             }, this.context)
-        )
+        );
     },
 
     checkConsent() {
@@ -148,7 +145,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                 <Text style={[s.moleGroupHeader, s.noImagesMargin]}>
                     No images for selected study
                 </Text>
-            )
+            );
         }
 
         const groupedMolesData = _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk);
@@ -157,18 +154,16 @@ export const ParticipantProfile = schema(model)(React.createClass({
                 <Text style={s.moleGroupHeader}>
                     {_.upperCase(key)}
                 </Text>
-                {_.map(molesGroup, (mole, index) => {
-                    return (
-                        <Mole
-                            hideBottomPanel={true}
-                            key={`${key}-${index}`}
-                            checkConsent={this.checkConsent}
-                            hasBorder={index !== 0}
-                            navigator={this.context.mainNavigator}
-                            tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
-                        />
-                    );
-                })}
+                {_.map(molesGroup, (mole, index) => (
+                    <Mole
+                        hideBottomPanel
+                        key={`${key}-${index}`}
+                        checkConsent={this.checkConsent}
+                        hasBorder={index !== 0}
+                        navigator={this.context.mainNavigator}
+                        tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
+                    />
+                ))}
             </View>
         ));
     },
@@ -194,8 +189,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
             [item.pk, item.title]
         ));
         const patient = _.first(_.values(patients.data)).data;
-        const { firstName, lastName, photo, dateOfBirth } = patient;
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const { firstName, lastName, dateOfBirth } = patient;
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
         return (
@@ -230,7 +225,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     <View style={s.button}>
                         <Button
                             title="Edit profile"
-                            onPress={this.goEditProfile} />
+                            onPress={this.goEditProfile}
+                        />
                     </View>
 
                     {invites && invites.length > 0 ?
@@ -248,7 +244,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                                 } else {
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
-                                            invites: invites,
+                                            invites,
                                             tree: this.props.tree,
                                         }, this.context)
                                     );

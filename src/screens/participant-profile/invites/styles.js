@@ -23,5 +23,5 @@ export default StyleSheet.create({
     button: {
         flexDirection: 'column',
         flex: 0.5,
-    }
+    },
 });
