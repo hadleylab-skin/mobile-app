@@ -7,35 +7,25 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    AsyncStorage,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
-import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import { isInSharedMode } from 'services/keypair';
+import { saveCurrentStudy } from 'services/async-storage';
+import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import s from './styles';
 
-const model = (props, context) => {
-    return {
-        tree: {
-            siteJoinRequestScreenState: {},
-            studies: context.services.getStudiesService,
-            studyPicker: {},
-            selectedStudyPk: async (cursor) => {
-                let result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
-                result = parseInt(result);
-                if (_.isNumber(result) && !_.isNaN(result)) {
-                    cursor.set(result);
-                } else {
-                    cursor.set(null);
-                }
-            }
-        },
-    }
-};
+const model = (props, context) => ({
+    tree: {
+        siteJoinRequestScreenState: {},
+        studies: context.services.getStudiesService,
+        studyPicker: {},
+        selectedStudyPk: context.services.getSavedCurrentStudyService,
+    },
+});
 
 export const DoctorProfile = schema(model)(React.createClass({
     propTypes: {
@@ -58,6 +48,7 @@ export const DoctorProfile = schema(model)(React.createClass({
             getSiteJoinRequestsService: React.PropTypes.func.isRequired,
             confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
             patientsService: React.PropTypes.func.isRequired,
+            getSavedCurrentStudyService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -77,19 +68,20 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     async onSelectedStudyUpdate() {
-        const studyPk = this.props.tree.selectedStudyPk.get();
+        const { cursors } = this.context;
+        const studyPk = this.props.tree.selectedStudyPk.get('data');
         if (_.isUndefined(studyPk)) {
             return;
         }
 
         if (studyPk) {
-            this.context.cursors.filter.set('study', studyPk);
+            cursors.filter.set('study', studyPk);
         } else {
-            this.context.cursors.filter.unset('study');
+            cursors.filter.unset('study');
         }
 
         this.context.cursors.currentStudyPk.set(studyPk);
-        await AsyncStorage.setItem('@SkinIQ:selectedStudyPk', '' + studyPk);
+        saveCurrentStudy(studyPk);
     },
 
     openCryptoConfiguration() {
@@ -258,7 +250,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 _.map(studies.data, (study) => [
                     study.pk,
                     study.title,
-                ])
+                ]),
             ]
         );
 
@@ -310,7 +302,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 <View style={s.content}>
                     <Picker
                         tree={this.props.tree.studyPicker}
-                        cursor={this.props.tree.selectedStudyPk}
+                        cursor={this.props.tree.selectedStudyPk.select('data')}
                         items={studyOptions}
                         title="Study"
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: offsetY + 220, animated: true })}

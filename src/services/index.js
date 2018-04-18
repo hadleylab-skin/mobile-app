@@ -27,6 +27,8 @@ import { getInvitesService,
          approveInviteService,
          declineInviteService,
        } from './invites';
+import { getSavedCurrentStudyService,
+       } from './async-storage';
 
 
 export default {
@@ -54,4 +56,5 @@ export default {
     getInvitesService,
     approveInviteService,
     declineInviteService,
+    getSavedCurrentStudyService,
 };

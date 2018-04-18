@@ -56,9 +56,9 @@ function concatParams(data) {
         }
 
         if (params.length > 0) {
-            params += '&' + paramKey + '=' + value;
+            params += `&${paramKey}=${value}`;
         } else {
-            params += paramKey + '=' + value;
+            params += `${paramKey}=${value}`;
         }
     });
 
@@ -136,7 +136,7 @@ export function getPatientService({ token }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (patientPk, cursor, study=null) => {
+    return (patientPk, cursor, study = null) => {
         let url;
         if (study) {
             url = `/api/v1/patient/${patientPk}/?study=${study}`;

@@ -16,7 +16,7 @@ export function getPatientMolesService({ token }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (patientPk, cursor, study=null) => {
+    return (patientPk, cursor, study = null) => {
         let url;
         if (study) {
             url = `/api/v1/patient/${patientPk}/mole/?study=${study}`;
