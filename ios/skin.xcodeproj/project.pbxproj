@@ -45,6 +45,31 @@
 		8E9C288FEEBC4451AFC4E571 /* libRSSignatureCapture.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06504095027F4A229CC8103A /* libRSSignatureCapture.a */; };
 		9214ED981F502F990043CC56 /* LegCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */; };
 		9214EDA51F53FCBB0043CC56 /* ArmCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */; };
+		92394EB12086E98100803BA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92394EB02086E98100803BA6 /* AppDelegate.swift */; };
+		92394EB32086E98100803BA6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92394EB22086E98100803BA6 /* ViewController.swift */; };
+		92394EB62086E98100803BA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92394EB42086E98100803BA6 /* Main.storyboard */; };
+		92394EBB2086E98300803BA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92394EB92086E98300803BA6 /* LaunchScreen.storyboard */; };
+		92394EDF2086EACB00803BA6 /* BodyView3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BA1F46AFDB003DD4EE /* BodyView3D.swift */; };
+		92394EE02086EADB00803BA6 /* BodyView3D+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */; };
+		92394EE12086EADB00803BA6 /* BodyView3D+ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B442085CD570070C578 /* BodyView3D+ControlsView.swift */; };
+		92394EE22086EADB00803BA6 /* BodyView3D+Male.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B462085CE1C0070C578 /* BodyView3D+Male.swift */; };
+		92394EE32086EADB00803BA6 /* BodyView3D+Female.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B482085CEBA0070C578 /* BodyView3D+Female.swift */; };
+		92394EE42086EADB00803BA6 /* BodyView3D+Child.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B4A2085CFEC0070C578 /* BodyView3D+Child.swift */; };
+		92394EE52086EADB00803BA6 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */; };
+		92394EE62086EADB00803BA6 /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */; };
+		92394EE72086EAE300803BA6 /* BodyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B61F46AFDB003DD4EE /* BodyModel.swift */; };
+		92394EE82086EAE300803BA6 /* BodyModel+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B4C2085D2B50070C578 /* BodyModel+Camera.swift */; };
+		92394EE92086EAE300803BA6 /* BodyNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B71F46AFDB003DD4EE /* BodyNode.swift */; };
+		92394EEA2086EAE300803BA6 /* Nevus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B81F46AFDB003DD4EE /* Nevus.swift */; };
+		92394EEB2086EAF200803BA6 /* CameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B11F46AFDB003DD4EE /* CameraMotion.swift */; };
+		92394EEC2086EAF200803BA6 /* CylindricalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B21F46AFDB003DD4EE /* CylindricalMotion.swift */; };
+		92394EED2086EAF200803BA6 /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B31F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift */; };
+		92394EEE2086EAF200803BA6 /* SphericalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3B41F46AFDB003DD4EE /* SphericalMotion.swift */; };
+		92394EEF2086EAF200803BA6 /* ToroidalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */; };
+		92394EF02086EAF200803BA6 /* LegCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */; };
+		92394EF12086EAF200803BA6 /* ArmCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */; };
+		92394F022086EBB500803BA6 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
+		92394F22208711D200803BA6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */; };
 		9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */; };
 		92940B432085CD1A0070C578 /* BodyView3D+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */; };
@@ -66,6 +91,7 @@
 		92EBB3C41F46AFDB003DD4EE /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */; };
 		92EBB3C71F46B017003DD4EE /* BodyViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 92EBB3C61F46B017003DD4EE /* BodyViewManager.m */; };
 		92EBB3CA1F46B061003DD4EE /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
+		BB76D1F903611BDDEA8807BC /* Pods_BodyView3D_Test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9CFBC376CF21D0B96D957B /* Pods_BodyView3D_Test.framework */; };
 		ECD284CB715E41478CDEC109 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
@@ -328,6 +354,7 @@
 		2D02E47B1E0B4A5D006451C7 /* skin-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "skin-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* skin-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "skin-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B887C9A668243AF80B8CFE7 /* libRNReactNativeDocViewer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReactNativeDocViewer.a; sourceTree = "<group>"; };
+		4D9CFBC376CF21D0B96D957B /* Pods_BodyView3D_Test.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BodyView3D_Test.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		55691EE986F241A5A8D1647F /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		5E05FA2E1FA069870036E62B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		5E067B4D1F42FDAA00498595 /* skin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = skin.entitlements; sourceTree = "<group>"; };
@@ -343,6 +370,12 @@
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8D6FEDFE22594AADB229495F /* RSSignatureCapture.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RSSignatureCapture.xcodeproj; path = "../node_modules/react-native-signature-capture/ios/RSSignatureCapture.xcodeproj"; sourceTree = "<group>"; };
 		9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArmCameraMotion.swift; sourceTree = "<group>"; };
+		92394EAE2086E98000803BA6 /* BodyView3D-Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BodyView3D-Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92394EB02086E98100803BA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		92394EB22086E98100803BA6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		92394EB52086E98100803BA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		92394EBA2086E98300803BA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		92394EBC2086E98300803BA6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToroidalMotion.swift; sourceTree = "<group>"; };
 		9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
@@ -368,6 +401,8 @@
 		92EBB3C81F46B061003DD4EE /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		9CBCA58D8EA443B2A1C3E983 /* RNRSA.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRSA.xcodeproj; path = "../node_modules/react-native-rsa-native/ios/RNRSA.xcodeproj"; sourceTree = "<group>"; };
 		AB4B084BBE9547A1B3BEF606 /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
+		AF4466A43B1863228BD4D418 /* Pods-BodyView3D-Test.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BodyView3D-Test.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BodyView3D-Test/Pods-BodyView3D-Test.debug.xcconfig"; sourceTree = "<group>"; };
+		C806C0F90DA5197CE4CAD95E /* Pods-BodyView3D-Test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BodyView3D-Test.release.xcconfig"; path = "Pods/Target Support Files/Pods-BodyView3D-Test/Pods-BodyView3D-Test.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -423,6 +458,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92394EAB2086E98000803BA6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB76D1F903611BDDEA8807BC /* Pods_BodyView3D_Test.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,6 +586,7 @@
 			children = (
 				929B2F6E1F468156001686EA /* JavaScriptCore.framework */,
 				611B9049CE9FBF1F6FFFBFFF /* Pods_Skin.framework */,
+				4D9CFBC376CF21D0B96D957B /* Pods_BodyView3D_Test.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -650,6 +694,7 @@
 				13B07FAE1A68108700A75B9A /* skin */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* skinTests */,
+				92394EAF2086E98100803BA6 /* BodyView3D-Test */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				EB3E295CB01886ADFF362B4C /* Pods */,
 				5BF0D32E0FC3DE7A7B273F9A /* Frameworks */,
@@ -666,6 +711,7 @@
 				00E356EE1AD99517003FC87E /* skiniqTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* skin-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* skin-tvOSTests.xctest */,
+				92394EAE2086E98000803BA6 /* BodyView3D-Test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -678,6 +724,18 @@
 				92EBB3C61F46B017003DD4EE /* BodyViewManager.m */,
 			);
 			name = React;
+			sourceTree = "<group>";
+		};
+		92394EAF2086E98100803BA6 /* BodyView3D-Test */ = {
+			isa = PBXGroup;
+			children = (
+				92394EB02086E98100803BA6 /* AppDelegate.swift */,
+				92394EB22086E98100803BA6 /* ViewController.swift */,
+				92394EB42086E98100803BA6 /* Main.storyboard */,
+				92394EB92086E98300803BA6 /* LaunchScreen.storyboard */,
+				92394EBC2086E98300803BA6 /* Info.plist */,
+			);
+			path = "BodyView3D-Test";
 			sourceTree = "<group>";
 		};
 		928197111F4589CE003A93E4 /* BodyView3D */ = {
@@ -744,6 +802,8 @@
 			children = (
 				6CA25D1EC65B3F094BA57EF8 /* Pods-Skin.debug.xcconfig */,
 				252EA344B51F192DDE5F5588 /* Pods-Skin.release.xcconfig */,
+				AF4466A43B1863228BD4D418 /* Pods-BodyView3D-Test.debug.xcconfig */,
+				C806C0F90DA5197CE4CAD95E /* Pods-BodyView3D-Test.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -826,12 +886,33 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* skin-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		92394EAD2086E98000803BA6 /* BodyView3D-Test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92394EDE2086E98300803BA6 /* Build configuration list for PBXNativeTarget "BodyView3D-Test" */;
+			buildPhases = (
+				12CEF737434A55E402D3B64B /* [CP] Check Pods Manifest.lock */,
+				92394EAA2086E98000803BA6 /* Sources */,
+				92394EAB2086E98000803BA6 /* Frameworks */,
+				92394EAC2086E98000803BA6 /* Resources */,
+				193EA05020DC9520F584D939 /* [CP] Embed Pods Frameworks */,
+				DE6DABCD5BCCD3CA7F5A39B8 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BodyView3D-Test";
+			productName = "BodyView3D-Test";
+			productReference = 92394EAE2086E98000803BA6 /* BodyView3D-Test.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0930;
 				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -841,12 +922,17 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 5YKK4CX8V6;
+						DevelopmentTeam = WBWE6BMMKE;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
 							};
 						};
+					};
+					92394EAD2086E98000803BA6 = {
+						CreatedOnToolsVersion = 9.3;
+						DevelopmentTeam = 859799LX22;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -933,6 +1019,7 @@
 				00E356ED1AD99517003FC87E /* skinTests */,
 				2D02E47A1E0B4A5D006451C7 /* skin-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* skin-tvOSTests */,
+				92394EAD2086E98000803BA6 /* BodyView3D-Test */,
 			);
 		};
 /* End PBXProject section */
@@ -1191,6 +1278,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		92394EAC2086E98000803BA6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92394EBB2086E98300803BA6 /* LaunchScreen.storyboard in Resources */,
+				92394F022086EBB500803BA6 /* art.scnassets in Resources */,
+				92394F22208711D200803BA6 /* Images.xcassets in Resources */,
+				92394EB62086E98100803BA6 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1207,6 +1305,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+		};
+		12CEF737434A55E402D3B64B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BodyView3D-Test-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		193EA05020DC9520F584D939 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BodyView3D-Test/Pods-BodyView3D-Test-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BodyView3D-Test/Pods-BodyView3D-Test-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1253,6 +1387,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skin/Pods-Skin-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE6DABCD5BCCD3CA7F5A39B8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BodyView3D-Test/Pods-BodyView3D-Test-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E9784E99335D54D3D7A0F27F /* [CP] Check Pods Manifest.lock */ = {
@@ -1332,6 +1481,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		92394EAA2086E98000803BA6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92394EB32086E98100803BA6 /* ViewController.swift in Sources */,
+				92394EB12086E98100803BA6 /* AppDelegate.swift in Sources */,
+				92394EDF2086EACB00803BA6 /* BodyView3D.swift in Sources */,
+				92394EE02086EADB00803BA6 /* BodyView3D+Gestures.swift in Sources */,
+				92394EE12086EADB00803BA6 /* BodyView3D+ControlsView.swift in Sources */,
+				92394EE22086EADB00803BA6 /* BodyView3D+Male.swift in Sources */,
+				92394EE32086EADB00803BA6 /* BodyView3D+Female.swift in Sources */,
+				92394EE42086EADB00803BA6 /* BodyView3D+Child.swift in Sources */,
+				92394EE52086EADB00803BA6 /* ControlsView.swift in Sources */,
+				92394EE62086EADB00803BA6 /* RadialGradientView.swift in Sources */,
+				92394EE72086EAE300803BA6 /* BodyModel.swift in Sources */,
+				92394EE82086EAE300803BA6 /* BodyModel+Camera.swift in Sources */,
+				92394EE92086EAE300803BA6 /* BodyNode.swift in Sources */,
+				92394EEA2086EAE300803BA6 /* Nevus.swift in Sources */,
+				92394EEB2086EAF200803BA6 /* CameraMotion.swift in Sources */,
+				92394EEC2086EAF200803BA6 /* CylindricalMotion.swift in Sources */,
+				92394EED2086EAF200803BA6 /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */,
+				92394EEE2086EAF200803BA6 /* SphericalMotion.swift in Sources */,
+				92394EEF2086EAF200803BA6 /* ToroidalMotion.swift in Sources */,
+				92394EF02086EAF200803BA6 /* LegCameraMotion.swift in Sources */,
+				92394EF12086EAF200803BA6 /* ArmCameraMotion.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1354,6 +1531,22 @@
 				13B07FB21A68108700A75B9A /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		92394EB42086E98100803BA6 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				92394EB52086E98100803BA6 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		92394EB92086E98300803BA6 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				92394EBA2086E98300803BA6 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1705,6 +1898,85 @@
 			};
 			name = Release;
 		};
+		92394EBD2086E98300803BA6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AF4466A43B1863228BD4D418 /* Pods-BodyView3D-Test.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 859799LX22;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BodyView3D-Test/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hadleylab.BodyView3D-Test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		92394EBE2086E98300803BA6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C806C0F90DA5197CE4CAD95E /* Pods-BodyView3D-Test.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 859799LX22;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "BodyView3D-Test/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hadleylab.BodyView3D-Test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1749,6 +2021,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92394EDE2086E98300803BA6 /* Build configuration list for PBXNativeTarget "BodyView3D-Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92394EBD2086E98300803BA6 /* Debug */,
+				92394EBE2086E98300803BA6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

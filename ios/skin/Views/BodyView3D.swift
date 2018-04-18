@@ -250,7 +250,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
     private let continueToCloseUpPhotoButtonHeight = 50.0
     private var continueToCloseUpPhotoButtonBottomOffset: Constraint?
     
-    internal let showTargetPoints = false
+    internal let showTargetPoints = true
     
 // MARK: - Setup
     
@@ -268,7 +268,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
         setupMale()
         setupFemale()
         setupChild()
-        currentModel = models["child"]//"male"]
+        currentModel = models["child"]
     }
     
     private func setupCamera()

@@ -12,9 +12,9 @@ extension BodyModel
 {
     internal func setupCameraMotion()
     {
-        setupRootBodyNodeCameraMotion()
+        setupRootBodyNodeCameraMotion(showSurface: false)
         setupHeadCameraMotion()
-        setupArmsCameraMotion()
+        setupArmsCameraMotion(showSurface: false)
         setupLegsCameraMotion()
     }
 
@@ -55,22 +55,22 @@ extension BodyModel
         }
     }
   
-    internal func setupArmsCameraMotion()
+    internal func setupArmsCameraMotion(showSurface: Bool)
     {
         setupArmCameraMotion(bodyNode: rightArm,
                              config: rightArmConfig,
-                             showSurface: false)
+                             showSurface: showSurface)
       
         setupArmCameraMotion(bodyNode: leftArm,
                              config: leftArmConfig,
-                             showSurface: false)
+                             showSurface: showSurface)
     }
   
     internal func setupLegsCameraMotion()
     {
         setupLegCameraMotion(bodyNode: rightLeg,
                              config: rightLegConfig,
-                             showSurface: false)
+                             showSurface: true)
       
         setupLegCameraMotion(bodyNode: leftLeg,
                              config: leftLegConfig,
