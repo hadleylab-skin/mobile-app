@@ -52,12 +52,6 @@ export const DoctorProfile = schema(model)(React.createClass({
         }),
     },
 
-    getInitialState() {
-        return {
-            offsetY: 0,
-        };
-    },
-
     async componentWillMount() {
         this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
@@ -167,13 +161,6 @@ export const DoctorProfile = schema(model)(React.createClass({
             this.context.cursors.patients, {});
     },
 
-    onScroll(e) {
-        if (this.scrollView) {
-            const offsetY = e.nativeEvent.contentOffset.y;
-            this.setState({ offsetY });
-        }
-    },
-
     renderSiteJoinRequest() {
         const { data, status } = this.props.siteJoinRequestCursor.get();
         const remoteRequest = _.get(_.values(data), 0);
@@ -241,7 +228,6 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     render() {
-        const { offsetY } = this.state;
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
         const studies = this.props.tree.studies.get();
         const studyOptions = _.flatten(
@@ -260,7 +246,6 @@ export const DoctorProfile = schema(model)(React.createClass({
                 style={s.container}
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
-                onScrollView={this.onScroll}
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />
@@ -305,7 +290,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                         cursor={this.props.tree.selectedStudyPk.select('data')}
                         items={studyOptions}
                         title="Study"
-                        onPress={() => this.scrollView.scrollTo({ x: 0, y: offsetY + 220, animated: true })}
+                        onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
                 </View>
                 {
