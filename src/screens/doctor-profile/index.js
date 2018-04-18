@@ -25,9 +25,10 @@ const model = (props, context) => {
             studies: context.services.getStudiesService,
             studyPicker: {},
             selectedStudyPk: async (cursor) => {
-                const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
-                if (result) {
-                    cursor.set(parseInt(result));
+                let result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
+                result = parseInt(result);
+                if (_.isNumber(result) && !_.isNaN(result)) {
+                    cursor.set(result);
                 } else {
                     cursor.set(null);
                 }
@@ -77,6 +78,16 @@ export const DoctorProfile = schema(model)(React.createClass({
 
     async onSelectedStudyUpdate() {
         const studyPk = this.props.tree.selectedStudyPk.get();
+        if (_.isUndefined(studyPk)) {
+            return;
+        }
+
+        if (studyPk) {
+            this.context.cursors.filter.set('study', studyPk);
+        } else {
+            this.context.cursors.filter.unset('study');
+        }
+
         this.context.cursors.currentStudyPk.set(studyPk);
         await AsyncStorage.setItem('@SkinIQ:selectedStudyPk', '' + studyPk);
     },

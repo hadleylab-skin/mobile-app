@@ -53,30 +53,23 @@ const PatientsListScreen = schema({})(React.createClass({
     patientsToList(data) {
         let currentStudyPk = this.context.cursors.currentStudyPk.get();
         currentStudyPk = parseInt(currentStudyPk);
-
-        if (currentStudyPk) {
-            data = _.filter(data, (patient, patientPk) => {
-                const studyPks = _.map(patient.data.studies, (study) => study.pk);
-                return _.includes(studyPks, currentStudyPk);
-            });
-        } else {
-            data = _.filter(data, (patient, patientPk) => _.isEmpty(patient.data.studies));
-        }
-
         return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
     },
 
     async componentWillMount() {
         const { cursors, services } = this.context;
-        const queryParams = cursors.filter.get();
-
-        await services.patientsService(cursors.patients, queryParams);
-        cursors.patients.on('update', this.updateDataStore);
-        cursors.currentStudyPk.on('update', this.updateCurrentStudy);
         const result = await AsyncStorage.getItem('@SkinIQ:selectedStudyPk');
         if (result) {
-            cursors.currentStudyPk.set(parseInt(result));
+            const currentStudyPk = parseInt(result);
+            if (currentStudyPk) {
+                cursors.currentStudyPk.set(currentStudyPk);
+                cursors.filter.set('study', currentStudyPk);
+            }
         }
+
+        cursors.patients.on('update', this.updateDataStore);
+        cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+        this.updateCurrentStudy();
     },
 
     componentWillUnmount() {
@@ -95,7 +88,11 @@ const PatientsListScreen = schema({})(React.createClass({
         }
     },
 
-    updateCurrentStudy() {
+    async updateCurrentStudy() {
+        const { cursors, services } = this.context;
+        const queryParams = cursors.filter.get();
+        await services.patientsService(cursors.patients, queryParams);
+
         const patients = this.patientsToList(this.context.cursors.patients.get('data'));
 
         this.setState({
@@ -107,14 +104,6 @@ const PatientsListScreen = schema({})(React.createClass({
         const { cursors, services } = this.context;
         const queryParams = cursors.filter.get();
         const _onScroll = onScroll(async () => await services.patientsService(cursors.patients, queryParams));
-
-        if (this.state.ds.getRowCount() === 0) {
-            return (
-                <View style={s.emptyList}>
-                    <Text style={s.title}>No patients in selected study</Text>
-                </View>
-            );
-        }
 
         return (
             <ListView
@@ -143,7 +132,6 @@ const PatientsListScreen = schema({})(React.createClass({
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
         const isSucced = status === 'Succeed';
-
         const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
 
         return (

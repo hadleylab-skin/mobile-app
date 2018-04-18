@@ -176,7 +176,7 @@ export function getMoleRoute(props) {
     async function onRightButtonPress() {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
-            ImagePicker.launchCamera({},
+            ImagePicker.launchImageLibrary({},
                 (response) => {
                     if (response.uri) {
                         props.onSubmitMolePhoto(response.uri);
