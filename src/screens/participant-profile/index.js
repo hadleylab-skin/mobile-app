@@ -65,8 +65,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     async loadStudies() {
-        await this.context.services.getStudiesService(this.props.tree.studies);
-        const studies = this.props.tree.studies.get();
+        const studies = await this.context.services.getStudiesService(this.props.tree.studies);
         if (studies.status === 'Succeed') {
             const firstStudy = _.first(studies.data);
             if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
