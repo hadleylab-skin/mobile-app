@@ -18,13 +18,13 @@ import Filter from './components/filter';
 import Search from './components/search';
 import s from './styles';
 
-
 const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         onAddingComplete: React.PropTypes.func.isRequired,
         onPatientAdded: React.PropTypes.func.isRequired,
         searchCursor: BaobabPropTypes.cursor.isRequired,
+        currentStudyCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -52,8 +52,9 @@ const PatientsListScreen = schema({})(React.createClass({
 
     async componentWillMount() {
         const { cursors, services } = this.context;
-        await services.getSavedCurrentStudyService(cursors.currentStudyPk);
-        const studyPk = cursors.currentStudyPk.get('data');
+        await services.getSavedCurrentStudyService(this.props.currentStudyCursor);
+        const studyPk = this.props.currentStudyCursor.get('data');
+        cursors.currentStudyPk.set(studyPk);
         if (studyPk) {
             cursors.filter.set('study', studyPk);
         }
@@ -126,8 +127,9 @@ const PatientsListScreen = schema({})(React.createClass({
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
-        const currentStudyStatus = cursors.currentStudyPk.get('status');
-        const isSucced = status === 'Succeed';
+        const currentStudyStatus = this.props.currentStudyCursor.get('status');
+        const isSucced = status === 'Succeed' && currentStudyStatus === 'Succeed';
+        const isLoading = status === 'Loading' || currentStudyStatus === 'Loading';
         const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
 
         return (
@@ -136,7 +138,7 @@ const PatientsListScreen = schema({})(React.createClass({
                     <Filter />
                     <Search searchCursor={this.props.searchCursor} />
                 </View>
-                {status === 'Loading' || currentStudyStatus === 'Loading' ?
+                { isLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating

@@ -77,7 +77,7 @@ export const Mole = React.createClass({
 
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const currentStudyPk = cursors.currentStudyPk.get();
         const result = await service(patientPk, molePk, imagesCursor.select(pk), {
             uri,

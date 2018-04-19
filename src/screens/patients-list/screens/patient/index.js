@@ -46,12 +46,13 @@ export const Patient = schema(model)(React.createClass({
     async updatePatientScreen() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const studyPk = cursors.currentStudyPk.get();
         const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
 
         const moleResult = await services.getPatientMolesService(
-            patientPk, patientMolesCursor, cursors.currentStudyPk.get());
+            patientPk, patientMolesCursor, studyPk);
         const patientResult = await services.getPatientService(
-            patientPk, this.props.patientCursor, cursors.currentStudyPk.get());
+            patientPk, this.props.patientCursor, studyPk);
 
         if (moleResult.status === 'Succeed' && patientResult.status === 'Succeed') {
             return {

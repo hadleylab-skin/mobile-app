@@ -34,7 +34,7 @@ export default schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
-        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line // eslint-disable-line
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
         tokenCursor: BaobabPropTypes.cursor.isRequired,// eslint-disable-line
     },
 

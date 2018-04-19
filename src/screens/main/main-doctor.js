@@ -16,7 +16,14 @@ import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
 
-export default schema({})(React.createClass({
+const model = {
+    tree: {
+        currentStudyCursor: {},
+    },
+};
+
+
+export default schema(model)(React.createClass({
     displayName: 'MainDoctor',
 
     propTypes: {
@@ -73,6 +80,7 @@ export default schema({})(React.createClass({
                             }}
                             tree={patientsCursor}
                             searchCursor={searchCursor}
+                            currentStudyCursor={this.props.tree.currentStudyCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
