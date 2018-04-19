@@ -156,7 +156,6 @@ export const ParticipantProfile = schema(model)(React.createClass({
                 </Text>
                 {_.map(molesGroup, (mole, index) => (
                     <Mole
-                        hideBottomPanel
                         key={`${key}-${index}`}
                         checkConsent={this.checkConsent}
                         hasBorder={index !== 0}

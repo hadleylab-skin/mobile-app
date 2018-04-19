@@ -97,7 +97,7 @@ export const Patient = schema(model)(React.createClass({
                     <MolesList
                         tree={molesCursor}
                         checkConsent={this.checkConsent}
-                        navigator={this.props.navigator}
+                        navigator={this.context.mainNavigator}
                     />
                 </ScrollView>
             </Updater>
