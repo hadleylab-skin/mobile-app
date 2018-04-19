@@ -66,7 +66,7 @@ const PatientsListScreen = schema({})(React.createClass({
 
     componentWillUnmount() {
         this.context.cursors.patients.off('update', this.updateDataStore);
-        this.context.cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+        this.context.cursors.currentStudyPk.off('update', this.updateCurrentStudy);
     },
 
     patientsToList(data) {
