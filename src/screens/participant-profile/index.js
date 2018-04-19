@@ -78,12 +78,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
     async onSelectedStudyUpdate() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
+        const selectedStudyPk = this.props.tree.selectedStudyPk.get();
 
-        cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+        cursors.currentStudyPk.set(selectedStudyPk);
 
         const result = await services.getPatientMolesService(
             currentPatientPk,
-            this.props.tree.moles);
+            this.props.tree.moles,
+            selectedStudyPk);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
     },
 
@@ -116,6 +118,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
             cursors.patients.select('data', currentPatientPk, 'data'),
             services.updatePatientConsentService,
             mainNavigator);
+    },
+
+    async onUpdateScreen() {
+        await this.context.services.getInvitesService(
+            this.props.tree.invites,
+        );
+        this.onSelectedStudyUpdate();
+        return { status: 'Succeed' };
     },
 
     renderMoles() {
@@ -195,9 +205,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
 
         return (
             <Updater
-                service={async () => await this.context.services.getInvitesService(
-                    this.props.tree.invites,
-                )}
+                service={this.onUpdateScreen}
                 style={s.container}
             >
                 <ScrollView
