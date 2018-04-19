@@ -12,6 +12,7 @@ export function buildAsyncStorageService(name, dehydrate = _.identity) {
             status: 'Succeed',
         };
         cursor.set(result);
+        return result;
     };
 }
 

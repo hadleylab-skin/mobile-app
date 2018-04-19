@@ -52,8 +52,8 @@ const PatientsListScreen = schema({})(React.createClass({
 
     async componentWillMount() {
         const { cursors, services } = this.context;
-        await services.getSavedCurrentStudyService(this.props.currentStudyCursor);
-        const studyPk = this.props.currentStudyCursor.get('data');
+        const currentStudy = await services.getSavedCurrentStudyService(this.props.currentStudyCursor);
+        const studyPk = currentStudy.data;
         cursors.currentStudyPk.set(studyPk);
         if (studyPk) {
             cursors.filter.set('study', studyPk);
@@ -90,12 +90,6 @@ const PatientsListScreen = schema({})(React.createClass({
         const { cursors, services } = this.context;
         const queryParams = cursors.filter.get();
         await services.patientsService(cursors.patients, queryParams);
-
-        const patients = this.patientsToList(this.context.cursors.patients.get('data'));
-
-        this.setState({
-            ds: this.state.ds.cloneWithRows(patients),
-        });
     },
 
     renderList() {
