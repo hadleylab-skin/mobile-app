@@ -140,15 +140,6 @@ export const ParticipantProfile = schema(model)(React.createClass({
             );
         }
 
-        const currentStudyPk = this.props.tree.selectedStudyPk.get();
-        if (currentStudyPk) {
-            moles = _.filter(
-                moles.data,
-                (mole) => _.includes(mole.data.studies, currentStudyPk));
-        } else {
-            moles = moles.data;
-        }
-
         if (_.isEmpty(moles)) {
             return (
                 <Text style={[s.moleGroupHeader, s.noImagesMargin]}>
@@ -157,7 +148,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
             );
         }
 
-        const groupedMolesData = _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk);
+        const groupedMolesData = _.groupBy(moles.data, (mole) => mole.data.anatomicalSites[0].pk);
         return _.map(groupedMolesData, (molesGroup, key) => (
             <View key={key}>
                 <Text style={s.moleGroupHeader}>

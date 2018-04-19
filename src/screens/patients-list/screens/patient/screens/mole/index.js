@@ -46,11 +46,13 @@ export const Mole = schema({})(React.createClass({
 
     async componentWillMount() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get();
 
         const result = await this.context.services.getMoleService(
             patientPk,
             this.props.molePk,
             this.props.tree,
+            currentStudyPk,
         );
 
         if (result.status === 'Succeed') {
@@ -118,18 +120,12 @@ export const Mole = schema({})(React.createClass({
 
     render() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get();
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
         const { hideBottomPanel } = this.props;
         let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
-
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
-        if (_.isNumber(currentStudyPk)) {
-            images = _.filter(images, { data: { study: { pk: currentStudyPk } } });
-        } else {
-            images = _.filter(images, (image) => _.isEmpty(image.data.study));
-        }
 
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
@@ -139,6 +135,7 @@ export const Mole = schema({})(React.createClass({
                     patientPk,
                     this.props.molePk,
                     this.props.tree,
+                    currentStudyPk,
                 )}
                 style={hideBottomPanel ? s.container : s.containerWithMargin}
             >
