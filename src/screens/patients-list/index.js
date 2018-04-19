@@ -85,6 +85,8 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 
     async updateCurrentStudy() {
+        this.props.navigator.popToTop();
+
         const { cursors, services } = this.context;
         const queryParams = cursors.filter.get();
         await services.patientsService(cursors.patients, queryParams);
