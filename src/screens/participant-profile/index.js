@@ -16,6 +16,7 @@ import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
+import { saveCurrentStudy } from 'services/async-storage';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
 import s from './styles';
@@ -23,7 +24,7 @@ import s from './styles';
 const model = (props, context) => ({
     tree: {
         studies: {},
-        selectedStudyPk: null,
+        selectedStudyPk: context.services.getSavedCurrentStudyService,
         studyPicker: {},
         invites: context.services.getInvitesService,
         moles: {},
@@ -52,13 +53,12 @@ export const ParticipantProfile = schema(model)(React.createClass({
             getInvitesService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
             updatePatientConsentService: React.PropTypes.func.isRequired,
+            getSavedCurrentStudyService: React.PropTypes.func.isRequired,
         }),
     },
 
     async componentWillMount() {
-        const { cursors, services } = this.context;
-        this.loadStudies();
-        await services.patientsService(cursors.patients);
+        await this.context.services.getStudiesService(this.props.tree.studies);
         this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
@@ -67,20 +67,13 @@ export const ParticipantProfile = schema(model)(React.createClass({
         this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
     },
 
-    async loadStudies() {
-        const studies = await this.context.services.getStudiesService(this.props.tree.studies);
-        if (studies.status === 'Succeed') {
-            const firstStudy = _.first(studies.data);
-            if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
-                this.props.tree.selectedStudyPk.set(firstStudy.pk);
-            }
-        }
-    },
-
     async onSelectedStudyUpdate() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
-        const selectedStudyPk = this.props.tree.selectedStudyPk.get();
+        const selectedStudyPk = this.props.tree.selectedStudyPk.get('data');
+        if (_.isUndefined(selectedStudyPk)) {
+            return;
+        }
 
         cursors.currentStudyPk.set(selectedStudyPk);
 
@@ -89,6 +82,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
             this.props.tree.moles,
             selectedStudyPk);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
+        saveCurrentStudy(selectedStudyPk);
     },
 
     onCompleteSaveProfile(data) {
@@ -195,9 +189,15 @@ export const ParticipantProfile = schema(model)(React.createClass({
         }
 
         const studies = this.props.tree.studies.get();
-        const studiesForPicker = _.map(studies.data, (item) => (
-            [item.pk, item.title]
-        ));
+        const studiesForPicker = _.flatten(
+            [
+                [[null, 'Not selected']],
+                _.map(studies.data, (study) => [
+                    study.pk,
+                    study.title,
+                ]),
+            ]
+        );
         const patient = _.first(_.values(patients.data)).data;
         const { firstName, lastName, dateOfBirth } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
@@ -264,7 +264,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     {studiesForPicker.length > 0 ?
                         <Picker
                             tree={this.props.tree.studyPicker}
-                            cursor={this.props.tree.selectedStudyPk}
+                            cursor={this.props.tree.selectedStudyPk.select('data')}
                             items={studiesForPicker}
                             title="Studies"
                         />

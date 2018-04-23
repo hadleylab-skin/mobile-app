@@ -5,6 +5,7 @@ import {
     StatusBar,
     TabBarIOS,
     View,
+    ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { ParticipantProfile } from 'screens/participant-profile';
@@ -144,6 +145,11 @@ export default schema(model)(React.createClass({
 
     render() {
         const patients = this.context.cursors.patients.get();
+        if (patients.status === 'Loading') {
+            return (
+                <ActivityIndicator />
+            );
+        }
 
         const isNeedCreateFirstPatient = patients &&
             patients.status === 'Succeed' && _.isEmpty(patients.data);
