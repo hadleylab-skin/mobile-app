@@ -31,6 +31,7 @@ export const Patient = schema(model)(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired,
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -41,6 +42,11 @@ export const Patient = schema(model)(React.createClass({
 
     componentWillMount() {
         this.updatePatientScreen();
+    },
+
+    onAddingComplete() {
+        this.context.mainNavigator.pop();
+        this.props.onAddingComplete();
     },
 
     async updatePatientScreen() {
@@ -92,7 +98,7 @@ export const Patient = schema(model)(React.createClass({
                     <MolesInfo
                         checkConsent={this.checkConsent}
                         widgetDataCursor={widgetDataCursor}
-                        onAddingComplete={this.props.onAddingComplete}
+                        onAddingComplete={this.onAddingComplete}
                     />
                     <MolesList
                         tree={molesCursor}

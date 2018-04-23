@@ -188,12 +188,14 @@ export const PatientsList = React.createClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const studyPk = cursors.currentStudyPk.get();
         const queryParams = cursors.filter.get();
 
         await services.patientsService(cursors.patients, queryParams);
         const result = await services.getPatientMolesService(
             patientPk,
-            cursors.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles'),
+            studyPk
         );
         const status = result.status;
 

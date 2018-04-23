@@ -36,6 +36,8 @@ export default schema(model)(React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
@@ -61,10 +63,12 @@ export default schema(model)(React.createClass({
     async onAddingMoleComplete() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
+        const studyPk = cursors.currentStudyPk.get();
 
         const result = await services.getPatientMolesService(
             currentPatientPk,
-            this.props.tree.participantScreen.moles);
+            this.props.tree.participantScreen.moles,
+            studyPk);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
 
         this.context.mainNavigator.popToTop();

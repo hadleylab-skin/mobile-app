@@ -24,6 +24,7 @@ export const Mole = React.createClass({
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
@@ -68,6 +69,7 @@ export const Mole = React.createClass({
         const molePk = this.props.tree.get('pk');
         const service = services.addMolePhotoService;
         const patientPk = cursors.currentPatientPk.get();
+        const studyPk = cursors.currentStudyPk.get();
         const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
         const imagesCursor = moleCursor.select('data', 'images');
 
@@ -93,7 +95,8 @@ export const Mole = React.createClass({
             await services.patientsService(cursors.patients, queryParams);
             await services.getPatientMolesService(
                 patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles'),
+                studyPk
             );
             await services.getMolePhotoService(
                 patientPk,

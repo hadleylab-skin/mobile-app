@@ -29,8 +29,9 @@ const InfoFields = schema(model)(React.createClass({
 
     contextTypes: {
         cursors: React.PropTypes.shape({
-            patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
             filter: React.PropTypes.object.isRequired, // eslint-disable-line,
@@ -90,6 +91,7 @@ const InfoFields = schema(model)(React.createClass({
         const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis', 'text');
         const pathDiagnosis = this.props.tree.get('pathDiagnosis', 'text');
         const patientPk = cursors.currentPatientPk.get();
+        const studyPk = cursors.currentStudyPk.get();
 
         this.onDataChange(
             { clinicalDiagnosis, pathDiagnosis },
@@ -97,7 +99,8 @@ const InfoFields = schema(model)(React.createClass({
                 this.props.navigator.pop();
                 await services.getPatientMolesService(
                     patientPk,
-                    cursors.patientsMoles.select(patientPk, 'moles')
+                    cursors.patientsMoles.select(patientPk, 'moles'),
+                    studyPk
                 );
             }
         );
