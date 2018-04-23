@@ -26,7 +26,7 @@ const model = (props, context) => {
             },
             search: '',
         },
-    }
+    };
 };
 
 export default schema(model)(React.createClass({

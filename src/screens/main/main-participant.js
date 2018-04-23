@@ -28,8 +28,8 @@ export default schema(model)(React.createClass({
 
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
+        tokenCursor: BaobabPropTypes.cursor.isRequired,  // eslint-disable-line
     },
 
     contextTypes: {
@@ -112,6 +112,7 @@ export default schema(model)(React.createClass({
                     >
                         <ParticipantProfile
                             tree={this.props.tree.participantScreen}
+                            keyPairStatusCursor={this.props.keyPairStatusCursor}
                         />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item

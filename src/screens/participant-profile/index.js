@@ -13,6 +13,7 @@ import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
@@ -27,12 +28,14 @@ const model = (props, context) => ({
         invites: context.services.getInvitesService,
         moles: {},
         editProfileScreen: {},
+        doctorCursor: { status: 'Succeed', data: context.cursors.doctor.get() },
     },
 });
 
 export const ParticipantProfile = schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -117,6 +120,14 @@ export const ParticipantProfile = schema(model)(React.createClass({
             cursors.patients.select('data', currentPatientPk, 'data'),
             services.updatePatientConsentService,
             mainNavigator);
+    },
+
+    openCryptoConfiguration() {
+        this.context.mainNavigator.push(
+            getCryptoConfigurationRoute({
+                doctorCursor: this.props.tree.doctorCursor,
+                keyPairStatusCursor: this.props.keyPairStatusCursor,
+            }));
     },
 
     async onUpdateScreen() {
@@ -263,6 +274,12 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         title={'Images'}
                     />
                     {this.renderMoles()}
+
+                    <InfoField
+                        title="Cryptography configuration"
+                        hasNoBorder
+                        onPress={this.openCryptoConfiguration}
+                    />
 
                     <InfoField
                         title={'Log out'}
