@@ -73,14 +73,13 @@ export const CameraMenu = schema({})(React.createClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
-        const studyPk = cursors.currentStudyPk.get();
         const queryParams = cursors.filter.get();
 
         await services.patientsService(cursors.patients, queryParams);
         await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles'),
-            studyPk
+            cursors.currentStudyPk.get('data'),
         );
     },
 

@@ -17,17 +17,13 @@ export function buildAsyncStorageService(name, dehydrate = _.identity) {
 }
 
 
-export function getSavedCurrentStudyService() {
-    return (cursor) => {
-        const _service = buildAsyncStorageService(
-            '@MelanomaApp:selectedStudyPk',
-            (value) => {
-                const studyPk = parseInt(value, 10);
-                return _.isNumber(studyPk) && !_.isNaN(studyPk) ? studyPk : null;
-            });
-        return _service(cursor);
-    };
-}
+export const getSavedCurrentStudyService = buildAsyncStorageService(
+    '@MelanomaApp:selectedStudyPk',
+    (value) => {
+        const studyPk = parseInt(value, 10);
+        return _.isNumber(studyPk) && !_.isNaN(studyPk) ? studyPk : null;
+    }
+);
 
 
 export async function saveCurrentStudy(studyPk) {

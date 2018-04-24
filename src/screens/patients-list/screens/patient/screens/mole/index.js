@@ -45,7 +45,7 @@ export const Mole = schema({})(React.createClass({
 
     async componentWillMount() {
         const patientPk = this.context.cursors.currentPatientPk.get();
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         const result = await this.context.services.getMoleService(
             patientPk,
@@ -119,7 +119,7 @@ export const Mole = schema({})(React.createClass({
 
     render() {
         const patientPk = this.context.cursors.currentPatientPk.get();
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();

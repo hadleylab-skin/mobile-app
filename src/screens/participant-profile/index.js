@@ -24,7 +24,6 @@ import s from './styles';
 const model = (props, context) => ({
     tree: {
         studies: {},
-        selectedStudyPk: context.services.getSavedCurrentStudyService,
         studyPicker: {},
         invites: context.services.getInvitesService,
         moles: {},
@@ -53,36 +52,30 @@ export const ParticipantProfile = schema(model)(React.createClass({
             getInvitesService: React.PropTypes.func.isRequired,
             getPatientMolesService: React.PropTypes.func.isRequired,
             updatePatientConsentService: React.PropTypes.func.isRequired,
-            getSavedCurrentStudyService: React.PropTypes.func.isRequired,
         }),
     },
 
     async componentWillMount() {
         await this.context.services.getStudiesService(this.props.tree.studies);
-        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
 
     componentWillUnmount() {
-        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.off('update', this.onSelectedStudyUpdate);
     },
 
     async onSelectedStudyUpdate() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
-        const selectedStudyPk = this.props.tree.selectedStudyPk.get('data');
-        if (_.isUndefined(selectedStudyPk)) {
-            return;
-        }
-
-        cursors.currentStudyPk.set(selectedStudyPk);
+        const currentStudyPk = cursors.currentStudyPk.get('data');
 
         const result = await services.getPatientMolesService(
             currentPatientPk,
             this.props.tree.moles,
-            selectedStudyPk);
+            currentStudyPk);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
-        saveCurrentStudy(selectedStudyPk);
+        saveCurrentStudy(currentStudyPk);
     },
 
     onCompleteSaveProfile(data) {
@@ -264,7 +257,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     {studiesForPicker.length > 0 ?
                         <Picker
                             tree={this.props.tree.studyPicker}
-                            cursor={this.props.tree.selectedStudyPk.select('data')}
+                            cursor={this.context.cursors.currentStudyPk.select('data')}
                             items={studiesForPicker}
                             title="Studies"
                         />

@@ -91,7 +91,6 @@ const InfoFields = schema(model)(React.createClass({
         const clinicalDiagnosis = this.props.tree.get('clinicalDiagnosis', 'text');
         const pathDiagnosis = this.props.tree.get('pathDiagnosis', 'text');
         const patientPk = cursors.currentPatientPk.get();
-        const studyPk = cursors.currentStudyPk.get();
 
         this.onDataChange(
             { clinicalDiagnosis, pathDiagnosis },
@@ -100,7 +99,7 @@ const InfoFields = schema(model)(React.createClass({
                 await services.getPatientMolesService(
                     patientPk,
                     cursors.patientsMoles.select(patientPk, 'moles'),
-                    studyPk
+                    cursors.currentStudyPk.get('data')
                 );
             }
         );

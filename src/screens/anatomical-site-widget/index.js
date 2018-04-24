@@ -125,7 +125,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             patientPk).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         let moleData = {
             ...data,
@@ -151,7 +151,6 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const selectedMoleCursor = this.props.tree.selectedMole;
         const service = services.addMolePhotoService;
         const patientPk = cursors.currentPatientPk.get();
-        const studyPk = cursors.currentStudyPk.get();
         const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
         const imagesCursor = moleCursor.select('data', 'images');
 
@@ -163,7 +162,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(
             patientPk, molePk, imagesCursor.select(pk), {
                 uri,
@@ -179,7 +178,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles'),
-                studyPk
+                currentStudyPk
             );
             const molesResult = await services.getMolePhotoService(
                 patientPk,

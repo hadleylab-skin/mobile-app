@@ -1,6 +1,7 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import { getRacesList } from 'services/constants';
+import { getSavedCurrentStudyService } from 'services/async-storage';
 import schema from 'libs/state';
 import MainDoctor from './main-doctor';
 import MainParticipant from './main-participant';
@@ -15,7 +16,7 @@ const model = (props, context) => {
             siteJoinRequest: context.services.getSiteJoinRequestsService,
             currentTab: isParticipant ? 'profile' : 'patients',
             currentPatientPk: null,
-            currentStudyPk: null,
+            currentStudyPk: getSavedCurrentStudyService,
             patients: {},
             patientsMoles: {},
             patientsMoleImages: {},
@@ -52,6 +53,10 @@ export default schema(model)(React.createClass({
 
     render() {
         const doctor = this.context.cursors.doctor.get();
+        const currentStudyPk = this.props.tree.currentStudyPk.get();
+        if (currentStudyPk.status === 'Loading') {
+            return null;
+        }
 
         if (doctor.isParticipant) {
             return (

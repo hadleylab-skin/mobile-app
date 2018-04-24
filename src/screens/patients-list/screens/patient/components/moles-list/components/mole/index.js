@@ -69,7 +69,6 @@ export const Mole = React.createClass({
         const molePk = this.props.tree.get('pk');
         const service = services.addMolePhotoService;
         const patientPk = cursors.currentPatientPk.get();
-        const studyPk = cursors.currentStudyPk.get();
         const moleCursor = cursors.patientsMoleImages.select(patientPk, 'moles', molePk);
         const imagesCursor = moleCursor.select('data', 'images');
 
@@ -79,7 +78,7 @@ export const Mole = React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(patientPk, molePk, imagesCursor.select(pk), {
             uri,
             age,
@@ -96,7 +95,7 @@ export const Mole = React.createClass({
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles'),
-                studyPk
+                currentStudyPk
             );
             await services.getMolePhotoService(
                 patientPk,

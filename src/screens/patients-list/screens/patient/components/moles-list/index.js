@@ -15,7 +15,7 @@ const model = (props, context) => (
         tree: (cursor) => context.services.getPatientMolesService(
             context.cursors.currentPatientPk.get(),
             cursor,
-            context.cursors.currentStudyPk.get()),
+            context.cursors.currentStudyPk.get('data')),
     }
 );
 
