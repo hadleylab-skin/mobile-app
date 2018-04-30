@@ -1,9 +1,6 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import {
-    View,
-    ScrollView,
-} from 'react-native';
+import { ScrollView } from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
@@ -34,6 +31,7 @@ export const Patient = schema(model)(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired,
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -42,13 +40,25 @@ export const Patient = schema(model)(React.createClass({
         }),
     },
 
+    componentWillMount() {
+        this.updatePatientScreen();
+    },
+
+    onAddingComplete() {
+        this.context.mainNavigator.pop();
+        this.props.onAddingComplete();
+    },
+
     async updatePatientScreen() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
 
-        const moleResult = await services.getPatientMolesService(patientPk, patientMolesCursor);
-        const patientResult = await services.getPatientService(patientPk, this.props.patientCursor);
+        const moleResult = await services.getPatientMolesService(
+            patientPk, patientMolesCursor, currentStudyPk);
+        const patientResult = await services.getPatientService(
+            patientPk, this.props.patientCursor, currentStudyPk);
 
         if (moleResult.status === 'Succeed' && patientResult.status === 'Succeed') {
             return {
@@ -88,12 +98,12 @@ export const Patient = schema(model)(React.createClass({
                     <MolesInfo
                         checkConsent={this.checkConsent}
                         widgetDataCursor={widgetDataCursor}
-                        onAddingComplete={this.props.onAddingComplete}
+                        onAddingComplete={this.onAddingComplete}
                     />
                     <MolesList
                         tree={molesCursor}
                         checkConsent={this.checkConsent}
-                        navigator={this.props.navigator}
+                        navigator={this.context.mainNavigator}
                     />
                 </ScrollView>
             </Updater>

@@ -23,7 +23,6 @@ export const Mole = schema({})(React.createClass({
         molePk: React.PropTypes.number.isRequired,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
         checkConsent: React.PropTypes.func.isRequired,
-        hideBottomPanel: React.PropTypes.bool,
     },
 
     contextTypes: {
@@ -46,11 +45,13 @@ export const Mole = schema({})(React.createClass({
 
     async componentWillMount() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         const result = await this.context.services.getMoleService(
             patientPk,
             this.props.molePk,
             this.props.tree,
+            currentStudyPk,
         );
 
         if (result.status === 'Succeed') {
@@ -118,16 +119,11 @@ export const Mole = schema({})(React.createClass({
 
     render() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
-        const { hideBottomPanel } = this.props;
         let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
-
-        const currentStudy = this.context.cursors.currentStudyPk.get();
-        if (currentStudy) {
-            images = _.filter(images, {data: {study: currentStudy}});
-        }
 
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
@@ -137,8 +133,9 @@ export const Mole = schema({})(React.createClass({
                     patientPk,
                     this.props.molePk,
                     this.props.tree,
+                    currentStudyPk,
                 )}
-                style={hideBottomPanel ? s.container : s.containerWithMargin}
+                style={s.container}
             >
                 <ScrollView scrollEventThrottle={200}>
                     <View style={s.inner}>
@@ -158,6 +155,7 @@ export const Mole = schema({})(React.createClass({
                                     molePk={this.props.molePk}
                                     imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
                                     navigator={this.props.navigator}
+                                    currentImage={currentImage}
                                 />
                             </View>
                         : null}

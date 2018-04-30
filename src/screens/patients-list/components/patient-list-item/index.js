@@ -80,7 +80,9 @@ const PatientListItem = React.createClass({
                                 );
 
                                 await services.getPatientMolesService(
-                                    pk, cursors.patientsMoles.select(pk, 'moles'));
+                                    pk,
+                                    cursors.patientsMoles.select(pk, 'moles'),
+                                    cursors.currentStudyPk.get('data'));
                             }
 
                             return;

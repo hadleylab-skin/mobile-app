@@ -5,16 +5,12 @@ import {
     StatusBar,
     TabBarIOS,
     View,
+    ActivityIndicator,
 } from 'react-native';
-import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
-import { ServiceProvider } from 'components';
-import { PatientsList } from 'screens/patients-list';
-import { DoctorProfile } from 'screens/doctor-profile';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
-import { CryptoConfiguration } from 'screens/crypto-config';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
 import cameraIcon from './images/camera.png';
@@ -34,12 +30,14 @@ export default schema(model)(React.createClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
+        tokenCursor: BaobabPropTypes.cursor.isRequired,  // eslint-disable-line
     },
 
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
@@ -68,7 +66,8 @@ export default schema(model)(React.createClass({
 
         const result = await services.getPatientMolesService(
             currentPatientPk,
-            this.props.tree.participantScreen.moles);
+            this.props.tree.participantScreen.moles,
+            cursors.currentStudyPk.get('data'));
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
 
         this.context.mainNavigator.popToTop();
@@ -83,7 +82,7 @@ export default schema(model)(React.createClass({
                 onActionComplete={(patient) => {
                     this.context.cursors.patients.data.set(patient.pk, {
                         status: 'Succeed',
-                        data: patient
+                        data: patient,
                     });
                     this.context.mainNavigator.popToTop();
                 }}
@@ -103,7 +102,7 @@ export default schema(model)(React.createClass({
             <View
                 style={{ flex: 1 }}
             >
-                <StatusBar barStyle={statusBarStyle}/>
+                <StatusBar barStyle={statusBarStyle} />
                 <TabBarIOS
                     barTintColor="#fff"
                     tintColor="#FC3159"
@@ -136,7 +135,7 @@ export default schema(model)(React.createClass({
                             );
                         }}
                     >
-                        <View/>
+                        <View />
                     </TabBarIOS.Item>
                 </TabBarIOS>
                 <CameraMenu
@@ -150,6 +149,11 @@ export default schema(model)(React.createClass({
 
     render() {
         const patients = this.context.cursors.patients.get();
+        if (patients.status === 'Loading') {
+            return (
+                <ActivityIndicator />
+            );
+        }
 
         const isNeedCreateFirstPatient = patients &&
             patients.status === 'Succeed' && _.isEmpty(patients.data);
@@ -159,5 +163,5 @@ export default schema(model)(React.createClass({
         } else {
             return this.renderMain();
         }
-    }
+    },
 }));

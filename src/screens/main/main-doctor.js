@@ -4,25 +4,16 @@ import BaobabPropTypes from 'baobab-prop-types';
 import {
     StatusBar,
     TabBarIOS,
-    NavigatorIOS,
     View,
-    Text,
-    Modal,
 } from 'react-native';
-import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
-import { ServiceProvider } from 'components';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
-import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
-import { CryptoConfiguration } from 'screens/crypto-config';
-import { CreateOrEditPatient } from 'screens/create-or-edit';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
-import s from './styles';
 
 
 export default schema({})(React.createClass({
@@ -62,9 +53,9 @@ export default schema({})(React.createClass({
 
         return (
             <View
-                style={{flex: 1}}
+                style={{ flex: 1 }}
             >
-                <StatusBar barStyle={statusBarStyle}/>
+                <StatusBar barStyle={statusBarStyle} />
                 <TabBarIOS
                     barTintColor="#fff"
                     tintColor="#FC3159"
@@ -90,7 +81,7 @@ export default schema({})(React.createClass({
                         selected={false}
                         onPress={() => showModalCursor.set(true)}
                     >
-                        <View/>
+                        <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         badge={siteJoinRequireAction ? '!' : null}

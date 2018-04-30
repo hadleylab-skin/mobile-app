@@ -1,13 +1,7 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
-import { getRacesList } from 'services/constants';
 import { ServiceProvider } from 'components';
-import { PatientsList } from 'screens/patients-list';
-import { DoctorProfile } from 'screens/doctor-profile';
-import { ParticipantProfile } from 'screens/participant-profile';
-import { CameraMenu } from 'screens/camera-menu';
 import { CryptoConfiguration } from 'screens/crypto-config';
-import { CreateOrEditPatient } from 'screens/create-or-edit';
 import Main from './main';
 import MainNavigatorProvider from './main-navigator-provider';
 
@@ -63,7 +57,7 @@ export default React.createClass({
                         doctorCursor={this.props.tokenCursor.data.doctor}
                         keyPairStatusCursor={keyPairStatusCursor}
                     />
-                )
+                );
             }
         } else {
             return (

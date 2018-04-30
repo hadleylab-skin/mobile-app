@@ -4,8 +4,6 @@ import { buildGetService, buildPostService, defaultHeaders, hydrateImage } from 
 function hydrateMolePhotoData({ uri, age, currentStudyPk }) {
     let data = new FormData();
 
-    console.log(currentStudyPk);
-
     data.append('photo', hydrateImage(uri));
     data.append('age', age);
     if (currentStudyPk) {

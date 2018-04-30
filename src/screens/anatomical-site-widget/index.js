@@ -125,7 +125,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             patientPk).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         let moleData = {
             ...data,
@@ -161,8 +161,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(
             patientPk, molePk, imagesCursor.select(pk), {
                 uri,
@@ -177,7 +177,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             await services.patientsService(cursors.patients);
             await services.getPatientMolesService(
                 patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles'),
+                currentStudyPk
             );
             const molesResult = await services.getMolePhotoService(
                 patientPk,
@@ -200,9 +201,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     getPatientMolesCursor() {
         const { cursors } = this.context;
         const patientPk = cursors.currentPatientPk.get();
-        const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
-
-        return patientMolesCursor;
+        return cursors.patientsMoles.select(patientPk, 'moles');
     },
 
     getMoles() {
