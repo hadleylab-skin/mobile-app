@@ -2,15 +2,13 @@ import _ from 'lodash';
 import React from 'react';
 import {
     View,
-    Text,
-    ScrollView
+    ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
-import { getInviteDetailScreenRoute } from './detail';
 import { InfoField } from 'components';
+import { getInviteDetailScreenRoute } from './detail';
 
 import s from '../styles';
-
 
 
 export const InvitesScreen = schema({})(React.createClass({
@@ -37,7 +35,7 @@ study: ${invite.study.title}`}
                             onPress={() =>
                                 this.context.mainNavigator.push(
                                     getInviteDetailScreenRoute({
-                                        invite: invite,
+                                        invite,
                                         tree: this.props.tree,
                                     }, this.context)
                                 )

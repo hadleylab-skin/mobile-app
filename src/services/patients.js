@@ -56,9 +56,9 @@ function concatParams(data) {
         }
 
         if (params.length > 0) {
-            params += '&' + paramKey + '=' + value;
+            params += `&${paramKey}=${value}`;
         } else {
-            params += paramKey + '=' + value;
+            params += `${paramKey}=${value}`;
         }
     });
 
@@ -136,8 +136,15 @@ export function getPatientService({ token }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (patientPk, cursor) => {
-        const service = buildGetService(`/api/v1/patient/${patientPk}/`,
+    return (patientPk, cursor, study = null) => {
+        let url;
+        if (study) {
+            url = `/api/v1/patient/${patientPk}/?study=${study}`;
+        } else {
+            url = `/api/v1/patient/${patientPk}/`;
+        }
+
+        const service = buildGetService(url,
             dehydratePatientData,
             _.merge({}, defaultHeaders, headers));
 

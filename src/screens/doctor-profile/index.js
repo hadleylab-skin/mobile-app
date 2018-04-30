@@ -13,20 +13,18 @@ import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
-import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import { isInSharedMode } from 'services/keypair';
+import { saveCurrentStudy } from 'services/async-storage';
+import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import s from './styles';
 
-const model = (props, context) => {
-    return {
-        tree: {
-            siteJoinRequestScreenState: {},
-            studies: context.services.getStudiesService,
-            studyPicker: {},
-            selectedStudyPk: null,
-        },
-    }
-};
+const model = (props, context) => ({
+    tree: {
+        siteJoinRequestScreenState: {},
+        studies: context.services.getStudiesService,
+        studyPicker: {},
+    },
+});
 
 export const DoctorProfile = schema(model)(React.createClass({
     propTypes: {
@@ -53,16 +51,16 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     async componentWillMount() {
-        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
 
     componentWillUnmount() {
-        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.off('update', this.onSelectedStudyUpdate);
     },
 
     async onSelectedStudyUpdate() {
-        this.context.cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+        saveCurrentStudy(this.context.cursors.currentStudyPk.get('data'));
     },
 
     openCryptoConfiguration() {
@@ -223,7 +221,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 _.map(studies.data, (study) => [
                     study.pk,
                     study.title,
-                ])
+                ]),
             ]
         );
 
@@ -232,6 +230,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 service={this.updateScreenData}
                 style={s.container}
                 color="#ACB5BE"
+                ref={(ref) => { this.scrollView = ref; }}
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />
@@ -273,9 +272,10 @@ export const DoctorProfile = schema(model)(React.createClass({
                 <View style={s.content}>
                     <Picker
                         tree={this.props.tree.studyPicker}
-                        cursor={this.props.tree.selectedStudyPk}
+                        cursor={this.context.cursors.currentStudyPk.select('data')}
                         items={studyOptions}
                         title="Study"
+                        onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
                 </View>
                 {

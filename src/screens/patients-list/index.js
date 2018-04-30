@@ -18,7 +18,6 @@ import Filter from './components/filter';
 import Search from './components/search';
 import s from './styles';
 
-
 const PatientsListScreen = schema({})(React.createClass({
     propTypes: {
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
@@ -49,30 +48,22 @@ const PatientsListScreen = schema({})(React.createClass({
         };
     },
 
-    patientsToList(data) {
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
-        if (currentStudyPk) {
-            data = _.filter(data, (patient, patientPk) => {
-                const studyPks = _.map(patient.data.studies, (study) => study.pk);
-                return _.includes(studyPks, currentStudyPk);
-            });
-        }
-
-        return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
-    },
-
     async componentWillMount() {
-        const { cursors, services } = this.context;
-        const queryParams = cursors.filter.get();
+        const { cursors } = this.context;
 
-        await services.patientsService(cursors.patients, queryParams);
         cursors.patients.on('update', this.updateDataStore);
         cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+
+        this.updateCurrentStudy();
     },
 
     componentWillUnmount() {
         this.context.cursors.patients.off('update', this.updateDataStore);
-        this.context.cursors.currentStudyPk.on('update', this.updateCurrentStudy);
+        this.context.cursors.currentStudyPk.off('update', this.updateCurrentStudy);
+    },
+
+    patientsToList(data) {
+        return _.partialRight(_.sortBy, ['data.lastName', 'data.firstName'])(data);
     },
 
     updateDataStore(event) {
@@ -86,26 +77,18 @@ const PatientsListScreen = schema({})(React.createClass({
         }
     },
 
-    updateCurrentStudy() {
-        const patients = this.patientsToList(this.context.cursors.patients.get('data'));
+    async updateCurrentStudy() {
+        this.props.navigator.popToTop();
 
-        this.setState({
-            ds: this.state.ds.cloneWithRows(patients),
-        });
+        const { cursors, services } = this.context;
+
+        await services.patientsService(cursors.patients, getQueryParams(cursors));
     },
 
     renderList() {
         const { cursors, services } = this.context;
-        const queryParams = cursors.filter.get();
-        const _onScroll = onScroll(async () => await services.patientsService(cursors.patients, queryParams));
-
-        if (this.state.ds.getRowCount() === 0) {
-            return (
-                <View style={s.emptyList}>
-                    <Text style={s.title}>No patients in selected study</Text>
-                </View>
-            );
-        }
+        const _onScroll = onScroll(async () =>
+            await services.patientsService(cursors.patients, getQueryParams(cursors)));
 
         return (
             <ListView
@@ -133,9 +116,7 @@ const PatientsListScreen = schema({})(React.createClass({
     render() {
         const { cursors, services, mainNavigator } = this.context;
         const status = cursors.patients.status.get();
-        const isSucced = status === 'Succeed';
-
-        const isListEmpty = isSucced && _.isEmpty(cursors.patients.get('data'));
+        const isListEmpty = status === 'Succeed' && _.isEmpty(cursors.patients.get('data'));
 
         return (
             <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
@@ -143,7 +124,7 @@ const PatientsListScreen = schema({})(React.createClass({
                     <Filter />
                     <Search searchCursor={this.props.searchCursor} />
                 </View>
-                {status === 'Loading' ?
+                { status === 'Loading' ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating
@@ -197,12 +178,12 @@ export const PatientsList = React.createClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
-        const queryParams = cursors.filter.get();
 
-        await services.patientsService(cursors.patients, queryParams);
+        await services.patientsService(cursors.patients, getQueryParams(cursors));
         const result = await services.getPatientMolesService(
             patientPk,
-            cursors.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles'),
+            cursors.currentStudyPk.get('data')
         );
         const status = result.status;
 
@@ -211,7 +192,6 @@ export const PatientsList = React.createClass({
 
     async onPatientAdded({ pk, sex }) {
         const { cursors, services, mainNavigator } = this.context;
-        const queryParams = cursors.filter.get();
 
         cursors.currentPatientPk.set(pk);
         mainNavigator.push(
@@ -223,7 +203,7 @@ export const PatientsList = React.createClass({
             }, this.context)
         );
 
-        await services.patientsService(cursors.patients, queryParams);
+        await services.patientsService(cursors.patients, getQueryParams(cursors));
     },
 
     render() {
@@ -256,3 +236,14 @@ export const PatientsList = React.createClass({
         );
     },
 });
+
+function getQueryParams(cursors) {
+    const currentStudyPk = cursors.currentStudyPk.get('data');
+    let queryParams = cursors.filter.get();
+
+    if (currentStudyPk) {
+        queryParams = _.merge({}, queryParams, { study: currentStudyPk });
+    }
+
+    return queryParams;
+}
