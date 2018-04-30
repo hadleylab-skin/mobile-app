@@ -1,15 +1,8 @@
 import React from 'react';
 import BaobabPropTypes from 'baobab-prop-types';
 import { getRacesList } from 'services/constants';
+import { getSavedCurrentStudyService } from 'services/async-storage';
 import schema from 'libs/state';
-import { ServiceProvider } from 'components';
-import { PatientsList } from 'screens/patients-list';
-import { DoctorProfile } from 'screens/doctor-profile';
-import { ParticipantProfile } from 'screens/participant-profile';
-import { CameraMenu } from 'screens/camera-menu';
-import { CryptoConfiguration } from 'screens/crypto-config';
-import { CreateOrEditPatient } from 'screens/create-or-edit';
-
 import MainDoctor from './main-doctor';
 import MainParticipant from './main-participant';
 
@@ -23,7 +16,7 @@ const model = (props, context) => {
             siteJoinRequest: context.services.getSiteJoinRequestsService,
             currentTab: isParticipant ? 'profile' : 'patients',
             currentPatientPk: null,
-            currentStudyPk: null,
+            currentStudyPk: getSavedCurrentStudyService,
             patients: {},
             patientsMoles: {},
             patientsMoleImages: {},
@@ -34,16 +27,16 @@ const model = (props, context) => {
             },
             search: '',
         },
-    }
+    };
 };
 
 export default schema(model)(React.createClass({
     displayName: 'Main',
 
     propTypes: {
-        tree: BaobabPropTypes.cursor.isRequired,
-        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
-        tokenCursor: BaobabPropTypes.cursor.isRequired,
+        tree: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
+        tokenCursor: BaobabPropTypes.cursor.isRequired,// eslint-disable-line
     },
 
     contextTypes: {
@@ -60,19 +53,23 @@ export default schema(model)(React.createClass({
 
     render() {
         const doctor = this.context.cursors.doctor.get();
+        const currentStudyPk = this.props.tree.currentStudyPk.get();
+        if (currentStudyPk.status === 'Loading') {
+            return null;
+        }
 
         if (doctor.isParticipant) {
             return (
                 <MainParticipant
                     {...this.props}
                 />
-            )
-        } else {
-            return (
-                <MainDoctor
-                    {...this.props}
-                />
             );
         }
+
+        return (
+            <MainDoctor
+                {...this.props}
+            />
+        );
     },
 }));

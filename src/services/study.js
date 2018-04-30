@@ -13,7 +13,7 @@ export function getStudiesService({ token }) {
 
     return (cursor) => {
         const _service = buildGetService(
-            `/api/v1/study/`,
+            '/api/v1/study/',
             dehydrateStudies,
             _.merge({}, defaultHeaders, headers));
 

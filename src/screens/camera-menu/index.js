@@ -24,6 +24,7 @@ export const CameraMenu = schema({})(React.createClass({
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             filter: React.PropTypes.object.isRequired, // eslint-disable-line,
@@ -77,7 +78,8 @@ export const CameraMenu = schema({})(React.createClass({
         await services.patientsService(cursors.patients, queryParams);
         await services.getPatientMolesService(
             patientPk,
-            cursors.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles'),
+            cursors.currentStudyPk.get('data'),
         );
     },
 

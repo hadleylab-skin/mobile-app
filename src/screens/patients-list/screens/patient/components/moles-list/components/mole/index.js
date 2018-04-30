@@ -18,13 +18,13 @@ export const Mole = React.createClass({
         tree: BaobabPropTypes.cursor.isRequired,
         checkConsent: React.PropTypes.func.isRequired,
         hasBorder: React.PropTypes.bool,
-        hideBottomPanel: React.PropTypes.bool,
         navigator: React.PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
         cursors: React.PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
@@ -77,8 +77,8 @@ export const Mole = React.createClass({
 
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(patientPk, molePk, imagesCursor.select(pk), {
             uri,
             age,
@@ -94,7 +94,8 @@ export const Mole = React.createClass({
             await services.patientsService(cursors.patients, queryParams);
             await services.getPatientMolesService(
                 patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles'),
+                currentStudyPk
             );
             await services.getMolePhotoService(
                 patientPk,
@@ -121,7 +122,6 @@ export const Mole = React.createClass({
                 title: anatomicalSites[anatomicalSites.length - 1].name,
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,
-                hideBottomPanel: this.props.hideBottomPanel,
                 navigator: this.props.navigator,
             })
         );
