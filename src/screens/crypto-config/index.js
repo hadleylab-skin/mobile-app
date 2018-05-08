@@ -63,6 +63,17 @@ export const CryptoConfiguration = schema({})(React.createClass({
             password);
     },
 
+    resetKeys() {
+        Alert.alert(
+            'Are you sure?',
+            'If you will reset keys, you will lost encrypted patients names and ages',
+            [
+                { text: 'Cancel' },
+                { text: 'Yes', onPress: this.regenerateRSAKeypair },
+            ]
+        );
+    },
+
     renderCryptographyInfo() {
         const status = this.props.keyPairStatusCursor.status.get();
         const doctor = this.props.doctorCursor.data.get();
@@ -88,9 +99,9 @@ export const CryptoConfiguration = schema({})(React.createClass({
                 );
             }
 
-            let { firstTime, data } = this.props.keyPairStatusCursor.get();
+            let { data } = this.props.keyPairStatusCursor.get();
             data = data || {};
-            if (firstTime && !data.publicKey && !data.privateKey && !doctor.publicKey) {
+            if (!data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
                     <View style={s.container}>
                         <Text style={s.group}>
@@ -119,9 +130,18 @@ export const CryptoConfiguration = schema({})(React.createClass({
                         Probably you are using one device for multiple accounts,
                         the app doesn't support it yet.
                     </Text>
+                    <View
+                        style={s.group}
+                    >
+                        <Button
+                            title="Log out"
+                            onPress={resetState}
+                        />
+                    </View>
+
                     <Button
-                        title="Log out"
-                        onPress={resetState}
+                        title="Reset keys"
+                        onPress={this.resetKeys}
                     />
                 </View>
             );

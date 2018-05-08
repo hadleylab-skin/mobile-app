@@ -5,4 +5,5 @@ export default StyleSheet.create({
     group: { paddingBottom: 10 },
     title: { fontSize: 30 },
     mainTitle: { fontSize: 30, fontWeight: 'bold' },
+    buttonMargin: { paddingTop: 10 },
 });
