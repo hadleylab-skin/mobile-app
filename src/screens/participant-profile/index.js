@@ -282,11 +282,6 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         />
                     </View>
                     }
-                    <InfoField
-                        title="Cryptography configuration"
-                        hasNoBorder
-                        onPress={this.openCryptoConfiguration}
-                    />
 
                     <InfoField
                         title={'Log out'}
