@@ -3,12 +3,14 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
+    Alert,
     ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
+import cameraSourceAlert from 'libs/camera-alert';
 import DistantPhotos from './components/distant-photos';
 import s from './styles';
 
@@ -35,6 +37,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
@@ -97,9 +100,19 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     onContinuePress() {
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            cameraSourceAlert(this.launchAddPhoto);
+        } else {
+            this.launchAddPhoto(ImagePicker.launchCamera);
+        }
+    },
+
+    launchAddPhoto(launchFunction) {
         const selectedMole = this.props.tree.get('selectedMole', 'data');
 
-        ImagePicker.launchCamera({}, (response) => {
+        launchFunction({}, (response) => {
             if (response.uri) {
                 if (selectedMole.pk) {
                     this.onSubmitExistingMolePhoto(response.uri, selectedMole.pk);

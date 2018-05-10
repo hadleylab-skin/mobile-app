@@ -8,6 +8,7 @@ import {
     ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
+import cameraSourceAlert from 'libs/camera-alert';
 import ImagePicker from 'react-native-image-picker';
 import { Updater } from 'components';
 import Gallery from './components/gallery';
@@ -167,18 +168,28 @@ export const Mole = schema({})(React.createClass({
 }));
 
 export function getMoleRoute(props) {
-    const { checkConsent } = props;
+    const { checkConsent, isParticipant } = props;
+
     async function onRightButtonPress() {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
-            ImagePicker.launchCamera({},
-                (response) => {
-                    if (response.uri) {
-                        props.onSubmitMolePhoto(response.uri);
-                    }
-                });
+            if (isParticipant) {
+                cameraSourceAlert(launchAddPhoto);
+            } else {
+                launchAddPhoto(ImagePicker.launchCamera);
+            }
         }
     }
+
+    function launchAddPhoto(launchFunction) {
+        launchFunction({},
+        (response) => {
+            if (response.uri) {
+                props.onSubmitMolePhoto(response.uri);
+            }
+        });
+    }
+
     return {
         component: Mole,
         title: props.title,
