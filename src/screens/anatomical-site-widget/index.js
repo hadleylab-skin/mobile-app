@@ -3,7 +3,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
-    Alert,
     ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
