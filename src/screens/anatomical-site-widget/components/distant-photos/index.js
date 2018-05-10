@@ -10,7 +10,6 @@ import {
     ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import cameraSourceAlert from 'libs/camera-alert';
 import { getDistantPhotoRoute } from './screens/distant-photo';
 import s from './styles';
 
@@ -46,7 +45,7 @@ const DistantPhotos = React.createClass({
         const { isParticipant } = this.context.cursors.doctor.get();
 
         if (isParticipant) {
-            cameraSourceAlert(this.launchAddPhoto);
+            this.launchAddPhoto(ImagePicker.showImagePicker);
         } else {
             this.launchAddPhoto(ImagePicker.launchCamera);
         }

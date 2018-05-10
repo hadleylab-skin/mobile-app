@@ -8,7 +8,6 @@ import {
     ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
-import cameraSourceAlert from 'libs/camera-alert';
 import ImagePicker from 'react-native-image-picker';
 import { Updater } from 'components';
 import Gallery from './components/gallery';
@@ -174,7 +173,7 @@ export function getMoleRoute(props) {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
             if (isParticipant) {
-                cameraSourceAlert(launchAddPhoto);
+                launchAddPhoto(ImagePicker.showImagePicker);
             } else {
                 launchAddPhoto(ImagePicker.launchCamera);
             }

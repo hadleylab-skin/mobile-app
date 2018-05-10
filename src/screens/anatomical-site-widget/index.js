@@ -9,7 +9,6 @@ import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
-import cameraSourceAlert from 'libs/camera-alert';
 import DistantPhotos from './components/distant-photos';
 import s from './styles';
 
@@ -102,7 +101,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const { isParticipant } = this.context.cursors.doctor.get();
 
         if (isParticipant) {
-            cameraSourceAlert(this.launchAddPhoto);
+            this.launchAddPhoto(ImagePicker.showImagePicker);
         } else {
             this.launchAddPhoto(ImagePicker.launchCamera);
         }
