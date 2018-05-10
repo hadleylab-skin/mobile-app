@@ -63,13 +63,23 @@ export const CryptoConfiguration = schema({})(React.createClass({
             password);
     },
 
+    async makeResetKeys() {
+        this.regenerateRSAKeypair();
+
+        const { publicKey } = this.props.keyPairStatusCursor.get('data');
+        await this.context.services.updateDoctorService(
+            this.props.doctorCursor, {
+                publicKey,
+            });
+    },
+
     resetKeys() {
         Alert.alert(
             'Are you sure?',
             'If you will reset keys, you will lost encrypted patients names and ages',
             [
                 { text: 'Cancel' },
-                { text: 'Yes', onPress: this.regenerateRSAKeypair },
+                { text: 'Yes', onPress: this.makeResetKeys },
             ]
         );
     },
