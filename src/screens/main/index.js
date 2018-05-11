@@ -43,6 +43,10 @@ export default React.createClass({
         };
     },
 
+    componentWillMount() {
+        this.props.tree.set('cryptoScreen', {});
+    },
+
     renderContent() {
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
         let { status, data } = keyPairStatusCursor.get();
@@ -73,7 +77,7 @@ export default React.createClass({
         } else {
             return (
                 <CryptoConfiguration
-                    standAlone
+                    tree={this.props.tree.cryptoScreen}
                     doctorCursor={this.props.tokenCursor.data.doctor}
                     keyPairStatusCursor={keyPairStatusCursor}
                 />

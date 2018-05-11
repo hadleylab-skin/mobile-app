@@ -29,6 +29,7 @@ const model = (props, context) => ({
         invites: context.services.getInvitesService,
         moles: {},
         editProfileScreen: {},
+        cryptoConfigScreen: {},
     },
 });
 
@@ -115,6 +116,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
             getCryptoConfigurationRoute({
                 doctorCursor: this.props.doctorCursor,
                 keyPairStatusCursor: this.props.keyPairStatusCursor,
+                tree: this.props.tree.cryptoConfigScreen,
             }));
     },
 
