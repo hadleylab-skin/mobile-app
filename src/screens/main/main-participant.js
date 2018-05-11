@@ -80,6 +80,7 @@ export default schema(model)(React.createClass({
                 service={this.context.services.createPatientService}
                 navigator={this.context.mainNavigator}
                 onActionComplete={(patient) => {
+                    this.context.cursors.currentPatientPk.set(patient.pk);
                     this.context.cursors.patients.data.set(patient.pk, {
                         status: 'Succeed',
                         data: patient,
