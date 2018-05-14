@@ -23,6 +23,7 @@ const model = (props, context) => ({
         siteJoinRequestScreenState: {},
         studies: context.services.getStudiesService,
         studyPicker: {},
+        cryptoConfigScreen: {},
     },
 });
 
@@ -68,6 +69,7 @@ export const DoctorProfile = schema(model)(React.createClass({
             getCryptoConfigurationRoute({
                 doctorCursor: this.props.doctorCursor,
                 keyPairStatusCursor: this.props.keyPairStatusCursor,
+                tree: this.props.tree.cryptoConfigScreen,
             }));
     },
 
