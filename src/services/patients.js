@@ -22,7 +22,11 @@ async function dehydratePatientData(data) {
     const aesKey = await decryptRSA(dehydratedData.encryptedKey);
     _.forEach(_.pickBy(dehydratedData), (value, key) => {
         if (_.includes(needEncryption, key) && value !== '') {
-            dehydratedData[key] = decryptAES(value, aesKey);
+            try {
+                dehydratedData[key] = decryptAES(value, aesKey);
+            } catch (error) {
+                throw 'patient_decryption_error';
+            }
         }
     });
     return dehydratedData;
@@ -168,15 +172,23 @@ export function createPatientService({ token, doctor }) {
     );
 }
 
-export function updatePatientService({ token, doctor }) {
+export function updatePatientService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (patientPk, cursor, data) => {
-        const _updatePatient = buildPostService(`/api/v1/patient/${patientPk}/`,
+    return (patientPk, cursor, data, study, doctor) => {
+        let url;
+        if (study) {
+            url = `/api/v1/patient/${patientPk}/?study=${study}`;
+        } else {
+            url = `/api/v1/patient/${patientPk}/`;
+        }
+
+        const _updatePatient = buildPostService(
+            url,
             'PATCH',
             hydratePatientData(doctor),
             dehydratePatientData,

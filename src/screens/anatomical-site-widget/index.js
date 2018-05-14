@@ -35,6 +35,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
@@ -97,9 +98,19 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     onContinuePress() {
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            this.launchAddPhoto(ImagePicker.showImagePicker);
+        } else {
+            this.launchAddPhoto(ImagePicker.launchCamera);
+        }
+    },
+
+    launchAddPhoto(launchFunction) {
         const selectedMole = this.props.tree.get('selectedMole', 'data');
 
-        ImagePicker.launchCamera({}, (response) => {
+        launchFunction({}, (response) => {
             if (response.uri) {
                 if (selectedMole.pk) {
                     this.onSubmitExistingMolePhoto(response.uri, selectedMole.pk);

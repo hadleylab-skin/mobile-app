@@ -114,6 +114,8 @@ export const Patient = schema(model)(React.createClass({
 export function getPatientRoute(props, context) {
     const { navigator } = props;
     const { firstName, lastName, pk } = props.patientCursor.get('data');
+    const currentStudyPk = context.cursors.currentStudyPk.get('data');
+    const doctor = { data: context.cursors.doctor };
 
     return {
         component: Patient,
@@ -125,7 +127,8 @@ export function getPatientRoute(props, context) {
                 tree: props.patientCursor,
                 dataCursor: props.patientCursor.select('data'),
                 title: 'Edit Patient',
-                service: (cursor, data) => context.services.updatePatientService(pk, cursor, data),
+                service: (cursor, data) => context.services.updatePatientService(
+                    pk, cursor, data, currentStudyPk, doctor),
                 onActionComplete: () => context.mainNavigator.pop(),
             }, context)
         ),

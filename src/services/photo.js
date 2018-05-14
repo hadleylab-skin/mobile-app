@@ -5,7 +5,9 @@ function hydrateMolePhotoData({ uri, age, currentStudyPk }) {
     let data = new FormData();
 
     data.append('photo', hydrateImage(uri));
-    data.append('age', age);
+    if (age) {
+        data.append('age', age);
+    }
     if (currentStudyPk) {
         data.append('study', currentStudyPk);
     }

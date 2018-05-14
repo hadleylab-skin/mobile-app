@@ -16,7 +16,16 @@ import { getKeyPairStatus, createNewKeyPair,
 } from 'services/keypair';
 import s from './styles';
 
-export const CryptoConfiguration = schema({})(React.createClass({
+
+const model = {
+    tree: {
+        localKeyPairData: {},
+        localKeyPairStatus: {},
+    },
+};
+
+
+export const CryptoConfiguration = schema(model)(React.createClass({
     propTypes: {
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
@@ -27,8 +36,23 @@ export const CryptoConfiguration = schema({})(React.createClass({
         }),
     },
 
+    componentWillMount() {
+        this.props.tree.localKeyPairStatus.on('update', this.syncKeyStatus);
+    },
+
+    componentWillUnmount() {
+        this.props.tree.localKeyPairStatus.off('update', this.syncKeyStatus);
+    },
+
+    syncKeyStatus() {
+        const result = this.props.tree.localKeyPairStatus.get();
+        if (result.status === 'Succeed') {
+            this.props.keyPairStatusCursor.set(result);
+        }
+    },
+
     async regenerateRSAKeypair() {
-        let result = await createNewKeyPair(this.props.keyPairStatusCursor);
+        let result = await createNewKeyPair(this.props.tree.localKeyPairData);
         if (result.status === 'Exists') {
             result = await this.context.services.updateDoctorService(
                 this.props.doctorCursor, {
@@ -39,8 +63,8 @@ export const CryptoConfiguration = schema({})(React.createClass({
             Alert.alert('Error', JSON.stringify(result.error));
         }
         const password = this.props.doctorCursor.tree.get('loginScreen', 'form', 'password');
-        await getKeyPairStatus(
-            this.props.keyPairStatusCursor,
+        return await getKeyPairStatus(
+            this.props.tree.localKeyPairStatus,
             this.props.doctorCursor.data.get(),
             password);
     },
@@ -58,9 +82,37 @@ export const CryptoConfiguration = schema({})(React.createClass({
             Alert.alert('Server side error', JSON.stringify(result.error));
         }
         await getKeyPairStatus(
-            this.props.keyPairStatusCursor,
+            this.props.tree.localKeyPairStatus,
             this.props.doctorCursor.data.get(),
             password);
+    },
+
+    async makeResetKeys() {
+        const result = await createNewKeyPair(this.props.tree.localKeyPairData);
+        const password = this.props.doctorCursor.tree.get('loginScreen', 'form', 'password');
+
+        const { publicKey } = result;
+        await this.context.services.updateDoctorService(
+            this.props.doctorCursor, {
+                publicKey,
+                privateKey: '',
+            });
+
+        await getKeyPairStatus(
+            this.props.tree.localKeyPairStatus,
+            this.props.doctorCursor.data.get(),
+            password);
+    },
+
+    resetKeys() {
+        Alert.alert(
+            'Are you sure?',
+            'If you will reset keys, you will lost encrypted patients names and ages',
+            [
+                { text: 'Cancel' },
+                { text: 'Yes', onPress: this.makeResetKeys },
+            ]
+        );
     },
 
     renderCryptographyInfo() {
@@ -88,9 +140,9 @@ export const CryptoConfiguration = schema({})(React.createClass({
                 );
             }
 
-            let { firstTime, data } = this.props.keyPairStatusCursor.get();
+            let { data } = this.props.keyPairStatusCursor.get();
             data = data || {};
-            if (firstTime && !data.publicKey && !data.privateKey && !doctor.publicKey) {
+            if (!data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
                     <View style={s.container}>
                         <Text style={s.group}>
@@ -119,9 +171,18 @@ export const CryptoConfiguration = schema({})(React.createClass({
                         Probably you are using one device for multiple accounts,
                         the app doesn't support it yet.
                     </Text>
+                    <View
+                        style={s.group}
+                    >
+                        <Button
+                            title="Log out"
+                            onPress={resetState}
+                        />
+                    </View>
+
                     <Button
-                        title="Log out"
-                        onPress={resetState}
+                        title="Reset keys"
+                        onPress={this.resetKeys}
                     />
                 </View>
             );

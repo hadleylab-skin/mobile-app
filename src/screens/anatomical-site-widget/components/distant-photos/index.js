@@ -27,6 +27,7 @@ const DistantPhotos = React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
         }),
         services: React.PropTypes.shape({
@@ -41,7 +42,17 @@ const DistantPhotos = React.createClass({
     },
 
     onButtonPress() {
-        ImagePicker.launchCamera({}, (response) => {
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            this.launchAddPhoto(ImagePicker.showImagePicker);
+        } else {
+            this.launchAddPhoto(ImagePicker.launchCamera);
+        }
+    },
+
+    launchAddPhoto(launchFunction) {
+        launchFunction({}, (response) => {
             if (response.uri) {
                 this.onAddDistantPhoto(response.uri);
             }

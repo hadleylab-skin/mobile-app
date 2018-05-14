@@ -23,6 +23,7 @@ export const Mole = React.createClass({
 
     contextTypes: {
         cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
@@ -114,6 +115,7 @@ export const Mole = React.createClass({
     onPress() {
         const { anatomicalSites, pk } = this.props.tree.get();
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const { isParticipant } = this.context.cursors.doctor.get();
 
         this.props.navigator.push(
             getMoleRoute({
@@ -123,6 +125,7 @@ export const Mole = React.createClass({
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,
                 navigator: this.props.navigator,
+                isParticipant,
             })
         );
     },
