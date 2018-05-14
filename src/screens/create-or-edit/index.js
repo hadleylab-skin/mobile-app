@@ -56,6 +56,7 @@ const model = {
         datePicker: {},
         racePicker: {},
         mrn: '',
+        doctorKeys: {},
     },
 };
 
@@ -70,8 +71,12 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
     contextTypes: {
         mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
         cursors: React.PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: React.PropTypes.shape({
+            getDoctorKeyListService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -81,7 +86,7 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
         };
     },
 
-    componentWillMount() {
+    async componentWillMount() {
         const { dataCursor } = this.props;
 
         if (this.isCreateMode()) {
@@ -98,8 +103,8 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
             return;
         }
 
-        const { firstName, lastName, mrn,
-            photo, dateOfBirth, sex, race } = dataCursor.get();
+        const { firstName, lastName, mrn, photo,
+            dateOfBirth, sex, race, doctors } = dataCursor.get();
 
         this.props.tree.form.set({
             firstName,
@@ -110,6 +115,33 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
             race,
             sex: sex || 'm',
         });
+
+        const { pk, myDoctorsPublicKeys } = this.context.cursors.doctor.get();
+        const doctorsWithKeys = _.map(_.keys(myDoctorsPublicKeys), (key) => parseInt(key, 10));
+        const doctorsWithoutKeys = _.filter(
+            doctors,
+            (doctor) => !_.includes(doctorsWithKeys, doctor) && doctor !== pk
+        );
+
+        if (!_.isEmpty(doctorsWithoutKeys)) {
+            const result = await this.context.services.getDoctorKeyListService(
+                this.props.tree.doctorKeys,
+                doctorsWithoutKeys
+            );
+            if (result.status === 'Succeed') {
+                let keys = _.map(result.data, (item) => {
+                    let result2 = {};
+                    result2[item.pk] = item.publicKey;
+                    return result2;
+                });
+                keys = Object.assign({}, ...keys);
+                if (myDoctorsPublicKeys) {
+                    this.context.cursors.doctor.myDoctorsPublicKeys.merge(keys);
+                } else {
+                    this.context.cursors.doctor.myDoctorsPublicKeys.set(keys);
+                }
+            }
+        }
     },
 
     isCreateMode() {

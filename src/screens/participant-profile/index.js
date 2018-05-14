@@ -89,13 +89,16 @@ export const ParticipantProfile = schema(model)(React.createClass({
     goEditProfile() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
+        const currentStudyPk = context.cursors.currentStudyPk.get();
+        const doctor = { data: context.cursors.doctor };
 
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: this.props.tree.editProfileScreen,
                 dataCursor: cursors.patients.select('data', currentPatientPk, 'data'),
                 title: 'Edit Profile',
-                service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
+                service: (cursor, data) => services.updatePatientService(
+                    currentPatientPk, cursor, data, currentStudyPk, doctor),
                 onActionComplete: (data) => { this.onCompleteSaveProfile(data); },
             }, this.context)
         );

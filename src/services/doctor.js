@@ -31,3 +31,18 @@ export function updateDoctorService({ token }) {
         return service(cursor, data);
     };
 }
+
+export function getDoctorKeyListService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor, doctorPks) => {
+        const doctors = doctorPks.join(',');
+        const service = buildGetService(
+        `/api/v1/doctor/public_keys/?doctors=${doctors}`,
+        _.identity,
+        _.merge({}, defaultHeaders, headers));
+        return service(cursor);
+    };
+}
