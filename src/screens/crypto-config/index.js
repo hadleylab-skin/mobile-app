@@ -88,13 +88,20 @@ export const CryptoConfiguration = schema(model)(React.createClass({
     },
 
     async makeResetKeys() {
-        const result = await this.regenerateRSAKeypair();
+        const result = await createNewKeyPair(this.props.tree.localKeyPairData);
+        const password = this.props.doctorCursor.tree.get('loginScreen', 'form', 'password');
 
-        const { publicKey } = result.data;
+        const { publicKey } = result;
         await this.context.services.updateDoctorService(
             this.props.doctorCursor, {
                 publicKey,
+                privateKey: '',
             });
+
+        await getKeyPairStatus(
+            this.props.tree.localKeyPairStatus,
+            this.props.doctorCursor.data.get(),
+            password);
     },
 
     resetKeys() {
