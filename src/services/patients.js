@@ -22,7 +22,11 @@ async function dehydratePatientData(data) {
     const aesKey = await decryptRSA(dehydratedData.encryptedKey);
     _.forEach(_.pickBy(dehydratedData), (value, key) => {
         if (_.includes(needEncryption, key) && value !== '') {
-            dehydratedData[key] = decryptAES(value, aesKey);
+            try {
+                dehydratedData[key] = decryptAES(value, aesKey);
+            } catch(error) {
+                dehydratedData[key] = '';
+            }
         }
     });
     return dehydratedData;
