@@ -13,6 +13,8 @@ import { CameraMenu } from 'screens/camera-menu';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
+import ParticipantDecryptionError from './participant-decryption-error';
+
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
@@ -97,6 +99,12 @@ export default schema(model)(React.createClass({
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
         const patients = this.context.cursors.patients.get();
+        if (patients.status === 'Failure' && patients.error === 'patient_decryption_error') {
+            return (
+                <ParticipantDecryptionError />
+            );
+        }
+
         const patient = _.get(_.first(_.values(patients.data)), 'data');
 
         return (

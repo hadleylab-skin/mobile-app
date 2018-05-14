@@ -24,8 +24,8 @@ async function dehydratePatientData(data) {
         if (_.includes(needEncryption, key) && value !== '') {
             try {
                 dehydratedData[key] = decryptAES(value, aesKey);
-            } catch(error) {
-                dehydratedData[key] = '';
+            } catch (error) {
+                throw 'patient_decryption_error';
             }
         }
     });
