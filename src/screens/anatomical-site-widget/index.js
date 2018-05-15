@@ -245,7 +245,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         return (
             <View style={s.container}>
                 <BodyView3D
-                    sex={isChild ? 'cartoon-child' : sex}
+                    sex={isChild ? 'child' : sex}
                     moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
                     onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}
