@@ -45,13 +45,16 @@ extension BodyModel
     internal func setupHeadCameraMotion()
     {
         setSphericalMotion(bodyNode: head,
-                           center: headCenter,
-                           minR: 3, maxR: 8, r: 5,
+//                           center: headCenter,
+                           center: headConfig.center,
+                           minR: headConfig.minR,
+                           maxR: headConfig.maxR,
+                           r: headConfig.r,
                            minTheta: 0.25 * Float.pi,
                            maxTheta: 0.7 * Float.pi)
       
         if showTargetPoints {
-            addDebugPoint(at: headCenter)
+            addDebugPoint(at: headConfig.center)
         }
     }
   

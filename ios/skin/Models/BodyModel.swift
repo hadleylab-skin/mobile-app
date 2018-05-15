@@ -5,6 +5,12 @@
 
 import SceneKit
 
+struct HeadCameraMotionConfig
+{
+    var center: GLKVector3
+    var minR, maxR, r: Float
+}
+
 class BodyModel
 {
     var rootBodyNode: BodyNode!
@@ -27,7 +33,8 @@ class BodyModel
   
     internal let defaultFov: Double
     internal let bodyCenter: GLKVector3
-    internal let headCenter: GLKVector3
+//    internal let headCenter: GLKVector3
+    internal let headConfig: HeadCameraMotionConfig
     internal let rightArmConfig: ArmCameraMotion.Config
     internal let leftArmConfig: ArmCameraMotion.Config
     internal let rightLegConfig: LegCameraMotion.Config
@@ -52,7 +59,8 @@ class BodyModel
     
     init(assetName: String,
          bodyCenter: GLKVector3,
-         headCenter: GLKVector3,
+//         headCenter: GLKVector3,
+         headConfig: HeadCameraMotionConfig,
          rightArmConfig: ArmCameraMotion.Config,
          leftArmConfig: ArmCameraMotion.Config,
          rightLegConfig: LegCameraMotion.Config,
@@ -62,7 +70,8 @@ class BodyModel
     {
         self.defaultFov = defaultFov
         self.bodyCenter = bodyCenter
-        self.headCenter = headCenter
+//        self.headCenter = headCenter
+        self.headConfig = headConfig
         self.rightArmConfig = rightArmConfig
         self.leftArmConfig = leftArmConfig
         self.rightLegConfig = rightLegConfig
