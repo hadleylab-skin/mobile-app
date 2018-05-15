@@ -238,12 +238,14 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const isMoleLoading = selectedMole.status === 'Loading' ||
             this.props.tree.get('mole', 'status') === 'Loading';
         const sex = this.props.sex === 'f' || (patientData && patientData.sex === 'f') ? 'female' : 'male';
+        const isChild = (patientData && patientData.dateOfBirth &&
+            parseInt(moment().diff(moment(patientData.dateOfBirth), 'years'), 10) <= 12);
         const moles = this.getMoles();
 
         return (
             <View style={s.container}>
                 <BodyView3D
-                    sex={sex}
+                    sex={isChild ? 'cartoon-child' : sex}
                     moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
                     onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}
