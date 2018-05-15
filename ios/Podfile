@@ -5,3 +5,8 @@ target 'Skin' do
   use_frameworks!
   pod 'SnapKit'
 end
+
+target 'BodyView3D-Test' do
+  use_frameworks!
+  pod 'SnapKit'
+end
