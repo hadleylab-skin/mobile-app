@@ -70,7 +70,7 @@ extension BodyModel
     {
         setupLegCameraMotion(bodyNode: rightLeg,
                              config: rightLegConfig,
-                             showSurface: true)
+                             showSurface: false)
       
         setupLegCameraMotion(bodyNode: leftLeg,
                              config: leftLegConfig,
@@ -152,7 +152,7 @@ extension BodyModel
                             axisZ: config.axisZ,
                             axisY: axisY,
                             cylinderH: config.cylinderH,
-                            torusR: 4,
+                            torusR: config.torusR,
                             r: config.r,
                             angle: config.angle,
                             initialFov: defaultFov,

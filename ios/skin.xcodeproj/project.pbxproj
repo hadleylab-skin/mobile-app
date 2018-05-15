@@ -70,6 +70,8 @@
 		92394EF12086EAF200803BA6 /* ArmCameraMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9214EDA41F53FCBA0043CC56 /* ArmCameraMotion.swift */; };
 		92394F022086EBB500803BA6 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 92EBB3C81F46B061003DD4EE /* art.scnassets */; };
 		92394F22208711D200803BA6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		9265046B2095E80C00174495 /* BodyView3D+CartoonChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9265046A2095E80C00174495 /* BodyView3D+CartoonChild.swift */; };
+		9265046C2095E80C00174495 /* BodyView3D+CartoonChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9265046A2095E80C00174495 /* BodyView3D+CartoonChild.swift */; };
 		9290DBE01F4ADE5600C3BB14 /* ToroidalMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */; };
 		9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */; };
 		92940B432085CD1A0070C578 /* BodyView3D+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92940B422085CD1A0070C578 /* BodyView3D+Gestures.swift */; };
@@ -376,6 +378,7 @@
 		92394EB52086E98100803BA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		92394EBA2086E98300803BA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		92394EBC2086E98300803BA6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9265046A2095E80C00174495 /* BodyView3D+CartoonChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BodyView3D+CartoonChild.swift"; sourceTree = "<group>"; };
 		9290DBC21F4ACEC200C3BB14 /* LegCameraMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegCameraMotion.swift; sourceTree = "<group>"; };
 		9290DBDF1F4ADE5600C3BB14 /* ToroidalMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToroidalMotion.swift; sourceTree = "<group>"; };
 		9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
@@ -783,6 +786,7 @@
 				92940B462085CE1C0070C578 /* BodyView3D+Male.swift */,
 				92940B482085CEBA0070C578 /* BodyView3D+Female.swift */,
 				92940B4A2085CFEC0070C578 /* BodyView3D+Child.swift */,
+				9265046A2095E80C00174495 /* BodyView3D+CartoonChild.swift */,
 				92EBB3BB1F46AFDB003DD4EE /* ControlsView.swift */,
 				9290DBE11F4B46D500C3BB14 /* RadialGradientView.swift */,
 			);
@@ -1457,6 +1461,7 @@
 				92940B492085CEBA0070C578 /* BodyView3D+Female.swift in Sources */,
 				9290DBE21F4B46D500C3BB14 /* RadialGradientView.swift in Sources */,
 				92EBB3C21F46AFDB003DD4EE /* Nevus.swift in Sources */,
+				9265046B2095E80C00174495 /* BodyView3D+CartoonChild.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				92940B472085CE1C0070C578 /* BodyView3D+Male.swift in Sources */,
 				92EBB3BE1F46AFDB003DD4EE /* EllipsoidalMotionWithFlexibleFocusPoint.swift in Sources */,
@@ -1494,6 +1499,7 @@
 				92394EE32086EADB00803BA6 /* BodyView3D+Female.swift in Sources */,
 				92394EE42086EADB00803BA6 /* BodyView3D+Child.swift in Sources */,
 				92394EE52086EADB00803BA6 /* ControlsView.swift in Sources */,
+				9265046C2095E80C00174495 /* BodyView3D+CartoonChild.swift in Sources */,
 				92394EE62086EADB00803BA6 /* RadialGradientView.swift in Sources */,
 				92394EE72086EAE300803BA6 /* BodyModel.swift in Sources */,
 				92394EE82086EAE300803BA6 /* BodyModel+Camera.swift in Sources */,

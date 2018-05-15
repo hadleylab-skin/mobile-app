@@ -87,7 +87,7 @@ import SceneKit
         material.metalness.contents = 0
         material.roughness.contents = 0.5
 //        material.normal.contents = "male-normal-map"
-        material.transparency = 0.25
+//        material.transparency = 0.25
       
         geometry.materials = [ material ]
     }

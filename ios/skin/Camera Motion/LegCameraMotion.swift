@@ -14,6 +14,7 @@ class LegCameraMotion: CameraMotion
         var axisY: GLKVector3
         var r: Float
         var cylinderH: Float
+        var torusR: Float
         var angle: Float
         var targetPoints: [TargetPoint]
     }

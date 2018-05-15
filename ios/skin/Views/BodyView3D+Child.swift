@@ -73,6 +73,7 @@ extension BodyView3D
                                    axisY: GLKVector3Make(-0.25, 0, 1),
                                    r: 4,
                                    cylinderH: 3.5,
+                                   torusR: 4.0,
                                    angle: (2 / 3) * Float.pi / 2,
                                    targetPoints: rightLegTargetPoints)
       
@@ -82,6 +83,7 @@ extension BodyView3D
                                    axisY: GLKVector3Make(0.25, 0, 1),
                                    r: 4,
                                    cylinderH: 3.5,
+                                   torusR: 4.0,
                                    angle: (2 / 3) * Float.pi / 2,
                                    targetPoints: leftLegTargetPoints)
 
