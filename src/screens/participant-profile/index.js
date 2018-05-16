@@ -89,8 +89,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
     goEditProfile() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
-        const currentStudyPk = context.cursors.currentStudyPk.get();
-        const doctor = { data: context.cursors.doctor };
+        const currentStudyPk = cursors.currentStudyPk.get();
+        const doctor = { data: cursors.doctor };
 
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
