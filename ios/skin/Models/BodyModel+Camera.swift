@@ -21,16 +21,16 @@ extension BodyModel
     internal func setupRootBodyNodeCameraMotion(showSurface: Bool = false)
     {
         rootBodyNode.cameraMotion =
-            EllipsoidalMotionWithFlexibleFocusPoint(center: bodyCenter,
+            EllipsoidalMotionWithFlexibleFocusPoint(center: bodyConfig.center,
                                                     axisTheta: GLKVector3Make(0, 0, 1),
                                                     axisPhi: GLKVector3Make(0, 1, 0),
                                                     up: GLKVector3Make(0, 1, 0),
                                                     scale: GLKVector3Make(1.05, 1.3, 1),
-                                                    minR: 5,
-                                                    maxR: 25,
+                                                    minR: bodyConfig.minR, //5,
+                                                    maxR: bodyConfig.maxR, //25,
                                                     minTheta: 0.05 * Float.pi,
                                                     maxTheta: 0.95 * Float.pi,
-                                                    initialCoord: (r: 20, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
+                                                    initialCoord: (r: bodyConfig.r, theta: 0.5 * Float.pi, phi: 0.5 * Float.pi),
                                                     velocity: (r: 5.0, theta: 0.0125, phi: 0.025))
       
         if showSurface, let repr = rootBodyNode.cameraMotion?.getRepresentationNode(z: 5, nx: 100, ny: 100, color: .black) {
@@ -38,14 +38,13 @@ extension BodyModel
         }
       
         if showTargetPoints {
-            addDebugPoint(at: bodyCenter)
+            addDebugPoint(at: bodyConfig.center)
         }
     }
   
     internal func setupHeadCameraMotion()
     {
         setSphericalMotion(bodyNode: head,
-//                           center: headCenter,
                            center: headConfig.center,
                            minR: headConfig.minR,
                            maxR: headConfig.maxR,

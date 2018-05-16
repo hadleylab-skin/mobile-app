@@ -80,11 +80,28 @@ extension BodyView3D
         let p = tap.location(in: sceneView)
       
         let options: [SCNHitTestOption:Any] = [
+            .searchMode: 1, //SCNHitTestSearchMode.all,
+            .firstFoundOnly: false,
             .categoryBitMask: 1,
-            .ignoreHiddenNodes: false
+            .ignoreHiddenNodes: false,
+            .sortResults: true
         ]
       
-        let hitResults = sceneView.hitTest(p, options: options)
+        var hitResults = sceneView.hitTest(p, options: options)
+      
+        guard !hitResults.isEmpty else {
+            print("Hit results is empty")
+            return
+        }
+      
+        hitResults = hitResults.compactMap { (r: SCNHitTestResult) -> SCNHitTestResult? in
+            return r.node.categoryBitMask == 1 ? r : nil
+        }
+      
+        guard !hitResults.isEmpty else {
+            print("Hit results is empty after filtering")
+            return
+        }
       
         hitResults.forEach {
             let name = $0.node.name ?? "-"
@@ -101,22 +118,26 @@ extension BodyView3D
         if selectedBodyNodeLO != currentModel.rootBodyNode,
            let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: selectedBodyNodeLO)
         {
+//            print(">> 1")
             handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
         }
         else if selectedBodyNodeLO == currentModel.rootBodyNode,
                 let r = findFarthestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.trunk)
         {
+//            print(">> 2")
             if let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
                r.bodyNode.parent != currentModel.trunk,
                let item = findControlsViewItem(r.bodyNode),
                let target = currentModel.cameraTargets[item]
             {
+//                print(">> 2-1")
                 print("\(r.bodyNode.name)")
                 controlsView.selectedItem = item
                 lookAtCameraTarget(target)
             }
             else
             {
+//                print(">> 2-2")
                 handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
             }
         }
@@ -126,15 +147,22 @@ extension BodyView3D
                  r.bodyNode.name == "Anterior Neck" ||
                  r.bodyNode.name == "Middle Chest")
         {
+//            print(">> 3")
             handleHitHigh(r.bodyNode, r.hitTestResult, didSelectNevus)
         }
         else
         {
+//            let b1 = selectedBodyNodeLO == currentModel.rootBodyNode
+//            let b2 = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode) != nil
+          
+//            print(">> 4 \(b1) \(b2)") //\(b3) \(b4)")
+          
             if selectedBodyNodeLO == currentModel.rootBodyNode,
                let r = findNearestChildNodeInHitTestResults(hitResults, relativeTo: currentModel.rootBodyNode),
                let item = findControlsViewItem(r.bodyNode),
                let target = currentModel.cameraTargets[item]
             {
+//                print(">> 4-1")
                 controlsView.selectedItem = item
                 lookAtCameraTarget(target)
             }

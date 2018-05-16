@@ -267,7 +267,6 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
     {
         setupMale()
         setupFemale()
-//        setupChild()
         setupCartoonChild()
         currentModel = models["cartoon-child"]
     }
@@ -562,12 +561,19 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
         -> [(hitTestResult: SCNHitTestResult, bodyNode: BodyNode, distance: Int)]?
     {
         var arr = [(SCNHitTestResult, BodyNode, Int)]()
-        
+     
+//        print("zipBodyNodesAndDistanceToParentInHitTestResults parent=\(parent.name)")
+     
         for hit in hitResults
         {
             let node = hit.node
-            
-            guard let bodyNode = currentModel?.lookupBodyNode(sceneNode: node),
+          
+//            print(">>> \(node.name)")
+          
+            let bn = currentModel?.lookupBodyNode(sceneNode: node)
+//            print(">>> found body node \(bn?.name ?? "None")")
+          
+            guard let bodyNode = bn,
                   let dist = bodyNode.getDistanceToParent(parent)
             else {
                 continue
@@ -678,7 +684,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
             
             for i in 0..<3
             {
-                var uv = [Float](repeating: 0, count: 2)
+                let uv = [Float](repeating: 0, count: 2)
                 let start = uvSource.dataOffset + Int(ijk[i]) * uvSource.dataStride
                 let size = uv.count * MemoryLayout<Float>.size
                 let range = Range(uncheckedBounds: (start, start + size))
