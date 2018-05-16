@@ -237,15 +237,21 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
         const isMoleLoading = selectedMole.status === 'Loading' ||
             this.props.tree.get('mole', 'status') === 'Loading';
-        const sex = this.props.sex === 'f' || (patientData && patientData.sex === 'f') ? 'female' : 'male';
+        const moles = this.getMoles();
+
+        let sex = 'male';
         const isChild = (patientData && patientData.dateOfBirth &&
             parseInt(moment().diff(moment(patientData.dateOfBirth), 'years'), 10) <= 12);
-        const moles = this.getMoles();
+        if (this.props.sex === 'c' || isChild) {
+            sex = 'child';
+        } else if (this.props.sex === 'f' || (patientData && patientData.sex === 'f')) {
+            sex = 'female';
+        }
 
         return (
             <View style={s.container}>
                 <BodyView3D
-                    sex={isChild ? 'child' : sex}
+                    sex={sex}
                     moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
                     onBodyPartSelected={this.onBodyPartSelected}
                     onMoleAdded={this.onMoleAdded}

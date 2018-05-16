@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -190,8 +191,10 @@ export const PatientsList = React.createClass({
         return { status };
     },
 
-    async onPatientAdded({ pk, sex }) {
+    async onPatientAdded({ pk, sex, dateOfBirth }) {
         const { cursors, services, mainNavigator } = this.context;
+        const isChild = parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) <= 12;
+        const modelSex = isChild ? 'c' : sex;
 
         cursors.currentPatientPk.set(pk);
         mainNavigator.push(
@@ -199,7 +202,7 @@ export const PatientsList = React.createClass({
                 tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
                 onAddingComplete: this.onAddingComplete,
                 onBackPress: () => mainNavigator.popToTop(),
-                sex,
+                sex: modelSex,
             }, this.context)
         );
 
