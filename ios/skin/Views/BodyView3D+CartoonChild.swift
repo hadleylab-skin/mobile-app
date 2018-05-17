@@ -19,6 +19,7 @@ extension BodyView3D
         let rightLegOrigin = GLKVector3Make(-1.0, -2, -0.25)
         let leftLegOrigin = GLKVector3Make(1.0, -2, -0.25)
       
+        let bodyConfig = BodyCameraMotionConfig(center: bodyCenter, minR: 10, maxR: 32, r: 31)
         let headConfig = HeadCameraMotionConfig(center: headCenter, minR: 5, maxR: 20, r: 15)
       
         let rightArmTargetPoints: [TargetPoint] = [
@@ -91,8 +92,7 @@ extension BodyView3D
 
         models["cartoon-child"] =
             try! BodyModel(assetName: "art.scnassets/CartoonChild.scn",
-                           bodyCenter: bodyCenter,
-//                           headCenter: headCenter,
+                           bodyConfig: bodyConfig,
                            headConfig: headConfig,
                            rightArmConfig: rightArmConfig,
                            leftArmConfig: leftArmConfig,
