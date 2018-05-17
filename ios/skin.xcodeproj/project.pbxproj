@@ -1646,7 +1646,7 @@
 					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/skin/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1679,7 +1679,7 @@
 					"$(SRCROOT)/../node_modules/react-native-doc-viewer/ios/**",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/skin/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
