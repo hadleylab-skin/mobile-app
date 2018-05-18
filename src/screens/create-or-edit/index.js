@@ -211,7 +211,9 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
         if (result.status === 'Succeed') {
             onActionComplete(result.data);
         } else {
-            const mrnError = _.join(result.error.data.mrnHash || [], ',');
+            const mrnError = _.join(result.error.data ?
+                (result.error.data.mrnHash || []) :
+                [], ',');
             if (mrnError) {
                 Alert.alert('Save Error', mrnError);
             } else {
