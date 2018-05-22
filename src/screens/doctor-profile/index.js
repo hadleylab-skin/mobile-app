@@ -196,7 +196,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`Patinets data is being shared with ${request.siteTitle} site`}
+                        {`Patient data is being shared with ${request.siteTitle} site`}
                     </Text>
                 );
 
