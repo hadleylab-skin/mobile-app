@@ -207,7 +207,7 @@ const InfoFields = schema(model)(React.createClass({
         return (
             <View style={s.fields}>
                 {this.renderDiagnosisField('clinicalDiagnosis', 'Clinical Diagnosis')}
-                {this.renderDiagnosisField('pathDiagnosis', 'Pathlogical Diagnosis')}
+                {this.renderDiagnosisField('pathDiagnosis', 'Pathology Diagnosis')}
 
                 <InfoField
                     title={'Biopsy'}

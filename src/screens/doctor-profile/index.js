@@ -166,7 +166,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`You request to join ${request.siteTitle} is pending coordinator's aprrove`}
+                        {`You request to join ${request.siteTitle} is pending coordinator's approval`}
                     </Text>
                 );
             case 1:
@@ -183,7 +183,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                         title={
                             <Text>
                                 <Text style={{ color: 'red' }}>! </Text>
-                                {`Share patients with ${request.siteTitle} site`}
+                                {`Share patients data with ${request.siteTitle} site`}
                                 <Text style={{ color: 'red' }}> !</Text>
                             </Text>
                         }
@@ -196,7 +196,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`Your patinets are shared with ${request.siteTitle} site`}
+                        {`Patinets data is being shared with ${request.siteTitle} site`}
                     </Text>
                 );
 
