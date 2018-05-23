@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultAvatarImage from 'components/icons/avatar/avatar.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
@@ -241,7 +241,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                     <View style={s.pinkBg} />
                     <Image
                         style={s.photo}
-                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
+                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultAvatarImage}
                     />
                     <View style={s.name}>
                         <Text style={s.text}>
