@@ -9,8 +9,9 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    ScrollView,
+    TouchableHighlight,
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultAvatarImage from 'components/icons/avatar/avatar.png';
@@ -44,13 +45,14 @@ export const DoctorProfile = schema(model)(createReactClass({
             patients: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: PropTypes.shape({
-            getStudiesService: PropTypes.func.isRequired,
-            updateDoctorService: PropTypes.func.isRequired,
-            getDoctorService: PropTypes.func.isRequired,
-            getSiteJoinRequestsService: PropTypes.func.isRequired,
-            confirmSiteJoinRequestService: PropTypes.func.isRequired,
-            patientsService: PropTypes.func.isRequired,
+        services: React.PropTypes.shape({
+            getStudiesService: React.PropTypes.func.isRequired,
+            updateDoctorService: React.PropTypes.func.isRequired,
+            updateDoctorPhotoService: React.PropTypes.func.isRequired,
+            getDoctorService: React.PropTypes.func.isRequired,
+            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
+            confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
+            patientsService: React.PropTypes.func.isRequired,
         }),
     },
 
@@ -94,6 +96,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         }
         return this.context.services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
+        // TODO add progress indicator
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -149,6 +152,16 @@ export const DoctorProfile = schema(model)(createReactClass({
         await this.updateScreenData();
         await this.context.services.patientsService(
             this.context.cursors.patients, {});
+    },
+
+    changePhoto() {
+        ImagePicker.showImagePicker({},
+        async (response) => {
+            if (response.uri) {
+                await this.context.services.updateDoctorPhotoService(
+                    this.props.doctorCursor, { photo: response.uri });
+            }
+        });
     },
 
     renderSiteJoinRequest() {
@@ -239,10 +252,14 @@ export const DoctorProfile = schema(model)(createReactClass({
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />
-                    <Image
-                        style={s.photo}
-                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultAvatarImage}
-                    />
+                    <TouchableHighlight
+                        underlayColor="#FF1D70"
+                        onPress={this.changePhoto}>
+                        <Image
+                            style={s.photo}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultAvatarImage}
+                        />
+                    </TouchableHighlight>
                     <View style={s.name}>
                         <Text style={s.text}>
                             {`${firstName} ${lastName}`}
