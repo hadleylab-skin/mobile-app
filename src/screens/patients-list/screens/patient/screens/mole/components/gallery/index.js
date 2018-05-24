@@ -71,27 +71,27 @@ const Gallery = createReactClass({
                         itemWidth={width}
                         inactiveSlideScale={1}
                         scrollEventThrottle={100}
+                        data={this.props.images}
+                        renderItem={({ item, index }) => (
+                            <View style={s.galleryItem} key={`gallery-image-${index}`}>
+                                {this.renderActivityIndicator('large')}
+                                {!_.isEmpty(item.data) && item.data.dateCreated ?
+                                    <View>
+                                        <View style={s.dateWrraper}>
+                                            <Text style={s.date}>
+                                                {`uploaded: ${this.formateDate(item.data.dateCreated)}`}
+                                            </Text>
+                                        </View>
+                                        <Image source={{ uri: item.data.photo.fullSize }} style={s.galleryImage} />
+                                    </View>
+                                : <View style={s.galleryImage} />}
+                            </View>
+                        )}
                         onSnapToItem={(id) => {
                             const image = this.props.images[id];
                             setcurrentImagePk(image.data.pk);
                         }}
-                    >
-                        {_.map(this.props.images, (image, index) => (
-                            <View style={s.galleryItem} key={`gallery-image-${index}`}>
-                                {this.renderActivityIndicator('large')}
-                                {!_.isEmpty(image.data) && image.data.dateCreated ?
-                                    <View>
-                                        <View style={s.dateWrraper}>
-                                            <Text style={s.date}>
-                                                {`uploaded: ${this.formateDate(image.data.dateCreated)}`}
-                                            </Text>
-                                        </View>
-                                        <Image source={{ uri: image.data.photo.fullSize }} style={s.galleryImage} />
-                                    </View>
-                                : <View style={s.galleryImage} />}
-                            </View>
-                        ))}
-                    </Carousel>
+                    />
                     <View style={s.dots}>
                         {_.map(this.props.images, (dot, index) => (
                             <View
