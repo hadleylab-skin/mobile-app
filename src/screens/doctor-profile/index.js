@@ -96,7 +96,6 @@ export const DoctorProfile = schema(model)(createReactClass({
         }
         return this.context.services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
-        // TODO add progress indicator
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -232,6 +231,7 @@ export const DoctorProfile = schema(model)(createReactClass({
 
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
+        const status = this.props.doctorCursor.get('status');
         const studies = this.props.tree.studies.get();
         const studyOptions = _.flatten(
             [
@@ -250,6 +250,15 @@ export const DoctorProfile = schema(model)(createReactClass({
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
             >
+                { status === 'Loading' ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                : null}
                 <View style={s.info}>
                     <View style={s.pinkBg} />
                     <TouchableHighlight
