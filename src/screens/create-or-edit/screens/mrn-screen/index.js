@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
 } from 'react-native';
@@ -16,11 +18,11 @@ const mrnSchema = {
     maxLength: 9,
 };
 
-export const MrnScreen = React.createClass({
+export const MrnScreen = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        onSubmit: React.PropTypes.func.isRequired,
-        text: React.PropTypes.string,
+        onSubmit: PropTypes.func.isRequired,
+        text: PropTypes.string,
     },
 
     componentDidMount() {

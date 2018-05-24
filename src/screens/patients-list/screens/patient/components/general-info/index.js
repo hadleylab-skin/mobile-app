@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -13,15 +15,15 @@ import { getSignatureRoute } from 'screens/signature';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import s from './styles';
 
-export const GeneralInfo = schema({})(React.createClass({
+export const GeneralInfo = schema({})(createReactClass({
     propTypes: {
         patientCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired,
-        services: React.PropTypes.shape({
-            updatePatientConsentService: React.PropTypes.func.isRequired,
+        mainNavigator: PropTypes.object.isRequired,
+        services: PropTypes.shape({
+            updatePatientConsentService: PropTypes.func.isRequired,
         }),
     },
 

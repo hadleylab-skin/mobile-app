@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -45,18 +47,18 @@ const lesionsCmSchema = {
     message: 'required',
 };
 
-export const LesionsScreen = React.createClass({
+export const LesionsScreen = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        data: React.PropTypes.shape({
-            width: React.PropTypes.string,
-            height: React.PropTypes.string,
+        data: PropTypes.shape({
+            width: PropTypes.string,
+            height: PropTypes.string,
         }),
-        onSubmit: React.PropTypes.func.isRequired,
+        onSubmit: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
         }),
     },

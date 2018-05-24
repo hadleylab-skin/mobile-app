@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -17,15 +19,15 @@ const model = {
     },
 };
 
-export const Picker = schema(model)(React.createClass({
+export const Picker = schema(model)(createReactClass({
     displayName: 'Picker',
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.array),
-        title: React.PropTypes.string.isRequired,
-        onPress: React.PropTypes.func,
-        hasNoBorder: React.PropTypes.bool,
+        items: PropTypes.arrayOf(PropTypes.array),
+        title: PropTypes.string.isRequired,
+        onPress: PropTypes.func,
+        hasNoBorder: PropTypes.bool,
     },
 
     // contextTypes: Form.childContextTypes,

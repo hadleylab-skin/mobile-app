@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -13,7 +14,7 @@ import { InfoField } from 'components';
 import dotImage from 'components/icons/dot/dot.png';
 import s from './styles';
 
-const AnatomicalSite = schema({})(React.createClass({
+const AnatomicalSite = schema({})(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
     },

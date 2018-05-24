@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Image,
@@ -16,23 +18,23 @@ import InfoFields from './components/info-fields';
 import AnatomicalSite from './components/anatomical-site';
 import s from './styles';
 
-export const Mole = schema({})(React.createClass({
+export const Mole = schema({})(createReactClass({
     displayName: 'Mole',
 
     propTypes: {
-        molePk: React.PropTypes.number.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        checkConsent: React.PropTypes.func.isRequired,
+        molePk: PropTypes.number.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getMoleService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getMoleService: PropTypes.func.isRequired,
         }),
     },
 

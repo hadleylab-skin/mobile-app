@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -41,10 +43,10 @@ In the case of injury resulting from this study, you do not lose any of your leg
 You can talk with the study researcher about any questions, concerns or complaints you have about this study. Contact the study researcher Dr. Dexter Hadley at <a href="mailto:dexter.hadley@ucsf.edu">dexter.hadley@ucsf.edu</a>.
 `;
 
-const AgreementScreen = React.createClass({
+const AgreementScreen = createReactClass({
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        onAgree: React.PropTypes.func.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        onAgree: PropTypes.func.isRequired,
     },
     render() {
         return (

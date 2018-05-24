@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     StatusBar,
     TabBarIOS,
@@ -16,7 +18,7 @@ import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
 
-export default schema({})(React.createClass({
+export default schema({})(createReactClass({
     displayName: 'MainDoctor',
 
     propTypes: {
@@ -26,12 +28,12 @@ export default schema({})(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        services: React.PropTypes.shape({
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            createPatientService: React.PropTypes.func.isRequired,
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        services: PropTypes.shape({
+            getSiteJoinRequestsService: PropTypes.func.isRequired,
+            createPatientService: PropTypes.func.isRequired,
         }),
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
         }),

@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+
 import {
     View,
     ActivityIndicator,
@@ -23,13 +26,13 @@ export const onScroll = (service) => async function (e) {
     }
 };
 
-export const Updater = React.createClass({
+export const Updater = createReactClass({
     propTypes: {
-        service: React.PropTypes.func.isRequired,
-        children: React.PropTypes.node.isRequired,
-        style: React.PropTypes.number,
-        color: React.PropTypes.string,
-        onScrollView: React.PropTypes.func,
+        service: PropTypes.func.isRequired,
+        children: PropTypes.node.isRequired,
+        style: PropTypes.number,
+        color: PropTypes.string,
+        onScrollView: PropTypes.func,
     },
 
     getInitialState() {

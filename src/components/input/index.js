@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import schema from 'libs/state';
 import {
     View,
@@ -12,19 +14,19 @@ import {
 import s from './styles';
 import { Form } from '../form';
 
-export const Input = schema({})(React.createClass({
+export const Input = schema({})(createReactClass({
     propTypes: {
-        label: React.PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
         cursor: BaobabPropTypes.cursor.isRequired,
         inputWrapperStyle: View.propTypes.style,
         inputStyle: TextInput.propTypes.style,
-        placeholderTextColor: React.PropTypes.string,
-        returnKeyType: React.PropTypes.string,
-        onFocus: React.PropTypes.func,
-        name: React.PropTypes.string,
+        placeholderTextColor: PropTypes.string,
+        returnKeyType: PropTypes.string,
+        onFocus: PropTypes.func,
+        name: PropTypes.string,
         errorWrapperStyle: View.propTypes.style,
         errorStyle: Text.propTypes.style,
-        errorPlaceholderTextColor: React.PropTypes.string,
+        errorPlaceholderTextColor: PropTypes.string,
     },
 
     contextTypes: Form.childContextTypes,

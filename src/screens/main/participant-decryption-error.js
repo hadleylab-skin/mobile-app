@@ -4,13 +4,14 @@ import {
     Text,
     ScrollView,
 } from 'react-native';
+import createReactClass from 'create-react-class';
 import { Button } from 'components';
 import { resetState } from 'libs/tree';
 
 import ccs from '../crypto-config/styles';
 
 
-export default React.createClass({
+export default createReactClass({
     displayName: 'ParticipantDecryptionError',
 
     render() {

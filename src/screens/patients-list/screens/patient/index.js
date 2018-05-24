@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import { ScrollView } from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
@@ -17,26 +19,26 @@ const model = {
     },
 };
 
-export const Patient = schema(model)(React.createClass({
+export const Patient = schema(model)(createReactClass({
     displayName: 'Patient',
 
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        onAddingComplete: React.PropTypes.func.isRequired,
+        onAddingComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired,
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired,
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            getPatientService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getPatientMolesService: PropTypes.func.isRequired,
+            getPatientService: PropTypes.func.isRequired,
         }),
     },
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -24,17 +26,17 @@ const model = (props, context) => {
     };
 };
 
-export const AnatomicalSiteWidget = schema(model)(React.createClass({
+export const AnatomicalSiteWidget = schema(model)(createReactClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
-        onAddingComplete: React.PropTypes.func.isRequired,
-        sex: React.PropTypes.string,
+        onAddingComplete: PropTypes.func.isRequired,
+        sex: PropTypes.string,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
@@ -42,13 +44,13 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            addMoleService: React.PropTypes.func.isRequired,
-            getAnatomicalSitesService: React.PropTypes.func.isRequired,
-            addMolePhotoService: React.PropTypes.func.isRequired,
-            getMolePhotoService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            addMoleService: PropTypes.func.isRequired,
+            getAnatomicalSitesService: PropTypes.func.isRequired,
+            addMolePhotoService: PropTypes.func.isRequired,
+            getMolePhotoService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 

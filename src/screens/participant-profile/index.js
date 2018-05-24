@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -33,7 +35,7 @@ const model = (props, context) => ({
     },
 });
 
-export const ParticipantProfile = schema(model)(React.createClass({
+export const ParticipantProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
@@ -41,19 +43,19 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            getStudiesService: React.PropTypes.func.isRequired,
-            getInvitesService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            updatePatientConsentService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
+            getInvitesService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
+            updatePatientConsentService: PropTypes.func.isRequired,
         }),
     },
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     Alert,
@@ -33,10 +35,10 @@ const model = {
     },
 };
 
-const SignUp = schema(model)(React.createClass({
+const SignUp = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     async componentWillMount() {

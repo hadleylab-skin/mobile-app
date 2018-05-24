@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     ActivityIndicator,
@@ -22,12 +24,12 @@ const dignosisSchema = {
     message: 'required',
 };
 
-export const DiagnosisScreen = React.createClass({
+export const DiagnosisScreen = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        title: React.PropTypes.string.isRequired,
-        onSubmit: React.PropTypes.func.isRequired,
-        text: React.PropTypes.string,
+        title: PropTypes.string.isRequired,
+        onSubmit: PropTypes.func.isRequired,
+        text: PropTypes.string,
     },
 
     getInitialState() {

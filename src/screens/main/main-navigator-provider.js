@@ -1,16 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     NavigatorIOS,
 } from 'react-native';
 
 
-export default React.createClass({
+export default createReactClass({
     displayName: 'MainNavigatorProvider',
 
     propTypes: NavigatorIOS.propTypes,
 
     childContextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     getChildContext() {

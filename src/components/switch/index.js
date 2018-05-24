@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -8,19 +10,19 @@ import {
 } from 'react-native';
 import s from './styles';
 
-export const Switch = React.createClass({
+export const Switch = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        items: React.PropTypes.arrayOf(React.PropTypes.shape({
-            label: React.PropTypes.string,
-            value: React.PropTypes.oneOfType([
-                React.PropTypes.string,
-                React.PropTypes.bool,
+        items: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.string,
+            value: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.bool,
             ]),
         })).isRequired,
-        itemWidth: React.PropTypes.number,
-        disabled: React.PropTypes.bool,
-        onPress: React.PropTypes.func,
+        itemWidth: PropTypes.number,
+        disabled: PropTypes.bool,
+        onPress: PropTypes.func,
     },
 
     onPress(value) {

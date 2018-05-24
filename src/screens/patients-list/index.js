@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
@@ -19,24 +21,24 @@ import Filter from './components/filter';
 import Search from './components/search';
 import s from './styles';
 
-const PatientsListScreen = schema({})(React.createClass({
+const PatientsListScreen = schema({})(createReactClass({
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        onAddingComplete: React.PropTypes.func.isRequired,
-        onPatientAdded: React.PropTypes.func.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        onAddingComplete: PropTypes.func.isRequired,
+        onPatientAdded: PropTypes.func.isRequired,
         searchCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            createPatientService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            createPatientService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
         }),
     },
 
@@ -160,19 +162,19 @@ const PatientsListScreen = schema({})(React.createClass({
     },
 }));
 
-export const PatientsList = React.createClass({
+export const PatientsList = createReactClass({
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            createPatientService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            createPatientService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 

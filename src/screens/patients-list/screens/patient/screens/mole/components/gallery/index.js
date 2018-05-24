@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -13,18 +15,18 @@ import Carousel from 'react-native-snap-carousel';
 import moment from 'moment';
 import s from './styles';
 
-const Gallery = React.createClass({
+const Gallery = createReactClass({
     displayName: 'Gallery',
 
     propTypes: {
-        currentImagePk: React.PropTypes.number,
-        setcurrentImagePk: React.PropTypes.func.isRequired,
-        images: React.PropTypes.arrayOf(React.PropTypes.shape({
-            photo: React.PropTypes.shape({
-                fullSize: React.PropTypes.string,
-                thumbnail: React.PropTypes.string,
+        currentImagePk: PropTypes.number,
+        setcurrentImagePk: PropTypes.func.isRequired,
+        images: PropTypes.arrayOf(PropTypes.shape({
+            photo: PropTypes.shape({
+                fullSize: PropTypes.string,
+                thumbnail: PropTypes.string,
             }),
-            dateCreated: React.PropTypes.string,
+            dateCreated: PropTypes.string,
         })).isRequired,
     },
 

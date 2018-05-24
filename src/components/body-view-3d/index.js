@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import { requireNativeComponent, NativeEventEmitter, NativeModules } from 'react-native';
 import s from './styles';
 
@@ -6,14 +8,14 @@ const BodyViewEventEmitter = NativeModules.BodyViewEventEmitter;
 const eventEmitter = new NativeEventEmitter(BodyViewEventEmitter);
 const NativeBodyView3D = requireNativeComponent('BodyView', BodyView3D);
 
-export const BodyView3D = React.createClass({
+export const BodyView3D = createReactClass({
     propTypes: {
         sex: PropTypes.oneOf(['male', 'female', 'child', 'cartoon-child']), // eslint-disable-line
         moles: PropTypes.array, // eslint-disable-line
         onBodyPartSelected: PropTypes.func,
         onMoleAdded: PropTypes.func,
         onMoleSelected: PropTypes.func,
-        removeMole: React.PropTypes.bool,
+        removeMole: PropTypes.bool,
     },
 
     componentWillMount() {

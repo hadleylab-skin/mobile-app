@@ -1,11 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export const UserPropType = React.PropTypes.shape({
-    pk: React.PropTypes.number.isRequired,
-    email: React.PropTypes.string.isRequired,
-    firstName: React.PropTypes.string.isRequired,
-    lastName: React.PropTypes.string.isRequired,
-    can_see_prediction: React.PropTypes.boolean,
+
+export const UserPropType = PropTypes.shape({
+    pk: PropTypes.number.isRequired,
+    email: PropTypes.string.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    can_see_prediction: PropTypes.boolean,
 }).isRequired;
 
 

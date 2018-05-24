@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import { Alert } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
@@ -31,11 +32,11 @@ export function ScanMrnButton({ cursor, setupData }, { services }) {
 
 ScanMrnButton.propTypes = {
     cursor: BaobabPropTypes.cursor.isRequired,
-    setupData: React.PropTypes.func.isRequired,
+    setupData: PropTypes.func.isRequired,
 };
 
 ScanMrnButton.contextTypes = {
-    services: React.PropTypes.shape({
-        mrnScanerService: React.PropTypes.func.isRequired,
+    services: PropTypes.shape({
+        mrnScanerService: PropTypes.func.isRequired,
     }),
 };

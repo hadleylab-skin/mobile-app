@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     StatusBar,
@@ -7,11 +9,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Logo from './components/logo';
 import s from './styles';
 
-export const StartScreen = React.createClass({
+export const StartScreen = createReactClass({
     displayName: 'StartScreen',
 
     propTypes: {
-        children: React.PropTypes.node.isRequired,
+        children: PropTypes.node.isRequired,
     },
 
     render() {

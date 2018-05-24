@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -6,10 +8,10 @@ import {
 } from 'react-native';
 import s from './styles';
 
-export const Title = React.createClass({
+export const Title = createReactClass({
 
     propTypes: {
-        text: React.PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
     },
 
     render() {

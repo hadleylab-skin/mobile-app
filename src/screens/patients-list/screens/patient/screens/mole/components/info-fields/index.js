@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
 } from 'react-native';
@@ -19,27 +21,27 @@ const model = {
     },
 };
 
-const InfoFields = schema(model)(React.createClass({
+const InfoFields = schema(model)(createReactClass({
     propTypes: {
-        molePk: React.PropTypes.number.isRequired,
-        imagePk: React.PropTypes.number.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        currentImage: React.PropTypes.object.isRequired,
+        molePk: PropTypes.number.isRequired,
+        imagePk: PropTypes.number.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        currentImage: PropTypes.object.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            updateMolePhotoService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
+            updateMolePhotoService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 
