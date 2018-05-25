@@ -20,7 +20,6 @@ export const StartScreen = createReactClass({
         return (
             <KeyboardAwareScrollView
                 style={s.container}
-                centerContent
             >
                 <View style={s.inner}>
                     <StatusBar barStyle="light-content" />
