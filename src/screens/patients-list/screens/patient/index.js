@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
-import { ScrollView } from 'react-native';
+import {
+    ScrollView,
+    SafeAreaView,
+} from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
@@ -86,29 +89,33 @@ export const Patient = schema(model)(createReactClass({
         const patientCursor = this.props.patientCursor.data;
 
         return (
-            <Updater
-                service={this.updatePatientScreen}
-                style={s.container}
+            <SafeAreaView
+                style={s.safeWrapper}
             >
-                <ScrollView
-                    onScroll={this.onScroll}
-                    scrollEventThrottle={200}
+                <Updater
+                    style={s.container}
+                    service={this.updatePatientScreen}
                 >
-                    <GeneralInfo
-                        patientCursor={patientCursor}
-                    />
-                    <MolesInfo
-                        checkConsent={this.checkConsent}
-                        widgetDataCursor={widgetDataCursor}
-                        onAddingComplete={this.onAddingComplete}
-                    />
-                    <MolesList
-                        tree={molesCursor}
-                        checkConsent={this.checkConsent}
-                        navigator={this.context.mainNavigator}
-                    />
-                </ScrollView>
-            </Updater>
+                    <ScrollView
+                        onScroll={this.onScroll}
+                        scrollEventThrottle={200}
+                    >
+                        <GeneralInfo
+                            patientCursor={patientCursor}
+                        />
+                        <MolesInfo
+                            checkConsent={this.checkConsent}
+                            widgetDataCursor={widgetDataCursor}
+                            onAddingComplete={this.onAddingComplete}
+                        />
+                        <MolesList
+                            tree={molesCursor}
+                            checkConsent={this.checkConsent}
+                            navigator={this.context.mainNavigator}
+                        />
+                    </ScrollView>
+                </Updater>
+            </SafeAreaView>
         );
     },
 }));

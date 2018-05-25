@@ -5,6 +5,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
@@ -105,7 +106,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
         if (isParticipant) {
             this.launchAddPhoto(ImagePicker.showImagePicker);
         } else {
-            this.launchAddPhoto(ImagePicker.launchCamera);
+            this.launchAddPhoto(ImagePicker.launchImageLibrary);
         }
     },
 
@@ -251,7 +252,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
         }
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <BodyView3D
                     sex={sex}
                     moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
@@ -293,7 +294,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
                         />
                     : null}
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 }));

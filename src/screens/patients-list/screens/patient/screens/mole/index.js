@@ -8,6 +8,7 @@ import {
     Image,
     Dimensions,
     ScrollView,
+    SafeAreaView,
 } from 'react-native';
 import schema from 'libs/state';
 import ImagePicker from 'react-native-image-picker';
@@ -130,40 +131,44 @@ export const Mole = schema({})(createReactClass({
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
         return (
-            <Updater
-                service={async () => await this.context.services.getMoleService(
-                    patientPk,
-                    this.props.molePk,
-                    this.props.tree,
-                    currentStudyPk,
-                )}
-                style={s.container}
+            <SafeAreaView
+                style={s.safeWrapper}
             >
-                <ScrollView scrollEventThrottle={200}>
-                    <View style={s.inner}>
-                        <Gallery
-                            images={images}
-                            currentImagePk={currentImagePk}
-                            setcurrentImagePk={this.setcurrentImagePk}
-                        />
-                        {currentImage && currentImage.data.dateCreated ?
-                            <View>
-                                {canSeePrediction ?
-                                    <Prediction {...currentImage.data} />
-                                : null}
-                                <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
-                                <InfoFields
-                                    tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
-                                    molePk={this.props.molePk}
-                                    imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
-                                    navigator={this.props.navigator}
-                                    currentImage={currentImage}
-                                />
-                            </View>
-                        : null}
-                    </View>
-                </ScrollView>
-            </Updater>
+                <Updater
+                    service={async () => await this.context.services.getMoleService(
+                        patientPk,
+                        this.props.molePk,
+                        this.props.tree,
+                        currentStudyPk,
+                    )}
+                    style={s.container}
+                >
+                    <ScrollView scrollEventThrottle={200}>
+                        <View style={s.inner}>
+                            <Gallery
+                                images={images}
+                                currentImagePk={currentImagePk}
+                                setcurrentImagePk={this.setcurrentImagePk}
+                            />
+                            {currentImage && currentImage.data.dateCreated ?
+                                <View>
+                                    {canSeePrediction ?
+                                        <Prediction {...currentImage.data} />
+                                    : null}
+                                    <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
+                                    <InfoFields
+                                        tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
+                                        molePk={this.props.molePk}
+                                        imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
+                                        navigator={this.props.navigator}
+                                        currentImage={currentImage}
+                                    />
+                                </View>
+                            : null}
+                        </View>
+                    </ScrollView>
+                </Updater>
+            </SafeAreaView>
         );
     },
 }));

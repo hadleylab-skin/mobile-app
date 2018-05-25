@@ -6,6 +6,7 @@ import moment from 'moment';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
+    SafeAreaView,
     Text,
     ListView,
     ActivityIndicator,
@@ -122,7 +123,7 @@ const PatientsListScreen = schema({})(createReactClass({
         const isListEmpty = status === 'Succeed' && _.isEmpty(cursors.patients.get('data'));
 
         return (
-            <View style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
+            <SafeAreaView style={[s.container, isListEmpty ? s.containerEmpty : {}]}>
                 <View style={s.toolbar}>
                     <Filter />
                     <Search searchCursor={this.props.searchCursor} />
@@ -157,7 +158,7 @@ const PatientsListScreen = schema({})(createReactClass({
                 :
                     this.renderList()
                 }
-            </View>
+            </SafeAreaView>
         );
     },
 }));
