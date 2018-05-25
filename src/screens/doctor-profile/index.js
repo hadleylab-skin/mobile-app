@@ -9,6 +9,7 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
@@ -235,6 +236,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                 style={s.container}
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
+                adjustContent
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />

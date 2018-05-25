@@ -30,6 +30,7 @@ export const Updater = createReactClass({
     propTypes: {
         service: PropTypes.func.isRequired,
         children: PropTypes.node.isRequired,
+        adjustContent: PropTypes.bool,
         style: PropTypes.number,
         color: PropTypes.string,
         onScrollView: PropTypes.func,
@@ -74,7 +75,7 @@ export const Updater = createReactClass({
                         }
                     }}
                     scrollEventThrottle={20}
-                    automaticallyAdjustContentInsets={false}
+                    automaticallyAdjustContentInsets={this.props.adjustContent || false}
                     style={{ flex: 1 }}
                     contentContainerStyle={{ flex: 1, position: 'relative' }}
                     ref={(ref) => { this.scrollView = ref; }}
