@@ -76,8 +76,6 @@ export const Updater = createReactClass({
                     }}
                     scrollEventThrottle={20}
                     automaticallyAdjustContentInsets={this.props.adjustContent || false}
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ flex: 1, position: 'relative' }}
                     ref={(ref) => { this.scrollView = ref; }}
                 >
                     {this.props.children}
