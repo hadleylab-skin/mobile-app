@@ -55,6 +55,7 @@ const AgreementScreen = createReactClass({
                     <WebView
                         source={{ html: HTML }}
                         automaticallyAdjustContentInsets={false}
+                        scalesPageToFit={false}
                     />
                 </View>
                 <View style={s.buttons}>
