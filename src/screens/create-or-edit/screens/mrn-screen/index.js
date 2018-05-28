@@ -4,6 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
+    SafeAreaView,
 } from 'react-native';
 import { Input, Form } from 'components';
 import tv4 from 'tv4';
@@ -55,7 +56,7 @@ export const MrnScreen = createReactClass({
         const { cursor } = this.props;
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Input
@@ -69,7 +70,7 @@ export const MrnScreen = createReactClass({
                         />
                     </Form>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 });

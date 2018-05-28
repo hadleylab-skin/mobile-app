@@ -4,6 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
@@ -69,7 +70,7 @@ export const DiagnosisScreen = createReactClass({
         const { cursor, title } = this.props;
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Input
@@ -88,7 +89,7 @@ export const DiagnosisScreen = createReactClass({
                     size="large"
                     color="#FF1D70"
                 />
-            </View>
+            </SafeAreaView>
         );
     },
 });

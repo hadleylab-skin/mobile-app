@@ -6,6 +6,7 @@ import createReactClass from 'create-react-class';
 import {
     View,
     Text,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
@@ -190,7 +191,7 @@ export const LesionsScreen = createReactClass({
         const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Text style={s.label}>WIDTH ({unitsOfLength})</Text>
@@ -219,7 +220,7 @@ export const LesionsScreen = createReactClass({
                     size="large"
                     color="#FF1D70"
                 />
-            </View>
+            </SafeAreaView>
         );
     },
 });
