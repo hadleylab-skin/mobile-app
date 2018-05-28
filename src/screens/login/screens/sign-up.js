@@ -98,7 +98,7 @@ const SignUp = schema(model)(createReactClass({
         return (
             <View>
                 <Text style={s.label}>
-                    Register as part of a clinical site
+                    REGISTER AS PART OF A CLINICAL SITE
                 </Text>
                 <View style={s.switchWrapper}>
                     <Switch
