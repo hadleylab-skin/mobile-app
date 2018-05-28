@@ -9,6 +9,7 @@ import {
     TextInput,
     Easing,
     Animated,
+    ViewPropTypes,
     TouchableWithoutFeedback,
 } from 'react-native';
 import s from './styles';
@@ -18,13 +19,13 @@ export const Input = schema({})(createReactClass({
     propTypes: {
         label: PropTypes.string.isRequired,
         cursor: BaobabPropTypes.cursor.isRequired,
-        inputWrapperStyle: View.propTypes.style,
+        inputWrapperStyle: ViewPropTypes.style,
         inputStyle: TextInput.propTypes.style,
         placeholderTextColor: PropTypes.string,
         returnKeyType: PropTypes.string,
         onFocus: PropTypes.func,
         name: PropTypes.string,
-        errorWrapperStyle: View.propTypes.style,
+        errorWrapperStyle: ViewPropTypes.style,
         errorStyle: Text.propTypes.style,
         errorPlaceholderTextColor: PropTypes.string,
     },
