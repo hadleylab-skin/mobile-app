@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import { View } from 'react-native';
 import _ from 'lodash';
@@ -37,11 +38,11 @@ export class ServiceProvider extends React.Component {
 let servicesShape = {};
 
 _.each(services, (service, name) => {
-    servicesShape[name] = React.PropTypes.func.isRequired;
+    servicesShape[name] = PropTypes.func.isRequired;
 });
 
 ServiceProvider.childContextTypes = {
-    services: React.PropTypes.shape(servicesShape),
+    services: PropTypes.shape(servicesShape),
 };
 
 ServiceProvider.propTypes = {

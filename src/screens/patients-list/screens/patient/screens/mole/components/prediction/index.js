@@ -1,16 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
 } from 'react-native';
 import s from './styles';
 
-const Prediction = React.createClass({
+const Prediction = createReactClass({
     displayName: 'Prediction',
 
     propTypes: {
-        prediction: React.PropTypes.string,
-        predictionAccuracy: React.PropTypes.string,
+        prediction: PropTypes.string,
+        predictionAccuracy: PropTypes.string,
     },
 
     render() {

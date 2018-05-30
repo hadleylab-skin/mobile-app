@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Alert,
@@ -20,18 +22,18 @@ const model = {
     consentCursor: {},
 };
 
-export const InviteDetailScreen = schema(model)(React.createClass({
+export const InviteDetailScreen = schema(model)(createReactClass({
     propTypes: {
-        invite: React.PropTypes.object.isRequired, // eslint-disable-line
+        invite: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            declineInviteService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            declineInviteService: PropTypes.func.isRequired,
         }),
     },
 

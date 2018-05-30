@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -19,19 +21,19 @@ const model = (props, context) => (
     }
 );
 
-export const MolesList = schema(model)(React.createClass({
+export const MolesList = schema(model)(createReactClass({
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        checkConsent: React.PropTypes.func.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 

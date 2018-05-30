@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -13,29 +15,29 @@ import arrowImage from 'components/icons/arrow/arrow.png';
 import { getMoleRoute } from 'screens/patients-list/screens/patient/screens/mole';
 import s from './styles';
 
-export const Mole = React.createClass({
+export const Mole = createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        checkConsent: React.PropTypes.func.isRequired,
-        hasBorder: React.PropTypes.bool,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: PropTypes.func.isRequired,
+        hasBorder: PropTypes.bool,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            addMolePhotoService: React.PropTypes.func.isRequired,
-            getMolePhotoService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            addMolePhotoService: PropTypes.func.isRequired,
+            getMolePhotoService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     Text,
     View,
@@ -6,14 +8,14 @@ import {
 } from 'react-native';
 import s from './styles';
 
-const CommonButton = React.createClass({
+const CommonButton = createReactClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired,
-        onPress: React.PropTypes.func.isRequired,
-        underlayColor: React.PropTypes.string.isRequired,
-        stylesButton: React.PropTypes.number,
-        stylesText: React.PropTypes.number,
-        disabled: React.PropTypes.bool,
+        title: PropTypes.string.isRequired,
+        onPress: PropTypes.func.isRequired,
+        underlayColor: PropTypes.string.isRequired,
+        stylesButton: PropTypes.number,
+        stylesText: PropTypes.number,
+        disabled: PropTypes.bool,
     },
 
     onPress() {
@@ -42,9 +44,9 @@ const CommonButton = React.createClass({
     },
 });
 
-export const Button = React.createClass({
+export const Button = createReactClass({
     propTypes: {
-        type: React.PropTypes.string,
+        type: PropTypes.string,
     },
 
     render() {

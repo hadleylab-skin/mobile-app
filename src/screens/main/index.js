@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import BaobabPropTypes from 'baobab-prop-types';
 import { ServiceProvider } from 'components';
 import { CryptoConfiguration } from 'screens/crypto-config';
@@ -6,7 +8,7 @@ import Main from './main';
 import MainNavigatorProvider from './main-navigator-provider';
 
 
-export default React.createClass({
+export default createReactClass({
     displayName: 'MainNavigator',
 
     propTypes: {
@@ -16,7 +18,7 @@ export default React.createClass({
     },
 
     childContextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
@@ -24,7 +26,7 @@ export default React.createClass({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line
+            filter: PropTypes.object.isRequired, // eslint-disable-line
         }),
     },
 

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
@@ -21,16 +23,16 @@ const model = {
     },
 };
 
-const SiteJoinRequest = schema({})(React.createClass({
+const SiteJoinRequest = schema({})(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         siteJoinRequestCursor: BaobabPropTypes.cursor.isRequired,
-        afterRequestSended: React.PropTypes.func.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        afterRequestSended: PropTypes.func.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
     contextTypes: {
-        services: React.PropTypes.shape({
-            createSiteJoinRequestService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            createSiteJoinRequestService: PropTypes.func.isRequired,
         }),
     },
 

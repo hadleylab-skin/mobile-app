@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 
 export class Form extends React.Component {
@@ -41,11 +42,11 @@ export class Form extends React.Component {
 }
 
 Form.propTypes = {
-    onSubmit: React.PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
 };
 
 Form.childContextTypes = {
-    register: React.PropTypes.func,
-    next: React.PropTypes.func,
-    submit: React.PropTypes.func,
+    register: PropTypes.func,
+    next: PropTypes.func,
+    submit: PropTypes.func,
 };

@@ -1,6 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
-import { ScrollView } from 'react-native';
+import createReactClass from 'create-react-class';
+import {
+    ScrollView,
+    SafeAreaView,
+} from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
@@ -17,26 +22,26 @@ const model = {
     },
 };
 
-export const Patient = schema(model)(React.createClass({
+export const Patient = schema(model)(createReactClass({
     displayName: 'Patient',
 
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        onAddingComplete: React.PropTypes.func.isRequired,
+        onAddingComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired,
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired,
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            getPatientService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getPatientMolesService: PropTypes.func.isRequired,
+            getPatientService: PropTypes.func.isRequired,
         }),
     },
 
@@ -84,29 +89,33 @@ export const Patient = schema(model)(React.createClass({
         const patientCursor = this.props.patientCursor.data;
 
         return (
-            <Updater
-                service={this.updatePatientScreen}
-                style={s.container}
+            <SafeAreaView
+                style={s.safeWrapper}
             >
-                <ScrollView
-                    onScroll={this.onScroll}
-                    scrollEventThrottle={200}
+                <Updater
+                    style={s.container}
+                    service={this.updatePatientScreen}
                 >
-                    <GeneralInfo
-                        patientCursor={patientCursor}
-                    />
-                    <MolesInfo
-                        checkConsent={this.checkConsent}
-                        widgetDataCursor={widgetDataCursor}
-                        onAddingComplete={this.onAddingComplete}
-                    />
-                    <MolesList
-                        tree={molesCursor}
-                        checkConsent={this.checkConsent}
-                        navigator={this.context.mainNavigator}
-                    />
-                </ScrollView>
-            </Updater>
+                    <ScrollView
+                        onScroll={this.onScroll}
+                        scrollEventThrottle={200}
+                    >
+                        <GeneralInfo
+                            patientCursor={patientCursor}
+                        />
+                        <MolesInfo
+                            checkConsent={this.checkConsent}
+                            widgetDataCursor={widgetDataCursor}
+                            onAddingComplete={this.onAddingComplete}
+                        />
+                        <MolesList
+                            tree={molesCursor}
+                            checkConsent={this.checkConsent}
+                            navigator={this.context.mainNavigator}
+                        />
+                    </ScrollView>
+                </Updater>
+            </SafeAreaView>
         );
     },
 }));
