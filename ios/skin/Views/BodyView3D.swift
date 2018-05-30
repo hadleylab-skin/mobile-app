@@ -268,7 +268,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
         setupMale()
         setupFemale()
         setupCartoonChild()
-        currentModel = models["cartoon-child"]
+//        currentModel = models["male"]
     }
     
     private func setupCamera()
