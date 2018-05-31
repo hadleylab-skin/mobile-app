@@ -90,7 +90,7 @@ extension BodyView3D
                                    angle: (2 / 4) * Float.pi / 2,
                                    targetPoints: leftLegTargetPoints)
 
-        models["cartoon-child"] =
+        models["child"] =
             try! BodyModel(assetName: "art.scnassets/CartoonChild.scn",
                            bodyConfig: bodyConfig,
                            headConfig: headConfig,
