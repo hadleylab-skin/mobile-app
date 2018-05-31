@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -13,28 +15,29 @@ import arrowImage from 'components/icons/arrow/arrow.png';
 import { getMoleRoute } from 'screens/patients-list/screens/patient/screens/mole';
 import s from './styles';
 
-export const Mole = React.createClass({
+export const Mole = createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        checkConsent: React.PropTypes.func.isRequired,
-        hasBorder: React.PropTypes.bool,
-        hideBottomPanel: React.PropTypes.bool,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: PropTypes.func.isRequired,
+        hasBorder: PropTypes.bool,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            addMolePhotoService: React.PropTypes.func.isRequired,
-            getMolePhotoService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            addMolePhotoService: PropTypes.func.isRequired,
+            getMolePhotoService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -77,8 +80,8 @@ export const Mole = React.createClass({
 
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(patientPk, molePk, imagesCursor.select(pk), {
             uri,
             age,
@@ -94,7 +97,8 @@ export const Mole = React.createClass({
             await services.patientsService(cursors.patients, queryParams);
             await services.getPatientMolesService(
                 patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles'),
+                currentStudyPk
             );
             await services.getMolePhotoService(
                 patientPk,
@@ -113,6 +117,7 @@ export const Mole = React.createClass({
     onPress() {
         const { anatomicalSites, pk } = this.props.tree.get();
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const { isParticipant } = this.context.cursors.doctor.get();
 
         this.props.navigator.push(
             getMoleRoute({
@@ -121,8 +126,8 @@ export const Mole = React.createClass({
                 title: anatomicalSites[anatomicalSites.length - 1].name,
                 onSubmitMolePhoto: this.onSubmitMolePhoto,
                 molePk: pk,
-                hideBottomPanel: this.props.hideBottomPanel,
                 navigator: this.props.navigator,
+                isParticipant,
             })
         );
     },

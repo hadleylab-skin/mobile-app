@@ -81,8 +81,7 @@ export function decryptAES(ciphertext, key) {
 }
 
 export async function getKeyPairStatus(cursor, doctor, password) {
-    const firstTime = _.isEmpty(cursor.get());
-    cursor.set({ status: 'Loading', firstTime });
+    cursor.set({ status: 'Loading' });
     let data;
     try {
         const keys = await getKeyPair();
@@ -108,7 +107,7 @@ export async function getKeyPairStatus(cursor, doctor, password) {
             error,
         };
     }
-    cursor.set({ firstTime, ...data });
+    cursor.set(data);
     return data;
 }
 

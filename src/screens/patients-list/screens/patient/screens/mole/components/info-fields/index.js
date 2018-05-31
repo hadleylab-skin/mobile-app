@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
 } from 'react-native';
@@ -18,25 +21,27 @@ const model = {
     },
 };
 
-const InfoFields = schema(model)(React.createClass({
+const InfoFields = schema(model)(createReactClass({
     propTypes: {
-        molePk: React.PropTypes.number.isRequired,
-        imagePk: React.PropTypes.number.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        molePk: PropTypes.number.isRequired,
+        imagePk: PropTypes.number.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        currentImage: PropTypes.object.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
-            patients: BaobabPropTypes.cursor.isRequired,
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
+            patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            updateMolePhotoService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
+            updateMolePhotoService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -95,7 +100,8 @@ const InfoFields = schema(model)(React.createClass({
                 this.props.navigator.pop();
                 await services.getPatientMolesService(
                     patientPk,
-                    cursors.patientsMoles.select(patientPk, 'moles')
+                    cursors.patientsMoles.select(patientPk, 'moles'),
+                    cursors.currentStudyPk.get('data')
                 );
             }
         );
@@ -106,7 +112,6 @@ const InfoFields = schema(model)(React.createClass({
         const patientPk = this.context.cursors.currentPatientPk.get();
         const service = this.context.services.updateMolePhotoService;
         const imageInfoCursor = this.props.tree.select('info');
-
         const result = await service(patientPk, molePk, imagePk, imageInfoCursor, data);
 
         if (result.status === 'Succeed' && onSuccess) {
@@ -184,6 +189,18 @@ const InfoFields = schema(model)(React.createClass({
         );
     },
 
+    renderStudy() {
+        const { currentImage } = this.props;
+        if (currentImage.data && !_.isEmpty(currentImage.data.study)) {
+            return (
+                <InfoField
+                    title="Study"
+                    text={currentImage.data.study.title}
+                />
+            );
+        }
+    },
+
     render() {
         const fieldsDataCursor = this.props.tree.select('info', 'data');
         const biopsyCursor = fieldsDataCursor.select('biopsy');
@@ -191,7 +208,7 @@ const InfoFields = schema(model)(React.createClass({
         return (
             <View style={s.fields}>
                 {this.renderDiagnosisField('clinicalDiagnosis', 'Clinical Diagnosis')}
-                {this.renderDiagnosisField('pathDiagnosis', 'Pathlogical Diagnosis')}
+                {this.renderDiagnosisField('pathDiagnosis', 'Pathology Diagnosis')}
 
                 <InfoField
                     title={'Biopsy'}
@@ -209,6 +226,8 @@ const InfoFields = schema(model)(React.createClass({
                 />
 
                 {biopsyCursor.get() ? this.renderLesionsField() : null}
+
+                {this.renderStudy()}
             </View>
         );
     },

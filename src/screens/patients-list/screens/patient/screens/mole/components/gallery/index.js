@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -13,18 +15,18 @@ import Carousel from 'react-native-snap-carousel';
 import moment from 'moment';
 import s from './styles';
 
-const Gallery = React.createClass({
+const Gallery = createReactClass({
     displayName: 'Gallery',
 
     propTypes: {
-        currentImagePk: React.PropTypes.number,
-        setcurrentImagePk: React.PropTypes.func.isRequired,
-        images: React.PropTypes.arrayOf(React.PropTypes.shape({
-            photo: React.PropTypes.shape({
-                fullSize: React.PropTypes.string,
-                thumbnail: React.PropTypes.string,
+        currentImagePk: PropTypes.number,
+        setcurrentImagePk: PropTypes.func.isRequired,
+        images: PropTypes.arrayOf(PropTypes.shape({
+            photo: PropTypes.shape({
+                fullSize: PropTypes.string,
+                thumbnail: PropTypes.string,
             }),
-            dateCreated: React.PropTypes.string,
+            dateCreated: PropTypes.string,
         })).isRequired,
     },
 
@@ -69,27 +71,27 @@ const Gallery = React.createClass({
                         itemWidth={width}
                         inactiveSlideScale={1}
                         scrollEventThrottle={100}
+                        data={this.props.images}
+                        renderItem={({ item, index }) => (
+                            <View style={s.galleryItem} key={`gallery-image-${index}`}>
+                                {this.renderActivityIndicator('large')}
+                                {!_.isEmpty(item.data) && item.data.dateCreated ?
+                                    <View>
+                                        <View style={s.dateWrraper}>
+                                            <Text style={s.date}>
+                                                {`uploaded: ${this.formateDate(item.data.dateCreated)}`}
+                                            </Text>
+                                        </View>
+                                        <Image source={{ uri: item.data.photo.fullSize }} style={s.galleryImage} />
+                                    </View>
+                                : <View style={s.galleryImage} />}
+                            </View>
+                        )}
                         onSnapToItem={(id) => {
                             const image = this.props.images[id];
                             setcurrentImagePk(image.data.pk);
                         }}
-                    >
-                        {_.map(this.props.images, (image, index) => (
-                            <View style={s.galleryItem} key={`gallery-image-${index}`}>
-                                {this.renderActivityIndicator('large')}
-                                {!_.isEmpty(image.data) && image.data.dateCreated ?
-                                    <View>
-                                        <View style={s.dateWrraper}>
-                                            <Text style={s.date}>
-                                                {`uploaded: ${this.formateDate(image.data.dateCreated)}`}
-                                            </Text>
-                                        </View>
-                                        <Image source={{ uri: image.data.photo.fullSize }} style={s.galleryImage} />
-                                    </View>
-                                : <View style={s.galleryImage} />}
-                            </View>
-                        ))}
-                    </Carousel>
+                    />
                     <View style={s.dots}>
                         {_.map(this.props.images, (dot, index) => (
                             <View

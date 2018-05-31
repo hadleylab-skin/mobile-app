@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
@@ -22,12 +25,12 @@ const dignosisSchema = {
     message: 'required',
 };
 
-export const DiagnosisScreen = React.createClass({
+export const DiagnosisScreen = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        title: React.PropTypes.string.isRequired,
-        onSubmit: React.PropTypes.func.isRequired,
-        text: React.PropTypes.string,
+        title: PropTypes.string.isRequired,
+        onSubmit: PropTypes.func.isRequired,
+        text: PropTypes.string,
     },
 
     getInitialState() {
@@ -67,7 +70,7 @@ export const DiagnosisScreen = React.createClass({
         const { cursor, title } = this.props;
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Input
@@ -86,7 +89,7 @@ export const DiagnosisScreen = React.createClass({
                     size="large"
                     color="#FF1D70"
                 />
-            </View>
+            </SafeAreaView>
         );
     },
 });

@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
-    View,
     ScrollView,
+    SafeAreaView,
 } from 'react-native';
 import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
@@ -20,35 +22,48 @@ const model = {
     },
 };
 
-export const Patient = schema(model)(React.createClass({
+export const Patient = schema(model)(createReactClass({
     displayName: 'Patient',
 
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        onAddingComplete: React.PropTypes.func.isRequired,
+        onAddingComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired,
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired,
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            getPatientService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getPatientMolesService: PropTypes.func.isRequired,
+            getPatientService: PropTypes.func.isRequired,
         }),
+    },
+
+    componentWillMount() {
+        this.updatePatientScreen();
+    },
+
+    onAddingComplete() {
+        this.context.mainNavigator.pop();
+        this.props.onAddingComplete();
     },
 
     async updatePatientScreen() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
 
-        const moleResult = await services.getPatientMolesService(patientPk, patientMolesCursor);
-        const patientResult = await services.getPatientService(patientPk, this.props.patientCursor);
+        const moleResult = await services.getPatientMolesService(
+            patientPk, patientMolesCursor, currentStudyPk);
+        const patientResult = await services.getPatientService(
+            patientPk, this.props.patientCursor, currentStudyPk);
 
         if (moleResult.status === 'Succeed' && patientResult.status === 'Succeed') {
             return {
@@ -74,29 +89,33 @@ export const Patient = schema(model)(React.createClass({
         const patientCursor = this.props.patientCursor.data;
 
         return (
-            <Updater
-                service={this.updatePatientScreen}
-                style={s.container}
+            <SafeAreaView
+                style={s.safeWrapper}
             >
-                <ScrollView
-                    onScroll={this.onScroll}
-                    scrollEventThrottle={200}
+                <Updater
+                    style={s.container}
+                    service={this.updatePatientScreen}
                 >
-                    <GeneralInfo
-                        patientCursor={patientCursor}
-                    />
-                    <MolesInfo
-                        checkConsent={this.checkConsent}
-                        widgetDataCursor={widgetDataCursor}
-                        onAddingComplete={this.props.onAddingComplete}
-                    />
-                    <MolesList
-                        tree={molesCursor}
-                        checkConsent={this.checkConsent}
-                        navigator={this.props.navigator}
-                    />
-                </ScrollView>
-            </Updater>
+                    <ScrollView
+                        onScroll={this.onScroll}
+                        scrollEventThrottle={200}
+                    >
+                        <GeneralInfo
+                            patientCursor={patientCursor}
+                        />
+                        <MolesInfo
+                            checkConsent={this.checkConsent}
+                            widgetDataCursor={widgetDataCursor}
+                            onAddingComplete={this.onAddingComplete}
+                        />
+                        <MolesList
+                            tree={molesCursor}
+                            checkConsent={this.checkConsent}
+                            navigator={this.context.mainNavigator}
+                        />
+                    </ScrollView>
+                </Updater>
+            </SafeAreaView>
         );
     },
 }));
@@ -104,6 +123,8 @@ export const Patient = schema(model)(React.createClass({
 export function getPatientRoute(props, context) {
     const { navigator } = props;
     const { firstName, lastName, pk } = props.patientCursor.get('data');
+    const currentStudyPk = context.cursors.currentStudyPk.get('data');
+    const doctor = { data: context.cursors.doctor };
 
     return {
         component: Patient,
@@ -115,7 +136,8 @@ export function getPatientRoute(props, context) {
                 tree: props.patientCursor,
                 dataCursor: props.patientCursor.select('data'),
                 title: 'Edit Patient',
-                service: (cursor, data) => context.services.updatePatientService(pk, cursor, data),
+                service: (cursor, data) => context.services.updatePatientService(
+                    pk, cursor, data, currentStudyPk, doctor),
                 onActionComplete: () => context.mainNavigator.pop(),
             }, context)
         ),

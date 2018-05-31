@@ -1,8 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { BodyView3D, Button } from 'components';
@@ -24,30 +27,31 @@ const model = (props, context) => {
     };
 };
 
-export const AnatomicalSiteWidget = schema(model)(React.createClass({
+export const AnatomicalSiteWidget = schema(model)(createReactClass({
     displayName: 'AnatomicalSiteWidget',
 
     propTypes: {
-        onAddingComplete: React.PropTypes.func.isRequired,
-        sex: React.PropTypes.string,
+        onAddingComplete: PropTypes.func.isRequired,
+        sex: PropTypes.string,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
             patientsMoleImages: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            addMoleService: React.PropTypes.func.isRequired,
-            getAnatomicalSitesService: React.PropTypes.func.isRequired,
-            addMolePhotoService: React.PropTypes.func.isRequired,
-            getMolePhotoService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            addMoleService: PropTypes.func.isRequired,
+            getAnatomicalSitesService: PropTypes.func.isRequired,
+            addMolePhotoService: PropTypes.func.isRequired,
+            getMolePhotoService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -97,9 +101,19 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     },
 
     onContinuePress() {
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            this.launchAddPhoto(ImagePicker.showImagePicker);
+        } else {
+            this.launchAddPhoto(ImagePicker.launchImageLibrary);
+        }
+    },
+
+    launchAddPhoto(launchFunction) {
         const selectedMole = this.props.tree.get('selectedMole', 'data');
 
-        ImagePicker.launchCamera({}, (response) => {
+        launchFunction({}, (response) => {
             if (response.uri) {
                 if (selectedMole.pk) {
                     this.onSubmitExistingMolePhoto(response.uri, selectedMole.pk);
@@ -125,7 +139,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const dateOfBirth = this.context.cursors.patients.data.select(
             patientPk).data.dateOfBirth.get();
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
-        const currentStudyPk = this.context.cursors.currentStudyPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         let moleData = {
             ...data,
@@ -161,8 +175,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
 
         const dateOfBirth = this.context.cursors.patients.data.select(
             this.context.cursors.currentPatientPk.get()).data.dateOfBirth.get();
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
-        const currentStudyPk = cursors.currentStudyPk.get();
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
+        const currentStudyPk = cursors.currentStudyPk.get('data');
         const result = await service(
             patientPk, molePk, imagesCursor.select(pk), {
                 uri,
@@ -177,7 +191,8 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
             await services.patientsService(cursors.patients);
             await services.getPatientMolesService(
                 patientPk,
-                cursors.patientsMoles.select(patientPk, 'moles')
+                cursors.patientsMoles.select(patientPk, 'moles'),
+                currentStudyPk
             );
             const molesResult = await services.getMolePhotoService(
                 patientPk,
@@ -200,9 +215,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
     getPatientMolesCursor() {
         const { cursors } = this.context;
         const patientPk = cursors.currentPatientPk.get();
-        const patientMolesCursor = cursors.patientsMoles.select(patientPk, 'moles');
-
-        return patientMolesCursor;
+        return cursors.patientsMoles.select(patientPk, 'moles');
     },
 
     getMoles() {
@@ -227,11 +240,19 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
         const patientData = this.context.cursors.patients.get('data', currentPatientPk, 'data');
         const isMoleLoading = selectedMole.status === 'Loading' ||
             this.props.tree.get('mole', 'status') === 'Loading';
-        const sex = this.props.sex === 'f' || (patientData && patientData.sex === 'f') ? 'female' : 'male';
         const moles = this.getMoles();
 
+        let sex = 'male';
+        const isChild = (patientData && patientData.dateOfBirth &&
+            parseInt(moment().diff(moment(patientData.dateOfBirth), 'years'), 10) <= 12);
+        if (this.props.sex === 'c' || isChild) {
+            sex = 'child';
+        } else if (this.props.sex === 'f' || (patientData && patientData.sex === 'f')) {
+            sex = 'female';
+        }
+
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <BodyView3D
                     sex={sex}
                     moles={moles[_.kebabCase(currentAnatomicalSite)] || []}
@@ -273,7 +294,7 @@ export const AnatomicalSiteWidget = schema(model)(React.createClass({
                         />
                     : null}
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 }));

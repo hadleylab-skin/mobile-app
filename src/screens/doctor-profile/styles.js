@@ -4,6 +4,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FAFAFA',
+        paddingBottom: 50,
     },
     info: {
         minHeight: 260,

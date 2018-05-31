@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -17,14 +19,14 @@ const model = {
     },
 };
 
-export const DatePicker = schema(model)(React.createClass({
+export const DatePicker = schema(model)(createReactClass({
     displayName: 'DatePicker',
 
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        title: React.PropTypes.string.isRequired,
-        onPress: React.PropTypes.func,
-        hasNoBorder: React.PropTypes.bool,
+        title: PropTypes.string.isRequired,
+        onPress: PropTypes.func,
+        hasNoBorder: PropTypes.bool,
     },
 
     // contextTypes: Form.childContextTypes,

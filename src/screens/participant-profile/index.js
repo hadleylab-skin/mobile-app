@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -15,79 +17,69 @@ import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
+import { getCryptoConfigurationRoute } from 'screens/crypto-config';
+import { saveCurrentStudy } from 'services/async-storage';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
-const model = (props, context) => {
-    return {
-        tree: {
-            studies: {},
-            selectedStudyPk: null,
-            studyPicker: {},
-            invites: context.services.getInvitesService,
-            moles: {},
-            editProfileScreen: {},
-        },
-    }
-};
+const model = (props, context) => ({
+    tree: {
+        studies: {},
+        studyPicker: {},
+        invites: context.services.getInvitesService,
+        moles: {},
+        editProfileScreen: {},
+        cryptoConfigScreen: {},
+    },
+});
 
-export const ParticipantProfile = schema(model)(React.createClass({
+export const ParticipantProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            getStudiesService: React.PropTypes.func.isRequired,
-            getInvitesService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            updatePatientConsentService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
+            getInvitesService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
+            updatePatientConsentService: PropTypes.func.isRequired,
         }),
     },
 
-    async loadStudies() {
-        await this.context.services.getStudiesService(this.props.tree.studies);
-        const studies = this.props.tree.studies.get();
-        if (studies.status === 'Succeed') {
-            const firstStudy = _.first(studies.data);
-            if (firstStudy && !this.props.tree.selectedStudyPk.get()) {
-                this.props.tree.selectedStudyPk.set(firstStudy.pk);
-            }
-        }
-    },
-
     async componentWillMount() {
-        const { cursors, services } = this.context;
-        this.loadStudies();
-        await services.patientsService(cursors.patients);
-        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        await this.context.services.getStudiesService(this.props.tree.studies);
+        this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
 
     componentWillUnmount() {
-        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.off('update', this.onSelectedStudyUpdate);
     },
 
     async onSelectedStudyUpdate() {
         const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
-
-        cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+        const currentStudyPk = cursors.currentStudyPk.get('data');
 
         const result = await services.getPatientMolesService(
             currentPatientPk,
-            this.props.tree.moles);
+            this.props.tree.moles,
+            currentStudyPk);
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
+        saveCurrentStudy(currentStudyPk);
     },
 
     onCompleteSaveProfile(data) {
@@ -97,18 +89,20 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     goEditProfile() {
-        const { cursors, services, mainNavigator } = this.context;
+        const { cursors, services } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
+        const doctor = { data: cursors.doctor };
 
         this.context.mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: this.props.tree.editProfileScreen,
                 dataCursor: cursors.patients.select('data', currentPatientPk, 'data'),
                 title: 'Edit Profile',
-                service: (cursor, data) => services.updatePatientService(currentPatientPk, cursor, data),
-                onActionComplete: (data) => {this.onCompleteSaveProfile(data)},
+                service: (cursor, data) => services.updatePatientService(
+                    currentPatientPk, cursor, data, null, doctor),
+                onActionComplete: (data) => { this.onCompleteSaveProfile(data); },
             }, this.context)
-        )
+        );
     },
 
     checkConsent() {
@@ -119,6 +113,23 @@ export const ParticipantProfile = schema(model)(React.createClass({
             cursors.patients.select('data', currentPatientPk, 'data'),
             services.updatePatientConsentService,
             mainNavigator);
+    },
+
+    openCryptoConfiguration() {
+        this.context.mainNavigator.push(
+            getCryptoConfigurationRoute({
+                doctorCursor: this.props.doctorCursor,
+                keyPairStatusCursor: this.props.keyPairStatusCursor,
+                tree: this.props.tree.cryptoConfigScreen,
+            }));
+    },
+
+    async onUpdateScreen() {
+        await this.context.services.getInvitesService(
+            this.props.tree.invites,
+        );
+        this.onSelectedStudyUpdate();
+        return { status: 'Succeed' };
     },
 
     renderMoles() {
@@ -134,41 +145,29 @@ export const ParticipantProfile = schema(model)(React.createClass({
             );
         }
 
-        const currentStudyPk = this.props.tree.selectedStudyPk.get();
-        if (currentStudyPk) {
-            moles = _.filter(
-                moles.data,
-                (mole) => _.includes(mole.data.studies, currentStudyPk));
-        } else {
-            moles = moles.data;
-        }
-
         if (_.isEmpty(moles)) {
             return (
                 <Text style={[s.moleGroupHeader, s.noImagesMargin]}>
                     No images for selected study
                 </Text>
-            )
+            );
         }
 
-        const groupedMolesData = _.groupBy(moles, (mole) => mole.data.anatomicalSites[0].pk);
+        const groupedMolesData = _.groupBy(moles.data, (mole) => mole.data.anatomicalSites[0].pk);
         return _.map(groupedMolesData, (molesGroup, key) => (
             <View key={key}>
                 <Text style={s.moleGroupHeader}>
                     {_.upperCase(key)}
                 </Text>
-                {_.map(molesGroup, (mole, index) => {
-                    return (
-                        <Mole
-                            hideBottomPanel={true}
-                            key={`${key}-${index}`}
-                            checkConsent={this.checkConsent}
-                            hasBorder={index !== 0}
-                            navigator={this.context.mainNavigator}
-                            tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
-                        />
-                    );
-                })}
+                {_.map(molesGroup, (mole, index) => (
+                    <Mole
+                        key={`${key}-${index}`}
+                        checkConsent={this.checkConsent}
+                        hasBorder={index !== 0}
+                        navigator={this.context.mainNavigator}
+                        tree={this.props.tree.moles.select('data', mole.data.pk, 'data')}
+                    />
+                ))}
             </View>
         ));
     },
@@ -190,19 +189,23 @@ export const ParticipantProfile = schema(model)(React.createClass({
         }
 
         const studies = this.props.tree.studies.get();
-        const studiesForPicker = _.map(studies.data, (item) => (
-            [item.pk, item.title]
-        ));
+        const studiesForPicker = _.flatten(
+            [
+                [[null, 'Not selected']],
+                _.map(studies.data, (study) => [
+                    study.pk,
+                    study.title,
+                ]),
+            ]
+        );
         const patient = _.first(_.values(patients.data)).data;
-        const { firstName, lastName, photo, dateOfBirth } = patient;
-        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years')) : null;
+        const { firstName, lastName, dateOfBirth } = patient;
+        const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
         return (
             <Updater
-                service={async () => await this.context.services.getInvitesService(
-                    this.props.tree.invites,
-                )}
+                service={this.onUpdateScreen}
                 style={s.container}
             >
                 <ScrollView
@@ -230,7 +233,8 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     <View style={s.button}>
                         <Button
                             title="Edit profile"
-                            onPress={this.goEditProfile} />
+                            onPress={this.goEditProfile}
+                        />
                     </View>
 
                     {invites && invites.length > 0 ?
@@ -248,7 +252,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                                 } else {
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
-                                            invites: invites,
+                                            invites,
                                             tree: this.props.tree,
                                         }, this.context)
                                     );
@@ -260,7 +264,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     {studiesForPicker.length > 0 ?
                         <Picker
                             tree={this.props.tree.studyPicker}
-                            cursor={this.props.tree.selectedStudyPk}
+                            cursor={this.context.cursors.currentStudyPk.select('data')}
                             items={studiesForPicker}
                             title="Studies"
                         />
@@ -270,6 +274,20 @@ export const ParticipantProfile = schema(model)(React.createClass({
                         title={'Images'}
                     />
                     {this.renderMoles()}
+
+                    {
+                    isInSharedMode()
+                    ?
+                    null
+                    :
+                    <View style={s.content}>
+                        <InfoField
+                            title="Cryptography configuration"
+                            hasNoBorder
+                            onPress={this.openCryptoConfiguration}
+                        />
+                    </View>
+                    }
 
                     <InfoField
                         title={'Log out'}

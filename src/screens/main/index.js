@@ -1,18 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import BaobabPropTypes from 'baobab-prop-types';
-import { getRacesList } from 'services/constants';
 import { ServiceProvider } from 'components';
-import { PatientsList } from 'screens/patients-list';
-import { DoctorProfile } from 'screens/doctor-profile';
-import { ParticipantProfile } from 'screens/participant-profile';
-import { CameraMenu } from 'screens/camera-menu';
 import { CryptoConfiguration } from 'screens/crypto-config';
-import { CreateOrEditPatient } from 'screens/create-or-edit';
 import Main from './main';
 import MainNavigatorProvider from './main-navigator-provider';
 
 
-export default React.createClass({
+export default createReactClass({
     displayName: 'MainNavigator',
 
     propTypes: {
@@ -22,7 +18,7 @@ export default React.createClass({
     },
 
     childContextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
@@ -30,7 +26,7 @@ export default React.createClass({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line
+            filter: PropTypes.object.isRequired, // eslint-disable-line
         }),
     },
 
@@ -49,23 +45,24 @@ export default React.createClass({
         };
     },
 
+    componentWillMount() {
+        this.props.tree.set('cryptoScreen', {});
+    },
+
     renderContent() {
         const keyPairStatusCursor = this.props.keyPairStatusCursor;
-        const { status, firstTime } = keyPairStatusCursor.get();
+        let { status, data } = keyPairStatusCursor.get();
+        if (status === 'Loading' || !data) {
+            return null;
+        }
 
-        if (status !== 'Succeed' && firstTime) {
-            if (status === 'Loading') {
-                return null;
-            } else {
-                return (
-                    <CryptoConfiguration
-                        standAlone
-                        doctorCursor={this.props.tokenCursor.data.doctor}
-                        keyPairStatusCursor={keyPairStatusCursor}
-                    />
-                )
-            }
-        } else {
+        const { publicKey, privateKey } = data;
+        if (!publicKey && !privateKey) {
+            // If no keys on device, need init it!
+            status = 'NeedCreateKeys';
+        }
+
+        if (status === 'Succeed') {
             return (
                 <MainNavigatorProvider
                     initialRoute={{
@@ -77,6 +74,14 @@ export default React.createClass({
                     }}
                     style={{ flex: 1 }}
                     barTintColor="#fff"
+                />
+            );
+        } else {
+            return (
+                <CryptoConfiguration
+                    tree={this.props.tree.cryptoScreen}
+                    doctorCursor={this.props.tokenCursor.data.doctor}
+                    keyPairStatusCursor={keyPairStatusCursor}
                 />
             );
         }

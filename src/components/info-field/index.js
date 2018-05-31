@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -6,18 +8,18 @@ import {
 } from 'react-native';
 import s from './styles';
 
-export const InfoField = React.createClass({
+export const InfoField = createReactClass({
 
     propTypes: {
-        title: React.PropTypes.oneOfType([
-            React.PropTypes.string.isRequired,
-            React.PropTypes.node.isRequired,
+        title: PropTypes.oneOfType([
+            PropTypes.string.isRequired,
+            PropTypes.node.isRequired,
         ]),
-        text: React.PropTypes.string,
-        children: React.PropTypes.node,
-        onPress: React.PropTypes.func,
-        hasNoBorder: React.PropTypes.bool,
-        controls: React.PropTypes.node,
+        text: PropTypes.string,
+        children: PropTypes.node,
+        onPress: PropTypes.func,
+        hasNoBorder: PropTypes.bool,
+        controls: PropTypes.node,
     },
 
     onPress() {

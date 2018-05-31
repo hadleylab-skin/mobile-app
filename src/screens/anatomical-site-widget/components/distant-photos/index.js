@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
@@ -15,22 +17,23 @@ import s from './styles';
 
 import plusIcon from './images/plus.png';
 
-const DistantPhotos = React.createClass({
+const DistantPhotos = createReactClass({
     displayName: 'DistantPhotos',
 
     propTypes: {
         anatomicalSitesCursor: BaobabPropTypes.cursor.isRequired,
-        currentAnatomicalSite: React.PropTypes.string,
-        hideMoleOnModel: React.PropTypes.func.isRequired,
+        currentAnatomicalSite: PropTypes.string,
+        hideMoleOnModel: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            addAnatomicalSitePhotoService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            addAnatomicalSitePhotoService: PropTypes.func.isRequired,
         }),
     },
 
@@ -41,7 +44,17 @@ const DistantPhotos = React.createClass({
     },
 
     onButtonPress() {
-        ImagePicker.launchCamera({}, (response) => {
+        const { isParticipant } = this.context.cursors.doctor.get();
+
+        if (isParticipant) {
+            this.launchAddPhoto(ImagePicker.showImagePicker);
+        } else {
+            this.launchAddPhoto(ImagePicker.launchCamera);
+        }
+    },
+
+    launchAddPhoto(launchFunction) {
+        launchFunction({}, (response) => {
             if (response.uri) {
                 this.onAddDistantPhoto(response.uri);
             }

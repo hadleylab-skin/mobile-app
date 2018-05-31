@@ -1,11 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Image,
     Dimensions,
     ScrollView,
+    SafeAreaView,
 } from 'react-native';
 import schema from 'libs/state';
 import ImagePicker from 'react-native-image-picker';
@@ -16,24 +19,23 @@ import InfoFields from './components/info-fields';
 import AnatomicalSite from './components/anatomical-site';
 import s from './styles';
 
-export const Mole = schema({})(React.createClass({
+export const Mole = schema({})(createReactClass({
     displayName: 'Mole',
 
     propTypes: {
-        molePk: React.PropTypes.number.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        checkConsent: React.PropTypes.func.isRequired,
-        hideBottomPanel: React.PropTypes.bool,
+        molePk: PropTypes.number.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        checkConsent: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             doctor: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getMoleService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getMoleService: PropTypes.func.isRequired,
         }),
     },
 
@@ -46,11 +48,13 @@ export const Mole = schema({})(React.createClass({
 
     async componentWillMount() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
 
         const result = await this.context.services.getMoleService(
             patientPk,
             this.props.molePk,
             this.props.tree,
+            currentStudyPk,
         );
 
         if (result.status === 'Succeed') {
@@ -118,69 +122,80 @@ export const Mole = schema({})(React.createClass({
 
     render() {
         const patientPk = this.context.cursors.currentPatientPk.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
         const canSeePrediction = this.context.cursors.doctor.get('canSeePrediction');
         const { currentImagePk } = this.state;
         const { data } = this.props.tree.get();
-        const { hideBottomPanel } = this.props;
         let images = !_.isEmpty(data) ? this.sortImages(data.images) : [];
-
-        const currentStudy = this.context.cursors.currentStudyPk.get();
-        if (currentStudy) {
-            images = _.filter(images, {data: {study: currentStudy}});
-        }
 
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
         return (
-            <Updater
-                service={async () => await this.context.services.getMoleService(
-                    patientPk,
-                    this.props.molePk,
-                    this.props.tree,
-                )}
-                style={hideBottomPanel ? s.container : s.containerWithMargin}
+            <SafeAreaView
+                style={s.safeWrapper}
             >
-                <ScrollView scrollEventThrottle={200}>
-                    <View style={s.inner}>
-                        <Gallery
-                            images={images}
-                            currentImagePk={currentImagePk}
-                            setcurrentImagePk={this.setcurrentImagePk}
-                        />
-                        {currentImage && currentImage.data.dateCreated ?
-                            <View>
-                                {canSeePrediction ?
-                                    <Prediction {...currentImage.data} />
-                                : null}
-                                <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
-                                <InfoFields
-                                    tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
-                                    molePk={this.props.molePk}
-                                    imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
-                                    navigator={this.props.navigator}
-                                />
-                            </View>
-                        : null}
-                    </View>
-                </ScrollView>
-            </Updater>
+                <Updater
+                    service={async () => await this.context.services.getMoleService(
+                        patientPk,
+                        this.props.molePk,
+                        this.props.tree,
+                        currentStudyPk,
+                    )}
+                    style={s.container}
+                >
+                    <ScrollView scrollEventThrottle={200}>
+                        <View style={s.inner}>
+                            <Gallery
+                                images={images}
+                                currentImagePk={currentImagePk}
+                                setcurrentImagePk={this.setcurrentImagePk}
+                            />
+                            {currentImage && currentImage.data.dateCreated ?
+                                <View>
+                                    {canSeePrediction ?
+                                        <Prediction {...currentImage.data} />
+                                    : null}
+                                    <AnatomicalSite tree={this.props.tree} checkConsent={this.props.checkConsent} />
+                                    <InfoFields
+                                        tree={this.props.tree.select('data', 'images', currentImagePk, 'data')}
+                                        molePk={this.props.molePk}
+                                        imagePk={this.props.tree.get('data', 'images', currentImagePk, 'data', 'pk')}
+                                        navigator={this.props.navigator}
+                                        currentImage={currentImage}
+                                    />
+                                </View>
+                            : null}
+                        </View>
+                    </ScrollView>
+                </Updater>
+            </SafeAreaView>
         );
     },
 }));
 
 export function getMoleRoute(props) {
-    const { checkConsent } = props;
+    const { checkConsent, isParticipant } = props;
+
     async function onRightButtonPress() {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
-            ImagePicker.launchCamera({},
-                (response) => {
-                    if (response.uri) {
-                        props.onSubmitMolePhoto(response.uri);
-                    }
-                });
+            if (isParticipant) {
+                launchAddPhoto(ImagePicker.showImagePicker);
+            } else {
+                launchAddPhoto(ImagePicker.launchCamera);
+            }
         }
     }
+
+    function launchAddPhoto(launchFunction) {
+        launchFunction({},
+        (response) => {
+            if (response.uri) {
+                props.onSubmitMolePhoto(response.uri);
+            }
+        });
+    }
+
     return {
         component: Mole,
         title: props.title,

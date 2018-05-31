@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     View,
@@ -24,12 +26,12 @@ const model = {
     },
 };
 
-const Login = schema(model)(React.createClass({
+const Login = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         tokenCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired, // eslint-disable-line
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     async submit() {
@@ -116,7 +118,7 @@ const Login = schema(model)(React.createClass({
     },
 }));
 
-export const LoginScreen = React.createClass({
+export const LoginScreen = createReactClass({
     render() {
         return (
             <NavigatorIOS

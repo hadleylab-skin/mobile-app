@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -7,28 +9,28 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
-import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import { isInSharedMode } from 'services/keypair';
+import { saveCurrentStudy } from 'services/async-storage';
+import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import s from './styles';
 
-const model = (props, context) => {
-    return {
-        tree: {
-            siteJoinRequestScreenState: {},
-            studies: context.services.getStudiesService,
-            studyPicker: {},
-            selectedStudyPk: null,
-        },
-    }
-};
+const model = (props, context) => ({
+    tree: {
+        siteJoinRequestScreenState: {},
+        studies: context.services.getStudiesService,
+        studyPicker: {},
+        cryptoConfigScreen: {},
+    },
+});
 
-export const DoctorProfile = schema(model)(React.createClass({
+export const DoctorProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
@@ -37,32 +39,32 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getStudiesService: React.PropTypes.func.isRequired,
-            updateDoctorService: React.PropTypes.func.isRequired,
-            getDoctorService: React.PropTypes.func.isRequired,
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getStudiesService: PropTypes.func.isRequired,
+            updateDoctorService: PropTypes.func.isRequired,
+            getDoctorService: PropTypes.func.isRequired,
+            getSiteJoinRequestsService: PropTypes.func.isRequired,
+            confirmSiteJoinRequestService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
         }),
     },
 
     async componentWillMount() {
-        this.props.tree.selectedStudyPk.on('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
 
     componentWillUnmount() {
-        this.props.tree.selectedStudyPk.off('update', this.onSelectedStudyUpdate);
+        this.context.cursors.currentStudyPk.off('update', this.onSelectedStudyUpdate);
     },
 
     async onSelectedStudyUpdate() {
-        this.context.cursors.currentStudyPk.set(this.props.tree.selectedStudyPk.get());
+        saveCurrentStudy(this.context.cursors.currentStudyPk.get('data'));
     },
 
     openCryptoConfiguration() {
@@ -70,6 +72,7 @@ export const DoctorProfile = schema(model)(React.createClass({
             getCryptoConfigurationRoute({
                 doctorCursor: this.props.doctorCursor,
                 keyPairStatusCursor: this.props.keyPairStatusCursor,
+                tree: this.props.tree.cryptoConfigScreen,
             }));
     },
 
@@ -166,7 +169,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`You request to join ${request.siteTitle} is pending coordinator's aprrove`}
+                        {`You request to join ${request.siteTitle} is pending coordinator's approval`}
                     </Text>
                 );
             case 1:
@@ -183,7 +186,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                         title={
                             <Text>
                                 <Text style={{ color: 'red' }}>! </Text>
-                                {`Share patients with ${request.siteTitle} site`}
+                                {`Share patients data with ${request.siteTitle} site`}
                                 <Text style={{ color: 'red' }}> !</Text>
                             </Text>
                         }
@@ -196,7 +199,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                     <Text
                         style={s.infoMessage}
                     >
-                        {`Your patinets are shared with ${request.siteTitle} site`}
+                        {`Patient data is being shared with ${request.siteTitle} site`}
                     </Text>
                 );
 
@@ -223,7 +226,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 _.map(studies.data, (study) => [
                     study.pk,
                     study.title,
-                ])
+                ]),
             ]
         );
 
@@ -232,6 +235,7 @@ export const DoctorProfile = schema(model)(React.createClass({
                 service={this.updateScreenData}
                 style={s.container}
                 color="#ACB5BE"
+                ref={(ref) => { this.scrollView = ref; }}
             >
                 <View style={s.info}>
                     <View style={s.pinkBg} />
@@ -273,9 +277,10 @@ export const DoctorProfile = schema(model)(React.createClass({
                 <View style={s.content}>
                     <Picker
                         tree={this.props.tree.studyPicker}
-                        cursor={this.props.tree.selectedStudyPk}
+                        cursor={this.context.cursors.currentStudyPk.select('data')}
                         items={studyOptions}
                         title="Study"
+                        onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
                 </View>
                 {

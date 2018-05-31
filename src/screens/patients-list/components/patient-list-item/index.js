@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     Text,
     View,
@@ -13,36 +15,36 @@ import { getPatientRoute } from '../../screens/patient';
 import { checkConsent } from 'screens/signature';
 import s from './styles';
 
-const PatientListItem = React.createClass({
+const PatientListItem = createReactClass({
     displayName: 'PatientListItem',
 
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        data: React.PropTypes.shape({
-            pk: React.PropTypes.number,
-            firstName: React.PropTypes.string,
-            lastName: React.PropTypes.string,
-            molesImagesCount: React.PropTypes.number,
-            photo: React.PropTypes.shape({
-                thumbnail: React.PropTypes.string,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        data: PropTypes.shape({
+            pk: PropTypes.number,
+            firstName: PropTypes.string,
+            lastName: PropTypes.string,
+            molesImagesCount: PropTypes.number,
+            photo: PropTypes.shape({
+                thumbnail: PropTypes.string,
             }),
-            lastUpload: React.PropTypes.string,
-            hidden: React.PropTypes.bool,
+            lastUpload: PropTypes.string,
+            hidden: PropTypes.bool,
         }).isRequired,
         goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
-        onAddingComplete: React.PropTypes.func.isRequired,
+        onAddingComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            updatePatientConsentService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getPatientMolesService: PropTypes.func.isRequired,
+            updatePatientConsentService: PropTypes.func.isRequired,
         }),
     },
 
@@ -80,7 +82,9 @@ const PatientListItem = React.createClass({
                                 );
 
                                 await services.getPatientMolesService(
-                                    pk, cursors.patientsMoles.select(pk, 'moles'));
+                                    pk,
+                                    cursors.patientsMoles.select(pk, 'moles'),
+                                    cursors.currentStudyPk.get('data'));
                             }
 
                             return;

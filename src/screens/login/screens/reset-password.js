@@ -1,6 +1,7 @@
 import React from 'react';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     Text,
     Alert,
@@ -23,10 +24,10 @@ const model = {
     },
 };
 
-const ResetPassword = schema(model)(React.createClass({
+const ResetPassword = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     componentWillMount() {

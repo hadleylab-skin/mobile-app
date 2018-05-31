@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -12,7 +14,7 @@ import s from './styles';
 
 import searchIcon from './images/search.png';
 
-const Search = React.createClass({
+const Search = createReactClass({
     displayName: 'Search',
 
     propTypes: {
@@ -20,12 +22,12 @@ const Search = React.createClass({
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
         }),
     },
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     AppRegistry,
 } from 'react-native';
@@ -9,7 +10,7 @@ import tree from 'libs/tree';
 import { LoginScreen } from 'screens/login';
 import Main from 'screens/main';
 
-const App = schema({})(React.createClass({
+const App = schema({})(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
     },

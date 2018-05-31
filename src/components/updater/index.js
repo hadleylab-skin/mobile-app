@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+
 import {
     View,
     ActivityIndicator,
@@ -23,12 +26,14 @@ export const onScroll = (service) => async function (e) {
     }
 };
 
-export const Updater = React.createClass({
+export const Updater = createReactClass({
     propTypes: {
-        service: React.PropTypes.func.isRequired,
-        children: React.PropTypes.node.isRequired,
-        style: React.PropTypes.number,
-        color: React.PropTypes.string,
+        service: PropTypes.func.isRequired,
+        children: PropTypes.node.isRequired,
+        adjustContent: PropTypes.bool,
+        style: PropTypes.number,
+        color: PropTypes.string,
+        onScrollView: PropTypes.func,
     },
 
     getInitialState() {
@@ -36,6 +41,12 @@ export const Updater = React.createClass({
             isLoading: false,
             canUpdate: true,
         };
+    },
+
+    scrollTo(params) {
+        if (this.scrollView) {
+            this.scrollView.scrollTo(params);
+        }
     },
 
     render() {
@@ -57,11 +68,15 @@ export const Updater = React.createClass({
                     null
                 }
                 <ScrollView
-                    onScroll={_onScroll.bind(this)}
+                    onScroll={(e) => {
+                        _onScroll.bind(this)(e);
+                        if (this.props.onScrollView) {
+                            this.props.onScrollView(e);
+                        }
+                    }}
                     scrollEventThrottle={20}
-                    automaticallyAdjustContentInsets={false}
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ flex: 1, position: 'relative' }}
+                    automaticallyAdjustContentInsets={this.props.adjustContent || false}
+                    ref={(ref) => { this.scrollView = ref; }}
                 >
                     {this.props.children}
                 </ScrollView>

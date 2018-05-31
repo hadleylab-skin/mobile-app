@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
@@ -56,22 +58,27 @@ const model = {
         datePicker: {},
         racePicker: {},
         mrn: '',
+        doctorKeys: {},
     },
 };
 
-export const CreateOrEditPatient = schema(model)(React.createClass({
+export const CreateOrEditPatient = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         dataCursor: BaobabPropTypes.cursor,
-        service: React.PropTypes.func.isRequired,
-        onActionComplete: React.PropTypes.func.isRequired,
+        service: PropTypes.func.isRequired,
+        onActionComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
+        }),
+        services: PropTypes.shape({
+            getDoctorKeyListService: PropTypes.func.isRequired,
         }),
     },
 
@@ -81,7 +88,7 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
         };
     },
 
-    componentWillMount() {
+    async componentWillMount() {
         const { dataCursor } = this.props;
 
         if (this.isCreateMode()) {
@@ -98,8 +105,8 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
             return;
         }
 
-        const { firstName, lastName, mrn,
-            photo, dateOfBirth, sex, race } = dataCursor.get();
+        const { firstName, lastName, mrn, photo,
+            dateOfBirth, sex, race, doctors } = dataCursor.get();
 
         this.props.tree.form.set({
             firstName,
@@ -110,6 +117,33 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
             race,
             sex: sex || 'm',
         });
+
+        const { pk, myDoctorsPublicKeys } = this.context.cursors.doctor.get();
+        const doctorsWithKeys = _.map(_.keys(myDoctorsPublicKeys), (key) => parseInt(key, 10));
+        const doctorsWithoutKeys = _.filter(
+            doctors,
+            (doctor) => !_.includes(doctorsWithKeys, doctor) && doctor !== pk
+        );
+
+        if (!_.isEmpty(doctorsWithoutKeys)) {
+            const result = await this.context.services.getDoctorKeyListService(
+                this.props.tree.doctorKeys,
+                doctorsWithoutKeys
+            );
+            if (result.status === 'Succeed') {
+                let keys = _.map(result.data, (item) => {
+                    let result2 = {};
+                    result2[item.pk] = item.publicKey;
+                    return result2;
+                });
+                keys = Object.assign({}, ...keys);
+                if (myDoctorsPublicKeys) {
+                    this.context.cursors.doctor.myDoctorsPublicKeys.merge(keys);
+                } else {
+                    this.context.cursors.doctor.myDoctorsPublicKeys.set(keys);
+                }
+            }
+        }
     },
 
     isCreateMode() {
@@ -179,7 +213,9 @@ export const CreateOrEditPatient = schema(model)(React.createClass({
         if (result.status === 'Succeed') {
             onActionComplete(result.data);
         } else {
-            const mrnError = _.join(result.error.data.mrnHash || [], ',');
+            const mrnError = _.join(result.error.data ?
+                (result.error.data.mrnHash || []) :
+                [], ',');
             if (mrnError) {
                 Alert.alert('Save Error', mrnError);
             } else {

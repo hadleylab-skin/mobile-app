@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
@@ -14,24 +16,25 @@ import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import s from './styles';
 
-export const CameraMenu = schema({})(React.createClass({
+export const CameraMenu = schema({})(createReactClass({
     propTypes: {
         visibleCursor: BaobabPropTypes.cursor.isRequired,
-        patientsList: React.PropTypes.object, // eslint-disable-line
+        patientsList: PropTypes.object, // eslint-disable-line
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
-            filter: React.PropTypes.object.isRequired, // eslint-disable-line,
+            filter: PropTypes.object.isRequired, // eslint-disable-line,
         }),
-        services: React.PropTypes.shape({
-            createPatientService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            createPatientService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -77,7 +80,8 @@ export const CameraMenu = schema({})(React.createClass({
         await services.patientsService(cursors.patients, queryParams);
         await services.getPatientMolesService(
             patientPk,
-            cursors.patientsMoles.select(patientPk, 'moles')
+            cursors.patientsMoles.select(patientPk, 'moles'),
+            cursors.currentStudyPk.get('data'),
         );
     },
 

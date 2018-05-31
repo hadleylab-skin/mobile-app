@@ -4,10 +4,10 @@ import { buildGetService, buildPostService, defaultHeaders, hydrateImage } from 
 function hydrateMolePhotoData({ uri, age, currentStudyPk }) {
     let data = new FormData();
 
-    console.log(currentStudyPk);
-
     data.append('photo', hydrateImage(uri));
-    data.append('age', age);
+    if (age) {
+        data.append('age', age);
+    }
     if (currentStudyPk) {
         data.append('study', currentStudyPk);
     }
@@ -84,14 +84,6 @@ function hydrateUpdateMolePhotoData(imageData) {
     return data;
 }
 
-function dehydrateUpdateMolePhotoData(imageData) {
-    let data = imageData;
-
-    data.biopsyData = JSON.parse(imageData.biopsyData);
-
-    return data;
-}
-
 export function updateMolePhotoService({ token }) {
     const headers = {
         'Content-Type': 'multipart/form-data',
@@ -104,7 +96,7 @@ export function updateMolePhotoService({ token }) {
             `/api/v1/patient/${patientPk}/mole/${molePk}/image/${imagePk}/`,
             'PATCH',
             hydrateUpdateMolePhotoData,
-            dehydrateUpdateMolePhotoData,
+            _.identity,
             _.merge({}, defaultHeaders, headers));
         return _service(cursor, data);
     };

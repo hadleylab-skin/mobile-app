@@ -1,25 +1,25 @@
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
-    Text,
-    ScrollView
+    ScrollView,
 } from 'react-native';
 import schema from 'libs/state';
-import { getInviteDetailScreenRoute } from './detail';
 import { InfoField } from 'components';
+import { getInviteDetailScreenRoute } from './detail';
 
 import s from '../styles';
 
 
-
-export const InvitesScreen = schema({})(React.createClass({
+export const InvitesScreen = schema({})(createReactClass({
     propTypes: {
-        invites: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+        invites: PropTypes.arrayOf(PropTypes.object).isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     render() {
@@ -37,7 +37,7 @@ study: ${invite.study.title}`}
                             onPress={() =>
                                 this.context.mainNavigator.push(
                                     getInviteDetailScreenRoute({
-                                        invite: invite,
+                                        invite,
                                         tree: this.props.tree,
                                     }, this.context)
                                 )

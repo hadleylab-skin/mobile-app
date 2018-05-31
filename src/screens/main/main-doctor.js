@@ -1,31 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     StatusBar,
     TabBarIOS,
-    NavigatorIOS,
     View,
-    Text,
-    Modal,
 } from 'react-native';
-import { getRacesList } from 'services/constants';
 import schema from 'libs/state';
-import { ServiceProvider } from 'components';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
-import { ParticipantProfile } from 'screens/participant-profile';
 import { CameraMenu } from 'screens/camera-menu';
-import { CryptoConfiguration } from 'screens/crypto-config';
-import { CreateOrEditPatient } from 'screens/create-or-edit';
 
 import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
-import s from './styles';
 
 
-export default schema({})(React.createClass({
+export default schema({})(createReactClass({
     displayName: 'MainDoctor',
 
     propTypes: {
@@ -35,12 +28,12 @@ export default schema({})(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        services: React.PropTypes.shape({
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            createPatientService: React.PropTypes.func.isRequired,
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        services: PropTypes.shape({
+            getSiteJoinRequestsService: PropTypes.func.isRequired,
+            createPatientService: PropTypes.func.isRequired,
         }),
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             patients: BaobabPropTypes.cursor.isRequired,
         }),
@@ -62,9 +55,9 @@ export default schema({})(React.createClass({
 
         return (
             <View
-                style={{flex: 1}}
+                style={{ flex: 1 }}
             >
-                <StatusBar barStyle={statusBarStyle}/>
+                <StatusBar barStyle={statusBarStyle} />
                 <TabBarIOS
                     barTintColor="#fff"
                     tintColor="#FC3159"
@@ -90,7 +83,7 @@ export default schema({})(React.createClass({
                         selected={false}
                         onPress={() => showModalCursor.set(true)}
                     >
-                        <View/>
+                        <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
                         badge={siteJoinRequireAction ? '!' : null}
