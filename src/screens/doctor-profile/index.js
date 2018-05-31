@@ -45,14 +45,14 @@ export const DoctorProfile = schema(model)(createReactClass({
             patients: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getStudiesService: React.PropTypes.func.isRequired,
-            updateDoctorService: React.PropTypes.func.isRequired,
-            updateDoctorPhotoService: React.PropTypes.func.isRequired,
-            getDoctorService: React.PropTypes.func.isRequired,
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getStudiesService: PropTypes.func.isRequired,
+            updateDoctorService: PropTypes.func.isRequired,
+            updateDoctorPhotoService: PropTypes.func.isRequired,
+            getDoctorService: PropTypes.func.isRequired,
+            getSiteJoinRequestsService: PropTypes.func.isRequired,
+            confirmSiteJoinRequestService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
         }),
     },
 

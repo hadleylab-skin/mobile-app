@@ -19,9 +19,9 @@ import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { saveCurrentStudy } from 'services/async-storage';
+import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
-import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -133,21 +133,6 @@ export const ParticipantProfile = schema(model)(createReactClass({
         return { status: 'Succeed' };
     },
 
-    changePhoto() {
-        const { cursors, services } = this.context;
-        const currentPatientPk = cursors.currentPatientPk.get();
-        const doctor = { data: cursors.doctor };
-        const cursor = cursors.patients.select('data', currentPatientPk, 'data')
-
-        ImagePicker.showImagePicker({},
-        async (response) => {
-            if (response.uri) {
-                await services.updatePatientService(
-                    currentPatientPk, cursor, { photo: response.uri }, null, doctor);
-            }
-        });
-    },
-
     renderMoles() {
         let moles = this.props.tree.moles.get();
 
@@ -230,14 +215,10 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     ref={(ref) => { this.scrollView = ref; }}
                 >
                     <View style={s.info}>
-                        <TouchableHighlight
-                            underlayColor="#FF1D70"
-                            onPress={this.changePhoto}>
-                            <Image
-                                style={s.photo}
-                                source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
-                            />
-                        </TouchableHighlight>
+                        <Image
+                            style={s.photo}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
+                        />
                         <View>
                             <Text style={s.name_text}>
                                 {`${firstName} ${lastName}`}
