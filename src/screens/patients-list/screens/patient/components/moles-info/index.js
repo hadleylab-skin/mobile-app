@@ -54,7 +54,7 @@ export const MolesInfo = createReactClass({
                 : null
                 */}
                 <Button
-                    title="Add a new mole"
+                    title="Add a new skin image"
                     onPress={this.addNewMole}
                 />
             </View>
