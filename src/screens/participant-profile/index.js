@@ -199,7 +199,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
             ]
         );
         const patient = _.first(_.values(patients.data)).data;
-        const { firstName, lastName, dateOfBirth } = patient;
+        const { firstName, lastName, dateOfBirth, photo } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
@@ -216,7 +216,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     <View style={s.info}>
                         <Image
                             style={s.photo}
-                            source={defaultUserImage}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
                         />
                         <View>
                             <Text style={s.name_text}>
