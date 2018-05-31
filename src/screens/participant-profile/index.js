@@ -56,6 +56,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
             getInvitesService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
             updatePatientConsentService: PropTypes.func.isRequired,
+            updatePatientService: PropTypes.func.isRequired,
         }),
     },
 
@@ -130,6 +131,21 @@ export const ParticipantProfile = schema(model)(createReactClass({
         );
         this.onSelectedStudyUpdate();
         return { status: 'Succeed' };
+    },
+
+    changePhoto() {
+        const { cursors, services } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+        const doctor = { data: cursors.doctor };
+        const cursor = cursors.patients.select('data', currentPatientPk, 'data')
+
+        ImagePicker.showImagePicker({},
+        async (response) => {
+            if (response.uri) {
+                await services.updatePatientService(
+                    currentPatientPk, cursor, { photo: response.uri }, null, doctor);
+            }
+        });
     },
 
     renderMoles() {
@@ -214,10 +230,14 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     ref={(ref) => { this.scrollView = ref; }}
                 >
                     <View style={s.info}>
-                        <Image
-                            style={s.photo}
-                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
-                        />
+                        <TouchableHighlight
+                            underlayColor="#FF1D70"
+                            onPress={this.changePhoto}>
+                            <Image
+                                style={s.photo}
+                                source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
+                            />
+                        </TouchableHighlight>
                         <View>
                             <Text style={s.name_text}>
                                 {`${firstName} ${lastName}`}
