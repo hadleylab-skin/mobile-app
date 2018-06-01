@@ -36,6 +36,7 @@ enum CategoryBits : Int {
     func bodyView(_ bodyView: BodyView3D, nevusSelected nevus: Nevus)
 }
 
+@objcMembers
 class BodyView3D: UIView, SCNSceneRendererDelegate
 {
     var delegate: BodyViewDelegate?
@@ -68,7 +69,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
         didSet
         {
             guard let model = models[sex] else {
-                print("Model not found")
+                print("Model not found: \(sex)")
                 return
             }
           
@@ -213,8 +214,11 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
     internal var selectedBodyNodeLO: BodyNode! {
         didSet {
             updateBodyNodeLabel()
-            let name = selectedBodyNodeLO?.name ?? "none"
-            delegate?.bodyView(self, bodyNodeSelected: name)
+          
+            if selectedBodyNodeLO != nil {
+                let name = selectedBodyNodeLO?.name ?? "none"
+                delegate?.bodyView(self, bodyNodeSelected: name)
+            }
             
             oldValue?.borderNode?.isHidden = true
             selectedBodyNodeLO?.borderNode?.isHidden = false
@@ -268,7 +272,7 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
         setupMale()
         setupFemale()
         setupCartoonChild()
-        currentModel = models["cartoon-child"]
+//        currentModel = models["male"]
     }
     
     private func setupCamera()
@@ -636,12 +640,12 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
 //        debugPrint(">> Face index: \(faceIndex)");
 //        debugPrint(">> Coord: x=\(coord.x), y=\(coord.y), z=\(coord.z)");
       
-        let geometryElements = geometry.geometryElements
+        let geometryElements = geometry.elements
         
         var normalSource: SCNGeometrySource?
         var uvSource: SCNGeometrySource?
         
-        for src in geometry.geometrySources
+        for src in geometry.sources
         {
 //                debugPrint(">> Geometry source: semantic=\(src.semantic) count=\(src.vectorCount)")
 

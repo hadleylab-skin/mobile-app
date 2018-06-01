@@ -13,7 +13,7 @@ import SceneKit
     weak var parent: BodyNode?
     var children: Set<BodyNode> = []
 
-    var name: String? {
+    @objc var name: String? {
         get {
             return node.name
         }
