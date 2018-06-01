@@ -214,8 +214,11 @@ class BodyView3D: UIView, SCNSceneRendererDelegate
     internal var selectedBodyNodeLO: BodyNode! {
         didSet {
             updateBodyNodeLabel()
-            let name = selectedBodyNodeLO?.name ?? "none"
-            delegate?.bodyView(self, bodyNodeSelected: name)
+          
+            if selectedBodyNodeLO != nil {
+                let name = selectedBodyNodeLO?.name ?? "none"
+                delegate?.bodyView(self, bodyNodeSelected: name)
+            }
             
             oldValue?.borderNode?.isHidden = true
             selectedBodyNodeLO?.borderNode?.isHidden = false
