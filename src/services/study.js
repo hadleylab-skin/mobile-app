@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildGetService, buildPostService, defaultHeaders } from './base';
+import { buildGetService, defaultHeaders } from './base';
 
 
 function dehydrateStudies(items) {

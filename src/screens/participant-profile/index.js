@@ -14,6 +14,7 @@ import {
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
+import { isStudyConsentExpired } from 'libs/misc';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
@@ -204,15 +205,10 @@ export const ParticipantProfile = schema(model)(createReactClass({
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
-        let isStudyExpired = false;
-        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
-        if (currentStudyPk && studies.data) {
-            const selectedStudy = _.find(studies.data, (study) => study.pk === currentStudyPk);
-            if (selectedStudy.consentsValidity && selectedStudy.consentsValidity[patient.pk]) {
-                const consentExpiredDate = selectedStudy.consentsValidity[patient.pk].dateExpired;
-                isStudyExpired = moment(consentExpiredDate) < moment();
-            }
-        }
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            this.context.cursors.currentStudyPk.get('data'),
+            patient.pk);
 
         return (
             <Updater

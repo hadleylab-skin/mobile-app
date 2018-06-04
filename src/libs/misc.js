@@ -1,4 +1,6 @@
 import React from 'react';
+import _ from 'lodash';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 
 
@@ -42,4 +44,16 @@ export function convertMoleToDisplay(x, y, imageWidth, imageHeight) {
     const positionY = roundToIntegers((y / defaultImageHeight) * imageHeight);
 
     return { positionX, positionY };
+}
+
+export function isStudyConsentExpired(studies, currentStudyPk, patientPk) {
+    if (currentStudyPk && studies) {
+        const selectedStudy = _.find(studies, (study) => study.pk === currentStudyPk);
+        if (selectedStudy.consentsValidity && selectedStudy.consentsValidity[patientPk]) {
+            const consentExpiredDate = selectedStudy.consentsValidity[patientPk].dateExpired;
+            return moment(consentExpiredDate) < moment();
+        }
+    }
+
+    return false;
 }
