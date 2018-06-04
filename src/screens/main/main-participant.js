@@ -7,9 +7,11 @@ import {
     StatusBar,
     TabBarIOS,
     View,
+    Alert,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
+import { isStudyConsentExpired } from 'libs/misc';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
@@ -99,6 +101,20 @@ export default schema(model)(createReactClass({
     cameraPressed() {
         const patients = this.context.cursors.patients.get();
         const patient = _.get(_.first(_.values(patients.data)), 'data');
+
+        const studies = this.props.tree.studies.get('data');
+        if (isStudyConsentExpired(
+            studies,
+            this.context.cursors.currentStudyPk.get('data'),
+            patient.pk)
+        ) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign consent to add new images'
+            );
+
+            return;
+        }
 
         this.context.mainNavigator.push(
             getAnatomicalSiteWidgetRoute({
