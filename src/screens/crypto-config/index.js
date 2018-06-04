@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -25,14 +27,14 @@ const model = {
 };
 
 
-export const CryptoConfiguration = schema(model)(React.createClass({
+export const CryptoConfiguration = schema(model)(createReactClass({
     propTypes: {
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
     },
     contextTypes: {
-        services: React.PropTypes.shape({
-            updateDoctorService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            updateDoctorService: PropTypes.func.isRequired,
         }),
     },
 

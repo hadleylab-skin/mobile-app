@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     AlertIOS,
     View,
@@ -12,10 +14,10 @@ import backIcon from 'components/icons/back/back.png';
 import { Button } from 'components';
 import s from './styles';
 
-const SignatureScreen = React.createClass({
+const SignatureScreen = createReactClass({
     propTypes: {
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        onSave: React.PropTypes.func.isRequired,
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        onSave: PropTypes.func.isRequired,
     },
 
     getInitialState() {

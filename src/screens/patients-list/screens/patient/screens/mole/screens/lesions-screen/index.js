@@ -1,9 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
+    SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
 import { Input, Form } from 'components';
@@ -45,18 +48,18 @@ const lesionsCmSchema = {
     message: 'required',
 };
 
-export const LesionsScreen = React.createClass({
+export const LesionsScreen = createReactClass({
     propTypes: {
         cursor: BaobabPropTypes.cursor.isRequired,
-        data: React.PropTypes.shape({
-            width: React.PropTypes.string,
-            height: React.PropTypes.string,
+        data: PropTypes.shape({
+            width: PropTypes.string,
+            height: PropTypes.string,
         }),
-        onSubmit: React.PropTypes.func.isRequired,
+        onSubmit: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
         }),
     },
@@ -188,7 +191,7 @@ export const LesionsScreen = React.createClass({
         const unitsOfLength = this.context.cursors.doctor.get('unitsOfLength');
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Text style={s.label}>WIDTH ({unitsOfLength})</Text>
@@ -217,7 +220,7 @@ export const LesionsScreen = React.createClass({
                     size="large"
                     color="#FF1D70"
                 />
-            </View>
+            </SafeAreaView>
         );
     },
 });

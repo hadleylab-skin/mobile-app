@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -11,15 +13,15 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { saveCurrentStudy } from 'services/async-storage';
+import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
-import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -33,7 +35,7 @@ const model = (props, context) => ({
     },
 });
 
-export const ParticipantProfile = schema(model)(React.createClass({
+export const ParticipantProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
@@ -41,19 +43,20 @@ export const ParticipantProfile = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            patientsService: React.PropTypes.func.isRequired,
-            getStudiesService: React.PropTypes.func.isRequired,
-            getInvitesService: React.PropTypes.func.isRequired,
-            getPatientMolesService: React.PropTypes.func.isRequired,
-            updatePatientConsentService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            patientsService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
+            getInvitesService: PropTypes.func.isRequired,
+            getPatientMolesService: PropTypes.func.isRequired,
+            updatePatientConsentService: PropTypes.func.isRequired,
+            updatePatientService: PropTypes.func.isRequired,
         }),
     },
 
@@ -197,7 +200,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
             ]
         );
         const patient = _.first(_.values(patients.data)).data;
-        const { firstName, lastName, dateOfBirth } = patient;
+        const { firstName, lastName, dateOfBirth, photo } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
@@ -214,7 +217,7 @@ export const ParticipantProfile = schema(model)(React.createClass({
                     <View style={s.info}>
                         <Image
                             style={s.photo}
-                            source={defaultUserImage}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
                         />
                         <View>
                             <Text style={s.name_text}>

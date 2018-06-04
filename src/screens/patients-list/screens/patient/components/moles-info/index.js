@@ -1,22 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
-    Text,
 } from 'react-native';
 import { Button } from 'components';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import s from './styles';
 
-export const MolesInfo = React.createClass({
+export const MolesInfo = createReactClass({
     propTypes: {
         widgetDataCursor: BaobabPropTypes.cursor.isRequired, //eslint-disable-line
-        onAddingComplete: React.PropTypes.func.isRequired,
-        checkConsent: React.PropTypes.func.isRequired, //eslint-disable-line
+        onAddingComplete: PropTypes.func.isRequired,
+        checkConsent: PropTypes.func.isRequired, //eslint-disable-line
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
     },
 
     async addNewMole() {
@@ -53,7 +54,7 @@ export const MolesInfo = React.createClass({
                 : null
                 */}
                 <Button
-                    title="Add a new mole"
+                    title="Add a new skin image"
                     onPress={this.addNewMole}
                 />
             </View>

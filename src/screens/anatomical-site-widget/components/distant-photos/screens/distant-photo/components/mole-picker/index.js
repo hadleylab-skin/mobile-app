@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import {
     TouchableWithoutFeedback,
     Image,
@@ -8,16 +10,16 @@ import schema from 'libs/state';
 import dotImage from 'components/icons/dot-green/dot-green.png';
 import s from './styles';
 
-const MolePicker = schema({})(React.createClass({
+const MolePicker = schema({})(createReactClass({
     displayName: 'MolePicker',
 
     propTypes: {
-        onMolePick: React.PropTypes.func.isRequired,
-        children: React.PropTypes.node.isRequired,
-        disabled: React.PropTypes.bool,
-        style: React.PropTypes.object.isRequired, // eslint-disable-line
-        positionX: React.PropTypes.number,
-        positionY: React.PropTypes.number,
+        onMolePick: PropTypes.func.isRequired,
+        children: PropTypes.node.isRequired,
+        disabled: PropTypes.bool,
+        style: PropTypes.object.isRequired, // eslint-disable-line
+        positionX: PropTypes.number,
+        positionY: PropTypes.number,
     },
 
     onPress(event) {

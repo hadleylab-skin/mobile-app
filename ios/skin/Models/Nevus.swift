@@ -5,7 +5,8 @@
 
 import SceneKit
 
-@objc class Nevus: NSObject//, Hashable
+@objcMembers
+class Nevus: NSObject
 {
     enum Appearance {
         case sphere

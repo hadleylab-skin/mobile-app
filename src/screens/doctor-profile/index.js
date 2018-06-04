@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import {
     View,
@@ -7,10 +9,12 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    TouchableHighlight,
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultAvatarImage from 'components/icons/avatar/avatar.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
@@ -27,7 +31,7 @@ const model = (props, context) => ({
     },
 });
 
-export const DoctorProfile = schema(model)(React.createClass({
+export const DoctorProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
@@ -36,18 +40,19 @@ export const DoctorProfile = schema(model)(React.createClass({
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getStudiesService: React.PropTypes.func.isRequired,
-            updateDoctorService: React.PropTypes.func.isRequired,
-            getDoctorService: React.PropTypes.func.isRequired,
-            getSiteJoinRequestsService: React.PropTypes.func.isRequired,
-            confirmSiteJoinRequestService: React.PropTypes.func.isRequired,
-            patientsService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getStudiesService: PropTypes.func.isRequired,
+            updateDoctorService: PropTypes.func.isRequired,
+            updateDoctorPhotoService: PropTypes.func.isRequired,
+            getDoctorService: PropTypes.func.isRequired,
+            getSiteJoinRequestsService: PropTypes.func.isRequired,
+            confirmSiteJoinRequestService: PropTypes.func.isRequired,
+            patientsService: PropTypes.func.isRequired,
         }),
     },
 
@@ -148,6 +153,16 @@ export const DoctorProfile = schema(model)(React.createClass({
             this.context.cursors.patients, {});
     },
 
+    changePhoto() {
+        ImagePicker.showImagePicker({},
+        async (response) => {
+            if (response.uri) {
+                await this.context.services.updateDoctorPhotoService(
+                    this.props.doctorCursor, { photo: response.uri });
+            }
+        });
+    },
+
     renderSiteJoinRequest() {
         const { data, status } = this.props.siteJoinRequestCursor.get();
         const remoteRequest = _.get(_.values(data), 0);
@@ -216,6 +231,7 @@ export const DoctorProfile = schema(model)(React.createClass({
 
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
+        const status = this.props.doctorCursor.get('status');
         const studies = this.props.tree.studies.get();
         const studyOptions = _.flatten(
             [
@@ -234,12 +250,25 @@ export const DoctorProfile = schema(model)(React.createClass({
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
             >
+                { status === 'Loading' ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                : null}
                 <View style={s.info}>
                     <View style={s.pinkBg} />
-                    <Image
-                        style={s.photo}
-                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
-                    />
+                    <TouchableHighlight
+                        underlayColor="#FF1D70"
+                        onPress={this.changePhoto}>
+                        <Image
+                            style={s.photo}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultAvatarImage}
+                        />
+                    </TouchableHighlight>
                     <View style={s.name}>
                         <Text style={s.text}>
                             {`${firstName} ${lastName}`}

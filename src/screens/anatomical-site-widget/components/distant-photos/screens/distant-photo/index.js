@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import schema from 'libs/state';
 import {
@@ -25,18 +27,18 @@ const model = {
     },
 };
 
-const DistantPhoto = schema(model)(React.createClass({
+const DistantPhoto = schema(model)(createReactClass({
     displayName: 'DistantPhoto',
 
     propTypes: {
-        currentAnatomicalSite: React.PropTypes.string,
+        currentAnatomicalSite: PropTypes.string,
         moleCursor: BaobabPropTypes.cursor.isRequired,
         selectedMoleCursor: BaobabPropTypes.cursor.isRequired,
-        onContinuePress: React.PropTypes.func.isRequired,
+        onContinuePress: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        cursors: React.PropTypes.shape({
+        cursors: PropTypes.shape({
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             patientsMoles: BaobabPropTypes.cursor.isRequired,
         }),

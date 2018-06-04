@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
+import createReactClass from 'create-react-class';
 import {
     View,
     Text,
@@ -18,21 +20,21 @@ import ss from './styles';
 
 const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer);
 
-export const ConsentDocsScreen = schema({})(React.createClass({
+export const ConsentDocsScreen = schema({})(createReactClass({
     propTypes: {
-        invite: React.PropTypes.object.isRequired, // eslint-disable-line
-        navigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        onSign: React.PropTypes.func.isRequired,
+        invite: PropTypes.object.isRequired, // eslint-disable-line
+        navigator: PropTypes.object.isRequired, // eslint-disable-line
+        onSign: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             patients: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            updatePatientConsentService: React.PropTypes.func.isRequired,
-            approveInviteService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            updatePatientConsentService: PropTypes.func.isRequired,
+            approveInviteService: PropTypes.func.isRequired,
         }),
     },
 

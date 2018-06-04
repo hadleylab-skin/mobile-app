@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import BaobabPropTypes from 'baobab-prop-types';
 import {
     Alert,
@@ -60,23 +62,23 @@ const model = {
     },
 };
 
-export const CreateOrEditPatient = schema(model)(React.createClass({
+export const CreateOrEditPatient = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         dataCursor: BaobabPropTypes.cursor,
-        service: React.PropTypes.func.isRequired,
-        onActionComplete: React.PropTypes.func.isRequired,
+        service: PropTypes.func.isRequired,
+        onActionComplete: PropTypes.func.isRequired,
     },
 
     contextTypes: {
-        mainNavigator: React.PropTypes.object.isRequired, // eslint-disable-line
-        cursors: React.PropTypes.shape({
+        mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
+        cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
             currentPatientPk: BaobabPropTypes.cursor.isRequired,
             racesList: BaobabPropTypes.cursor.isRequired,
         }),
-        services: React.PropTypes.shape({
-            getDoctorKeyListService: React.PropTypes.func.isRequired,
+        services: PropTypes.shape({
+            getDoctorKeyListService: PropTypes.func.isRequired,
         }),
     },
 
