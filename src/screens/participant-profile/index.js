@@ -204,6 +204,16 @@ export const ParticipantProfile = schema(model)(createReactClass({
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
+        let isStudyExpired = false;
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        if (currentStudyPk && studies.data) {
+            const selectedStudy = _.find(studies.data, (study) => study.pk === currentStudyPk);
+            if (selectedStudy.consentsValidity && selectedStudy.consentsValidity[patient.pk]) {
+                const consentExpiredDate = selectedStudy.consentsValidity[patient.pk].dateExpired;
+                isStudyExpired = moment(consentExpiredDate) < moment();
+            }
+        }
+
         return (
             <Updater
                 service={this.onUpdateScreen}
@@ -268,6 +278,14 @@ export const ParticipantProfile = schema(model)(createReactClass({
                             cursor={this.context.cursors.currentStudyPk.select('data')}
                             items={studiesForPicker}
                             title="Studies"
+                        />
+                    : null}
+
+                    {isStudyExpired ?
+                        <InfoField
+                            title={
+                                <Text style={s.redText}>{'Need update consent!'}</Text>
+                            }
                         />
                     : null}
 
