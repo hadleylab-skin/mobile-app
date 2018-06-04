@@ -8,6 +8,7 @@ import {
     View,
     Text,
     Image,
+    Alert,
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
@@ -110,6 +111,20 @@ export const ParticipantProfile = schema(model)(createReactClass({
     checkConsent() {
         const { cursors, services, mainNavigator } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
+
+        const studies = this.props.studiesCursor.get();
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            cursors.currentStudyPk.get('data'),
+            currentPatientPk);
+        if (isStudyExpired) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign consent to add new images'
+            );
+
+            return;
+        }
 
         return checkConsent(
             cursors.patients.select('data', currentPatientPk, 'data'),
