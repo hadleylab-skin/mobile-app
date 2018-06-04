@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
