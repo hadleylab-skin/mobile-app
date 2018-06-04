@@ -9,11 +9,12 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    ScrollView,
+    TouchableHighlight,
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultAvatarImage from 'components/icons/avatar/avatar.png';
 import { InfoField, Switch, Title, Updater, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
@@ -47,6 +48,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         services: PropTypes.shape({
             getStudiesService: PropTypes.func.isRequired,
             updateDoctorService: PropTypes.func.isRequired,
+            updateDoctorPhotoService: PropTypes.func.isRequired,
             getDoctorService: PropTypes.func.isRequired,
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             confirmSiteJoinRequestService: PropTypes.func.isRequired,
@@ -151,6 +153,16 @@ export const DoctorProfile = schema(model)(createReactClass({
             this.context.cursors.patients, {});
     },
 
+    changePhoto() {
+        ImagePicker.showImagePicker({},
+        async (response) => {
+            if (response.uri) {
+                await this.context.services.updateDoctorPhotoService(
+                    this.props.doctorCursor, { photo: response.uri });
+            }
+        });
+    },
+
     renderSiteJoinRequest() {
         const { data, status } = this.props.siteJoinRequestCursor.get();
         const remoteRequest = _.get(_.values(data), 0);
@@ -219,6 +231,7 @@ export const DoctorProfile = schema(model)(createReactClass({
 
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
+        const status = this.props.doctorCursor.get('status');
         const studies = this.props.tree.studies.get();
         const studyOptions = _.flatten(
             [
@@ -237,12 +250,25 @@ export const DoctorProfile = schema(model)(createReactClass({
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
             >
+                { status === 'Loading' ?
+                    <View style={s.activityIndicator}>
+                        <ActivityIndicator
+                            animating
+                            size="large"
+                            color="#FF1D70"
+                        />
+                    </View>
+                : null}
                 <View style={s.info}>
                     <View style={s.pinkBg} />
-                    <Image
-                        style={s.photo}
-                        source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
-                    />
+                    <TouchableHighlight
+                        underlayColor="#FF1D70"
+                        onPress={this.changePhoto}>
+                        <Image
+                            style={s.photo}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultAvatarImage}
+                        />
+                    </TouchableHighlight>
                     <View style={s.name}>
                         <Text style={s.text}>
                             {`${firstName} ${lastName}`}

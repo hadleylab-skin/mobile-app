@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { buildPostService, buildGetService, defaultHeaders } from './base';
+import { buildPostService, buildGetService, defaultHeaders, hydrateImage } from './base';
 
 export function getDoctorService({ token }) {
     const headers = {
@@ -26,6 +26,30 @@ export function updateDoctorService({ token }) {
         const service = buildPostService('/api/v1/auth/current_user/',
             'PATCH',
             JSON.stringify,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return service(cursor, data);
+    };
+}
+
+function hydratePhotoData({ photo }) {
+    let data = new FormData();
+    data.append('photo', hydrateImage(photo));
+    return data;
+}
+
+export function updateDoctorPhotoService({ token }) {
+    const headers = {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor, data) => {
+        const service = buildPostService(
+            '/api/v1/auth/current_user/',
+            'PATCH',
+            hydratePhotoData,
             _.identity,
             _.merge({}, defaultHeaders, headers));
         return service(cursor, data);

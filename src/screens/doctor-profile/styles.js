@@ -53,4 +53,12 @@ export default StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
     },
+    activityIndicator: {
+        position: 'absolute',
+        top: 300,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        zIndex: 1,
+    },
 });

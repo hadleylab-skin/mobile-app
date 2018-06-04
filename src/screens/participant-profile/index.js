@@ -13,15 +13,15 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { saveCurrentStudy } from 'services/async-storage';
+import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
-import { isInSharedMode } from 'services/keypair';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -56,6 +56,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
             getInvitesService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
             updatePatientConsentService: PropTypes.func.isRequired,
+            updatePatientService: PropTypes.func.isRequired,
         }),
     },
 
@@ -199,7 +200,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
             ]
         );
         const patient = _.first(_.values(patients.data)).data;
-        const { firstName, lastName, dateOfBirth } = patient;
+        const { firstName, lastName, dateOfBirth, photo } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
 
@@ -216,7 +217,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     <View style={s.info}>
                         <Image
                             style={s.photo}
-                            source={defaultUserImage}
+                            source={!_.isEmpty(photo) ? { uri: photo.thumbnail } : defaultUserImage}
                         />
                         <View>
                             <Text style={s.name_text}>
