@@ -27,7 +27,6 @@ import s from './styles';
 
 const model = (props, context) => ({
     tree: {
-        studies: {},
         studyPicker: {},
         invites: context.services.getInvitesService,
         moles: {},
@@ -39,6 +38,7 @@ const model = (props, context) => ({
 export const ParticipantProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
     },
@@ -62,7 +62,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
     },
 
     async componentWillMount() {
-        await this.context.services.getStudiesService(this.props.tree.studies);
+        await this.context.services.getStudiesService(this.props.studiesCursor);
         this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
@@ -190,7 +190,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
             );
         }
 
-        const studies = this.props.tree.studies.get();
+        const studies = this.props.studiesCursor.get();
         const studiesForPicker = _.flatten(
             [
                 [[null, 'Not selected']],

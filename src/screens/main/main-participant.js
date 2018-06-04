@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import { ParticipantProfile } from 'screens/participant-profile';
-import { CameraMenu } from 'screens/camera-menu';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
@@ -25,6 +24,8 @@ const model = {
     newPatientScreen: {},
     addMoleScreen: {},
     participantScreen: {},
+
+    studies: {},
 };
 
 
@@ -95,9 +96,22 @@ export default schema(model)(createReactClass({
         );
     },
 
+    cameraPressed() {
+        const patients = this.context.cursors.patients.get();
+        const patient = _.get(_.first(_.values(patients.data)), 'data');
+
+        this.context.mainNavigator.push(
+            getAnatomicalSiteWidgetRoute({
+                tree: this.props.tree.addMoleScreen,
+                sex: patient ? patient.sex : 'm',
+                onAddingComplete: this.onAddingMoleComplete,
+                rightButtonTitle: '',
+            }, this.context)
+        );
+    },
+
     renderMain() {
         const currentTabCursor = this.props.tree.currentTab;
-        const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
         const patients = this.context.cursors.patients.get();
@@ -106,8 +120,6 @@ export default schema(model)(createReactClass({
                 <ParticipantDecryptionError />
             );
         }
-
-        const patient = _.get(_.first(_.values(patients.data)), 'data');
 
         return (
             <View
@@ -127,6 +139,7 @@ export default schema(model)(createReactClass({
                     >
                         <ParticipantProfile
                             tree={this.props.tree.participantScreen}
+                            studiesCursor={this.props.tree.studies}
                             doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                         />
@@ -135,25 +148,11 @@ export default schema(model)(createReactClass({
                         title="Camera"
                         icon={cameraIcon}
                         selected={false}
-                        onPress={() => {
-                            this.context.mainNavigator.push(
-                                getAnatomicalSiteWidgetRoute({
-                                    tree: this.props.tree.addMoleScreen,
-                                    sex: patient ? patient.sex : 'm',
-                                    onAddingComplete: this.onAddingMoleComplete,
-                                    rightButtonTitle: '',
-                                }, this.context)
-                            );
-                        }}
+                        onPress={this.cameraPressed}
                     >
                         <View />
                     </TabBarIOS.Item>
                 </TabBarIOS>
-                <CameraMenu
-                    tree={this.props.tree}
-                    visibleCursor={showModalCursor}
-                    patientsList={this.patientsList}
-                />
             </View>
         );
     },
