@@ -24,6 +24,7 @@ import { saveCurrentStudy } from 'services/async-storage';
 import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { getConsentDocsScreenRoute } from './invites/consent-docs';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -33,6 +34,7 @@ const model = (props, context) => ({
         moles: {},
         editProfileScreen: {},
         cryptoConfigScreen: {},
+        signConsentScreen: {},
     },
 });
 
@@ -55,6 +57,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
         services: PropTypes.shape({
             patientsService: PropTypes.func.isRequired,
             getStudiesService: PropTypes.func.isRequired,
+            addStudyConsentService: PropTypes.func.isRequired,
             getInvitesService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
             updatePatientConsentService: PropTypes.func.isRequired,
@@ -120,7 +123,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
         if (isStudyExpired) {
             Alert.alert(
                 'Study consent expired',
-                'You need to re-sign consent to add new images'
+                'You need to re-sign study consent to add new images'
             );
 
             return;
@@ -130,6 +133,42 @@ export const ParticipantProfile = schema(model)(createReactClass({
             cursors.patients.select('data', currentPatientPk, 'data'),
             services.updatePatientConsentService,
             mainNavigator);
+    },
+
+    openUpdateStudyConsent() {
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        const selectedStudy = _.find(
+            this.props.studiesCursor.get('data'),
+            (study) => study.pk === currentStudyPk);
+
+        this.context.mainNavigator.push(
+            getConsentDocsScreenRoute({
+                study: selectedStudy,
+                tree: this.props.tree.signConsentScreen,
+                onSign: this.onSign,
+            }, this.context)
+        );
+    },
+
+    async onSign(signatureData) {
+        const patients = this.context.cursors.patients.get();
+        const patient = _.first(_.values(patients.data)).data;
+
+        const result = await this.context.services.addStudyConsentService(
+            this.context.cursors.currentStudyPk.get('data'),
+            this.props.tree.signConsentScreen,
+            {
+                patientPk: patient.pk,
+                signature: signatureData.encoded,
+            },
+        );
+
+        if (result.status === 'Succeed') {
+            await this.context.services.getStudiesService(this.props.studiesCursor);
+            this.context.mainNavigator.popToTop();
+        } else {
+            Alert.alert('Error', JSON.stringify(result.error.data));
+        }
     },
 
     openCryptoConfiguration() {
@@ -297,6 +336,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                             title={
                                 <Text style={s.redText}>{'Need update consent!'}</Text>
                             }
+                            onPress={this.openUpdateStudyConsent}
                         />
                     : null}
 

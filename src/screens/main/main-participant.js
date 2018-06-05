@@ -110,7 +110,7 @@ export default schema(model)(createReactClass({
         ) {
             Alert.alert(
                 'Study consent expired',
-                'You need to re-sign consent to add new images'
+                'You need to re-sign study consent to add new images'
             );
 
             return;

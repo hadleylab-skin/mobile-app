@@ -137,7 +137,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
                             } else {
                                 this.context.mainNavigator.push(
                                     getConsentDocsScreenRoute({
-                                        invite,
+                                        study: invite.study,
                                         tree: this.props.tree,
                                         onSign: this.onSign,
                                     }, this.context)
