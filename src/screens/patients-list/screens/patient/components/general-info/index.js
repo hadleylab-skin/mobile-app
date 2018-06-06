@@ -18,7 +18,7 @@ import s from './styles';
 export const GeneralInfo = schema({})(createReactClass({
     propTypes: {
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        studyConsent: PropTypes.object.isRequired,
+        study: PropTypes.object.isRequired,  // eslint-disable-line
     },
 
     contextTypes: {
@@ -44,14 +44,15 @@ export const GeneralInfo = schema({})(createReactClass({
     },
 
     render() {
-        const { dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientCursor.get();
+        const { pk, dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientCursor.get();
         const isConsetValid = moment(_.get(validConsent, 'data.dateExpired')) > moment();
 
-        const { studyConsent } = this.props;
+        const { study } = this.props;
         let isStudyConsentValid = true;
-        if (studyConsent) {
-            const { dateExpired } = studyConsent;
-            isStudyConsentValid = moment(dateExpired) > moment();
+        let studyConsent = null;
+        if (study && study.patientsConsents && study.patientsConsents[pk]) {
+            studyConsent = study.patientsConsents[pk];
+            isStudyConsentValid = moment(studyConsent.dateExpired) > moment();
         }
 
         return (
@@ -76,19 +77,6 @@ export const GeneralInfo = schema({})(createReactClass({
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
                     <View>
-                        {studyConsent ?
-                            <View>
-                                <Text style={[s.text, isStudyConsentValid ? {} : { color: '#FC3159' }]}>
-                                    {
-                                        isStudyConsentValid
-                                        ?
-                                        `study consent till ${moment(studyConsent.dateExpired).format('DD/MMM/YYYY')}`
-                                        :
-                                        'study consent expired'
-                                    }
-                                </Text>
-                            </View>
-                        : null}
                         <View>
                             <Text style={[s.text, isConsetValid ? {} : { color: '#FC3159' }]}>
                                 {
@@ -105,6 +93,26 @@ export const GeneralInfo = schema({})(createReactClass({
                         >
                             <Text style={[s.text, s.textDark]}>Update consent</Text>
                         </TouchableOpacity>
+                        {studyConsent ?
+                            <View>
+                                <View>
+                                    <Text style={[s.text, isStudyConsentValid ? {} : { color: '#FC3159' }]}>
+                                        {
+                                            isStudyConsentValid
+                                            ?
+                                            `study consent till ${moment(studyConsent.dateExpired).format('DD/MMM/YYYY')}`
+                                            :
+                                            'study consent expired'
+                                        }
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={this.goToSignatireScreen}
+                                >
+                                    <Text style={[s.text, s.textDark]}>Update study consent</Text>
+                                </TouchableOpacity>
+                            </View>
+                        : null}
                     </View>
                 </View>
             </View>

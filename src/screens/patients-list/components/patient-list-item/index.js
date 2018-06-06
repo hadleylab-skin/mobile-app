@@ -7,12 +7,14 @@ import {
     Text,
     View,
     Image,
+    Alert,
     TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
+import { checkConsent } from 'screens/signature';
+import { isStudyConsentExpired } from 'libs/misc';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getPatientRoute } from '../../screens/patient';
-import { checkConsent } from 'screens/signature';
 import s from './styles';
 
 const PatientListItem = createReactClass({
@@ -50,10 +52,27 @@ const PatientListItem = createReactClass({
     },
 
     checkConsent() {
+        const { cursors, services, mainNavigator } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        const studies = this.props.studiesCursor.get();
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            cursors.currentStudyPk.get('data'),
+            currentPatientPk);
+        if (isStudyExpired) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign study consent to add new images'
+            );
+
+            return false;
+        }
+
         return checkConsent(
-            this.context.cursors.patients.data.select(this.props.data.pk).data,
-            this.context.services.updatePatientConsentService,
-            this.context.mainNavigator);
+            cursors.patients.data.select(this.props.data.pk).data,
+            services.updatePatientConsentService,
+            mainNavigator);
     },
 
     render() {

@@ -95,7 +95,7 @@ export const Patient = schema(model)(createReactClass({
                 'You need to re-sign study consent to add new images'
             );
 
-            return;
+            return false;
         }
 
         return checkConsent(
@@ -109,14 +109,9 @@ export const Patient = schema(model)(createReactClass({
         const molesCursor = this.props.tree.select('moles');
         const patientCursor = this.props.patientCursor.data;
 
-        let studyConsent = null;
-        const { pk } = patientCursor.get();
         const studies = this.props.studiesCursor.get('data');
         const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
         const selectedStudy = _.find(studies, (study) => study.pk === currentStudyPk);
-        if (selectedStudy) {
-            studyConsent = selectedStudy.patientsConsents[pk];
-        }
 
         return (
             <SafeAreaView
@@ -132,7 +127,7 @@ export const Patient = schema(model)(createReactClass({
                     >
                         <GeneralInfo
                             patientCursor={patientCursor}
-                            studyConsent={studyConsent}
+                            study={selectedStudy}
                         />
                         <MolesInfo
                             checkConsent={this.checkConsent}

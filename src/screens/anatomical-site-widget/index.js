@@ -106,7 +106,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
         if (isParticipant) {
             this.launchAddPhoto(ImagePicker.showImagePicker);
         } else {
-            this.launchAddPhoto(ImagePicker.launchImageLibrary);
+            this.launchAddPhoto(ImagePicker.launchCamera);
         }
     },
 
