@@ -23,11 +23,13 @@ import profileIcon from './images/profile.png';
 
 
 const model = {
-    newPatientScreen: {},
-    addMoleScreen: {},
-    participantScreen: {},
+    tree: {
+        newPatientScreen: {},
+        addMoleScreen: {},
+        participantScreen: {},
 
-    studies: {},
+        studies: {},
+    },
 };
 
 

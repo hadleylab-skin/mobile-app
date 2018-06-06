@@ -18,6 +18,7 @@ import s from './styles';
 export const GeneralInfo = schema({})(createReactClass({
     propTypes: {
         patientCursor: BaobabPropTypes.cursor.isRequired,
+        studyConsent: PropTypes.object.isRequired,
     },
 
     contextTypes: {
@@ -46,6 +47,13 @@ export const GeneralInfo = schema({})(createReactClass({
         const { dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientCursor.get();
         const isConsetValid = moment(_.get(validConsent, 'data.dateExpired')) > moment();
 
+        const { studyConsent } = this.props;
+        let isStudyConsentValid = true;
+        if (studyConsent) {
+            const { dateExpired } = studyConsent;
+            isStudyConsentValid = moment(dateExpired) > moment();
+        }
+
         return (
             <View style={s.container}>
                 <View style={s.photoWrapper}>
@@ -68,6 +76,19 @@ export const GeneralInfo = schema({})(createReactClass({
                         <View><Text style={s.text}>Medical #{mrn}</Text></View>
                     : null}
                     <View>
+                        {studyConsent ?
+                            <View>
+                                <Text style={[s.text, isStudyConsentValid ? {} : { color: '#FC3159' }]}>
+                                    {
+                                        isStudyConsentValid
+                                        ?
+                                        `study consent till ${moment(studyConsent.dateExpired).format('DD/MMM/YYYY')}`
+                                        :
+                                        'study consent expired'
+                                    }
+                                </Text>
+                            </View>
+                        : null}
                         <View>
                             <Text style={[s.text, isConsetValid ? {} : { color: '#FC3159' }]}>
                                 {

@@ -1,8 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
+    Alert,
     ScrollView,
     SafeAreaView,
 } from 'react-native';
@@ -10,6 +12,7 @@ import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { Updater } from 'components';
+import { isStudyConsentExpired } from 'libs/misc';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
@@ -30,6 +33,7 @@ export const Patient = schema(model)(createReactClass({
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: PropTypes.func.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -77,16 +81,42 @@ export const Patient = schema(model)(createReactClass({
     },
 
     checkConsent() {
+        const { cursors, services, mainNavigator } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        const studies = this.props.studiesCursor.get();
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            cursors.currentStudyPk.get('data'),
+            currentPatientPk);
+        if (isStudyExpired) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign study consent to add new images'
+            );
+
+            return;
+        }
+
         return checkConsent(
             this.props.patientCursor.data,
-            this.context.services.updatePatientConsentService,
-            this.context.mainNavigator);
+            services.updatePatientConsentService,
+            mainNavigator);
     },
 
     render() {
         const widgetDataCursor = this.props.tree.select('widgetData');
         const molesCursor = this.props.tree.select('moles');
         const patientCursor = this.props.patientCursor.data;
+
+        let studyConsent = null;
+        const { pk } = patientCursor.get();
+        const studies = this.props.studiesCursor.get('data');
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        const selectedStudy = _.find(studies, (study) => study.pk === currentStudyPk);
+        if (selectedStudy) {
+            studyConsent = selectedStudy.patientsConsents[pk];
+        }
 
         return (
             <SafeAreaView
@@ -102,6 +132,7 @@ export const Patient = schema(model)(createReactClass({
                     >
                         <GeneralInfo
                             patientCursor={patientCursor}
+                            studyConsent={studyConsent}
                         />
                         <MolesInfo
                             checkConsent={this.checkConsent}

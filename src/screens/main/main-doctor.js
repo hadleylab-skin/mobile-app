@@ -13,12 +13,19 @@ import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { CameraMenu } from 'screens/camera-menu';
 
-import patientsIcon from './images/patients.png';
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
+import patientsIcon from './images/patients.png';
 
 
-export default schema({})(createReactClass({
+const model = (props, context) => ({
+    tree: {
+        studies: context.services.getStudiesService,
+    },
+});
+
+
+export default schema(model)(createReactClass({
     displayName: 'MainDoctor',
 
     propTypes: {
@@ -32,6 +39,7 @@ export default schema({})(createReactClass({
         services: PropTypes.shape({
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             createPatientService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
         }),
         cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
@@ -44,6 +52,7 @@ export default schema({})(createReactClass({
         const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
         const searchCursor = this.props.tree.search;
+        const studiesCursor = this.props.tree.studies;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
 
@@ -74,6 +83,7 @@ export default schema({})(createReactClass({
                                 this.patientsList = ref;
                             }}
                             tree={patientsCursor}
+                            studiesCursor={studiesCursor}
                             searchCursor={searchCursor}
                         />
                     </TabBarIOS.Item>
@@ -94,6 +104,7 @@ export default schema({})(createReactClass({
                     >
                         <DoctorProfile
                             tree={this.props.tree.doctorScreenState}
+                            studiesCursor={this.props.tree.studies}
                             doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                             siteJoinRequestCursor={this.props.tree.siteJoinRequest}

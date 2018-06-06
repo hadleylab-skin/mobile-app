@@ -28,6 +28,7 @@ const PatientsListScreen = schema({})(createReactClass({
         onAddingComplete: PropTypes.func.isRequired,
         onPatientAdded: PropTypes.func.isRequired,
         searchCursor: BaobabPropTypes.cursor.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -111,6 +112,7 @@ const PatientsListScreen = schema({})(createReactClass({
                         navigator={this.props.navigator}
                         goToWidgetCursor={this.props.tree.select('goToWidget')}
                         onAddingComplete={this.props.onAddingComplete}
+                        studiesCursor={this.props.studiesCursor}
                     />
                 )}
             />

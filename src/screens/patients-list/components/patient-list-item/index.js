@@ -33,6 +33,7 @@ const PatientListItem = createReactClass({
         }).isRequired,
         goToWidgetCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: PropTypes.func.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -96,6 +97,7 @@ const PatientListItem = createReactClass({
                                 navigator: this.props.navigator,
                                 patientCursor: cursors.patients.select('data', pk),
                                 onAddingComplete: this.props.onAddingComplete,
+                                studiesCursor: this.props.studiesCursor,
                             }, this.context)
                         );
                     }}
