@@ -22,6 +22,7 @@ const model = {
     tree: {
         widgetData: {},
         moles: {},
+        generalInfoScreen: {},
     },
 };
 
@@ -109,10 +110,6 @@ export const Patient = schema(model)(createReactClass({
         const molesCursor = this.props.tree.select('moles');
         const patientCursor = this.props.patientCursor.data;
 
-        const studies = this.props.studiesCursor.get('data');
-        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
-        const selectedStudy = _.find(studies, (study) => study.pk === currentStudyPk);
-
         return (
             <SafeAreaView
                 style={s.safeWrapper}
@@ -126,8 +123,9 @@ export const Patient = schema(model)(createReactClass({
                         scrollEventThrottle={200}
                     >
                         <GeneralInfo
+                            tree={this.props.tree.generalInfoScreen}
                             patientCursor={patientCursor}
-                            study={selectedStudy}
+                            studiesCursor={this.props.studiesCursor}
                         />
                         <MolesInfo
                             checkConsent={this.checkConsent}

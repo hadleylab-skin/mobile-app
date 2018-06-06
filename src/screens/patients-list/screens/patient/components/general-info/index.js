@@ -7,24 +7,37 @@ import {
     View,
     Text,
     Image,
+    Alert,
     TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
 import schema from 'libs/state';
 import { getSignatureRoute } from 'screens/signature';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
+import { getConsentDocsScreenRoute } from 'screens/participant-profile/invites/consent-docs';
 import s from './styles';
 
-export const GeneralInfo = schema({})(createReactClass({
+
+const model = {
+    tree: {
+        signConsentScreen: {},
+    },
+};
+
+
+export const GeneralInfo = schema(model)(createReactClass({
     propTypes: {
         patientCursor: BaobabPropTypes.cursor.isRequired,
-        study: PropTypes.object.isRequired,  // eslint-disable-line
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
         mainNavigator: PropTypes.object.isRequired,
         services: PropTypes.shape({
             updatePatientConsentService: PropTypes.func.isRequired,
+        }),
+        cursors: PropTypes.shape({
+            currentStudyPk: BaobabPropTypes.cursor.isRequired,
         }),
     },
 
@@ -43,16 +56,54 @@ export const GeneralInfo = schema({})(createReactClass({
             }));
     },
 
+    goToStudySignature() {
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        const selectedStudy = _.find(
+            this.props.studiesCursor.get('data'),
+            (study) => study.pk === currentStudyPk);
+
+        this.context.mainNavigator.push(
+            getConsentDocsScreenRoute({
+                study: selectedStudy,
+                tree: this.props.tree.signConsentScreen,
+                onSign: this.onSign,
+            }, this.context)
+        );
+    },
+
+    async onSign(signatureData) {
+        const { pk } = this.props.patientCursor.get();
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+
+        const result = await this.context.services.addStudyConsentService(
+            currentStudyPk,
+            this.props.tree.signConsentScreen,
+            {
+                patientPk: pk,
+                signature: signatureData.encoded,
+            },
+        );
+
+        if (result.status === 'Succeed') {
+            await this.context.services.getStudiesService(this.props.studiesCursor);
+            this.context.mainNavigator.popToTop();
+        } else {
+            Alert.alert('Error', JSON.stringify(result.error.data));
+        }
+    },
+
     render() {
         const { pk, dateOfBirth, photo, sex, mrn, validConsent } = this.props.patientCursor.get();
         const isConsetValid = moment(_.get(validConsent, 'data.dateExpired')) > moment();
 
-        const { study } = this.props;
+        const studies = this.props.studiesCursor.get('data');
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        const study = _.find(studies, (item) => item.pk === currentStudyPk);
         let isStudyConsentValid = true;
-        let studyConsent = null;
+        let studyConsentExpired = null;
         if (study && study.patientsConsents && study.patientsConsents[pk]) {
-            studyConsent = study.patientsConsents[pk];
-            isStudyConsentValid = moment(studyConsent.dateExpired) > moment();
+            studyConsentExpired = moment(study.patientsConsents[pk].dateExpired);
+            isStudyConsentValid = studyConsentExpired > moment();
         }
 
         return (
@@ -93,21 +144,21 @@ export const GeneralInfo = schema({})(createReactClass({
                         >
                             <Text style={[s.text, s.textDark]}>Update consent</Text>
                         </TouchableOpacity>
-                        {studyConsent ?
+                        {studyConsentExpired ?
                             <View>
                                 <View>
                                     <Text style={[s.text, isStudyConsentValid ? {} : { color: '#FC3159' }]}>
                                         {
                                             isStudyConsentValid
                                             ?
-                                            `study consent till ${moment(studyConsent.dateExpired).format('DD/MMM/YYYY')}`
+                                            `study consent till ${studyConsentExpired.format('DD/MMM/YYYY')}`
                                             :
                                             'study consent expired'
                                         }
                                     </Text>
                                 </View>
                                 <TouchableOpacity
-                                    onPress={this.goToSignatireScreen}
+                                    onPress={this.goToStudySignature}
                                 >
                                     <Text style={[s.text, s.textDark]}>Update study consent</Text>
                                 </TouchableOpacity>
