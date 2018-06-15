@@ -61,7 +61,12 @@ const InfoFields = schema(model)(createReactClass({
 
     async updatePatients() {
         const { cursors, services } = this.context;
-        const queryParams = cursors.filter.get();
+        const currentStudyPk = cursors.currentStudyPk.get('data');
+        let queryParams = cursors.filter.get();
+
+        if (currentStudyPk) {
+            queryParams = _.merge({}, queryParams, { study: currentStudyPk });
+        }
 
         await services.patientsService(cursors.patients, queryParams);
     },
