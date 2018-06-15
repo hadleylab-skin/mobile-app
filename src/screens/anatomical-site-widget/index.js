@@ -5,6 +5,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
+    Alert,
     SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
@@ -157,6 +158,9 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
             if (!addingCompleteResult || addingCompleteResult.status === 'Succeed') {
                 this.resetSelectedMole();
             }
+        } else {
+            Alert.alert('Server error', JSON.stringify(result.error.data));
+            this.resetSelectedMole();
         }
     },
 

@@ -70,7 +70,7 @@ export const ConsentDocsScreen = schema({})(createReactClass({
             <View style={s.container}>
                 <ScrollView>
                     <Text style={ss.text}>
-                        Please, read this documents {'\n'} and confirm with sign
+                        Please, read these documents {'\n'} and confirm with sign
                     </Text>
                     {_.map(study.consentDocs, (consentDoc, index) => (
                         <InfoField

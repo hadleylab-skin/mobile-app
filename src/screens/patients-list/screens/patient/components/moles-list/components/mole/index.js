@@ -109,7 +109,7 @@ export const Mole = createReactClass({
 
         if (result.status === 'Failure') {
             imagesCursor.unset(pk);
-            Alert.alert('Server error', JSON.stringify(result.error));
+            Alert.alert('Server error', JSON.stringify(result.error.data));
         }
     },
 
