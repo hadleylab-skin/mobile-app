@@ -244,7 +244,8 @@ export const ParticipantProfile = schema(model)(createReactClass({
             );
         }
 
-        const studies = this.props.studiesCursor.get();
+        const { studiesCursor } = this.props;
+        const studies = studiesCursor.get();
         const studiesForPicker = _.flatten(
             [
                 [[null, 'Not selected']],
@@ -306,6 +307,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                                 if (invites.length === 1) {
                                     this.context.mainNavigator.push(
                                         getInviteDetailScreenRoute({
+                                            studiesCursor,
                                             invite: _.first(invites),
                                             tree: this.props.tree,
                                         }, this.context)
@@ -314,6 +316,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
                                             invites,
+                                            studiesCursor,
                                             tree: this.props.tree,
                                         }, this.context)
                                     );
