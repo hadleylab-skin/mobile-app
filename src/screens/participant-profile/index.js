@@ -334,7 +334,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     {isStudyExpired ?
                         <InfoField
                             title={
-                                <Text style={s.redText}>{'Need update consent!'}</Text>
+                                <Text style={s.redText}>{'Consent update required!'}</Text>
                             }
                             onPress={this.openUpdateStudyConsent}
                         />
