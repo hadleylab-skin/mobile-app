@@ -75,9 +75,9 @@ export const CameraMenu = schema({})(createReactClass({
     async onAddingComplete() {
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
-        const queryParams = cursors.filter.get();
 
-        await services.patientsService(cursors.patients, queryParams);
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
         await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles'),
@@ -95,8 +95,6 @@ export const CameraMenu = schema({})(createReactClass({
                 title: 'New Patient',
                 service: services.createPatientService,
                 onActionComplete: async ({ pk }) => {
-                    const queryParams = cursors.filter.get();
-
                     cursors.currentPatientPk.set(pk);
                     mainNavigator.push(
                         getAnatomicalSiteWidgetRoute({
@@ -106,7 +104,8 @@ export const CameraMenu = schema({})(createReactClass({
                         }, this.context)
                     );
 
-                    await services.patientsService(cursors.patients, queryParams);
+                    await services.patientsService(cursors.patients,
+                        cursors.filter.get(), cursors.currentStudyPk.get('data'));
                 },
             }, this.context)
         );

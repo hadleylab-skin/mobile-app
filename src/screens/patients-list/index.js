@@ -87,13 +87,15 @@ const PatientsListScreen = schema({})(createReactClass({
 
         const { cursors, services } = this.context;
 
-        await services.patientsService(cursors.patients, getQueryParams(cursors));
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     renderList() {
         const { cursors, services } = this.context;
         const _onScroll = onScroll(async () =>
-            await services.patientsService(cursors.patients, getQueryParams(cursors)));
+            await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data')));
 
         return (
             <ListView
@@ -185,7 +187,8 @@ export const PatientsList = createReactClass({
         const { cursors, services } = this.context;
         const patientPk = cursors.currentPatientPk.get();
 
-        await services.patientsService(cursors.patients, getQueryParams(cursors));
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
         const result = await services.getPatientMolesService(
             patientPk,
             cursors.patientsMoles.select(patientPk, 'moles'),
@@ -211,7 +214,8 @@ export const PatientsList = createReactClass({
             }, this.context)
         );
 
-        await services.patientsService(cursors.patients, getQueryParams(cursors));
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     render() {
@@ -245,13 +249,4 @@ export const PatientsList = createReactClass({
     },
 });
 
-function getQueryParams(cursors) {
-    const currentStudyPk = cursors.currentStudyPk.get('data');
-    let queryParams = cursors.filter.get();
 
-    if (currentStudyPk) {
-        queryParams = _.merge({}, queryParams, { study: currentStudyPk });
-    }
-
-    return queryParams;
-}

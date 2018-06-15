@@ -61,14 +61,8 @@ const InfoFields = schema(model)(createReactClass({
 
     async updatePatients() {
         const { cursors, services } = this.context;
-        const currentStudyPk = cursors.currentStudyPk.get('data');
-        let queryParams = cursors.filter.get();
-
-        if (currentStudyPk) {
-            queryParams = _.merge({}, queryParams, { study: currentStudyPk });
-        }
-
-        await services.patientsService(cursors.patients, queryParams);
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     onBiopsyChange(value) {

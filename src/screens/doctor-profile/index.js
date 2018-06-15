@@ -117,6 +117,7 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     async sharePatients() {
+        const { cursors, services } = this.context;
         const requestPk = _.get(
             _.values(this.props.siteJoinRequestCursor.data.get()),
             [0, 'data', 'pk']);
@@ -149,8 +150,8 @@ export const DoctorProfile = schema(model)(createReactClass({
         }
 
         await this.updateScreenData();
-        await this.context.services.patientsService(
-            this.context.cursors.patients, {});
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     changePhoto() {
