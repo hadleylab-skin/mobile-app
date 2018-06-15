@@ -41,6 +41,7 @@ const PatientsListScreen = schema({})(createReactClass({
         services: PropTypes.shape({
             createPatientService: PropTypes.func.isRequired,
             patientsService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -93,9 +94,20 @@ const PatientsListScreen = schema({})(createReactClass({
 
     renderList() {
         const { cursors, services } = this.context;
-        const _onScroll = onScroll(async () =>
-            await services.patientsService(cursors.patients,
-            cursors.filter.get(), cursors.currentStudyPk.get('data')));
+        const _onScroll = onScroll(async () => {
+            let result = await services.patientsService(cursors.patients,
+                cursors.filter.get(), cursors.currentStudyPk.get('data'));
+            if (result.status !== 'Succeed') {
+                return result;
+            }
+
+            result = await services.getStudiesService(this.props.studiesCursor);
+            if (result.status !== 'Succeed') {
+                return result;
+            }
+
+            return result;
+        });
 
         return (
             <ListView
@@ -248,5 +260,4 @@ export const PatientsList = createReactClass({
         );
     },
 });
-
 

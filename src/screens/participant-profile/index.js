@@ -181,9 +181,19 @@ export const ParticipantProfile = schema(model)(createReactClass({
     },
 
     async onUpdateScreen() {
-        await this.context.services.getInvitesService(
+        let result = await this.context.services.getInvitesService(
             this.props.tree.invites,
         );
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
+        result = await this.context.services.getStudiesService(
+            this.props.studiesCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
         this.onSelectedStudyUpdate();
         return { status: 'Succeed' };
     },

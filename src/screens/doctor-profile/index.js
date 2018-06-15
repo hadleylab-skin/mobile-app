@@ -94,6 +94,13 @@ export const DoctorProfile = schema(model)(createReactClass({
         if (result.status !== 'Succeed') {
             return result;
         }
+
+        result = await this.context.services.getStudiesService(
+            this.props.studiesCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
         return this.context.services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
     },
