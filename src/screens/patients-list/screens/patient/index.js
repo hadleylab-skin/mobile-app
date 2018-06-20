@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
+    Alert,
     ScrollView,
     SafeAreaView,
 } from 'react-native';
@@ -10,6 +11,7 @@ import schema from 'libs/state';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { Updater } from 'components';
+import { isStudyConsentExpired } from 'libs/misc';
 import { GeneralInfo } from './components/general-info';
 import { MolesInfo } from './components/moles-info';
 import { MolesList } from './components/moles-list';
@@ -19,6 +21,7 @@ const model = {
     tree: {
         widgetData: {},
         moles: {},
+        generalInfoScreen: {},
     },
 };
 
@@ -30,6 +33,7 @@ export const Patient = schema(model)(createReactClass({
         tree: BaobabPropTypes.cursor.isRequired,
         patientCursor: BaobabPropTypes.cursor.isRequired,
         onAddingComplete: PropTypes.func.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -77,10 +81,27 @@ export const Patient = schema(model)(createReactClass({
     },
 
     checkConsent() {
+        const { cursors, services, mainNavigator } = this.context;
+        const currentPatientPk = cursors.currentPatientPk.get();
+
+        const studies = this.props.studiesCursor.get();
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            cursors.currentStudyPk.get('data'),
+            currentPatientPk);
+        if (isStudyExpired) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign study consent to add new images'
+            );
+
+            return false;
+        }
+
         return checkConsent(
             this.props.patientCursor.data,
-            this.context.services.updatePatientConsentService,
-            this.context.mainNavigator);
+            services.updatePatientConsentService,
+            mainNavigator);
     },
 
     render() {
@@ -101,7 +122,9 @@ export const Patient = schema(model)(createReactClass({
                         scrollEventThrottle={200}
                     >
                         <GeneralInfo
+                            tree={this.props.tree.generalInfoScreen}
                             patientCursor={patientCursor}
+                            studiesCursor={this.props.studiesCursor}
                         />
                         <MolesInfo
                             checkConsent={this.checkConsent}

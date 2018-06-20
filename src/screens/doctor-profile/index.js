@@ -22,18 +22,18 @@ import { saveCurrentStudy } from 'services/async-storage';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import s from './styles';
 
-const model = (props, context) => ({
+const model = {
     tree: {
         siteJoinRequestScreenState: {},
-        studies: context.services.getStudiesService,
         studyPicker: {},
         cryptoConfigScreen: {},
     },
-});
+};
 
 export const DoctorProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         siteJoinRequestCursor: BaobabPropTypes.cursor.isRequired,
@@ -94,6 +94,13 @@ export const DoctorProfile = schema(model)(createReactClass({
         if (result.status !== 'Succeed') {
             return result;
         }
+
+        result = await this.context.services.getStudiesService(
+            this.props.studiesCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
         return this.context.services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
     },
@@ -117,6 +124,7 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     async sharePatients() {
+        const { cursors, services } = this.context;
         const requestPk = _.get(
             _.values(this.props.siteJoinRequestCursor.data.get()),
             [0, 'data', 'pk']);
@@ -149,8 +157,8 @@ export const DoctorProfile = schema(model)(createReactClass({
         }
 
         await this.updateScreenData();
-        await this.context.services.patientsService(
-            this.context.cursors.patients, {});
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     changePhoto() {
@@ -232,7 +240,7 @@ export const DoctorProfile = schema(model)(createReactClass({
     render() {
         const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
         const status = this.props.doctorCursor.get('status');
-        const studies = this.props.tree.studies.get();
+        const studies = this.props.studiesCursor.get();
         const studyOptions = _.flatten(
             [
                 [[null, 'Not selected']],

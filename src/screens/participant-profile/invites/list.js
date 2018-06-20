@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
@@ -16,6 +17,7 @@ import s from '../styles';
 export const InvitesScreen = schema({})(createReactClass({
     propTypes: {
         invites: PropTypes.arrayOf(PropTypes.object).isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -38,6 +40,7 @@ study: ${invite.study.title}`}
                                 this.context.mainNavigator.push(
                                     getInviteDetailScreenRoute({
                                         invite,
+                                        studiesCursor: this.props.studiesCursor,
                                         tree: this.props.tree,
                                     }, this.context)
                                 )

@@ -7,11 +7,12 @@ import {
     StatusBar,
     TabBarIOS,
     View,
+    Alert,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
+import { isStudyConsentExpired } from 'libs/misc';
 import { ParticipantProfile } from 'screens/participant-profile';
-import { CameraMenu } from 'screens/camera-menu';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
@@ -22,9 +23,13 @@ import profileIcon from './images/profile.png';
 
 
 const model = {
-    newPatientScreen: {},
-    addMoleScreen: {},
-    participantScreen: {},
+    tree: {
+        newPatientScreen: {},
+        addMoleScreen: {},
+        participantScreen: {},
+
+        studies: {},
+    },
 };
 
 
@@ -95,9 +100,36 @@ export default schema(model)(createReactClass({
         );
     },
 
+    cameraPressed() {
+        const patients = this.context.cursors.patients.get();
+        const patient = _.get(_.first(_.values(patients.data)), 'data');
+
+        const studies = this.props.tree.studies.get('data');
+        if (isStudyConsentExpired(
+            studies,
+            this.context.cursors.currentStudyPk.get('data'),
+            patient.pk)
+        ) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign study consent to add new images'
+            );
+
+            return;
+        }
+
+        this.context.mainNavigator.push(
+            getAnatomicalSiteWidgetRoute({
+                tree: this.props.tree.addMoleScreen,
+                sex: patient ? patient.sex : 'm',
+                onAddingComplete: this.onAddingMoleComplete,
+                rightButtonTitle: '',
+            }, this.context)
+        );
+    },
+
     renderMain() {
         const currentTabCursor = this.props.tree.currentTab;
-        const showModalCursor = this.props.tree.showModal;
 
         const statusBarStyle = currentTabCursor.get() === 'profile' ? 'light-content' : 'default';
         const patients = this.context.cursors.patients.get();
@@ -106,8 +138,6 @@ export default schema(model)(createReactClass({
                 <ParticipantDecryptionError />
             );
         }
-
-        const patient = _.get(_.first(_.values(patients.data)), 'data');
 
         return (
             <View
@@ -127,6 +157,7 @@ export default schema(model)(createReactClass({
                     >
                         <ParticipantProfile
                             tree={this.props.tree.participantScreen}
+                            studiesCursor={this.props.tree.studies}
                             doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                         />
@@ -135,25 +166,11 @@ export default schema(model)(createReactClass({
                         title="Camera"
                         icon={cameraIcon}
                         selected={false}
-                        onPress={() => {
-                            this.context.mainNavigator.push(
-                                getAnatomicalSiteWidgetRoute({
-                                    tree: this.props.tree.addMoleScreen,
-                                    sex: patient ? patient.sex : 'm',
-                                    onAddingComplete: this.onAddingMoleComplete,
-                                    rightButtonTitle: '',
-                                }, this.context)
-                            );
-                        }}
+                        onPress={this.cameraPressed}
                     >
                         <View />
                     </TabBarIOS.Item>
                 </TabBarIOS>
-                <CameraMenu
-                    tree={this.props.tree}
-                    visibleCursor={showModalCursor}
-                    patientsList={this.patientsList}
-                />
             </View>
         );
     },

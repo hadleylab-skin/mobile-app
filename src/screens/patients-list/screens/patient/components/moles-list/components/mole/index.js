@@ -89,12 +89,11 @@ export const Mole = createReactClass({
         });
 
         if (result.status === 'Succeed') {
-            const queryParams = cursors.filter.get();
-
             imagesCursor.unset(pk);
             imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
 
-            await services.patientsService(cursors.patients, queryParams);
+            await services.patientsService(cursors.patients,
+                cursors.filter.get(), cursors.currentStudyPk.get('data'));
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles'),
@@ -110,7 +109,7 @@ export const Mole = createReactClass({
 
         if (result.status === 'Failure') {
             imagesCursor.unset(pk);
-            Alert.alert('Server error', JSON.stringify(result.error));
+            Alert.alert('Server error', JSON.stringify(result.error.data));
         }
     },
 

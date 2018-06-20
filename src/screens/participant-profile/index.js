@@ -8,12 +8,14 @@ import {
     View,
     Text,
     Image,
+    Alert,
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
+import { isStudyConsentExpired } from 'libs/misc';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
 import { InfoField, Updater, Button, Picker } from 'components';
@@ -22,22 +24,24 @@ import { saveCurrentStudy } from 'services/async-storage';
 import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
 import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { getConsentDocsScreenRoute } from './invites/consent-docs';
 import s from './styles';
 
 const model = (props, context) => ({
     tree: {
-        studies: {},
         studyPicker: {},
         invites: context.services.getInvitesService,
         moles: {},
         editProfileScreen: {},
         cryptoConfigScreen: {},
+        signConsentScreen: {},
     },
 });
 
 export const ParticipantProfile = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         doctorCursor: BaobabPropTypes.cursor.isRequired,
     },
@@ -53,6 +57,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
         services: PropTypes.shape({
             patientsService: PropTypes.func.isRequired,
             getStudiesService: PropTypes.func.isRequired,
+            addStudyConsentService: PropTypes.func.isRequired,
             getInvitesService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
             updatePatientConsentService: PropTypes.func.isRequired,
@@ -61,7 +66,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
     },
 
     async componentWillMount() {
-        await this.context.services.getStudiesService(this.props.tree.studies);
+        await this.context.services.getStudiesService(this.props.studiesCursor);
         this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
@@ -110,10 +115,60 @@ export const ParticipantProfile = schema(model)(createReactClass({
         const { cursors, services, mainNavigator } = this.context;
         const currentPatientPk = cursors.currentPatientPk.get();
 
+        const studies = this.props.studiesCursor.get();
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            cursors.currentStudyPk.get('data'),
+            currentPatientPk);
+        if (isStudyExpired) {
+            Alert.alert(
+                'Study consent expired',
+                'You need to re-sign study consent to add new images'
+            );
+
+            return;
+        }
+
         return checkConsent(
             cursors.patients.select('data', currentPatientPk, 'data'),
             services.updatePatientConsentService,
             mainNavigator);
+    },
+
+    openUpdateStudyConsent() {
+        const currentStudyPk = this.context.cursors.currentStudyPk.get('data');
+        const selectedStudy = _.find(
+            this.props.studiesCursor.get('data'),
+            (study) => study.pk === currentStudyPk);
+
+        this.context.mainNavigator.push(
+            getConsentDocsScreenRoute({
+                study: selectedStudy,
+                tree: this.props.tree.signConsentScreen,
+                onSign: this.onSign,
+            }, this.context)
+        );
+    },
+
+    async onSign(signatureData) {
+        const patients = this.context.cursors.patients.get();
+        const patient = _.first(_.values(patients.data)).data;
+
+        const result = await this.context.services.addStudyConsentService(
+            this.context.cursors.currentStudyPk.get('data'),
+            this.props.tree.signConsentScreen,
+            {
+                patientPk: patient.pk,
+                signature: signatureData.encoded,
+            },
+        );
+
+        if (result.status === 'Succeed') {
+            await this.context.services.getStudiesService(this.props.studiesCursor);
+            this.context.mainNavigator.popToTop();
+        } else {
+            Alert.alert('Error', JSON.stringify(result.error.data));
+        }
     },
 
     openCryptoConfiguration() {
@@ -126,9 +181,19 @@ export const ParticipantProfile = schema(model)(createReactClass({
     },
 
     async onUpdateScreen() {
-        await this.context.services.getInvitesService(
+        let result = await this.context.services.getInvitesService(
             this.props.tree.invites,
         );
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
+        result = await this.context.services.getStudiesService(
+            this.props.studiesCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
         this.onSelectedStudyUpdate();
         return { status: 'Succeed' };
     },
@@ -189,7 +254,8 @@ export const ParticipantProfile = schema(model)(createReactClass({
             );
         }
 
-        const studies = this.props.tree.studies.get();
+        const { studiesCursor } = this.props;
+        const studies = studiesCursor.get();
         const studiesForPicker = _.flatten(
             [
                 [[null, 'Not selected']],
@@ -203,6 +269,11 @@ export const ParticipantProfile = schema(model)(createReactClass({
         const { firstName, lastName, dateOfBirth, photo } = patient;
         const age = dateOfBirth ? parseInt(moment().diff(moment(dateOfBirth), 'years'), 10) : null;
         const invites = this.props.tree.invites.data.get();
+
+        const isStudyExpired = isStudyConsentExpired(
+            studies.data,
+            this.context.cursors.currentStudyPk.get('data'),
+            patient.pk);
 
         return (
             <Updater
@@ -246,6 +317,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                                 if (invites.length === 1) {
                                     this.context.mainNavigator.push(
                                         getInviteDetailScreenRoute({
+                                            studiesCursor,
                                             invite: _.first(invites),
                                             tree: this.props.tree,
                                         }, this.context)
@@ -254,6 +326,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                                     this.context.mainNavigator.push(
                                         getInvitesScreenRoute({
                                             invites,
+                                            studiesCursor,
                                             tree: this.props.tree,
                                         }, this.context)
                                     );
@@ -268,6 +341,15 @@ export const ParticipantProfile = schema(model)(createReactClass({
                             cursor={this.context.cursors.currentStudyPk.select('data')}
                             items={studiesForPicker}
                             title="Studies"
+                        />
+                    : null}
+
+                    {isStudyExpired ?
+                        <InfoField
+                            title={
+                                <Text style={s.redText}>{'Consent update required!'}</Text>
+                            }
+                            onPress={this.openUpdateStudyConsent}
                         />
                     : null}
 

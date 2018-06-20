@@ -49,9 +49,9 @@ const Filter = createReactClass({
     },
 
     async filterPatients() {
-        const queryParams = this.context.cursors.filter.get();
-
-        await this.context.services.patientsService(this.context.cursors.patients, queryParams);
+        const { cursors, services } = this.context;
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     toggleFilter() {
