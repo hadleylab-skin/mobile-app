@@ -22,7 +22,7 @@ const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer
 
 export const ConsentDocsScreen = schema({})(createReactClass({
     propTypes: {
-        invite: PropTypes.object.isRequired, // eslint-disable-line
+        study: PropTypes.object.isRequired, // eslint-disable-line
         navigator: PropTypes.object.isRequired, // eslint-disable-line
         onSign: PropTypes.func.isRequired,
     },
@@ -55,8 +55,7 @@ export const ConsentDocsScreen = schema({})(createReactClass({
     },
 
     render() {
-        const { invite } = this.props;
-        const study = invite.study;
+        const { study } = this.props;
         const { progress } = this.state;
 
         if (progress > 0 && progress < 1) {
@@ -71,7 +70,7 @@ export const ConsentDocsScreen = schema({})(createReactClass({
             <View style={s.container}>
                 <ScrollView>
                     <Text style={ss.text}>
-                        Please, read this documents {'\n'} and confirm with sign
+                        Please, read these documents {'\n'} and confirm with sign
                     </Text>
                     {_.map(study.consentDocs, (consentDoc, index) => (
                         <InfoField

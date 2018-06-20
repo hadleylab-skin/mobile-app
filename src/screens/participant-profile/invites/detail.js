@@ -25,6 +25,7 @@ const model = {
 export const InviteDetailScreen = schema(model)(createReactClass({
     propTypes: {
         invite: PropTypes.object.isRequired, // eslint-disable-line
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -69,7 +70,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
             this.props.tree.approveInviteCursor,
             data);
         if (result.status === 'Succeed') {
-            if (this.props.tree.studies.data.get().length === 0) {
+            if (_.isEmpty(this.props.studiesCursor.get('data'))) {
                 this.context.cursors.currentStudyPk.set('data', invite.study.pk);
             }
 
@@ -78,7 +79,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
                 (item) => item.pk !== invite.pk);
 
             this.props.tree.invites.data.set(invites);
-            this.props.tree.studies.data.push(invite.study);
+            this.props.studiesCursor.data.push(invite.study);
             this.context.mainNavigator.popToTop();
         } else {
             Alert.alert('Error', JSON.stringify(result.error.data));
@@ -137,7 +138,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
                             } else {
                                 this.context.mainNavigator.push(
                                     getConsentDocsScreenRoute({
-                                        invite,
+                                        study: invite.study,
                                         tree: this.props.tree,
                                         onSign: this.onSign,
                                     }, this.context)

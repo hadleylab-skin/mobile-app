@@ -5,6 +5,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
     View,
+    Alert,
     SafeAreaView,
     ActivityIndicator,
 } from 'react-native';
@@ -106,7 +107,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
         if (isParticipant) {
             this.launchAddPhoto(ImagePicker.showImagePicker);
         } else {
-            this.launchAddPhoto(ImagePicker.launchImageLibrary);
+            this.launchAddPhoto(ImagePicker.launchCamera);
         }
     },
 
@@ -157,6 +158,9 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
             if (!addingCompleteResult || addingCompleteResult.status === 'Succeed') {
                 this.resetSelectedMole();
             }
+        } else {
+            Alert.alert('Server error', JSON.stringify(result.error.data));
+            this.resetSelectedMole();
         }
     },
 
@@ -188,7 +192,7 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
             imagesCursor.unset(pk);
             imagesCursor.select(result.data.pk).set({ data: { ...result.data }, status: 'Loading' });
 
-            await services.patientsService(cursors.patients);
+            await services.patientsService(cursors.patients, {}, cursors.currentStudyPk.get('data'));
             await services.getPatientMolesService(
                 patientPk,
                 cursors.patientsMoles.select(patientPk, 'moles'),

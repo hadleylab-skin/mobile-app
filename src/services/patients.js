@@ -74,9 +74,14 @@ export function patientsService({ token }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (cursor, params) => {
+    return (cursor, params, study = null) => {
+        let paramsWithStudy = params;
+        if (study) {
+            paramsWithStudy = _.merge({}, paramsWithStudy, { study });
+        }
+
         const service = buildGetService(
-            `/api/v1/patient/?${concatParams(params)}`,
+            `/api/v1/patient/?${concatParams(paramsWithStudy)}`,
             dehydratePatients,
             _.merge({}, defaultHeaders, headers)
         );

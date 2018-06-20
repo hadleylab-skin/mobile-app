@@ -58,4 +58,8 @@ export default StyleSheet.create({
     noImagesMargin: {
         marginBottom: 15,
     },
+    redText: {
+        color: '#ff0000',
+        fontWeight: 'bold',
+    },
 });
