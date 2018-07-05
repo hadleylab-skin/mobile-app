@@ -33,12 +33,15 @@ export default StyleSheet.create({
         borderBottomColor: '#D1D1D6',
         borderBottomWidth: 0.5,
     },
-    skipLabelWrapper: {
+    labelWrapper: {
         marginTop: 40,
         alignItems: 'center',
     },
     buttonWrapper: {
         marginTop: 40,
         height: 40,
+    },
+    activityWrapper: {
+        marginTop: 40,
     },
 });

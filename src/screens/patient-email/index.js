@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
+import _ from 'lodash';
 import {
     View,
     Text,
     TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native';
 import {
     Input, Form, Button,
@@ -18,6 +20,7 @@ import s from './styles';
 
 const model = {
     email: '',
+    getDoctorResult: {},
 };
 
 
@@ -33,13 +36,104 @@ export const PatientEmail = schema(model)(createReactClass({
         }),
     },
 
-    onSubmit() {
-        console.log('SUBMIT');
+    componentWillMount() {
+        this.props.tree.email.on('update', this.resetResult);
+    },
+
+    componentWillUnmount() {
+        this.props.tree.email.off('update', this.resetResult);
+    },
+
+    resetResult() {
+        this.props.tree.getDoctorResult.set({});
+    },
+
+    async onSubmit() {
+        const email = this.props.tree.get('email');
+
+        const result = await this.context.services.getDoctorByEmailService(
+            this.props.tree.getDoctorResult,
+            email
+        );
+        console.log(result);
+    },
+
+    renderButton() {
+        const email = this.props.tree.get('email');
+        const getDoctorResult = this.props.tree.get('getDoctorResult');
+
+        if (!email) {
+            return (
+                <View style={s.labelWrapper}>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                    >
+                        <Text style={{ color: '#ACB5BE' }}>
+                            Continue without email
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+
+        if (getDoctorResult && getDoctorResult.status === 'Loading') {
+            return (
+                <View style={s.activityWrapper}>
+                    <ActivityIndicator
+                        animating
+                        size="large"
+                        color="#FF1D70"
+                    />
+                </View>
+            );
+        }
+
+        // Doctor is not founded --> can create new
+        if (getDoctorResult && getDoctorResult.status === 'Succeed' &&
+            _.isEmpty(getDoctorResult.data)) {
+            return (
+                <View style={s.buttonWrapper}>
+                    <Button
+                        title={'Create new patient'}
+                    />
+                </View>
+            );
+        }
+
+        // Doctor is participant --> can invite him to study
+        if (getDoctorResult && getDoctorResult.status === 'Succeed' &&
+            getDoctorResult.data.isParticipant) {
+            return (
+                <View style={s.buttonWrapper}>
+                    <Button
+                        title={'Invite to study'}
+                    />
+                </View>
+            );
+        }
+
+        // Doctor data is not empty --> he is coordinator or doctor, can't do anything
+        if (getDoctorResult && getDoctorResult.status === 'Succeed') {
+            return (
+                <View style={s.labelWrapper}>
+                    <Text style={{ color: '#ACB5BE' }}>
+                        Email is already used by existing doctor
+                    </Text>
+                </View>
+            );
+        }
+
+        return (
+            <View style={s.buttonWrapper}>
+                <Button
+                    title={'Search'}
+                    onPress={this.onSubmit}
+                />
+            </View>
+        );
     },
 
     render() {
-        const email = this.props.tree.get('email');
-
         return (
             <View style={s.container}>
                 <View style={s.inner}>
@@ -57,25 +151,7 @@ export const PatientEmail = schema(model)(createReactClass({
                             errorPlaceholderTextColor="#FC3159"
                             name="email"
                         />
-
-                        {email ?
-                            <View style={s.buttonWrapper}>
-                                <Button
-                                    title={'Search'}
-                                    onPress={this.onSubmit}
-                                />
-                            </View>
-                        :
-                            <View style={s.skipLabelWrapper}>
-                                <TouchableOpacity
-                                    activeOpacity={0.5}
-                                >
-                                    <Text style={{ color: '#ACB5BE' }}>
-                                        Continue without email
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
+                        {this.renderButton()}
                     </Form>
                 </View>
             </View>
