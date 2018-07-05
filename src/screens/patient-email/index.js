@@ -67,6 +67,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 title: 'New Patient',
                 service: this.context.services.createPatientService,
                 onActionComplete: this.props.onPatientAdded,
+                email: this.props.tree.get('email'),
             }, this.context)
         );
     },
