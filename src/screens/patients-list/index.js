@@ -242,6 +242,7 @@ export const PatientsList = createReactClass({
                     onRightButtonPress: () => this.context.mainNavigator.push(
                         patientEmailRoute({
                             tree: this.props.tree.select('patientEmail'),
+                            onPatientAdded: this.onPatientAdded,
                         }, this.context)
                         // getCreateOrEditPatientRoute({
                         //     tree: this.props.tree.select('newPatient'),

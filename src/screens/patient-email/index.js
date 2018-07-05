@@ -12,6 +12,7 @@ import {
 import {
     Input, Form, Button,
 } from 'components';
+import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 
 import schema from 'libs/state';
 
@@ -27,11 +28,13 @@ const model = {
 export const PatientEmail = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
+        onPatientAdded: PropTypes.func.isRequired,
     },
 
     contextTypes: {
         mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
         services: PropTypes.shape({
+            createPatientService: PropTypes.func.isRequired,
             getDoctorByEmailService: PropTypes.func.isRequired,
         }),
     },
@@ -48,14 +51,24 @@ export const PatientEmail = schema(model)(createReactClass({
         this.props.tree.getDoctorResult.set({});
     },
 
-    async onSubmit() {
+    onSubmit() {
         const email = this.props.tree.get('email');
 
-        const result = await this.context.services.getDoctorByEmailService(
+        this.context.services.getDoctorByEmailService(
             this.props.tree.getDoctorResult,
             email
         );
-        console.log(result);
+    },
+
+    goToCreatePatient() {
+        this.context.mainNavigator.push(
+            getCreateOrEditPatientRoute({
+                tree: this.props.tree.select('newPatient'),
+                title: 'New Patient',
+                service: this.context.services.createPatientService,
+                onActionComplete: this.props.onPatientAdded,
+            }, this.context)
+        );
     },
 
     renderButton() {
@@ -66,6 +79,7 @@ export const PatientEmail = schema(model)(createReactClass({
             return (
                 <View style={s.labelWrapper}>
                     <TouchableOpacity
+                        onPress={this.goToCreatePatient}
                         activeOpacity={0.5}
                     >
                         <Text style={{ color: '#ACB5BE' }}>
@@ -95,6 +109,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 <View style={s.buttonWrapper}>
                     <Button
                         title={'Create new patient'}
+                        onPress={this.goToCreatePatient}
                     />
                 </View>
             );
@@ -104,6 +119,7 @@ export const PatientEmail = schema(model)(createReactClass({
         if (getDoctorResult && getDoctorResult.status === 'Succeed' &&
             getDoctorResult.data.isParticipant) {
             return (
+                // ADD study list select control and post invite
                 <View style={s.buttonWrapper}>
                     <Button
                         title={'Invite to study'}
