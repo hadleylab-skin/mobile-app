@@ -17,6 +17,7 @@ import { Button } from 'components';
 import { onScroll } from 'components/updater';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { patientEmailRoute } from 'screens/patient-email';
 import PatientListItem from './components/patient-list-item';
 import Filter from './components/filter';
 import Search from './components/search';
@@ -239,12 +240,15 @@ export const PatientsList = createReactClass({
                     title: 'Patients',
                     rightButtonSystemIcon: 'add',
                     onRightButtonPress: () => this.context.mainNavigator.push(
-                        getCreateOrEditPatientRoute({
-                            tree: this.props.tree.select('newPatient'),
-                            title: 'New Patient',
-                            service: this.context.services.createPatientService,
-                            onActionComplete: this.onPatientAdded,
+                        patientEmailRoute({
+                            tree: this.props.tree.select('patientEmail'),
                         }, this.context)
+                        // getCreateOrEditPatientRoute({
+                        //     tree: this.props.tree.select('newPatient'),
+                        //     title: 'New Patient',
+                        //     service: this.context.services.createPatientService,
+                        //     onActionComplete: this.onPatientAdded,
+                        // }, this.context)
                     ),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',

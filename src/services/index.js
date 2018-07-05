@@ -2,7 +2,8 @@ import { mrnScanerService } from './mrn-scaner';
 import { updateDoctorService,
          updateDoctorPhotoService,
          getDoctorService,
-         getDoctorKeyListService } from './doctor';
+         getDoctorKeyListService,
+         getDoctorByEmailService } from './doctor';
 import { getPatientMolesService,
          addMoleService,
          getMoleService,
@@ -38,6 +39,7 @@ export default {
     updateDoctorPhotoService,
     getDoctorService,
     getDoctorKeyListService,
+    getDoctorByEmailService,
     getPatientMolesService,
     addMoleService,
     getMoleService,
