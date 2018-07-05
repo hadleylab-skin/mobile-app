@@ -68,7 +68,8 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         dataCursor: BaobabPropTypes.cursor,
         service: PropTypes.func.isRequired,
         onActionComplete: PropTypes.func.isRequired,
-        email: PropTypes.string,
+        email: PropTypes.string,  // If we receive email, need to show study
+        // control and send email + study to server
     },
 
     contextTypes: {
