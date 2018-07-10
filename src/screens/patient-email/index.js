@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import {
-    Input, Form, Button,
+    Input, Form, Button, Updater, Picker,
 } from 'components';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 
@@ -21,9 +21,11 @@ import s from './styles';
 
 const model = {
     email: '',
-    getDoctorResult: {},
+    study: '',
+    doctor: {},
+    studies: {},
+    studyPicker: {},
 };
-
 
 export const PatientEmail = schema(model)(createReactClass({
     propTypes: {
@@ -36,11 +38,14 @@ export const PatientEmail = schema(model)(createReactClass({
         services: PropTypes.shape({
             createPatientService: PropTypes.func.isRequired,
             getDoctorByEmailService: PropTypes.func.isRequired,
+            getStudiesService: PropTypes.func.isRequired,
         }),
     },
 
     componentWillMount() {
         this.props.tree.email.on('update', this.resetResult);
+
+        this.loadStudies();
     },
 
     componentWillUnmount() {
@@ -48,14 +53,22 @@ export const PatientEmail = schema(model)(createReactClass({
     },
 
     resetResult() {
-        this.props.tree.getDoctorResult.set({});
+        this.props.tree.doctor.set({});
     },
 
-    onSubmit() {
+    async loadStudies() {
+        const result = await this.context.services.getStudiesService(
+            this.props.tree.studies
+        );
+
+        return result;
+    },
+
+    async onSubmit() {
         const email = this.props.tree.get('email');
 
-        this.context.services.getDoctorByEmailService(
-            this.props.tree.getDoctorResult,
+        await this.context.services.getDoctorByEmailService(
+            this.props.tree.doctor,
             email
         );
     },
@@ -74,7 +87,7 @@ export const PatientEmail = schema(model)(createReactClass({
 
     renderButton() {
         const email = this.props.tree.get('email');
-        const getDoctorResult = this.props.tree.get('getDoctorResult');
+        const doctor = this.props.tree.get('doctor');
 
         if (!email) {
             return (
@@ -91,7 +104,7 @@ export const PatientEmail = schema(model)(createReactClass({
             );
         }
 
-        if (getDoctorResult && getDoctorResult.status === 'Loading') {
+        if (doctor && doctor.status === 'Loading') {
             return (
                 <View style={s.activityWrapper}>
                     <ActivityIndicator
@@ -104,12 +117,12 @@ export const PatientEmail = schema(model)(createReactClass({
         }
 
         // Doctor is not founded --> can create new
-        if (getDoctorResult && getDoctorResult.status === 'Succeed' &&
-            _.isEmpty(getDoctorResult.data)) {
+        if (doctor && doctor.status === 'Succeed' &&
+            _.isEmpty(doctor.data)) {
             return (
                 <View style={s.buttonWrapper}>
                     <Button
-                        title={'Create new patient'}
+                        title="Create new patient"
                         onPress={this.goToCreatePatient}
                     />
                 </View>
@@ -117,8 +130,8 @@ export const PatientEmail = schema(model)(createReactClass({
         }
 
         // Doctor is participant --> can invite him to study
-        if (getDoctorResult && getDoctorResult.status === 'Succeed' &&
-            getDoctorResult.data.isParticipant) {
+        if (doctor && doctor.status === 'Succeed'
+            && doctor.data.isParticipant) {
             return (
                 // ADD study list select control and post invite
                 <View style={s.buttonWrapper}>
@@ -130,7 +143,7 @@ export const PatientEmail = schema(model)(createReactClass({
         }
 
         // Doctor data is not empty --> he is coordinator or doctor, can't do anything
-        if (getDoctorResult && getDoctorResult.status === 'Succeed') {
+        if (doctor && doctor.status === 'Succeed') {
             return (
                 <View style={s.labelWrapper}>
                     <Text style={{ color: '#ACB5BE' }}>
@@ -151,27 +164,55 @@ export const PatientEmail = schema(model)(createReactClass({
     },
 
     render() {
+        const studies = this.props.tree.get('studies');
+        const doctor = this.props.tree.get('doctor');
+        const isLoading = studies.status === 'Loading';
+        const isPatient = doctor && doctor.status === 'Succeed'
+            && (doctor.data.isParticipant || _.isEmpty(doctor.data));
+
         return (
-            <View style={s.container}>
-                <View style={s.inner}>
-                    <Form
-                        onSubmit={this.onSubmit}
-                    >
-                        <Input
-                            label={'Email'}
-                            cursor={this.props.tree.email}
-                            returnKeyType="next"
-                            inputWrapperStyle={s.hasBottomBorder}
-                            errorWrapperStyle={s.errorEmail}
-                            inputStyle={[s.input, s.inputEmail]}
-                            placeholderTextColor="#ACB5BE"
-                            errorPlaceholderTextColor="#FC3159"
-                            name="email"
-                        />
-                        {this.renderButton()}
-                    </Form>
+            <Updater
+                service={this.loadStudies}
+                ref={(ref) => { this.scrollView = ref; }}
+            >
+                <View style={s.container}>
+                    {isLoading ?
+                        <View style={s.activityIndicator}>
+                            <ActivityIndicator
+                                animating
+                                size="large"
+                                color="#FF1D70"
+                            />
+                        </View>
+                    : null}
+                    <View style={s.inner}>
+                        <Form onSubmit={this.onSubmit}>
+                            <Input
+                                label={'Email'}
+                                cursor={this.props.tree.email}
+                                autoCapitalize="none"
+                                returnKeyType="next"
+                                inputWrapperStyle={s.hasBottomBorder}
+                                errorWrapperStyle={s.errorEmail}
+                                inputStyle={[s.input, s.inputEmail]}
+                                placeholderTextColor="#ACB5BE"
+                                errorPlaceholderTextColor="#FC3159"
+                                name="email"
+                            />
+                            {isPatient ?
+                                <Picker
+                                    tree={this.props.tree.studyPicker}
+                                    cursor={this.props.tree.study}
+                                    items={_.map(studies.data, ({ pk, title }) => [pk, title])}
+                                    title="Study"
+                                    onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
+                                />
+                            : null}
+                            {this.renderButton()}
+                        </Form>
+                    </View>
                 </View>
-            </View>
+            </Updater>
         );
     },
 }));
