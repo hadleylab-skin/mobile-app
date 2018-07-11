@@ -68,8 +68,10 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         dataCursor: BaobabPropTypes.cursor,
         service: PropTypes.func.isRequired,
         onActionComplete: PropTypes.func.isRequired,
-        email: PropTypes.string,  // If we receive email, need to show study
-        // control and send email + study to server
+        formData: PropTypes.shape({
+            email: PropTypes.string,
+            study: PropTypes.number,
+        }),
     },
 
     contextTypes: {
@@ -162,7 +164,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
     },
 
     async onSubmit() {
-        const formData = this.props.tree.form.get();
+        const formData = _.merge({}, this.props.tree.form.get(), this.props.formData)
 
         const validationResult = tv4.validateMultiple(formData, submitPatientSchema);
 

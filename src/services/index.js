@@ -30,6 +30,7 @@ import { getStudiesService,
 import { getInvitesService,
          approveInviteService,
          declineInviteService,
+         sendInviteToDoctorService,
        } from './invites';
 
 
@@ -62,4 +63,5 @@ export default {
     getInvitesService,
     approveInviteService,
     declineInviteService,
+    sendInviteToDoctorService,
 };

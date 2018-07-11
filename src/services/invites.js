@@ -50,3 +50,21 @@ export function declineInviteService({ token }) {
         return _service(cursor, {});
     };
 }
+
+export function sendInviteToDoctorService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (studyPk, cursor, data) => {
+        const _service = buildPostService(
+            `/api/v1/study/${studyPk}/add_doctor/`,
+            'POST',
+            JSON.stringify,
+            _.identity,
+            _.merge({}, defaultHeaders, headers)
+        );
+
+        return _service(cursor, data);
+    };
+}

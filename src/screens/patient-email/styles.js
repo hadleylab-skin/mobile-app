@@ -15,12 +15,12 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     inner: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 100,
-        paddingBottom: 150,
-        paddingLeft: 30,
-        paddingRight: 30,
+        flex: 1,
+        marginBottom: 56,
+        paddingTop: 76,
+        paddingLeft: 15,
+        paddingRight: 15,
+        backgroundColor: '#fafafa',
     },
     input: {
         width: Dimensions.get('window').width - 60,
@@ -51,7 +51,12 @@ export default StyleSheet.create({
         marginTop: 40,
         height: 40,
     },
-    activityWrapper: {
-        marginTop: 40,
+    footer: {
+        height: 56,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
     },
 });

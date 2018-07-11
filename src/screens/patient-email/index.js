@@ -21,7 +21,7 @@ import s from './styles';
 
 const model = {
     email: '',
-    study: '',
+    study: null,
     doctor: {},
     studies: {},
     studyPicker: {},
@@ -39,6 +39,10 @@ export const PatientEmail = schema(model)(createReactClass({
             createPatientService: PropTypes.func.isRequired,
             getDoctorByEmailService: PropTypes.func.isRequired,
             getStudiesService: PropTypes.func.isRequired,
+            sendInviteToDoctorService: PropTypes.func.isRequired,
+        }),
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
         }),
     },
 
@@ -73,48 +77,48 @@ export const PatientEmail = schema(model)(createReactClass({
         );
     },
 
-    goToCreatePatient() {
-        this.context.mainNavigator.push(
+    goToCreatePatientScreen() {
+        const { mainNavigator, services } = this.context;
+        const email = this.props.tree.get('email');
+        let formData = {};
+
+        if (email) {
+            formData = {
+                email: this.props.tree.get('email'),
+                study: this.props.tree.get('study'),
+            };
+        }
+
+        mainNavigator.push(
             getCreateOrEditPatientRoute({
                 tree: this.props.tree.select('newPatient'),
                 title: 'New Patient',
-                service: this.context.services.createPatientService,
+                service: services.createPatientService,
                 onActionComplete: this.props.onPatientAdded,
-                email: this.props.tree.get('email'),
+                formData,
             }, this.context)
         );
     },
 
+    async inviteDoctorToStudy() {
+        const service = this.context.services.sendInviteToDoctorService;
+
+        const result = await service(
+            this.props.tree.get('study'),
+            this.props.tree.addDoctorToStudyResult,
+            {
+                emails: [this.props.tree.get('email')],
+                doctorPk: this.context.cursors.doctor.get('pk'),
+            }
+        );
+
+        if (result.status === 'Succeed') {
+            this.context.mainNavigator.pop();
+        }
+    },
+
     renderButton() {
-        const email = this.props.tree.get('email');
         const doctor = this.props.tree.get('doctor');
-
-        if (!email) {
-            return (
-                <View style={s.labelWrapper}>
-                    <TouchableOpacity
-                        onPress={this.goToCreatePatient}
-                        activeOpacity={0.5}
-                    >
-                        <Text style={{ color: '#ACB5BE' }}>
-                            Continue without email
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-        if (doctor && doctor.status === 'Loading') {
-            return (
-                <View style={s.activityWrapper}>
-                    <ActivityIndicator
-                        animating
-                        size="large"
-                        color="#FF1D70"
-                    />
-                </View>
-            );
-        }
 
         // Doctor is not founded --> can create new
         if (doctor && doctor.status === 'Succeed' &&
@@ -122,8 +126,8 @@ export const PatientEmail = schema(model)(createReactClass({
             return (
                 <View style={s.buttonWrapper}>
                     <Button
-                        title="Create new patient"
-                        onPress={this.goToCreatePatient}
+                        title="Continue"
+                        onPress={() => this.goToCreatePatientScreen({})}
                     />
                 </View>
             );
@@ -137,6 +141,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 <View style={s.buttonWrapper}>
                     <Button
                         title={'Invite to study'}
+                        onPress={this.inviteDoctorToStudy}
                     />
                 </View>
             );
@@ -164,18 +169,16 @@ export const PatientEmail = schema(model)(createReactClass({
     },
 
     render() {
+        const email = this.props.tree.get('email');
         const studies = this.props.tree.get('studies');
         const doctor = this.props.tree.get('doctor');
-        const isLoading = studies.status === 'Loading';
+        const isLoading = studies.status === 'Loading' || (doctor && doctor.status === 'Loading');
         const isPatient = doctor && doctor.status === 'Succeed'
             && (doctor.data.isParticipant || _.isEmpty(doctor.data));
 
         return (
-            <Updater
-                service={this.loadStudies}
-                ref={(ref) => { this.scrollView = ref; }}
-            >
-                <View style={s.container}>
+            <View style={s.container}>
+                <View style={s.inner}>
                     {isLoading ?
                         <View style={s.activityIndicator}>
                             <ActivityIndicator
@@ -185,34 +188,38 @@ export const PatientEmail = schema(model)(createReactClass({
                             />
                         </View>
                     : null}
-                    <View style={s.inner}>
-                        <Form onSubmit={this.onSubmit}>
-                            <Input
-                                label={'Email'}
-                                cursor={this.props.tree.email}
-                                autoCapitalize="none"
-                                returnKeyType="next"
-                                inputWrapperStyle={s.hasBottomBorder}
-                                errorWrapperStyle={s.errorEmail}
-                                inputStyle={[s.input, s.inputEmail]}
-                                placeholderTextColor="#ACB5BE"
-                                errorPlaceholderTextColor="#FC3159"
-                                name="email"
+                    <Form onSubmit={this.onSubmit}>
+                        <Input
+                            label={'Email'}
+                            cursor={this.props.tree.email}
+                            autoCapitalize="none"
+                            returnKeyType="next"
+                            inputWrapperStyle={s.hasBottomBorder}
+                            errorWrapperStyle={s.errorEmail}
+                            inputStyle={[s.input, s.inputEmail]}
+                            placeholderTextColor="#ACB5BE"
+                            errorPlaceholderTextColor="#FC3159"
+                            name="email"
+                        />
+                        {isPatient ?
+                            <Picker
+                                tree={this.props.tree.studyPicker}
+                                cursor={this.props.tree.study}
+                                items={_.map(studies.data, ({ pk, title }) => [pk, title])}
+                                title="Study"
                             />
-                            {isPatient ?
-                                <Picker
-                                    tree={this.props.tree.studyPicker}
-                                    cursor={this.props.tree.study}
-                                    items={_.map(studies.data, ({ pk, title }) => [pk, title])}
-                                    title="Study"
-                                    onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
-                                />
-                            : null}
-                            {this.renderButton()}
-                        </Form>
-                    </View>
+                        : null}
+                        {email ? this.renderButton() : null}
+                    </Form>
                 </View>
-            </Updater>
+                <View style={s.footer}>
+                    <Button
+                        type="rect"
+                        title="Continue without email"
+                        onPress={this.goToCreatePatientScreen}
+                    />
+                </View>
+            </View>
         );
     },
 }));
