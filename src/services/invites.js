@@ -56,9 +56,9 @@ export function sendInviteToDoctorService({ token }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (studyPk, cursor, data) => {
+    return (cursor, data) => {
         const _service = buildPostService(
-            `/api/v1/study/${studyPk}/add_doctor/`,
+            '/api/v1/study/invites_doctor/',
             'POST',
             JSON.stringify,
             _.identity,

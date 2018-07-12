@@ -104,11 +104,10 @@ export const PatientEmail = schema(model)(createReactClass({
         const service = this.context.services.sendInviteToDoctorService;
 
         const result = await service(
-            this.props.tree.get('study'),
             this.props.tree.addDoctorToStudyResult,
             {
-                emails: [this.props.tree.get('email')],
-                doctorPk: this.context.cursors.doctor.get('pk'),
+                email: this.props.tree.get('email'),
+                study: this.props.tree.get('study'),
             }
         );
 
