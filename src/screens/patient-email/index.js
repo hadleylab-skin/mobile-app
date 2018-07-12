@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import {
-    Input, Form, Button, Updater, Picker,
+    Input, Form, Button, Picker,
 } from 'components';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 
@@ -127,7 +127,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 <View style={s.buttonWrapper}>
                     <Button
                         title="Continue"
-                        onPress={() => this.goToCreatePatientScreen({})}
+                        onPress={this.goToCreatePatientScreen}
                     />
                 </View>
             );
@@ -172,7 +172,8 @@ export const PatientEmail = schema(model)(createReactClass({
         const email = this.props.tree.get('email');
         const studies = this.props.tree.get('studies');
         const doctor = this.props.tree.get('doctor');
-        const isLoading = studies.status === 'Loading' || (doctor && doctor.status === 'Loading');
+        const isLoading = (studies && studies.status === 'Loading')
+            || (doctor && doctor.status === 'Loading');
         const isPatient = doctor && doctor.status === 'Succeed'
             && (doctor.data.isParticipant || _.isEmpty(doctor.data));
 
