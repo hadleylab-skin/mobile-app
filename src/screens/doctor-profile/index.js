@@ -20,15 +20,17 @@ import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
 import { saveCurrentStudy } from 'services/async-storage';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
+import { getPatiensToApproveListRoute } from './screens/patients-to-approve';
 import s from './styles';
 
-const model = {
+const model = (props, context) => ({
     tree: {
         siteJoinRequestScreenState: {},
         studyPicker: {},
         cryptoConfigScreen: {},
+        patientsToApprove: context.services.getPatientsWaitingForDoctorApproveService,
     },
-};
+});
 
 export const DoctorProfile = schema(model)(createReactClass({
     propTypes: {
@@ -53,6 +55,7 @@ export const DoctorProfile = schema(model)(createReactClass({
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             confirmSiteJoinRequestService: PropTypes.func.isRequired,
             patientsService: PropTypes.func.isRequired,
+            getPatientsWaitingForDoctorApproveService: PropTypes.func.isRequired,
         }),
     },
 
@@ -75,7 +78,16 @@ export const DoctorProfile = schema(model)(createReactClass({
                 doctorCursor: this.props.doctorCursor,
                 keyPairStatusCursor: this.props.keyPairStatusCursor,
                 tree: this.props.tree.cryptoConfigScreen,
-            }));
+            })
+        );
+    },
+
+    openPatiensToApproveList() {
+        this.context.mainNavigator.push(
+            getPatiensToApproveListRoute({
+                tree: this.props.tree,
+            })
+        );
     },
 
     openSiteJoinRequests() {
@@ -137,10 +149,10 @@ export const DoctorProfile = schema(model)(createReactClass({
         const cursor = this.props.siteJoinRequestCursor.data.select(requestPk);
 
         const keys = _.chain(this.context.cursors.patients.data.get())
-                      .values()
-                      .map((patient) => [patient.data.pk, patient.data.encryptedKey])
-                      .fromPairs()
-                      .value();
+            .values()
+            .map((patient) => [patient.data.pk, patient.data.encryptedKey])
+            .fromPairs()
+            .value();
 
         const result = await this.context.services.confirmSiteJoinRequestService(
             cursor,
@@ -163,12 +175,13 @@ export const DoctorProfile = schema(model)(createReactClass({
 
     changePhoto() {
         ImagePicker.showImagePicker({},
-        async (response) => {
-            if (response.uri) {
-                await this.context.services.updateDoctorPhotoService(
-                    this.props.doctorCursor, { photo: response.uri });
-            }
-        });
+            async (response) => {
+                if (response.uri) {
+                    await this.context.services.updateDoctorPhotoService(
+                        this.props.doctorCursor, { photo: response.uri }
+                    );
+                }
+            });
     },
 
     renderSiteJoinRequest() {
@@ -251,6 +264,9 @@ export const DoctorProfile = schema(model)(createReactClass({
             ]
         );
 
+        const patientsToApprove = this.props.tree.patientsToApprove.get();
+        const patientsToApproveAmount = 10;
+
         return (
             <Updater
                 service={this.updateScreenData}
@@ -317,25 +333,28 @@ export const DoctorProfile = schema(model)(createReactClass({
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
                 </View>
-                {
-                isInSharedMode()
-                ?
-                null
-                :
-                <View style={s.content}>
-                    <InfoField
-                        title="Cryptography configuration"
-                        hasNoBorder
-                        onPress={this.openCryptoConfiguration}
-                    />
-                </View>
-                }
+                {!isInSharedMode ?
+                    <View style={s.content}>
+                        <InfoField
+                            title="Cryptography configuration"
+                            hasNoBorder
+                            onPress={this.openCryptoConfiguration}
+                        />
+                    </View>
+                : null}
                 <View style={s.content}>
                     {this.renderSiteJoinRequest()}
                 </View>
                 <View style={s.content}>
                     <InfoField
-                        title={'Log out'}
+                        title="Patients to approve"
+                        hasNoBorder
+                        onPress={this.openPatiensToApproveList}
+                    />
+                </View>
+                <View style={s.content}>
+                    <InfoField
+                        title="Log out"
                         hasNoBorder
                         onPress={resetState}
                     />

@@ -13,9 +13,7 @@ Settings.watchKeys(
         resetState();
     });
 
-export function isInSharedMode() {
-    return sharedMode;
-}
+export const isInSharedMode = sharedMode;
 
 const iv = CryptoJS.enc.Latin1.parse('{+!%i=]%Y/upi8!Z');
 const padding = CryptoJS.pad.Pkcs7;
@@ -132,4 +130,3 @@ export async function createNewKeyPair(cursor) {
     cursor.set(data);
     return data;
 }
-

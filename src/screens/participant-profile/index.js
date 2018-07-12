@@ -358,19 +358,15 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     />
                     {this.renderMoles()}
 
-                    {
-                    isInSharedMode()
-                    ?
-                    null
-                    :
-                    <View style={s.content}>
-                        <InfoField
-                            title="Cryptography configuration"
-                            hasNoBorder
-                            onPress={this.openCryptoConfiguration}
-                        />
-                    </View>
-                    }
+                    {!isInSharedMode ?
+                        <View style={s.content}>
+                            <InfoField
+                                title="Cryptography configuration"
+                                hasNoBorder
+                                onPress={this.openCryptoConfiguration}
+                            />
+                        </View>
+                    : null}
 
                     <InfoField
                         title={'Log out'}

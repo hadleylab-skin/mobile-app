@@ -168,13 +168,16 @@ export function createPatientService({ token, doctor }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return buildPostService(
-        '/api/v1/patient/',
-        'POST',
-        hydratePatientData(doctor),
-        dehydratePatientData,
-        _.merge({}, defaultHeaders, headers)
-    );
+    return (cursor, data) => {
+        const _service = buildPostService(
+            '/api/v1/patient/',
+            'POST',
+            hydratePatientData(doctor),
+            dehydratePatientData,
+            _.merge({}, defaultHeaders, headers)
+        );
+        return _service(cursor, data);
+    };
 }
 
 export function updatePatientService({ token }) {
@@ -222,5 +225,20 @@ export function updatePatientConsentService({ token }) {
                                                 _.identity,
                                                 _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
+    };
+}
+
+export function getPatientsWaitingForDoctorApproveService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor) => {
+        const _service = buildGetService(
+            '/api/v1/study/invites_doctor/',
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+
+        return _service(cursor);
     };
 }
