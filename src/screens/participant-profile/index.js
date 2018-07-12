@@ -358,7 +358,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     />
                     {this.renderMoles()}
 
-                    {!isInSharedMode ?
+                    {!isInSharedMode() ?
                         <View style={s.content}>
                             <InfoField
                                 title="Cryptography configuration"

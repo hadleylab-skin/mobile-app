@@ -9,6 +9,8 @@ import {
     View,
     Alert,
     ActivityIndicator,
+    SafeAreaView,
+    Text,
 } from 'react-native';
 import schema from 'libs/state';
 import { isStudyConsentExpired } from 'libs/misc';
@@ -22,15 +24,16 @@ import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 
 
-const model = {
+const model = (props, context) => ({
     tree: {
         newPatientScreen: {},
         addMoleScreen: {},
         participantScreen: {},
 
         studies: {},
+        invites: context.services.getInvitesService,
     },
-};
+});
 
 
 export default schema(model)(createReactClass({
@@ -56,6 +59,7 @@ export default schema(model)(createReactClass({
             createPatientService: PropTypes.func.isRequired,
             patientsService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
+            getInvitesService: PropTypes.func.isRequired,
         }),
     },
 
@@ -80,24 +84,6 @@ export default schema(model)(createReactClass({
         cursors.patientsMoles.select(currentPatientPk, 'moles').set(result);
 
         this.context.mainNavigator.popToTop();
-    },
-
-    renderCreatePatient() {
-        return (
-            <CreateOrEditPatient
-                tree={this.props.tree.newPatientScreen}
-                service={this.context.services.createPatientService}
-                navigator={this.context.mainNavigator}
-                onActionComplete={(patient) => {
-                    this.context.cursors.currentPatientPk.set(patient.pk);
-                    this.context.cursors.patients.data.set(patient.pk, {
-                        status: 'Succeed',
-                        data: patient,
-                    });
-                    this.context.mainNavigator.popToTop();
-                }}
-            />
-        );
     },
 
     cameraPressed() {
@@ -125,6 +111,32 @@ export default schema(model)(createReactClass({
                 onAddingComplete: this.onAddingMoleComplete,
                 rightButtonTitle: '',
             }, this.context)
+        );
+    },
+
+    checkIfDoctorNeedToApprove() {
+        const invites = this.props.tree.invites.get('data');
+        const newInvites = _.filter(invites,
+            (invite) => invite.status === 'new' && invite.patient);
+
+        return newInvites.length > 0;
+    },
+
+    renderCreatePatient() {
+        return (
+            <CreateOrEditPatient
+                tree={this.props.tree.newPatientScreen}
+                service={this.context.services.createPatientService}
+                navigator={this.context.mainNavigator}
+                onActionComplete={(patient) => {
+                    this.context.cursors.currentPatientPk.set(patient.pk);
+                    this.context.cursors.patients.data.set(patient.pk, {
+                        status: 'Succeed',
+                        data: patient,
+                    });
+                    this.context.mainNavigator.popToTop();
+                }}
+            />
         );
     },
 
@@ -175,21 +187,50 @@ export default schema(model)(createReactClass({
         );
     },
 
+    renderLockScreen() {
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 15,
+                }}>
+                    <Text style={{
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                    }}>
+                      Please wait for approving by the doctor
+                    </Text>
+                </View>
+            </SafeAreaView>
+        );
+    },
+
     render() {
         const patients = this.context.cursors.patients.get();
-        if (patients.status === 'Loading') {
+        const invites = this.props.tree.invites.get();
+
+        if (patients.status === 'Loading' || invites.status === 'Loading') {
             return (
                 <ActivityIndicator />
             );
         }
 
-        const isNeedCreateFirstPatient = patients &&
-            patients.status === 'Succeed' && _.isEmpty(patients.data);
+        const waitForDoctorApprove = this.checkIfDoctorNeedToApprove();
 
-        if (isNeedCreateFirstPatient) {
-            return this.renderCreatePatient();
-        } else {
-            return this.renderMain();
+        if (waitForDoctorApprove) {
+            return this.renderLockScreen();
         }
+
+        const needToCreatePatient = patients
+            && patients.status === 'Succeed' && _.isEmpty(patients.data);
+
+        if (needToCreatePatient) {
+            return this.renderCreatePatient();
+        }
+
+        return this.renderMain();
     },
 }));

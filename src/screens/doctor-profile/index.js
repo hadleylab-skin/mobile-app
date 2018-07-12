@@ -333,7 +333,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
                 </View>
-                {!isInSharedMode ?
+                {!isInSharedMode() ?
                     <View style={s.content}>
                         <InfoField
                             title="Cryptography configuration"

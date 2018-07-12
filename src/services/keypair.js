@@ -13,7 +13,9 @@ Settings.watchKeys(
         resetState();
     });
 
-export const isInSharedMode = sharedMode;
+export function isInSharedMode() {
+    return sharedMode;
+}
 
 const iv = CryptoJS.enc.Latin1.parse('{+!%i=]%Y/upi8!Z');
 const padding = CryptoJS.pad.Pkcs7;
