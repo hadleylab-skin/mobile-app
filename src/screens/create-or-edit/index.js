@@ -346,11 +346,13 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                             </View>
                         </View>
                         <Title text="Patient Information" />
-                        <InfoField
-                            title={'Email'}
-                            text={this.props.formData.email}
-                            hasNoBorder
-                        />
+                        {this.props.formData ?
+                            <InfoField
+                                title={'Email'}
+                                text={this.props.formData.email}
+                                hasNoBorder
+                            />
+                        : null}
                         <InfoField
                             title={'Medical Record Number'}
                             text={mrnCursor.get()}

@@ -17,6 +17,8 @@ import s from './styles';
 const model = {
     tree: {
         patientsToApprove: {},
+        declineInviteResult: {},
+        approveInviteResult: {},
     },
 };
 
@@ -25,7 +27,10 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     propTypes: {},
 
     contextTypes: {
-        services: PropTypes.shape({}),
+        services: PropTypes.shape({
+            approveInviteForDoctorService: PropTypes.func.isRequired,
+            declineInviteForDoctorService: PropTypes.func.isRequired,
+        }),
     },
 
     prepareSectionListData() {
@@ -39,12 +44,20 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         ];
     },
 
-    approvePatient(patient) {
-        console.log(patient);
+    async approvePatient(patient) {
+        const { services } = this.context;
+
+        const result = await services.approveInviteForDoctorService(
+            this.props.tree.approveInviteResult, patient);
+        console.log(result);
     },
 
-    declinePatient(patient) {
-        console.log(patient);
+    async declinePatient(patient) {
+        const { services } = this.context;
+
+        const result = await services.declineInviteForDoctorService(
+            this.props.tree.declineInviteResult, patient);
+        console.log(result);
     },
 
     patientClicked(patient) {
@@ -63,6 +76,9 @@ export const PatientsToApproveList = schema(model)(createReactClass({
                 {
                     text: 'Decline',
                     onPress: () => this.declinePatient(patient),
+                },
+                {
+                    text: 'Close',
                 },
             ]
         );

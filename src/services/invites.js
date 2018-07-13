@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import { encryptRSA } from './keypair';
 import { buildGetService, buildPostService, defaultHeaders } from './base';
+import { encryptPatientDataWithKey, needEncryption } from './patients';
 
 const inviteStatuses = {
     '1': 'new',
@@ -81,5 +83,62 @@ export function sendInviteToDoctorService({ token }) {
         );
 
         return _service(cursor, data);
+    };
+}
+
+export function declineInviteForDoctorService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor, invite) => {
+        const _service = buildPostService(
+            `/api/v1/study/invites_doctor/${invite.pk}/decline/`,
+            'POST',
+            JSON.stringify,
+            _.identity,
+            _.merge({}, defaultHeaders, headers)
+        );
+
+        return _service(cursor, {});
+    };
+}
+
+async function hydrateInviteData({ doctor, participant, patient }) {
+    const aesKey = Math.random().toString(36).substring(2);
+    let encryptionKeys = {};
+    encryptionKeys[`${doctor.pk}`] = await encryptRSA(aesKey, doctor.publicKey);
+    encryptionKeys[`${participant.pk}`] = await encryptRSA(aesKey, participant.publicKey);
+
+    if (doctor.myCoordinatorId) {
+        encryptionKeys[`${doctor.myCoordinatorId}`] = await encryptRSA(
+            aesKey, doctor.coordinatorPublicKey);
+    }
+
+    let hydratedData = {};
+    _.forEach(needEncryption, (key) => { hydratedData[key] = patient[key]; });
+    hydratedData = encryptPatientDataWithKey(hydratedData, aesKey);
+    hydratedData.encryptionKeys = JSON.stringify(encryptionKeys);
+
+    console.log(hydratedData);
+
+    return JSON.stringify(hydratedData);
+}
+
+export function approveInviteForDoctorService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return async (cursor, invite) => {
+        const _service = buildPostService(
+            `/api/v1/study/invites_doctor/${invite.pk}/approve/`,
+            'POST',
+            hydrateInviteData,
+            _.identity,
+            _.merge({}, defaultHeaders, headers)
+        );
+
+        return _service(cursor, invite);
     };
 }

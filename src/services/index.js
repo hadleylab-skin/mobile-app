@@ -32,6 +32,8 @@ import { getInvitesService,
          approveInviteService,
          declineInviteService,
          sendInviteToDoctorService,
+         approveInviteForDoctorService,
+         declineInviteForDoctorService,
        } from './invites';
 
 
@@ -66,4 +68,6 @@ export default {
     approveInviteService,
     declineInviteService,
     sendInviteToDoctorService,
+    approveInviteForDoctorService,
+    declineInviteForDoctorService,
 };
