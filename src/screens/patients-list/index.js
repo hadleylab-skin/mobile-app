@@ -193,12 +193,12 @@ export const PatientsList = createReactClass({
     onCreatePatientPressed() {
         const studies = this.props.studiesCursor.get('data');
 
-        if (studies) {
+        if (!_.isEmpty(studies)) {
             this.context.mainNavigator.push(
                 patientEmailRoute({
                     tree: this.props.tree.select('patientEmail'),
                     onPatientAdded: this.onPatientAdded,
-                    studiesCursor: this.props.studiesCursor,
+                    studies,
                 }, this.context)
             );
         } else {

@@ -29,7 +29,7 @@ export const PatientEmail = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: PropTypes.func.isRequired,
-        studiesCursor: BaobabPropTypes.cursor.isRequired,
+        studies: PropTypes.array.isRequired,
     },
 
     contextTypes: {
@@ -161,10 +161,8 @@ export const PatientEmail = schema(model)(createReactClass({
 
     render() {
         const email = this.props.tree.get('email');
-        const studies = this.props.studiesCursor.get();
         const doctor = this.props.tree.get('doctor');
-        const isLoading = (studies && studies.status === 'Loading')
-            || (doctor && doctor.status === 'Loading');
+        const isLoading = doctor && doctor.status === 'Loading';
         const isPatient = doctor && doctor.status === 'Succeed'
             && (doctor.data.isParticipant || _.isEmpty(doctor.data));
 
@@ -197,7 +195,7 @@ export const PatientEmail = schema(model)(createReactClass({
                             <Picker
                                 tree={this.props.tree.studyPicker}
                                 cursor={this.props.tree.study}
-                                items={_.map(studies.data, ({ pk, title }) => [pk, title])}
+                                items={_.map(this.props.studies, ({ pk, title }) => [pk, title])}
                                 title="Study"
                             />
                         : null}
