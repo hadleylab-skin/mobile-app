@@ -19,17 +19,19 @@ import s from './styles';
 
 
 const model = {
-    email: '',
-    study: null,
-    doctor: {},
-    studyPicker: {},
+    tree: {
+        email: '',
+        study: null,
+        doctor: {},
+        studyPicker: {},
+    },
 };
 
 export const PatientEmail = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: PropTypes.func.isRequired,
-        studies: PropTypes.array.isRequired,
+        studies: PropTypes.array.isRequired,  // eslint-disable-line
     },
 
     contextTypes: {
@@ -45,6 +47,7 @@ export const PatientEmail = schema(model)(createReactClass({
     },
 
     componentWillMount() {
+        this.props.tree.set(model.tree);
         this.props.tree.email.on('update', this.resetResult);
     },
 
