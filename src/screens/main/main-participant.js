@@ -12,7 +12,9 @@ import {
     SafeAreaView,
     Text,
 } from 'react-native';
+import { Button } from 'components';
 import schema from 'libs/state';
+import { resetState } from 'libs/tree';
 import { isStudyConsentExpired } from 'libs/misc';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
@@ -22,6 +24,8 @@ import ParticipantDecryptionError from './participant-decryption-error';
 
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
+
+import s from './styles';
 
 
 const model = (props, context) => ({
@@ -190,19 +194,16 @@ export default schema(model)(createReactClass({
     renderLockScreen() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <View style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: 15,
-                }}>
-                    <Text style={{
-                        fontSize: 24,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                    }}>
-                      Please wait for approving by the doctor
+                <View style={s.participantLockWrapper}>
+                    <Text style={s.participantLockText}>
+                        Please wait for approving by the doctor
                     </Text>
+                    <View style={s.participantLockButton}>
+                        <Button
+                            title="Log out"
+                            onPress={resetState}
+                        />
+                    </View>
                 </View>
             </SafeAreaView>
         );
