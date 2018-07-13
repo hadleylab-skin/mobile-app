@@ -18,13 +18,13 @@ import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
 import { isStudyConsentExpired } from 'libs/misc';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
+import { Mole } from 'screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { saveCurrentStudy } from 'services/async-storage';
 import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
-import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
-import { getConsentDocsScreenRoute } from './invites/consent-docs';
 import s from './styles';
 
 const model = (props, context) => ({

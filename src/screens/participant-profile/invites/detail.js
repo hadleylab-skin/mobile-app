@@ -12,7 +12,7 @@ import { encryptRSA, decryptRSA } from 'services/keypair';
 import { InfoField, Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
 import { getAgreementRoute } from 'screens/create-or-edit/screens/agreement';
-import { getConsentDocsScreenRoute } from './consent-docs';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 
 import ss from './styles';
 

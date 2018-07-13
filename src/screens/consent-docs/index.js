@@ -15,8 +15,7 @@ import OpenFile from 'react-native-doc-viewer';
 import schema from 'libs/state';
 import { InfoField, Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
-import s from '../styles';
-import ss from './styles';
+import s from './styles';
 
 const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer);
 
@@ -69,7 +68,7 @@ export const ConsentDocsScreen = schema({})(createReactClass({
         return (
             <View style={s.container}>
                 <ScrollView>
-                    <Text style={ss.text}>
+                    <Text style={s.text}>
                         Please, read these documents {'\n'} and confirm with sign
                     </Text>
                     {_.map(study.consentDocs, (consentDoc, index) => (
