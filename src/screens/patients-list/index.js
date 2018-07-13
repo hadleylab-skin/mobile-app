@@ -243,13 +243,8 @@ export const PatientsList = createReactClass({
                         patientEmailRoute({
                             tree: this.props.tree.select('patientEmail'),
                             onPatientAdded: this.onPatientAdded,
+                            studiesCursor: this.props.studiesCursor,
                         }, this.context)
-                        // getCreateOrEditPatientRoute({
-                        //     tree: this.props.tree.select('newPatient'),
-                        //     title: 'New Patient',
-                        //     service: this.context.services.createPatientService,
-                        //     onActionComplete: this.onPatientAdded,
-                        // }, this.context)
                     ),
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',

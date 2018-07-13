@@ -164,7 +164,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
     },
 
     async onSubmit() {
-        const formData = _.merge({}, this.props.tree.form.get(), this.props.formData)
+        const formData = _.merge({}, this.props.tree.form.get(), this.props.formData);
 
         const validationResult = tv4.validateMultiple(formData, submitPatientSchema);
 

@@ -6,7 +6,6 @@ import _ from 'lodash';
 import {
     View,
     Text,
-    TouchableOpacity,
     ActivityIndicator,
 } from 'react-native';
 import {
@@ -23,7 +22,6 @@ const model = {
     email: '',
     study: null,
     doctor: {},
-    studies: {},
     studyPicker: {},
 };
 
@@ -31,6 +29,7 @@ export const PatientEmail = schema(model)(createReactClass({
     propTypes: {
         tree: BaobabPropTypes.cursor.isRequired,
         onPatientAdded: PropTypes.func.isRequired,
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -38,7 +37,6 @@ export const PatientEmail = schema(model)(createReactClass({
         services: PropTypes.shape({
             createPatientService: PropTypes.func.isRequired,
             getDoctorByEmailService: PropTypes.func.isRequired,
-            getStudiesService: PropTypes.func.isRequired,
             sendInviteToDoctorService: PropTypes.func.isRequired,
         }),
         cursors: PropTypes.shape({
@@ -60,14 +58,6 @@ export const PatientEmail = schema(model)(createReactClass({
         this.props.tree.doctor.set({});
     },
 
-    async loadStudies() {
-        const result = await this.context.services.getStudiesService(
-            this.props.tree.studies
-        );
-
-        return result;
-    },
-
     async onSubmit() {
         const email = this.props.tree.get('email');
 
@@ -80,14 +70,17 @@ export const PatientEmail = schema(model)(createReactClass({
     goToCreatePatientScreen() {
         const { mainNavigator, services } = this.context;
         const email = this.props.tree.get('email');
-        let formData = {};
+        const study = this.props.tree.get('study');
 
-        if (email) {
-            formData = {
-                email: this.props.tree.get('email'),
-                study: this.props.tree.get('study'),
-            };
+        if (!email || !study) {
+            return;
         }
+
+        const selectedStudy = _.find(
+            this.props.tree.studies.get('data'),
+            (item) => item.pk === study);
+
+        const formData = { email, study };
 
         mainNavigator.push(
             getCreateOrEditPatientRoute({
@@ -169,7 +162,7 @@ export const PatientEmail = schema(model)(createReactClass({
 
     render() {
         const email = this.props.tree.get('email');
-        const studies = this.props.tree.get('studies');
+        const studies = this.props.studiesCursor.get();
         const doctor = this.props.tree.get('doctor');
         const isLoading = (studies && studies.status === 'Loading')
             || (doctor && doctor.status === 'Loading');
