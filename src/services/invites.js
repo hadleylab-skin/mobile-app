@@ -120,8 +120,6 @@ async function hydrateInviteData({ doctor, participant, patient }) {
     hydratedData = encryptPatientDataWithKey(hydratedData, aesKey);
     hydratedData.encryptionKeys = JSON.stringify(encryptionKeys);
 
-    console.log(hydratedData);
-
     return JSON.stringify(hydratedData);
 }
 
