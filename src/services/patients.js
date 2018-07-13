@@ -228,6 +228,16 @@ export function updatePatientConsentService({ token }) {
     };
 }
 
+function dehydrateInvitationData(invitations) {
+    return Promise.all(_.map(
+        invitations,
+        async (invitation) => {
+            let item = invitation;
+            item.patient = await dehydratePatientData(item.patient);
+            return item;
+        }));
+}
+
 export function getPatientsWaitingForDoctorApproveService({ token }) {
     const headers = {
         Authorization: `JWT ${token.get()}`,
@@ -236,7 +246,7 @@ export function getPatientsWaitingForDoctorApproveService({ token }) {
     return (cursor) => {
         const _service = buildGetService(
             '/api/v1/study/invites_doctor/',
-            _.identity,
+            dehydrateInvitationData,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);

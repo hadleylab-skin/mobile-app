@@ -5,9 +5,11 @@ import createReactClass from 'create-react-class';
 import {
     View,
     Text,
+    Alert,
     StatusBar,
     SectionList,
 } from 'react-native';
+import { InfoField } from 'components';
 import schema from 'libs/state';
 import s from './styles';
 
@@ -26,7 +28,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         services: PropTypes.shape({}),
     },
 
-    perepareSectionListData() {
+    prepareSectionListData() {
         const patientsToApprove = this.props.tree.patientsToApprove.get('data');
         const registeredPatients = _.filter(patientsToApprove, (patient) => patient.participant);
         const otherPatients = _.filter(patientsToApprove, (patient) => !patient.participant);
@@ -37,16 +39,42 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         ];
     },
 
+    approvePatient(patient) {
+        console.log(patient);
+    },
+
+    declinePatient(patient) {
+        console.log(patient);
+    },
+
+    patientClicked(patient) {
+        if (!patient.participant) {
+            return;
+        }
+
+        Alert.alert(
+            'Patient approving',
+            'You may approve or decline this patient',
+            [
+                {
+                    text: 'Approve',
+                    onPress: () => this.approvePatient(patient),
+                },
+                {
+                    text: 'Decline',
+                    onPress: () => this.declinePatient(patient),
+                },
+            ]
+        );
+    },
+
     renderPatient({ item: patient }) {
         return (
-            <View style={s.patient}>
-                <View style={s.patientInner}>
-                    <Text>
-                        {patient.email}
-                    </Text>
-                </View>
-                <View style={s.border} />
-            </View>
+            <InfoField
+                title={`${patient.patient.firstName} ${patient.patient.lastName} (${patient.email})`}
+                onPress={() => this.patientClicked(patient)}
+            >
+            </InfoField>
         );
     },
 
@@ -62,7 +90,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     },
 
     render() {
-        const patientsSectionListData = this.perepareSectionListData();
+        const patientsSectionListData = this.prepareSectionListData();
 
         return (
             <View style={{ flex: 1 }}>

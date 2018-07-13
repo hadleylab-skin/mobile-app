@@ -272,8 +272,8 @@ export const DoctorProfile = schema(model)(createReactClass({
             ]
         );
 
-        const patientsToApprove = this.props.tree.patientsToApprove.get();
-        const patientsToApproveAmount = 10;
+        const patientsToApprove = this.props.tree.patientsToApprove.get('data');
+        const registeredPatients = _.filter(patientsToApprove, (patient) => patient.participant);
 
         return (
             <Updater
@@ -353,13 +353,15 @@ export const DoctorProfile = schema(model)(createReactClass({
                 <View style={s.content}>
                     {this.renderSiteJoinRequest()}
                 </View>
-                <View style={s.content}>
-                    <InfoField
-                        title="Patients to approve"
-                        hasNoBorder
-                        onPress={this.openPatientsToApproveList}
-                    />
-                </View>
+                {!_.isEmpty(registeredPatients) ?
+                    <View style={s.content}>
+                        <InfoField
+                            title="Patients to approve"
+                            hasNoBorder
+                            onPress={this.openPatientsToApproveList}
+                        />
+                    </View>
+                : null}
                 <View style={s.content}>
                     <InfoField
                         title="Log out"
