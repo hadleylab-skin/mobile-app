@@ -53,6 +53,10 @@ export const ConsentDocsScreen = schema({})(createReactClass({
         );
     },
 
+    componentWillUnmount() {
+        eventEmitter.removeAllListeners('RNDownloaderProgress');
+    },
+
     render() {
         const { study } = this.props;
         const { progress } = this.state;

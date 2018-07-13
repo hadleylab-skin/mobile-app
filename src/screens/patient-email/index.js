@@ -46,8 +46,6 @@ export const PatientEmail = schema(model)(createReactClass({
 
     componentWillMount() {
         this.props.tree.email.on('update', this.resetResult);
-
-        this.loadStudies();
     },
 
     componentWillUnmount() {
@@ -77,7 +75,7 @@ export const PatientEmail = schema(model)(createReactClass({
         }
 
         const selectedStudy = _.find(
-            this.props.tree.studies.get('data'),
+            this.props.studiesCursor.get('data'),
             (item) => item.pk === study);
 
         const formData = { email, study };
@@ -88,6 +86,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 title: 'New Patient',
                 service: services.createPatientService,
                 onActionComplete: this.props.onPatientAdded,
+                study: selectedStudy,
                 formData,
             }, this.context)
         );
