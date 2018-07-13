@@ -20,7 +20,7 @@ import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
 import { saveCurrentStudy } from 'services/async-storage';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
-import { getPatiensToApproveListRoute } from './screens/patients-to-approve';
+import { getPatientsToApproveListRoute } from './screens/patients-to-approve';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -82,9 +82,9 @@ export const DoctorProfile = schema(model)(createReactClass({
         );
     },
 
-    openPatiensToApproveList() {
+    openPatientsToApproveList() {
         this.context.mainNavigator.push(
-            getPatiensToApproveListRoute({
+            getPatientsToApproveListRoute({
                 tree: this.props.tree,
             })
         );
@@ -101,20 +101,28 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     async updateScreenData() {
-        let result = await this.context.services.getDoctorService(
+        const { services } = this.context;
+
+        let result = await services.getDoctorService(
             this.props.doctorCursor);
         if (result.status !== 'Succeed') {
             return result;
         }
 
-        result = await this.context.services.getStudiesService(
+        result = await services.getStudiesService(
             this.props.studiesCursor);
         if (result.status !== 'Succeed') {
             return result;
         }
 
-        return this.context.services.getSiteJoinRequestsService(
+        result = await services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
+        return await services.getPatientsWaitingForDoctorApproveService(
+            this.props.tree.patientsToApprove);
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -349,7 +357,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                     <InfoField
                         title="Patients to approve"
                         hasNoBorder
-                        onPress={this.openPatiensToApproveList}
+                        onPress={this.openPatientsToApproveList}
                     />
                 </View>
                 <View style={s.content}>

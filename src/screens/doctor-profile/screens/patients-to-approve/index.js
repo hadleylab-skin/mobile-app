@@ -19,7 +19,7 @@ const model = {
 };
 
 
-export const PatiensToApproveList = schema(model)(createReactClass({
+export const PatientsToApproveList = schema(model)(createReactClass({
     propTypes: {},
 
     contextTypes: {
@@ -79,9 +79,9 @@ export const PatiensToApproveList = schema(model)(createReactClass({
     },
 }));
 
-export function getPatiensToApproveListRoute(props) {
+export function getPatientsToApproveListRoute(props) {
     return {
-        component: PatiensToApproveList,
+        component: PatientsToApproveList,
         title: 'Patients to approve',
         navigationBarHidden: false,
         tintColor: '#FF2D55',
