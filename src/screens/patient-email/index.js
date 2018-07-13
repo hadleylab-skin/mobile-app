@@ -68,20 +68,22 @@ export const PatientEmail = schema(model)(createReactClass({
         );
     },
 
-    goToCreatePatientScreen() {
+    goToCreatePatientScreen(useStudyAndEmail) {
         const { mainNavigator, services } = this.context;
-        const email = this.props.tree.get('email');
-        const study = this.props.tree.get('study');
+        let formData = {};
+        let selectedStudy = null;
 
-        if (!email || !study) {
-            return;
+        if (useStudyAndEmail) {
+            const email = this.props.tree.get('email');
+            const study = this.props.tree.get('study');
+
+            if (!email || !study) {
+                return;
+            }
+
+            formData = { email, study };
+            selectedStudy = _.find(this.props.studies, (item) => item.pk === study);
         }
-
-        const selectedStudy = _.find(
-            this.props.studiesCursor.get('data'),
-            (item) => item.pk === study);
-
-        const formData = { email, study };
 
         mainNavigator.push(
             getCreateOrEditPatientRoute({
@@ -121,7 +123,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 <View style={s.buttonWrapper}>
                     <Button
                         title="Continue"
-                        onPress={this.goToCreatePatientScreen}
+                        onPress={() => this.goToCreatePatientScreen(true)}
                     />
                 </View>
             );
@@ -209,7 +211,7 @@ export const PatientEmail = schema(model)(createReactClass({
                     <Button
                         type="rect"
                         title="Continue without email"
-                        onPress={this.goToCreatePatientScreen}
+                        onPress={() => this.goToCreatePatientScreen(false)}
                     />
                 </View>
             </View>
