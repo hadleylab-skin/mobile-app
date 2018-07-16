@@ -23,14 +23,14 @@ import { getSiteJoinRequestRoute } from './screens/site-join-request';
 import { getPatientsToApproveListRoute } from './screens/patients-to-approve';
 import s from './styles';
 
-const model = (props, context) => ({
+const model = {
     tree: {
         siteJoinRequestScreenState: {},
         studyPicker: {},
         cryptoConfigScreen: {},
-        patientsToApprove: context.services.getInvitationsForDoctorService,
+        patientsToApproveScreen: {},
     },
-});
+};
 
 export const DoctorProfile = schema(model)(createReactClass({
     propTypes: {
@@ -39,6 +39,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         siteJoinRequestCursor: BaobabPropTypes.cursor.isRequired,
+        studyInvitationsCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -85,7 +86,8 @@ export const DoctorProfile = schema(model)(createReactClass({
     openPatientsToApproveList() {
         this.context.mainNavigator.push(
             getPatientsToApproveListRoute({
-                tree: this.props.tree,
+                tree: this.props.tree.patientsToApproveScreen,
+                studyInvitationsCursor: this.props.studyInvitationsCursor,
             }, this.context)
         );
     },
@@ -122,7 +124,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         }
 
         return await services.getInvitationsForDoctorService(
-            this.props.tree.patientsToApprove);
+            this.props.studyInvitationsCursor);
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -272,8 +274,11 @@ export const DoctorProfile = schema(model)(createReactClass({
             ]
         );
 
-        const patientsToApprove = this.props.tree.patientsToApprove.get('data');
-        const registeredPatients = _.filter(patientsToApprove, (patient) => patient.participant);
+        const studyInvitations = this.props.studyInvitationsCursor.get('data');
+        const hasRegisteredParticipants = _.filter(studyInvitations, (invitation) => invitation.participant);
+        const studyApprovalRequireAction = _.find(
+                studyInvitations,
+                (invite) => invite.participant && invite.status === 'new');
 
         return (
             <Updater
@@ -353,10 +358,14 @@ export const DoctorProfile = schema(model)(createReactClass({
                 <View style={s.content}>
                     {this.renderSiteJoinRequest()}
                 </View>
-                {!_.isEmpty(registeredPatients) ?
+                {!_.isEmpty(hasRegisteredParticipants) ?
                     <View style={s.content}>
                         <InfoField
-                            title="Patients to approve"
+                            title={
+                                <Text>
+                                    {studyApprovalRequireAction ? <Text style={{ color: 'red' }}>! </Text> : null}
+                                    <Text>Patients to approve</Text>
+                                </Text>}
                             hasNoBorder
                             onPress={this.openPatientsToApproveList}
                         />

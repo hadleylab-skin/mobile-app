@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
@@ -20,7 +21,6 @@ import s from './styles';
 
 const model = {
     tree: {
-        patientsToApprove: {},
         declineInviteResult: {},
         approveInviteResult: {},
     },
@@ -28,7 +28,9 @@ const model = {
 
 
 export const PatientsToApproveList = schema(model)(createReactClass({
-    propTypes: {},
+    propTypes: {
+        studyInvitationsCursor: BaobabPropTypes.cursor.isRequired,
+    },
 
     contextTypes: {
         services: PropTypes.shape({
@@ -43,7 +45,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         const dsDeclines = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
         const dsInvites = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
 
-        const allInvites = this.props.tree.patientsToApprove.get('data');
+        const allInvites = this.props.studyInvitationsCursor.get('data');
         const approvals = _.filter(
             allInvites,
             (invite) => invite.participant && invite.status === 'new');
@@ -68,11 +70,11 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     },
 
     componentWillMount() {
-        this.props.tree.patientsToApprove.on('update', this.prepareListData);
+        this.props.studyInvitationsCursor.on('update', this.prepareListData);
     },
 
     componentWillUnmount() {
-        this.props.tree.patientsToApprove.off('update', this.prepareListData);
+        this.props.studyInvitationsCursor.off('update', this.prepareListData);
     },
 
     prepareListData(event) {
@@ -112,7 +114,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     },
 
     updateInvites(item) {
-        const cursorForReplace = this.props.tree.patientsToApprove.select(
+        const cursorForReplace = this.props.studyInvitationsCursor.select(
             'data', (invite) => invite.pk === item.pk);
         cursorForReplace.set(item);
     },
@@ -152,8 +154,8 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     },
 
     renderList(listDs) {
-        const patientsToApprove = this.props.tree.patientsToApprove.get();
-        if (patientsToApprove.status === 'Loading') {
+        const invites = this.props.studyInvitationsCursor.get();
+        if (invites.status === 'Loading') {
             return (
                 <View style={s.activityIndicator}>
                     <ActivityIndicator
@@ -177,7 +179,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
         const _onScroll = onScroll(() =>
             this.context.services.getInvitationsForDoctorService(
-                this.props.tree.patientsToApprove)
+                this.props.studyInvitationsCursor)
         );
 
         return (
