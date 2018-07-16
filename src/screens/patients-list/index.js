@@ -56,7 +56,7 @@ const PatientsListScreen = schema({})(createReactClass({
         };
     },
 
-    async componentWillMount() {
+    componentWillMount() {
         const { cursors } = this.context;
 
         cursors.patients.on('update', this.updateDataStore);

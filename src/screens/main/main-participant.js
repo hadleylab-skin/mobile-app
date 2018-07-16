@@ -20,6 +20,8 @@ import { ParticipantProfile } from 'screens/participant-profile';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
 
+import { hasSavedStudy, saveCurrentStudy } from 'services/async-storage';
+
 import ParticipantDecryptionError from './participant-decryption-error';
 
 import cameraIcon from './images/camera.png';
@@ -74,6 +76,19 @@ export default schema(model)(createReactClass({
         if (patients && patients.status === 'Succeed' && !_.isEmpty(patients.data)) {
             const patient = _.first(_.values(patients.data)).data;
             cursors.currentPatientPk.set(patient.pk);
+        }
+
+        const studies = await services.getStudiesService(this.props.tree.studies);
+
+        if (!await hasSavedStudy()) {
+            const firstStudy = _.first(studies.data);
+            if (firstStudy) {
+                cursors.currentStudyPk.set({
+                    data: firstStudy.pk,
+                    status: 'Succeed',
+                });
+                saveCurrentStudy(firstStudy.pk);
+            }
         }
     },
 

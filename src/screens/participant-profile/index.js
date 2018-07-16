@@ -65,8 +65,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
         }),
     },
 
-    async componentWillMount() {
-        await this.context.services.getStudiesService(this.props.studiesCursor);
+    componentWillMount() {
         this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },

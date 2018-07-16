@@ -17,8 +17,11 @@ export function buildAsyncStorageService(name, dehydrate = _.identity) {
 }
 
 
+const KEY = '@MelanomaApp:selectedStudyPk';
+
+
 export const getSavedCurrentStudyService = buildAsyncStorageService(
-    '@MelanomaApp:selectedStudyPk',
+    KEY,
     (value) => {
         const studyPk = parseInt(value, 10);
         return _.isNumber(studyPk) && !_.isNaN(studyPk) ? studyPk : null;
@@ -27,5 +30,10 @@ export const getSavedCurrentStudyService = buildAsyncStorageService(
 
 
 export async function saveCurrentStudy(studyPk) {
-    await AsyncStorage.setItem('@MelanomaApp:selectedStudyPk', `${studyPk}`);
+    await AsyncStorage.setItem(KEY, `${studyPk}`);
+}
+
+
+export async function hasSavedStudy() {
+    return _.includes(await AsyncStorage.getAllKeys(), KEY);
 }
