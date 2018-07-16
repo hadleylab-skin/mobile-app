@@ -68,17 +68,18 @@ export function declineInviteService({ token }) {
     };
 }
 
-function dehydrateInvitationData(invitations) {
-    return Promise.all(_.map(
-        invitations,
-        async (invitation) => {
-            let item = invitation;
-            item.patient = await dehydratePatientData(item.patient);
-            return item;
-        }));
+async function dehydrateInvitationData(invitation) {
+    return _.merge({}, invitation, {
+        patient: await dehydratePatientData(invitation.patient),
+        status: inviteStatuses[`${invitation.status}`],
+    });
 }
 
-export function getPatientsWaitingForDoctorApproveService({ token }) {
+function dehydrateInvitationsData(invitations) {
+    return Promise.all(_.map(invitations, dehydrateInvitationData));
+}
+
+export function getInvitationsForDoctorService({ token }) {
     const headers = {
         Authorization: `JWT ${token.get()}`,
     };
@@ -86,7 +87,7 @@ export function getPatientsWaitingForDoctorApproveService({ token }) {
     return (cursor) => {
         const _service = buildGetService(
             '/api/v1/study/invites_doctor/',
-            dehydrateInvitationData,
+            dehydrateInvitationsData,
             _.merge({}, defaultHeaders, headers));
 
         return _service(cursor);
@@ -121,7 +122,7 @@ export function declineInviteForDoctorService({ token }) {
             `/api/v1/study/invites_doctor/${invite.pk}/decline/`,
             'POST',
             JSON.stringify,
-            _.identity,
+            dehydrateInvitationData,
             _.merge({}, defaultHeaders, headers)
         );
 
@@ -158,7 +159,7 @@ export function approveInviteForDoctorService({ token }) {
             `/api/v1/study/invites_doctor/${invite.pk}/approve/`,
             'POST',
             hydrateInviteData,
-            _.identity,
+            dehydrateInvitationData,
             _.merge({}, defaultHeaders, headers)
         );
 

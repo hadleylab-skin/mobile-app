@@ -33,7 +33,7 @@ import { getInvitesService,
          sendInviteToDoctorService,
          approveInviteForDoctorService,
          declineInviteForDoctorService,
-         getPatientsWaitingForDoctorApproveService,
+         getInvitationsForDoctorService,
        } from './invites';
 
 
@@ -58,7 +58,7 @@ export default {
     createPatientService,
     updatePatientService,
     updatePatientConsentService,
-    getPatientsWaitingForDoctorApproveService,
+    getInvitationsForDoctorService,
     getSiteJoinRequestsService,
     createSiteJoinRequestService,
     confirmSiteJoinRequestService,

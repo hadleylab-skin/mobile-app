@@ -28,7 +28,7 @@ const model = (props, context) => ({
         siteJoinRequestScreenState: {},
         studyPicker: {},
         cryptoConfigScreen: {},
-        patientsToApprove: context.services.getPatientsWaitingForDoctorApproveService,
+        patientsToApprove: context.services.getInvitationsForDoctorService,
     },
 });
 
@@ -55,7 +55,7 @@ export const DoctorProfile = schema(model)(createReactClass({
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             confirmSiteJoinRequestService: PropTypes.func.isRequired,
             patientsService: PropTypes.func.isRequired,
-            getPatientsWaitingForDoctorApproveService: PropTypes.func.isRequired,
+            getInvitationsForDoctorService: PropTypes.func.isRequired,
         }),
     },
 
@@ -121,7 +121,7 @@ export const DoctorProfile = schema(model)(createReactClass({
             return result;
         }
 
-        return await services.getPatientsWaitingForDoctorApproveService(
+        return await services.getInvitationsForDoctorService(
             this.props.tree.patientsToApprove);
     },
 

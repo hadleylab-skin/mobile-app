@@ -35,8 +35,12 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
     prepareSectionListData() {
         const patientsToApprove = this.props.tree.patientsToApprove.get('data');
-        const registeredPatients = _.filter(patientsToApprove, (patient) => patient.participant);
-        const otherPatients = _.filter(patientsToApprove, (patient) => !patient.participant);
+        const registeredPatients = _.filter(
+            patientsToApprove,
+            (patient) => patient.participant && patient.status === 'new');
+        const otherPatients = _.filter(
+            patientsToApprove,
+            (patient) => !patient.participant);
 
         return [
             { title: 'Patients to approve', data: registeredPatients },
@@ -49,7 +53,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
         const result = await services.approveInviteForDoctorService(
             this.props.tree.approveInviteResult, patient);
-        console.log(result);
+        this.updateInvites(result.data);
     },
 
     async declinePatient(patient) {
@@ -57,7 +61,13 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
         const result = await services.declineInviteForDoctorService(
             this.props.tree.declineInviteResult, patient);
-        console.log(result);
+        this.updateInvites(result.data);
+    },
+
+    updateInvites(item) {
+        const cursorForReplace = this.props.tree.patientsToApprove.select(
+            'data', (invite) => invite.pk === item.pk);
+        cursorForReplace.set(item);
     },
 
     patientClicked(patient) {
