@@ -86,7 +86,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         this.context.mainNavigator.push(
             getPatientsToApproveListRoute({
                 tree: this.props.tree,
-            })
+            }, this.context)
         );
     },
 

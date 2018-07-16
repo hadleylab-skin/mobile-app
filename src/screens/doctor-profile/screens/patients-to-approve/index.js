@@ -6,9 +6,11 @@ import {
     View,
     Text,
     Alert,
+    ListView,
     StatusBar,
-    SectionList,
+    Dimensions,
 } from 'react-native';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { InfoField } from 'components';
 import schema from 'libs/state';
 import s from './styles';
@@ -33,19 +35,61 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         }),
     },
 
-    prepareSectionListData() {
-        const patientsToApprove = this.props.tree.patientsToApprove.get('data');
-        const registeredPatients = _.filter(
-            patientsToApprove,
-            (patient) => patient.participant && patient.status === 'new');
-        const otherPatients = _.filter(
-            patientsToApprove,
-            (patient) => !patient.participant);
+    getInitialState() {
+        const dsApprovals = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
+        const dsDeclines = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
+        const dsInvites = new ListView.DataSource({ rowHasChanged(p1, p2) { return !_.isEqual(p1, p2); } });
 
-        return [
-            { title: 'Patients to approve', data: registeredPatients },
-            { title: 'Invited but not registered patients', data: otherPatients },
-        ];
+        const allInvites = this.props.tree.patientsToApprove.get('data');
+        const approvals = _.filter(
+            allInvites,
+            (invite) => invite.participant && invite.status === 'new');
+        const declines = _.filter(
+            allInvites,
+            (invite) => invite.participant && invite.status === 'declined');
+        const invites = _.filter(allInvites, (invite) => !invite.participant);
+
+        return {
+            tabs: {
+                index: 0,
+                routes: [
+                    { key: 'approvals', title: 'To Approve' },
+                    { key: 'declines', title: 'Declined' },
+                    { key: 'invites', title: 'Invites' },
+                ],
+            },
+            dsApprovals: dsApprovals.cloneWithRows(approvals),
+            dsDeclines: dsDeclines.cloneWithRows(declines),
+            dsInvites: dsInvites.cloneWithRows(invites),
+        };
+    },
+
+    componentWillMount() {
+        this.props.tree.patientsToApprove.on('update', this.prepareListData);
+    },
+
+    componentWillUnmount() {
+        this.props.tree.patientsToApprove.off('update', this.prepareListData);
+    },
+
+    prepareListData(event) {
+        const data = event.data.currentData;
+        if (data.status === 'Succeed') {
+            const allInvites = data.data;
+            const approvals = _.filter(
+                allInvites,
+                (invite) => invite.participant && invite.status === 'new');
+            const declines = _.filter(
+                allInvites,
+                (invite) => invite.participant && invite.status === 'declined');
+            const invites = _.filter(allInvites, (invite) => !invite.participant);
+
+            this.setState({
+                dsApprovals: this.state.dsApprovals.cloneWithRows(approvals),
+                dsDeclines: this.state.dsDeclines.cloneWithRows(declines),
+                dsInvites: this.state.dsInvites.cloneWithRows(invites),
+            });
+        }
     },
 
     async approvePatient(patient) {
@@ -94,49 +138,80 @@ export const PatientsToApproveList = schema(model)(createReactClass({
         );
     },
 
-    renderPatient({ item: patient }) {
+    renderPatient(patient) {
         return (
             <InfoField
                 title={`${patient.patient.firstName} ${patient.patient.lastName} (${patient.email})`}
                 onPress={() => this.patientClicked(patient)}
-            >
-            </InfoField>
+                hasNoBorder={false}
+            />
         );
     },
 
-    renderSectionHeader({ section: { title } }) {
+    renderList(listDs) {
+        if (listDs.getRowCount() === 0) {
+            return (
+                <View style={s.noItemsWrapper}>
+                    <Text style={s.noItemsText}>
+                        No items in this section
+                    </Text>
+                </View>
+            );
+        }
+
         return (
-            <View style={s.header}>
-                <Text style={s.headerText}>
-                    {title}
-                </Text>
-                <View style={s.border} />
-            </View>
+            <ListView
+                enableEmptySections
+                scrollEventThrottle={20}
+                automaticallyAdjustContentInsets={false}
+                style={{ flex: 1 }}
+                dataSource={listDs}
+                renderRow={(rowData) => (this.renderPatient(rowData))}
+            />
         );
     },
 
     render() {
-        const patientsSectionListData = this.prepareSectionListData();
-
         return (
             <View style={{ flex: 1 }}>
                 <StatusBar barStyle="dark-content" />
-                <SectionList
-                    renderItem={this.renderPatient}
-                    renderSectionHeader={this.renderSectionHeader}
-                    sections={patientsSectionListData}
-                    keyExtractor={(item) => `patient-${item.pk}`}
-                    style={{ flex: 1 }}
+                <TabView
+                    navigationState={this.state.tabs}
+                    renderTabBar={(props) =>
+                        <TabBar
+                            {...props}
+                            getLabelText={({ route }) => route.title}
+                            style={s.tabBar}
+                            labelStyle={s.tabBarLabel}
+                            indicatorStyle={s.tabBarIndicator}
+                        />}
+                    renderScene={SceneMap({
+                        approvals: () => this.renderList(this.state.dsApprovals),
+                        declines: () => this.renderList(this.state.dsDeclines),
+                        invites: () => this.renderList(this.state.dsInvites),
+                    })}
+                    onIndexChange={(index) => this.setState({
+                        tabs: {
+                            index,
+                            routes: this.state.tabs.routes,
+                        },
+                    })}
+                    initialLayout={{
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height,
+                    }}
                 />
             </View>
         );
     },
 }));
 
-export function getPatientsToApproveListRoute(props) {
+export function getPatientsToApproveListRoute(props, context) {
     return {
         component: PatientsToApproveList,
         title: 'Patients to approve',
+        onLeftButtonPress: () => context.mainNavigator.pop(),
+        leftButtonIcon: require('components/icons/back/back.png'),
         navigationBarHidden: false,
         tintColor: '#FF2D55',
         passProps: props,
