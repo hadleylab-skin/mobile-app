@@ -9,7 +9,9 @@ import {
     ListView,
     StatusBar,
     Dimensions,
+    ActivityIndicator,
 } from 'react-native';
+import { onScroll } from 'components/updater';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { InfoField } from 'components';
 import schema from 'libs/state';
@@ -30,6 +32,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
     contextTypes: {
         services: PropTypes.shape({
+            getInvitationsForDoctorService: PropTypes.func.isRequired,
             approveInviteForDoctorService: PropTypes.func.isRequired,
             declineInviteForDoctorService: PropTypes.func.isRequired,
         }),
@@ -149,6 +152,19 @@ export const PatientsToApproveList = schema(model)(createReactClass({
     },
 
     renderList(listDs) {
+        const patientsToApprove = this.props.tree.patientsToApprove.get();
+        if (patientsToApprove.status === 'Loading') {
+            return (
+                <View style={s.activityIndicator}>
+                    <ActivityIndicator
+                        animating
+                        size="large"
+                        color="#FF1D70"
+                    />
+                </View>
+            );
+        }
+
         if (listDs.getRowCount() === 0) {
             return (
                 <View style={s.noItemsWrapper}>
@@ -159,9 +175,15 @@ export const PatientsToApproveList = schema(model)(createReactClass({
             );
         }
 
+        const _onScroll = onScroll(() =>
+            this.context.services.getInvitationsForDoctorService(
+                this.props.tree.patientsToApprove)
+        );
+
         return (
             <ListView
                 enableEmptySections
+                onScroll={_onScroll.bind(this)}
                 scrollEventThrottle={20}
                 automaticallyAdjustContentInsets={false}
                 style={{ flex: 1 }}
