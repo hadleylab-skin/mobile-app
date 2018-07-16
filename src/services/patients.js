@@ -17,7 +17,7 @@ function dehydrateConsent(item) {
 
 export const needEncryption = ['firstName', 'lastName', 'mrn', 'dateOfBirth'];
 
-async function dehydratePatientData(data) {
+export async function dehydratePatientData(data) {
     let dehydratedData = { ...dehydrateConsent(data) };
     const aesKey = await decryptRSA(dehydratedData.encryptedKey);
     _.forEach(_.pickBy(dehydratedData), (value, key) => {
@@ -178,16 +178,13 @@ export function createPatientService({ token, doctor }) {
         Authorization: `JWT ${token.get()}`,
     };
 
-    return (cursor, data) => {
-        const _service = buildPostService(
-            '/api/v1/patient/',
-            'POST',
-            hydratePatientData(doctor),
-            dehydratePatientData,
-            _.merge({}, defaultHeaders, headers)
-        );
-        return _service(cursor, data);
-    };
+    return buildPostService(
+        '/api/v1/patient/',
+        'POST',
+        hydratePatientData(doctor),
+        dehydratePatientData,
+        _.merge({}, defaultHeaders, headers)
+    );
 }
 
 export function updatePatientService({ token }) {
@@ -235,30 +232,5 @@ export function updatePatientConsentService({ token }) {
                                                 _.identity,
                                                 _.merge({}, defaultHeaders, headers));
         return _updatePatient(cursor, data);
-    };
-}
-
-function dehydrateInvitationData(invitations) {
-    return Promise.all(_.map(
-        invitations,
-        async (invitation) => {
-            let item = invitation;
-            item.patient = await dehydratePatientData(item.patient);
-            return item;
-        }));
-}
-
-export function getPatientsWaitingForDoctorApproveService({ token }) {
-    const headers = {
-        Authorization: `JWT ${token.get()}`,
-    };
-
-    return (cursor) => {
-        const _service = buildGetService(
-            '/api/v1/study/invites_doctor/',
-            dehydrateInvitationData,
-            _.merge({}, defaultHeaders, headers));
-
-        return _service(cursor);
     };
 }

@@ -19,7 +19,6 @@ import { patientsService,
          createPatientService,
          updatePatientService,
          updatePatientConsentService,
-         getPatientsWaitingForDoctorApproveService,
        } from './patients';
 import { getSiteJoinRequestsService,
          createSiteJoinRequestService,
@@ -34,6 +33,7 @@ import { getInvitesService,
          sendInviteToDoctorService,
          approveInviteForDoctorService,
          declineInviteForDoctorService,
+         getPatientsWaitingForDoctorApproveService,
        } from './invites';
 
 

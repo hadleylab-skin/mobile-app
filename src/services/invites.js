@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { encryptRSA } from './keypair';
 import { buildGetService, buildPostService, defaultHeaders } from './base';
-import { encryptPatientDataWithKey, needEncryption } from './patients';
+import { encryptPatientDataWithKey, needEncryption, dehydratePatientData } from './patients';
 
 const inviteStatuses = {
-    '1': 'new',
-    '2': 'accepted',
-    '3': 'declined',
+    1: 'new',
+    2: 'accepted',
+    3: 'declined',
 };
 
 function dehydrateInvites(data) {
     const updatedData = _.map(data,
         (item) => _.merge(item, {
-            status: inviteStatuses[`${item.status}`]
+            status: inviteStatuses[`${item.status}`],
         }));
 
     return updatedData;
@@ -65,6 +65,31 @@ export function declineInviteService({ token }) {
             _.merge({}, defaultHeaders, headers)
         );
         return _service(cursor, {});
+    };
+}
+
+function dehydrateInvitationData(invitations) {
+    return Promise.all(_.map(
+        invitations,
+        async (invitation) => {
+            let item = invitation;
+            item.patient = await dehydratePatientData(item.patient);
+            return item;
+        }));
+}
+
+export function getPatientsWaitingForDoctorApproveService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor) => {
+        const _service = buildGetService(
+            '/api/v1/study/invites_doctor/',
+            dehydrateInvitationData,
+            _.merge({}, defaultHeaders, headers));
+
+        return _service(cursor);
     };
 }
 
