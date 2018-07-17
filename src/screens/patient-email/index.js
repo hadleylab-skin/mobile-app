@@ -116,6 +116,7 @@ export const PatientEmail = schema(model)(createReactClass({
 
     renderButton() {
         const doctor = this.props.tree.get('doctor');
+        const study = this.props.tree.form.get('study');
 
         // Doctor is not founded --> can create new
         if (doctor && doctor.status === 'Succeed' &&
@@ -124,6 +125,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 <View style={s.buttonWrapper}>
                     <Button
                         title="Continue"
+                        disabled={!study}
                         onPress={() => this.goToCreatePatientScreen(true)}
                     />
                 </View>
@@ -167,7 +169,9 @@ export const PatientEmail = schema(model)(createReactClass({
 
     render() {
         const emailCursor = this.props.tree.form.email;
-        const doctor = this.props.tree.get('doctor');
+        const studyCursor = this.props.tree.form.study;
+        const doctorCursor = this.props.tree.doctor;
+        const doctor = doctorCursor.get();
         const isLoading = doctor && doctor.status === 'Loading';
         const isPatient = doctor && doctor.status === 'Succeed'
             && (doctor.data.isParticipant || _.isEmpty(doctor.data));
@@ -189,18 +193,24 @@ export const PatientEmail = schema(model)(createReactClass({
                             <InfoField
                                 title="Email"
                                 text={emailCursor.get()}
-                                onPress={() =>
-                                    this.context.mainNavigator.push(
-                                        getEmailScreenRoute({
-                                            cursor: this.props.tree.select('email'),
-                                            text: emailCursor.get(),
-                                            onSubmit: () => {
-                                                emailCursor.set(this.props.tree.get('email'));
-                                                this.context.mainNavigator.pop();
-                                            },
-                                        }, this.context)
-                                    )
-                                }
+                                onPress={() => this.context.mainNavigator.push(
+                                    getEmailScreenRoute({
+                                        cursor: this.props.tree.select('email'),
+                                        text: emailCursor.get(),
+                                        onSubmit: () => {
+                                            const currentEmail = this.props.tree.get('email');
+                                            const formEmail = emailCursor.get();
+
+                                            if (formEmail !== currentEmail) {
+                                                emailCursor.set(currentEmail);
+                                                doctorCursor.set({});
+                                                studyCursor.set(null);
+                                            }
+
+                                            this.context.mainNavigator.pop();
+                                        },
+                                    }, this.context)
+                                )}
                             />
                             {isPatient ?
                                 <Picker
