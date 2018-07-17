@@ -23,6 +23,7 @@ export const Switch = createReactClass({
         itemWidth: PropTypes.number,
         disabled: PropTypes.bool,
         onPress: PropTypes.func,
+        theme: PropTypes.string,
     },
 
     onPress(value) {
@@ -39,12 +40,29 @@ export const Switch = createReactClass({
         this.props.cursor.set(value);
     },
 
+    getThemeColors() {
+        const { theme } = this.props;
+
+        if (theme === 'white') {
+            return {
+                mainColor: '#FFFFFF',
+                auxiliaryColor: '#FF1D70',
+            };
+        }
+
+        return {
+            mainColor: '#ACB5BE',
+            auxiliaryColor: '#FFFFFF',
+        };
+    },
+
     render() {
         const { items, itemWidth, disabled } = this.props;
         const currentValue = this.props.cursor.get();
+        const { mainColor, auxiliaryColor } = this.getThemeColors();
 
         return (
-            <View style={[s.container, disabled ? s.containerDisabled : {}]}>
+            <View style={[s.container, { borderColor: mainColor }, disabled ? s.containerDisabled : {}]}>
                 {_.map(items, (item, index) => (
                     <TouchableWithoutFeedback
                         key={`switch-${index}`}
@@ -53,12 +71,12 @@ export const Switch = createReactClass({
                         <View
                             style={[
                                 s.item,
-                                item.value === currentValue ? s.activeItem : {},
+                                { backgroundColor: item.value === currentValue ?  mainColor : 'transparent' },
                                 itemWidth ? { width: itemWidth } : {},
                             ]}
                         >
                             <Text
-                                style={[s.text, item.value === currentValue ? s.activeItemText : {}]}
+                                style={[s.text, { color: item.value === currentValue ? auxiliaryColor : mainColor }]}
                             >{item.label}</Text>
                         </View>
                     </TouchableWithoutFeedback>
