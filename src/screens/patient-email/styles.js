@@ -45,9 +45,13 @@ export default StyleSheet.create({
         borderBottomColor: '#D1D1D6',
         borderBottomWidth: 0.5,
     },
-    labelWrapper: {
-        marginTop: 40,
+    messageWrapper: {
+        margin: 15,
+        marginBottom: 0,
         alignItems: 'center',
+    },
+    message: {
+        textAlign: 'center',
     },
     buttonWrapper: {
         padding: 15,

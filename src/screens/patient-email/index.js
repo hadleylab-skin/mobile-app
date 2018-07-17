@@ -8,15 +8,16 @@ import {
     Text,
     ActivityIndicator,
     SafeAreaView,
+    Alert,
 } from 'react-native';
 import {
-    Input, Form, Button, Picker, InfoField,
+    Form, Button, Picker, InfoField,
 } from 'components';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
-import { getEmailScreenRoute } from './screens/email-screen';
 
 import schema from 'libs/state';
 
+import { getEmailScreenRoute } from './screens/email-screen';
 import s from './styles';
 
 
@@ -110,8 +111,24 @@ export const PatientEmail = schema(model)(createReactClass({
         );
 
         if (result.status === 'Succeed') {
-            this.context.mainNavigator.pop();
+            const study = _.find(this.props.studies, ({ pk }) => pk === formData.study);
+
+            Alert.alert(
+                'Success!',
+                `The invitation for ${formData.email} to study ${study.title} was succefully sent.`,
+                [{ text: 'OK', onPress: () => this.context.mainNavigator.pop() }]
+            );
         }
+    },
+
+    renderMessage(text) {
+        return (
+            <View style={s.messageWrapper}>
+                <Text style={s.message}>
+                    {text}
+                </Text>
+            </View>
+        );
     },
 
     renderButton() {
@@ -122,12 +139,15 @@ export const PatientEmail = schema(model)(createReactClass({
         if (doctor && doctor.status === 'Succeed' &&
             _.isEmpty(doctor.data)) {
             return (
-                <View style={s.buttonWrapper}>
-                    <Button
-                        title="Continue"
-                        disabled={!study}
-                        onPress={() => this.goToCreatePatientScreen(true)}
-                    />
+                <View>
+                    {this.renderMessage('Text on Continue')}
+                    <View style={s.buttonWrapper}>
+                        <Button
+                            title="Continue"
+                            disabled={!study}
+                            onPress={() => this.goToCreatePatientScreen(true)}
+                        />
+                    </View>
                 </View>
             );
         }
@@ -136,33 +156,33 @@ export const PatientEmail = schema(model)(createReactClass({
         if (doctor && doctor.status === 'Succeed'
             && doctor.data.isParticipant) {
             return (
-                // ADD study list select control and post invite
-                <View style={s.buttonWrapper}>
-                    <Button
-                        title="Invite to study"
-                        onPress={this.inviteDoctorToStudy}
-                    />
+                <View>
+                    {this.renderMessage('Text on Invite to study')}
+                    <View style={s.buttonWrapper}>
+                        <Button
+                            title="Invite to study"
+                            disabled={!study}
+                            onPress={this.inviteDoctorToStudy}
+                        />
+                    </View>
                 </View>
             );
         }
 
         // Doctor data is not empty --> he is coordinator or doctor, can't do anything
         if (doctor && doctor.status === 'Succeed') {
-            return (
-                <View style={s.labelWrapper}>
-                    <Text style={{ color: '#ACB5BE' }}>
-                        Email is already used by existing doctor
-                    </Text>
-                </View>
-            );
+            return this.renderMessage('Email is already used by existing doctor');
         }
 
         return (
-            <View style={s.buttonWrapper}>
-                <Button
-                    title="Search"
-                    onPress={this.onSubmit}
-                />
+            <View>
+                {this.renderMessage('Text on Search')}
+                <View style={s.buttonWrapper}>
+                    <Button
+                        title="Search"
+                        onPress={this.onSubmit}
+                    />
+                </View>
             </View>
         );
     },
@@ -221,7 +241,9 @@ export const PatientEmail = schema(model)(createReactClass({
                                 />
                             : null}
                         </View>
-                        {emailCursor.get() ? this.renderButton() : null}
+                        {emailCursor.get()
+                            ? this.renderButton()
+                            : this.renderMessage('Please enter an email to invite patient to a study')}
                     </Form>
                 </View>
                 <View style={s.footer}>
