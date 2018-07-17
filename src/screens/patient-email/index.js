@@ -140,7 +140,7 @@ export const PatientEmail = schema(model)(createReactClass({
             _.isEmpty(doctor.data)) {
             return (
                 <View>
-                    {this.renderMessage('Text on Continue')}
+                    {!study ? this.renderMessage('Select study to continue') : null}
                     <View style={s.buttonWrapper}>
                         <Button
                             title="Continue"
@@ -157,7 +157,7 @@ export const PatientEmail = schema(model)(createReactClass({
             && doctor.data.isParticipant) {
             return (
                 <View>
-                    {this.renderMessage('Text on Invite to study')}
+                    {!study ? this.renderMessage('Select study to continue') : null}
                     <View style={s.buttonWrapper}>
                         <Button
                             title="Invite to study"
@@ -175,14 +175,11 @@ export const PatientEmail = schema(model)(createReactClass({
         }
 
         return (
-            <View>
-                {this.renderMessage('Text on Search')}
-                <View style={s.buttonWrapper}>
-                    <Button
-                        title="Search"
-                        onPress={this.onSubmit}
-                    />
-                </View>
+            <View style={s.buttonWrapper}>
+                <Button
+                    title="Search"
+                    onPress={this.onSubmit}
+                />
             </View>
         );
     },
@@ -243,7 +240,7 @@ export const PatientEmail = schema(model)(createReactClass({
                         </View>
                         {emailCursor.get()
                             ? this.renderButton()
-                            : this.renderMessage('Please enter an email to invite patient to a study')}
+                            : this.renderMessage('Enter an email to invite patient to study')}
                     </Form>
                 </View>
                 <View style={s.footer}>
