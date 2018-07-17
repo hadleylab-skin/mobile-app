@@ -216,6 +216,7 @@ export const PatientEmail = schema(model)(createReactClass({
                             <InfoField
                                 title="Email"
                                 text={emailCursor.get()}
+                                hasNoBorder
                                 onPress={() => this.context.mainNavigator.push(
                                     getEmailScreenRoute({
                                         cursor: this.props.tree.select('email'),

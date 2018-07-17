@@ -10,6 +10,7 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
@@ -275,6 +276,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
 
         return (
             <View style={s.container}>
+                <StatusBar barStyle="dark-content" />
                 {isLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
@@ -356,6 +358,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                         <InfoField
                             title="Medical Record Number"
                             text={mrnCursor.get()}
+                            hasNoBorder={_.isEmpty(this.props.formData)}
                             onPress={() =>
                                 this.context.mainNavigator.push(
                                     getMrnScreenRoute({

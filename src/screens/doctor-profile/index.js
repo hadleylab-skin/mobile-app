@@ -233,7 +233,6 @@ export const DoctorProfile = schema(model)(createReactClass({
                                 <Text style={{ color: 'red' }}> !</Text>
                             </Text>
                         }
-                        hasNoBorder
                         onPress={this.sharePatients}
                     />
                 );
@@ -254,7 +253,6 @@ export const DoctorProfile = schema(model)(createReactClass({
         return (
             <InfoField
                 title="Create site join request"
-                hasNoBorder
                 onPress={this.openSiteJoinRequests}
             />
         );
@@ -319,7 +317,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                     : null}
                 </View>
                 <Title text={'SETTINGS'} />
-                <View style={s.content}>
+                <View style={s.fields}>
                     <InfoField
                         title={'Units of length'}
                         hasNoBorder
@@ -336,8 +334,6 @@ export const DoctorProfile = schema(model)(createReactClass({
                             />
                         }
                     />
-                </View>
-                <View style={s.content}>
                     <Picker
                         tree={this.props.tree.studyPicker}
                         cursor={this.context.cursors.currentStudyPk.select('data')}
@@ -345,36 +341,27 @@ export const DoctorProfile = schema(model)(createReactClass({
                         title="Study"
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
-                </View>
-                {!isInSharedMode() ?
                     <View style={s.content}>
+                        {this.renderSiteJoinRequest()}
+                    </View>
+                    {!isInSharedMode() ?
                         <InfoField
                             title="Cryptography configuration"
-                            hasNoBorder
                             onPress={this.openCryptoConfiguration}
                         />
-                    </View>
-                : null}
-                <View style={s.content}>
-                    {this.renderSiteJoinRequest()}
-                </View>
-                {!_.isEmpty(hasRegisteredParticipants) ?
-                    <View style={s.content}>
+                    : null}
+                    {!_.isEmpty(hasRegisteredParticipants) ?
                         <InfoField
                             title={
                                 <Text>
                                     {studyApprovalRequireAction ? <Text style={{ color: 'red' }}>! </Text> : null}
                                     <Text>Patients to approve</Text>
                                 </Text>}
-                            hasNoBorder
                             onPress={this.openPatientsToApproveList}
                         />
-                    </View>
-                : null}
-                <View style={s.content}>
+                    : null}
                     <InfoField
                         title="Log out"
-                        hasNoBorder
                         onPress={resetState}
                     />
                 </View>

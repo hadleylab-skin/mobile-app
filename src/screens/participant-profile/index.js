@@ -274,6 +274,9 @@ export const ParticipantProfile = schema(model)(createReactClass({
             this.context.cursors.currentStudyPk.get('data'),
             patient.pk);
 
+        const showInvitesFeild = invites && invites.length > 0;
+        const showStudiesFeild = studiesForPicker.length > 0;
+
         return (
             <Updater
                 service={this.onUpdateScreen}
@@ -308,69 +311,71 @@ export const ParticipantProfile = schema(model)(createReactClass({
                         />
                     </View>
 
-                    {invites && invites.length > 0 ?
-                        <InfoField
-                            title={`${invites.length} pending invites`}
-                            text={'>'}
-                            onPress={() => {
-                                if (invites.length === 1) {
-                                    this.context.mainNavigator.push(
-                                        getInviteDetailScreenRoute({
-                                            studiesCursor,
-                                            invite: _.first(invites),
-                                            tree: this.props.tree,
-                                        }, this.context)
-                                    );
-                                } else {
-                                    this.context.mainNavigator.push(
-                                        getInvitesScreenRoute({
-                                            invites,
-                                            studiesCursor,
-                                            tree: this.props.tree,
-                                        }, this.context)
-                                    );
+                    <View style={s.fields}>
+                        {showInvitesFeild ?
+                            <InfoField
+                                title={`${invites.length} pending invites`}
+                                text={'>'}
+                                hasNoBorder
+                                onPress={() => {
+                                    if (invites.length === 1) {
+                                        this.context.mainNavigator.push(
+                                            getInviteDetailScreenRoute({
+                                                studiesCursor,
+                                                invite: _.first(invites),
+                                                tree: this.props.tree,
+                                            }, this.context)
+                                        );
+                                    } else {
+                                        this.context.mainNavigator.push(
+                                            getInvitesScreenRoute({
+                                                invites,
+                                                studiesCursor,
+                                                tree: this.props.tree,
+                                            }, this.context)
+                                        );
+                                    }
+                                }}
+                            />
+                        : null}
+
+                        {showStudiesFeild ?
+                            <Picker
+                                tree={this.props.tree.studyPicker}
+                                cursor={this.context.cursors.currentStudyPk.select('data')}
+                                items={studiesForPicker}
+                                title="Study"
+                                hasNoBorder={!showInvitesFeild}
+                            />
+                        : null}
+
+                        {isStudyExpired ?
+                            <InfoField
+                                title={
+                                    <Text style={s.redText}>{'Consent update required!'}</Text>
                                 }
-                            }}
-                        />
-                    : null}
+                                onPress={this.openUpdateStudyConsent}
+                                hasNoBorder={!showInvitesFeild && !showStudiesFeild}
+                            />
+                        : null}
 
-                    {studiesForPicker.length > 0 ?
-                        <Picker
-                            tree={this.props.tree.studyPicker}
-                            cursor={this.context.cursors.currentStudyPk.select('data')}
-                            items={studiesForPicker}
-                            title="Studies"
-                        />
-                    : null}
-
-                    {isStudyExpired ?
                         <InfoField
-                            title={
-                                <Text style={s.redText}>{'Consent update required!'}</Text>
-                            }
-                            onPress={this.openUpdateStudyConsent}
+                            title={'Images'}
                         />
-                    : null}
+                        {this.renderMoles()}
 
-                    <InfoField
-                        title={'Images'}
-                    />
-                    {this.renderMoles()}
-
-                    {!isInSharedMode() ?
-                        <View style={s.content}>
+                        {!isInSharedMode() ?
                             <InfoField
                                 title="Cryptography configuration"
-                                hasNoBorder
                                 onPress={this.openCryptoConfiguration}
                             />
-                        </View>
-                    : null}
+                        : null}
 
-                    <InfoField
-                        title={'Log out'}
-                        onPress={resetState}
-                    />
+                        <InfoField
+                            title={'Log out'}
+                            onPress={resetState}
+                        />
+                    </View>
                 </ScrollView>
             </Updater>
         );
