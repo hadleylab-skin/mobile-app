@@ -49,7 +49,7 @@ export function convertMoleToDisplay(x, y, imageWidth, imageHeight) {
 export function isStudyConsentExpired(studies, currentStudyPk, patientPk) {
     if (currentStudyPk && studies) {
         const selectedStudy = _.find(studies, (study) => study.pk === currentStudyPk);
-        if (selectedStudy.patientsConsents && selectedStudy.patientsConsents[patientPk]) {
+        if (selectedStudy && selectedStudy.patientsConsents && selectedStudy.patientsConsents[patientPk]) {
             const consentExpiredDate = selectedStudy.patientsConsents[patientPk].dateExpired;
             return moment(consentExpiredDate) < moment();
         }
