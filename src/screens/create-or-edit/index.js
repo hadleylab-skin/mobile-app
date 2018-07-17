@@ -11,6 +11,7 @@ import {
     TouchableWithoutFeedback,
     ActivityIndicator,
     StatusBar,
+    SafeAreaView,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
@@ -275,7 +276,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         const photo = photoCursor.get();
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <StatusBar barStyle="dark-content" />
                 {isLoading ?
                     <View style={s.activityIndicator}>
@@ -290,6 +291,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                     onScroll={this.onScroll}
                     style={s.inner}
                     ref={(ref) => { this.scrollView = ref; }}
+                    automaticallyAdjustContentInsets={false}
                 >
                     <Form
                         ref={(ref) => { this.form = ref; }}
@@ -333,7 +335,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                                     placeholderTextColor="#ACB5BE"
                                     errorPlaceholderTextColor="#FC3159"
                                     name="firstName"
-                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
+                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: 0, animated: true })}
                                 />
                                 <Input
                                     label={'Last Name'}
@@ -343,7 +345,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                                     placeholderTextColor="#ACB5BE"
                                     errorPlaceholderTextColor="#FC3159"
                                     name="lastName"
-                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
+                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: 0, animated: true })}
                                 />
                             </View>
                         </View>
@@ -407,7 +409,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                         onPress={this.onSubmit}
                     />
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 }));
