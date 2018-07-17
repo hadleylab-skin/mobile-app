@@ -14,7 +14,7 @@ tv4.setErrorReporter((error, data, itemSchema) => itemSchema.message);
 
 const emailSchema = {
     type: 'string',
-    pattern: "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+    pattern: /^([A-Za-z0-9!#$%&'*+-/=?^_`{|}~.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/,
     message: 'Wrong email format',
 };
 
