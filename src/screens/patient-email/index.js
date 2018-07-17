@@ -30,6 +30,7 @@ const model = {
         email: 'patient@gmail.com',
         doctor: {},
         studyPicker: {},
+        addDoctorToStudyResult: {},
     },
 };
 
@@ -134,6 +135,11 @@ export const PatientEmail = schema(model)(createReactClass({
     renderButton() {
         const doctor = this.props.tree.get('doctor');
         const study = this.props.tree.form.get('study');
+
+        if (doctor && doctor.status === 'Failure' &&
+            _.first(doctor.error.data) === 'email_used_by_the_patient') {
+            return this.renderMessage('Email is used by the existing patient');
+        }
 
         // Doctor is not founded --> can create new
         if (doctor && doctor.status === 'Succeed' &&
