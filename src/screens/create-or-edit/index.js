@@ -346,7 +346,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                             </View>
                         </View>
                         <Title text="Patient Information" />
-                        {this.props.formData ?
+                        {!_.isEmpty(this.props.formData) ?
                             <InfoField
                                 title={'Email'}
                                 text={this.props.formData.email}
@@ -354,7 +354,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                             />
                         : null}
                         <InfoField
-                            title={'Medical Record Number'}
+                            title="Medical Record Number"
                             text={mrnCursor.get()}
                             onPress={() =>
                                 this.context.mainNavigator.push(

@@ -7,11 +7,13 @@ import {
     View,
     Text,
     ActivityIndicator,
+    SafeAreaView,
 } from 'react-native';
 import {
-    Input, Form, Button, Picker,
+    Input, Form, Button, Picker, InfoField,
 } from 'components';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { getEmailScreenRoute } from './screens/email-screen';
 
 import schema from 'libs/state';
 
@@ -20,8 +22,11 @@ import s from './styles';
 
 const model = {
     tree: {
-        email: '',
-        study: null,
+        form: {
+            email: '',
+            study: null,
+        },
+        email: 'patient@gmail.com',
         doctor: {},
         studyPicker: {},
     },
@@ -74,8 +79,7 @@ export const PatientEmail = schema(model)(createReactClass({
         let selectedStudy = null;
 
         if (useStudyAndEmail) {
-            const email = this.props.tree.get('email');
-            const study = this.props.tree.get('study');
+            const { email, study } = this.props.tree.get('form');
 
             if (!email || !study) {
                 return;
@@ -99,13 +103,10 @@ export const PatientEmail = schema(model)(createReactClass({
 
     async inviteDoctorToStudy() {
         const service = this.context.services.sendInviteToDoctorService;
+        const formData = this.props.tree.get('form');
 
         const result = await service(
-            this.props.tree.addDoctorToStudyResult,
-            {
-                email: this.props.tree.get('email'),
-                study: this.props.tree.get('study'),
-            }
+            this.props.tree.addDoctorToStudyResult, formData
         );
 
         if (result.status === 'Succeed') {
@@ -136,7 +137,7 @@ export const PatientEmail = schema(model)(createReactClass({
                 // ADD study list select control and post invite
                 <View style={s.buttonWrapper}>
                     <Button
-                        title={'Invite to study'}
+                        title="Invite to study"
                         onPress={this.inviteDoctorToStudy}
                     />
                 </View>
@@ -157,7 +158,7 @@ export const PatientEmail = schema(model)(createReactClass({
         return (
             <View style={s.buttonWrapper}>
                 <Button
-                    title={'Search'}
+                    title="Search"
                     onPress={this.onSubmit}
                 />
             </View>
@@ -165,14 +166,14 @@ export const PatientEmail = schema(model)(createReactClass({
     },
 
     render() {
-        const email = this.props.tree.get('email');
+        const emailCursor = this.props.tree.form.email;
         const doctor = this.props.tree.get('doctor');
         const isLoading = doctor && doctor.status === 'Loading';
         const isPatient = doctor && doctor.status === 'Succeed'
             && (doctor.data.isParticipant || _.isEmpty(doctor.data));
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <View style={s.inner}>
                     {isLoading ?
                         <View style={s.activityIndicator}>
@@ -184,27 +185,33 @@ export const PatientEmail = schema(model)(createReactClass({
                         </View>
                     : null}
                     <Form onSubmit={this.onSubmit}>
-                        <Input
-                            label={'Email'}
-                            cursor={this.props.tree.email}
-                            autoCapitalize="none"
-                            returnKeyType="next"
-                            inputWrapperStyle={s.hasBottomBorder}
-                            errorWrapperStyle={s.errorEmail}
-                            inputStyle={[s.input, s.inputEmail]}
-                            placeholderTextColor="#ACB5BE"
-                            errorPlaceholderTextColor="#FC3159"
-                            name="email"
-                        />
-                        {isPatient ?
-                            <Picker
-                                tree={this.props.tree.studyPicker}
-                                cursor={this.props.tree.study}
-                                items={_.map(this.props.studies, ({ pk, title }) => [pk, title])}
-                                title="Study"
+                        <View style={s.fields}>
+                            <InfoField
+                                title="Email"
+                                text={emailCursor.get()}
+                                onPress={() =>
+                                    this.context.mainNavigator.push(
+                                        getEmailScreenRoute({
+                                            cursor: this.props.tree.select('email'),
+                                            text: emailCursor.get(),
+                                            onSubmit: () => {
+                                                emailCursor.set(this.props.tree.get('email'));
+                                                this.context.mainNavigator.pop();
+                                            },
+                                        }, this.context)
+                                    )
+                                }
                             />
-                        : null}
-                        {email ? this.renderButton() : null}
+                            {isPatient ?
+                                <Picker
+                                    tree={this.props.tree.studyPicker}
+                                    cursor={this.props.tree.form.study}
+                                    items={_.map(this.props.studies, ({ pk, title }) => [pk, title])}
+                                    title="Study"
+                                />
+                            : null}
+                        </View>
+                        {emailCursor.get() ? this.renderButton() : null}
                     </Form>
                 </View>
                 <View style={s.footer}>
@@ -214,7 +221,7 @@ export const PatientEmail = schema(model)(createReactClass({
                         onPress={() => this.goToCreatePatientScreen(false)}
                     />
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 }));

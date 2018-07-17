@@ -17,10 +17,12 @@ export default StyleSheet.create({
     inner: {
         flex: 1,
         marginBottom: 56,
-        paddingTop: 76,
-        paddingLeft: 15,
-        paddingRight: 15,
         backgroundColor: '#fafafa',
+    },
+    fields: {
+        borderBottomColor: '#D1D1D6',
+        borderBottomWidth: 0.5,
+        backgroundColor: '#fff',
     },
     input: {
         width: Dimensions.get('window').width - 60,
@@ -48,8 +50,8 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     buttonWrapper: {
-        marginTop: 40,
-        height: 40,
+        padding: 15,
+        height: 70,
     },
     footer: {
         height: 56,
