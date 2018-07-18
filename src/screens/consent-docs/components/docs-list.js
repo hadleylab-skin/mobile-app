@@ -12,7 +12,7 @@ import { InfoField } from 'components';
 import s from '../styles';
 
 
-export const ConsentDocsList = schema({})(createReactClass({
+export const ConsentDocsList = createReactClass({
     propTypes: {
         consentDocs: PropTypes.object.array, // eslint-disable-line
     },
@@ -39,4 +39,4 @@ export const ConsentDocsList = schema({})(createReactClass({
             </ScrollView>
         );
     },
-}));
+});
