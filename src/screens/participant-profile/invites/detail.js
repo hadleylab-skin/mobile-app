@@ -20,6 +20,7 @@ const model = {
     invites: {},
     declineInviteCursor: {},
     consentCursor: {},
+    agreementScreen: {},
 };
 
 export const InviteDetailScreen = schema(model)(createReactClass({
@@ -128,6 +129,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
                                 this.context.mainNavigator.push(
                                     getAgreementRoute({
                                         navigator: this.context.mainNavigator,
+                                        tree: this.props.tree.agreementScreen,
                                         onAgree: () => this.context.mainNavigator.push(
                                             getSignatureRoute({
                                                 navigator: this.context.mainNavigator,
