@@ -14,6 +14,11 @@ export default StyleSheet.create({
         padding: 15,
         position: 'relative',
     },
+    fields: {
+        backgroundColor: '#fff',
+        borderBottomColor: '#D1D1D6',
+        borderBottomWidth: 0.5,
+    },
     pinkBg: {
         position: 'absolute',
         top: -250,
@@ -21,11 +26,6 @@ export default StyleSheet.create({
         height: 260,
         right: 0,
         backgroundColor: '#FF1D70',
-    },
-    content: {
-        backgroundColor: '#fff',
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA',
     },
     photo: {
         width: 100,

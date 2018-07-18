@@ -2,7 +2,8 @@ import { mrnScanerService } from './mrn-scaner';
 import { updateDoctorService,
          updateDoctorPhotoService,
          getDoctorService,
-         getDoctorKeyListService } from './doctor';
+         getDoctorKeyListService,
+         getDoctorByEmailService } from './doctor';
 import { getPatientMolesService,
          addMoleService,
          getMoleService,
@@ -29,7 +30,12 @@ import { getStudiesService,
 import { getInvitesService,
          approveInviteService,
          declineInviteService,
+         sendInviteToDoctorService,
+         approveInviteForDoctorService,
+         declineInviteForDoctorService,
+         getInvitationsForDoctorService,
        } from './invites';
+import { getDefaultConsentDocsService } from './consents';
 
 
 export default {
@@ -38,6 +44,7 @@ export default {
     updateDoctorPhotoService,
     getDoctorService,
     getDoctorKeyListService,
+    getDoctorByEmailService,
     getPatientMolesService,
     addMoleService,
     getMoleService,
@@ -52,6 +59,7 @@ export default {
     createPatientService,
     updatePatientService,
     updatePatientConsentService,
+    getInvitationsForDoctorService,
     getSiteJoinRequestsService,
     createSiteJoinRequestService,
     confirmSiteJoinRequestService,
@@ -60,4 +68,8 @@ export default {
     getInvitesService,
     approveInviteService,
     declineInviteService,
+    sendInviteToDoctorService,
+    approveInviteForDoctorService,
+    declineInviteForDoctorService,
+    getDefaultConsentDocsService,
 };

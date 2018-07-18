@@ -20,6 +20,7 @@ import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
 import { saveCurrentStudy } from 'services/async-storage';
 import { getSiteJoinRequestRoute } from './screens/site-join-request';
+import { getPatientsToApproveListRoute } from './screens/patients-to-approve';
 import s from './styles';
 
 const model = {
@@ -27,6 +28,7 @@ const model = {
         siteJoinRequestScreenState: {},
         studyPicker: {},
         cryptoConfigScreen: {},
+        patientsToApproveScreen: {},
     },
 };
 
@@ -37,6 +39,7 @@ export const DoctorProfile = schema(model)(createReactClass({
         doctorCursor: BaobabPropTypes.cursor.isRequired,
         keyPairStatusCursor: BaobabPropTypes.cursor.isRequired,
         siteJoinRequestCursor: BaobabPropTypes.cursor.isRequired,
+        studyInvitationsCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -53,6 +56,7 @@ export const DoctorProfile = schema(model)(createReactClass({
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             confirmSiteJoinRequestService: PropTypes.func.isRequired,
             patientsService: PropTypes.func.isRequired,
+            getInvitationsForDoctorService: PropTypes.func.isRequired,
         }),
     },
 
@@ -75,7 +79,17 @@ export const DoctorProfile = schema(model)(createReactClass({
                 doctorCursor: this.props.doctorCursor,
                 keyPairStatusCursor: this.props.keyPairStatusCursor,
                 tree: this.props.tree.cryptoConfigScreen,
-            }));
+            })
+        );
+    },
+
+    openPatientsToApproveList() {
+        this.context.mainNavigator.push(
+            getPatientsToApproveListRoute({
+                tree: this.props.tree.patientsToApproveScreen,
+                studyInvitationsCursor: this.props.studyInvitationsCursor,
+            }, this.context)
+        );
     },
 
     openSiteJoinRequests() {
@@ -89,20 +103,28 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     async updateScreenData() {
-        let result = await this.context.services.getDoctorService(
+        const { services } = this.context;
+
+        let result = await services.getDoctorService(
             this.props.doctorCursor);
         if (result.status !== 'Succeed') {
             return result;
         }
 
-        result = await this.context.services.getStudiesService(
+        result = await services.getStudiesService(
             this.props.studiesCursor);
         if (result.status !== 'Succeed') {
             return result;
         }
 
-        return this.context.services.getSiteJoinRequestsService(
+        result = await services.getSiteJoinRequestsService(
             this.props.siteJoinRequestCursor);
+        if (result.status !== 'Succeed') {
+            return result;
+        }
+
+        return await services.getInvitationsForDoctorService(
+            this.props.studyInvitationsCursor);
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -137,10 +159,10 @@ export const DoctorProfile = schema(model)(createReactClass({
         const cursor = this.props.siteJoinRequestCursor.data.select(requestPk);
 
         const keys = _.chain(this.context.cursors.patients.data.get())
-                      .values()
-                      .map((patient) => [patient.data.pk, patient.data.encryptedKey])
-                      .fromPairs()
-                      .value();
+            .values()
+            .map((patient) => [patient.data.pk, patient.data.encryptedKey])
+            .fromPairs()
+            .value();
 
         const result = await this.context.services.confirmSiteJoinRequestService(
             cursor,
@@ -163,12 +185,13 @@ export const DoctorProfile = schema(model)(createReactClass({
 
     changePhoto() {
         ImagePicker.showImagePicker({},
-        async (response) => {
-            if (response.uri) {
-                await this.context.services.updateDoctorPhotoService(
-                    this.props.doctorCursor, { photo: response.uri });
-            }
-        });
+            async (response) => {
+                if (response.uri) {
+                    await this.context.services.updateDoctorPhotoService(
+                        this.props.doctorCursor, { photo: response.uri }
+                    );
+                }
+            });
     },
 
     renderSiteJoinRequest() {
@@ -210,7 +233,6 @@ export const DoctorProfile = schema(model)(createReactClass({
                                 <Text style={{ color: 'red' }}> !</Text>
                             </Text>
                         }
-                        hasNoBorder
                         onPress={this.sharePatients}
                     />
                 );
@@ -231,7 +253,6 @@ export const DoctorProfile = schema(model)(createReactClass({
         return (
             <InfoField
                 title="Create site join request"
-                hasNoBorder
                 onPress={this.openSiteJoinRequests}
             />
         );
@@ -250,6 +271,12 @@ export const DoctorProfile = schema(model)(createReactClass({
                 ]),
             ]
         );
+
+        const studyInvitations = this.props.studyInvitationsCursor.get('data');
+        const hasRegisteredParticipants = _.filter(studyInvitations, (invitation) => invitation.participant);
+        const studyApprovalRequireAction = _.find(
+                studyInvitations,
+                (invite) => invite.participant && invite.status === 'new');
 
         return (
             <Updater
@@ -290,7 +317,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                     : null}
                 </View>
                 <Title text={'SETTINGS'} />
-                <View style={s.content}>
+                <View style={s.fields}>
                     <InfoField
                         title={'Units of length'}
                         hasNoBorder
@@ -307,8 +334,6 @@ export const DoctorProfile = schema(model)(createReactClass({
                             />
                         }
                     />
-                </View>
-                <View style={s.content}>
                     <Picker
                         tree={this.props.tree.studyPicker}
                         cursor={this.context.cursors.currentStudyPk.select('data')}
@@ -316,27 +341,27 @@ export const DoctorProfile = schema(model)(createReactClass({
                         title="Study"
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
-                </View>
-                {
-                isInSharedMode()
-                ?
-                null
-                :
-                <View style={s.content}>
+                    <View style={s.content}>
+                        {this.renderSiteJoinRequest()}
+                    </View>
+                    {!isInSharedMode() ?
+                        <InfoField
+                            title="Cryptography configuration"
+                            onPress={this.openCryptoConfiguration}
+                        />
+                    : null}
+                    {!_.isEmpty(hasRegisteredParticipants) ?
+                        <InfoField
+                            title={
+                                <Text>
+                                    {studyApprovalRequireAction ? <Text style={{ color: 'red' }}>! </Text> : null}
+                                    <Text>Patients to approve</Text>
+                                </Text>}
+                            onPress={this.openPatientsToApproveList}
+                        />
+                    : null}
                     <InfoField
-                        title="Cryptography configuration"
-                        hasNoBorder
-                        onPress={this.openCryptoConfiguration}
-                    />
-                </View>
-                }
-                <View style={s.content}>
-                    {this.renderSiteJoinRequest()}
-                </View>
-                <View style={s.content}>
-                    <InfoField
-                        title={'Log out'}
-                        hasNoBorder
+                        title="Log out"
                         onPress={resetState}
                     />
                 </View>

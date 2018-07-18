@@ -132,4 +132,3 @@ export async function createNewKeyPair(cursor) {
     cursor.set(data);
     return data;
 }
-

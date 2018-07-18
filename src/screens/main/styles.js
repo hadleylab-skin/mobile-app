@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
     modal: {
@@ -10,5 +10,23 @@ export default StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         fontSize: 18,
+    },
+    participantLockWrapper: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 15,
+    },
+    participantLockText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    participantLockButton: {
+        marginTop: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        width: '100%',
+        height: 40,
     },
 });

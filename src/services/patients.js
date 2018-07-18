@@ -15,9 +15,9 @@ function dehydrateConsent(item) {
     );
 }
 
-const needEncryption = ['firstName', 'lastName', 'mrn', 'dateOfBirth'];
+export const needEncryption = ['firstName', 'lastName', 'mrn', 'dateOfBirth'];
 
-async function dehydratePatientData(data) {
+export async function dehydratePatientData(data) {
     let dehydratedData = { ...dehydrateConsent(data) };
     const aesKey = await decryptRSA(dehydratedData.encryptedKey);
     _.forEach(_.pickBy(dehydratedData), (value, key) => {
@@ -90,11 +90,40 @@ export function patientsService({ token }) {
     };
 }
 
+export function encryptPatientDataWithKey(patientData, aesKey) {
+    let data = {};
+
+    _.forEach(_.pickBy(patientData), (value, key) => {
+        if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
+            // skip empty data
+            return;
+        }
+
+        if (key === 'photo') {
+            data.photo = hydrateImage(value.thumbnail);
+            return;
+        }
+
+        if (_.includes(needEncryption, key)) {
+            data[key] = encryptAES(value, aesKey);
+        } else {
+            data[key] = value;
+        }
+
+        if (key === 'mrn') {
+            data.mrnHash = CryptoJS.MD5(value).toString();
+        }
+    });
+
+    return data;
+}
+
 function hydratePatientData(remoteDoctor) {
     const doctor = remoteDoctor.data.get();
     if (typeof doctor === 'undefined') {
         throw { message: 'System error, context is not loaded' };
     }
+
     return async ({ doctors, ...patientData }) => {
         let data = new FormData();
         const aesKey = Math.random().toString(36).substring(2);
@@ -114,28 +143,9 @@ function hydratePatientData(remoteDoctor) {
         }));
 
         data.append('encryptionKeys', JSON.stringify(encryptionKeys));
+        const dataObject = encryptPatientDataWithKey(patientData, aesKey);
+        _.forEach(dataObject, (value, key) => data.append(key, value));
 
-        _.forEach(_.pickBy(patientData), (value, key) => {
-            if (value === '' || (key === 'photo' && _.isEmpty(patientData.photo))) {
-                // skip empty data
-                return;
-            }
-
-            if (key === 'photo') {
-                data.append('photo', hydrateImage(value.thumbnail));
-                return;
-            }
-
-            if (_.includes(needEncryption, key)) {
-                data.append(key, encryptAES(value, aesKey));
-            } else {
-                data.append(key, value);
-            }
-
-            if (key === 'mrn') {
-                data.append('mrnHash', CryptoJS.MD5(value).toString());
-            }
-        });
         return data;
     };
 }

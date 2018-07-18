@@ -28,6 +28,13 @@ export default StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
     },
+    fields: {
+        backgroundColor: '#fff',
+        borderTopColor: '#D1D1D6',
+        borderTopWidth: 0.5,
+        borderBottomColor: '#D1D1D6',
+        borderBottomWidth: 0.5,
+    },
     photo: {
         width: 100,
         height: 100,

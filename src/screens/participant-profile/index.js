@@ -18,13 +18,13 @@ import defaultUserImage from 'components/icons/avatar-participant/avatar.png';
 import { isStudyConsentExpired } from 'libs/misc';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
 import { checkConsent } from 'screens/signature';
+import { Mole } from 'screens/patients-list/screens/patient/components/moles-list/components/mole';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 import { InfoField, Updater, Button, Picker } from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { saveCurrentStudy } from 'services/async-storage';
 import { isInSharedMode } from 'services/keypair';
 import { getInvitesScreenRoute, getInviteDetailScreenRoute } from './invites';
-import { Mole } from '../../screens/patients-list/screens/patient/components/moles-list/components/mole';
-import { getConsentDocsScreenRoute } from './invites/consent-docs';
 import s from './styles';
 
 const model = (props, context) => ({
@@ -65,8 +65,7 @@ export const ParticipantProfile = schema(model)(createReactClass({
         }),
     },
 
-    async componentWillMount() {
-        await this.context.services.getStudiesService(this.props.studiesCursor);
+    componentWillMount() {
         this.context.cursors.currentStudyPk.on('update', this.onSelectedStudyUpdate);
         this.onSelectedStudyUpdate();
     },
@@ -275,6 +274,9 @@ export const ParticipantProfile = schema(model)(createReactClass({
             this.context.cursors.currentStudyPk.get('data'),
             patient.pk);
 
+        const showInvitesFeild = invites && invites.length > 0;
+        const showStudiesFeild = studiesForPicker.length > 0;
+
         return (
             <Updater
                 service={this.onUpdateScreen}
@@ -309,73 +311,71 @@ export const ParticipantProfile = schema(model)(createReactClass({
                         />
                     </View>
 
-                    {invites && invites.length > 0 ?
-                        <InfoField
-                            title={`${invites.length} pending invites`}
-                            text={'>'}
-                            onPress={() => {
-                                if (invites.length === 1) {
-                                    this.context.mainNavigator.push(
-                                        getInviteDetailScreenRoute({
-                                            studiesCursor,
-                                            invite: _.first(invites),
-                                            tree: this.props.tree,
-                                        }, this.context)
-                                    );
-                                } else {
-                                    this.context.mainNavigator.push(
-                                        getInvitesScreenRoute({
-                                            invites,
-                                            studiesCursor,
-                                            tree: this.props.tree,
-                                        }, this.context)
-                                    );
+                    <View style={s.fields}>
+                        {showInvitesFeild ?
+                            <InfoField
+                                title={`${invites.length} pending invites`}
+                                text={'>'}
+                                hasNoBorder
+                                onPress={() => {
+                                    if (invites.length === 1) {
+                                        this.context.mainNavigator.push(
+                                            getInviteDetailScreenRoute({
+                                                studiesCursor,
+                                                invite: _.first(invites),
+                                                tree: this.props.tree,
+                                            }, this.context)
+                                        );
+                                    } else {
+                                        this.context.mainNavigator.push(
+                                            getInvitesScreenRoute({
+                                                invites,
+                                                studiesCursor,
+                                                tree: this.props.tree,
+                                            }, this.context)
+                                        );
+                                    }
+                                }}
+                            />
+                        : null}
+
+                        {showStudiesFeild ?
+                            <Picker
+                                tree={this.props.tree.studyPicker}
+                                cursor={this.context.cursors.currentStudyPk.select('data')}
+                                items={studiesForPicker}
+                                title="Study"
+                                hasNoBorder={!showInvitesFeild}
+                            />
+                        : null}
+
+                        {isStudyExpired ?
+                            <InfoField
+                                title={
+                                    <Text style={s.redText}>{'Consent update required!'}</Text>
                                 }
-                            }}
-                        />
-                    : null}
+                                onPress={this.openUpdateStudyConsent}
+                                hasNoBorder={!showInvitesFeild && !showStudiesFeild}
+                            />
+                        : null}
 
-                    {studiesForPicker.length > 0 ?
-                        <Picker
-                            tree={this.props.tree.studyPicker}
-                            cursor={this.context.cursors.currentStudyPk.select('data')}
-                            items={studiesForPicker}
-                            title="Studies"
-                        />
-                    : null}
-
-                    {isStudyExpired ?
                         <InfoField
-                            title={
-                                <Text style={s.redText}>{'Consent update required!'}</Text>
-                            }
-                            onPress={this.openUpdateStudyConsent}
+                            title={'Images'}
                         />
-                    : null}
+                        {this.renderMoles()}
 
-                    <InfoField
-                        title={'Images'}
-                    />
-                    {this.renderMoles()}
+                        {!isInSharedMode() ?
+                            <InfoField
+                                title="Cryptography configuration"
+                                onPress={this.openCryptoConfiguration}
+                            />
+                        : null}
 
-                    {
-                    isInSharedMode()
-                    ?
-                    null
-                    :
-                    <View style={s.content}>
                         <InfoField
-                            title="Cryptography configuration"
-                            hasNoBorder
-                            onPress={this.openCryptoConfiguration}
+                            title={'Log out'}
+                            onPress={resetState}
                         />
                     </View>
-                    }
-
-                    <InfoField
-                        title={'Log out'}
-                        onPress={resetState}
-                    />
                 </ScrollView>
             </Updater>
         );

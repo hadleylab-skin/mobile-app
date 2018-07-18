@@ -12,7 +12,7 @@ import { encryptRSA, decryptRSA } from 'services/keypair';
 import { InfoField, Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
 import { getAgreementRoute } from 'screens/create-or-edit/screens/agreement';
-import { getConsentDocsScreenRoute } from './consent-docs';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 
 import ss from './styles';
 
@@ -20,6 +20,7 @@ const model = {
     invites: {},
     declineInviteCursor: {},
     consentCursor: {},
+    agreementScreen: {},
 };
 
 export const InviteDetailScreen = schema(model)(createReactClass({
@@ -128,6 +129,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
                                 this.context.mainNavigator.push(
                                     getAgreementRoute({
                                         navigator: this.context.mainNavigator,
+                                        tree: this.props.tree.agreementScreen,
                                         onAgree: () => this.context.mainNavigator.push(
                                             getSignatureRoute({
                                                 navigator: this.context.mainNavigator,

@@ -1,26 +1,21 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
-    Text,
-    ScrollView,
     NativeEventEmitter,
     NativeModules,
     ProgressViewIOS,
 } from 'react-native';
-import OpenFile from 'react-native-doc-viewer';
-import schema from 'libs/state';
-import { InfoField, Button } from 'components';
+import { Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
-import s from '../styles';
-import ss from './styles';
+import { ConsentDocsList } from './components';
+import s from './styles';
 
 const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer);
 
-export const ConsentDocsScreen = schema({})(createReactClass({
+export const ConsentDocsScreen = createReactClass({
     propTypes: {
         study: PropTypes.object.isRequired, // eslint-disable-line
         navigator: PropTypes.object.isRequired, // eslint-disable-line
@@ -54,6 +49,10 @@ export const ConsentDocsScreen = schema({})(createReactClass({
         );
     },
 
+    componentWillUnmount() {
+        eventEmitter.removeAllListeners('RNDownloaderProgress');
+    },
+
     render() {
         const { study } = this.props;
         const { progress } = this.state;
@@ -68,24 +67,9 @@ export const ConsentDocsScreen = schema({})(createReactClass({
 
         return (
             <View style={s.container}>
-                <ScrollView>
-                    <Text style={ss.text}>
-                        Please, read these documents {'\n'} and confirm with sign
-                    </Text>
-                    {_.map(study.consentDocs, (consentDoc, index) => (
-                        <InfoField
-                            key={consentDoc.pk}
-                            title={consentDoc.originalFilename || `Consent doc #${index}`}
-                            text={'>'}
-                            onPress={() => {
-                                OpenFile.openDoc([{
-                                    url: consentDoc.file,
-                                    fileNameOptional: consentDoc.originalFilename || `Consent doc #${index}`,
-                                }], () => {});
-                            }}
-                        />
-                    ))}
-                </ScrollView>
+                <ConsentDocsList
+                    consentDocs={study.consentDocs}
+                />
                 <View style={s.buttons}>
                     <Button
                         type="green"
@@ -104,7 +88,7 @@ export const ConsentDocsScreen = schema({})(createReactClass({
             </View>
         );
     },
-}));
+});
 
 export function getConsentDocsScreenRoute(props, context) {
     return {
