@@ -7,7 +7,7 @@ export default StyleSheet.create({
     errorWrapper: {
         position: 'absolute',
         top: 0,
-        bottom: 0,
+        bottom: 1,
         right: 5,
         justifyContent: 'center',
         maxWidth: 170,

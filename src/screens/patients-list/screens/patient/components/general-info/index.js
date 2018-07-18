@@ -14,7 +14,7 @@ import moment from 'moment';
 import schema from 'libs/state';
 import { getSignatureRoute } from 'screens/signature';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
-import { getConsentDocsScreenRoute } from 'screens/participant-profile/invites/consent-docs';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 import s from './styles';
 
 

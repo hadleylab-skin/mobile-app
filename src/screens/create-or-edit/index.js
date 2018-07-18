@@ -10,6 +10,8 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     ActivityIndicator,
+    StatusBar,
+    SafeAreaView,
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
@@ -20,6 +22,7 @@ import {
 } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import { getSignatureRoute } from 'screens/signature';
+import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 import defaultUserImage from 'components/icons/empty-photo/empty-photo.png';
 import { getMrnScreenRoute } from './screens/mrn-screen';
 import { getAgreementRoute } from './screens/agreement';
@@ -59,6 +62,8 @@ const model = {
         racePicker: {},
         mrn: '',
         doctorKeys: {},
+        consentDocsScreen: {},
+        agreementScreen: {},
     },
 };
 
@@ -68,6 +73,11 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         dataCursor: BaobabPropTypes.cursor,
         service: PropTypes.func.isRequired,
         onActionComplete: PropTypes.func.isRequired,
+        formData: PropTypes.shape({
+            email: PropTypes.string,
+            study: PropTypes.number,
+        }),
+        study: PropTypes.object,  // eslint-disable-line
     },
 
     contextTypes: {
@@ -159,8 +169,17 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         });
     },
 
+    async onSignConsent(signatureData, formData) {
+        const formDataWithSignature = _.merge(
+            {},
+            formData,
+            { signature: signatureData.encoded });
+
+        await this.saveAndCallback(formDataWithSignature);
+    },
+
     async onSubmit() {
-        const formData = this.props.tree.form.get();
+        const formData = _.merge({}, this.props.tree.form.get(), this.props.formData);
 
         const validationResult = tv4.validateMultiple(formData, submitPatientSchema);
 
@@ -182,23 +201,33 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         }
 
         if (this.isCreateMode()) {
-            this.props.navigator.push(
-                getAgreementRoute({
-                    navigator: this.props.navigator,
-                    onAgree: () => this.props.navigator.push(
-                        getSignatureRoute({
-                            navigator: this.props.navigator,
-                            onSave: async (signatureData) => {
-                                const formDataWithSignature = _.merge(
-                                    {},
-                                    formData,
-                                    { signature: signatureData.encoded });
+            const study = this.props.study;
 
-                                await this.saveAndCallback(formDataWithSignature);
-                            },
-                        })),
-                })
-            );
+            if (study && !_.isEmpty(study.consentDocs)) {
+                this.props.navigator.push(
+                    getConsentDocsScreenRoute({
+                        study,
+                        tree: this.props.tree.consentDocsScreen,
+                        onSign: (signatureData) => {
+                            this.onSignConsent(signatureData, formData);
+                        },
+                    }, this.context)
+                );
+            } else {
+                this.props.navigator.push(
+                    getAgreementRoute({
+                        navigator: this.props.navigator,
+                        tree: this.props.tree.agreementScreen,
+                        onAgree: () => this.props.navigator.push(
+                            getSignatureRoute({
+                                navigator: this.props.navigator,
+                                onSave: (signatureData) => {
+                                    this.onSignConsent(signatureData, formData);
+                                },
+                            })),
+                    })
+                );
+            }
         } else {
             await this.saveAndCallback(formData);
         }
@@ -249,7 +278,8 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         const photo = photoCursor.get();
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
+                <StatusBar barStyle="dark-content" />
                 {isLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
@@ -263,6 +293,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                     onScroll={this.onScroll}
                     style={s.inner}
                     ref={(ref) => { this.scrollView = ref; }}
+                    automaticallyAdjustContentInsets={false}
                 >
                     <Form
                         ref={(ref) => { this.form = ref; }}
@@ -306,7 +337,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                                     placeholderTextColor="#ACB5BE"
                                     errorPlaceholderTextColor="#FC3159"
                                     name="firstName"
-                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
+                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: 0, animated: true })}
                                 />
                                 <Input
                                     label={'Last Name'}
@@ -316,15 +347,22 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                                     placeholderTextColor="#ACB5BE"
                                     errorPlaceholderTextColor="#FC3159"
                                     name="lastName"
-                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: -64, animated: true })}
+                                    onFocus={() => this.scrollView.scrollTo({ x: 0, y: 0, animated: true })}
                                 />
                             </View>
                         </View>
                         <Title text="Patient Information" />
+                        {!_.isEmpty(this.props.formData) ?
+                            <InfoField
+                                title={'Email'}
+                                text={this.props.formData.email}
+                                hasNoBorder
+                            />
+                        : null}
                         <InfoField
-                            title={'Medical Record Number'}
+                            title="Medical Record Number"
                             text={mrnCursor.get()}
-                            hasNoBorder
+                            hasNoBorder={_.isEmpty(this.props.formData)}
                             onPress={() =>
                                 this.context.mainNavigator.push(
                                     getMrnScreenRoute({
@@ -373,7 +411,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                         onPress={this.onSubmit}
                     />
                 </View>
-            </View>
+            </SafeAreaView>
         );
     },
 }));

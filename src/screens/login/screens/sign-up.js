@@ -103,6 +103,7 @@ const SignUp = schema(model)(createReactClass({
                 <View style={s.switchWrapper}>
                     <Switch
                         cursor={belongToGroupCursor}
+                        theme="white"
                         items={[
                             { label: 'Yes', value: true },
                             { label: 'No', value: false },
@@ -149,6 +150,7 @@ const SignUp = schema(model)(createReactClass({
                     <View style={s.formSwitchWrapper}>
                         <Switch
                             cursor={isParticipantFormCursor}
+                            theme="white"
                             items={[
                                 { label: 'Researcher', value: false },
                                 { label: 'Patient', value: true },

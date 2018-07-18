@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     Alert,
     PickerIOS,
+    StatusBar,
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
@@ -81,6 +82,7 @@ const SiteJoinRequest = schema({})(createReactClass({
 
         return (
             <View style={s.container}>
+                <StatusBar barStyle="dark-content" />
                 <Text style={s.title}>Create site join request</Text>
                 <PickerIOS
                     style={s.container}
@@ -125,4 +127,3 @@ export function getSiteJoinRequestRoute(props) {
         passProps: props,
     };
 }
-

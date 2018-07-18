@@ -17,6 +17,7 @@ import { Button } from 'components';
 import { onScroll } from 'components/updater';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { patientEmailRoute } from 'screens/patient-email';
 import PatientListItem from './components/patient-list-item';
 import Filter from './components/filter';
 import Search from './components/search';
@@ -27,6 +28,7 @@ const PatientsListScreen = schema({})(createReactClass({
         navigator: PropTypes.object.isRequired, // eslint-disable-line
         onAddingComplete: PropTypes.func.isRequired,
         onPatientAdded: PropTypes.func.isRequired,
+        onCreatePatientPressed: PropTypes.func.isRequired,
         searchCursor: BaobabPropTypes.cursor.isRequired,
         studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
@@ -54,7 +56,7 @@ const PatientsListScreen = schema({})(createReactClass({
         };
     },
 
-    async componentWillMount() {
+    componentWillMount() {
         const { cursors } = this.context;
 
         cursors.patients.on('update', this.updateDataStore);
@@ -160,14 +162,7 @@ const PatientsListScreen = schema({})(createReactClass({
                         <View style={s.button}>
                             <Button
                                 title="+ Add a new patient"
-                                onPress={() => mainNavigator.push(
-                                    getCreateOrEditPatientRoute({
-                                        tree: this.props.tree.select('newPatient'),
-                                        title: 'New Patient',
-                                        service: services.createPatientService,
-                                        onActionComplete: this.props.onPatientAdded,
-                                    }, this.context)
-                                )}
+                                onPress={this.props.onCreatePatientPressed}
                             />
                         </View>
                     </View>
@@ -193,6 +188,29 @@ export const PatientsList = createReactClass({
             patientsService: PropTypes.func.isRequired,
             getPatientMolesService: PropTypes.func.isRequired,
         }),
+    },
+
+    onCreatePatientPressed() {
+        const studies = this.props.studiesCursor.get('data');
+
+        if (!_.isEmpty(studies)) {
+            this.context.mainNavigator.push(
+                patientEmailRoute({
+                    tree: this.props.tree.select('patientEmail'),
+                    onPatientAdded: this.onPatientAdded,
+                    studies,
+                }, this.context)
+            );
+        } else {
+            this.context.mainNavigator.push(
+                getCreateOrEditPatientRoute({
+                    tree: this.props.tree.select('newPatient'),
+                    title: 'New Patient',
+                    service: this.context.services.createPatientService,
+                    onActionComplete: this.onPatientAdded,
+                }, this.context)
+            );
+        }
     },
 
     async onAddingComplete() {
@@ -238,19 +256,13 @@ export const PatientsList = createReactClass({
                     component: PatientsListScreen,
                     title: 'Patients',
                     rightButtonSystemIcon: 'add',
-                    onRightButtonPress: () => this.context.mainNavigator.push(
-                        getCreateOrEditPatientRoute({
-                            tree: this.props.tree.select('newPatient'),
-                            title: 'New Patient',
-                            service: this.context.services.createPatientService,
-                            onActionComplete: this.onPatientAdded,
-                        }, this.context)
-                    ),
+                    onRightButtonPress: this.onCreatePatientPressed,
                     navigationBarHidden: false,
                     tintColor: '#FF2D55',
                     passProps: {
                         onAddingComplete: this.onAddingComplete,
                         onPatientAdded: this.onPatientAdded,
+                        onCreatePatientPressed: this.onCreatePatientPressed,
                         ...this.props,
                     },
                 }}

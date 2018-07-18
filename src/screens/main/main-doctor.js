@@ -21,6 +21,7 @@ import patientsIcon from './images/patients.png';
 const model = (props, context) => ({
     tree: {
         studies: context.services.getStudiesService,
+        studyInvitations: context.services.getInvitationsForDoctorService,
     },
 });
 
@@ -40,6 +41,7 @@ export default schema(model)(createReactClass({
             getSiteJoinRequestsService: PropTypes.func.isRequired,
             createPatientService: PropTypes.func.isRequired,
             getStudiesService: PropTypes.func.isRequired,
+            getInvitationsForDoctorService: PropTypes.func.isRequired,
         }),
         cursors: PropTypes.shape({
             doctor: BaobabPropTypes.cursor.isRequired,
@@ -61,6 +63,10 @@ export default schema(model)(createReactClass({
                                        .first()
                                        .get('data.state')
                                        .value() === 2;
+
+        const studyApprovalRequireAction = _.find(
+                this.props.tree.studyInvitations.get('data'),
+                (invite) => invite.participant && invite.status === 'new');
 
         return (
             <View
@@ -96,7 +102,7 @@ export default schema(model)(createReactClass({
                         <View />
                     </TabBarIOS.Item>
                     <TabBarIOS.Item
-                        badge={siteJoinRequireAction ? '!' : null}
+                        badge={(siteJoinRequireAction || studyApprovalRequireAction) ? '!' : null}
                         title="My Profile"
                         icon={profileIcon}
                         selected={currentTabCursor.get() === 'profile'}
@@ -108,6 +114,7 @@ export default schema(model)(createReactClass({
                             doctorCursor={this.props.tokenCursor.data.doctor}
                             keyPairStatusCursor={this.props.keyPairStatusCursor}
                             siteJoinRequestCursor={this.props.tree.siteJoinRequest}
+                            studyInvitationsCursor={this.props.tree.studyInvitations}
                         />
                     </TabBarIOS.Item>
                 </TabBarIOS>

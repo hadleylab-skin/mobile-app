@@ -16,6 +16,8 @@
     "react/prop-types": ["error", { "ignore": ["tree"] }],
     "react/prefer-es6-class": "off",
     "react/no-multi-comp": "off",
+    "react/jsx-wrap-multilines": "off",
+    "react/destructuring-assignment": "off",
     "react/sort-comp": ["error", {
       "order": [
         "static-methods",

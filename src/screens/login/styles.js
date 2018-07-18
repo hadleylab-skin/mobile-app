@@ -34,15 +34,15 @@ export default StyleSheet.create({
     },
 
     switchWrapper: {
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: 15,
+        marginBottom: 15,
         alignItems: 'flex-end',
     },
 
     formSwitchWrapper: {
-        marginTop: 20,
+        marginTop: 15,
         marginBottom: 20,
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
 
     errorWrapper: {

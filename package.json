@@ -25,6 +25,7 @@
     "react-native-rsa-native": "1.0.10",
     "react-native-signature-capture": "0.4.9",
     "react-native-snap-carousel": "3.7.0",
+    "react-native-tab-view": "^1.0.2",
     "tv4": "^1.3.0"
   },
   "devDependencies": {

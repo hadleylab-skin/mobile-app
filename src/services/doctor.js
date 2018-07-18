@@ -70,3 +70,17 @@ export function getDoctorKeyListService({ token }) {
         return service(cursor);
     };
 }
+
+export function getDoctorByEmailService({ token }) {
+    const headers = {
+        Authorization: `JWT ${token.get()}`,
+    };
+
+    return (cursor, email) => {
+        const _service = buildGetService(
+            `/api/v1/doctor/get_by_email/?email=${email}`,
+            _.identity,
+            _.merge({}, defaultHeaders, headers));
+        return _service(cursor);
+    };
+}

@@ -9,6 +9,7 @@ import {
     Switch,
     Alert,
     Linking,
+    StatusBar,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
@@ -205,6 +206,7 @@ export const CryptoConfiguration = schema(model)(createReactClass({
     render() {
         return (
             <ScrollView style={{ margin: 50 }}>
+                <StatusBar barStyle="dark-content" />
                 <Text style={s.mainTitle}>
                     Cryptography Configuration
                 </Text>
@@ -223,4 +225,3 @@ export function getCryptoConfigurationRoute(props) {
         passProps: props,
     };
 }
-

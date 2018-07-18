@@ -31,7 +31,7 @@ const ResetPassword = schema(model)(createReactClass({
     },
 
     componentWillMount() {
-        this.props.tree.set(model);
+        this.props.tree.set(model.tree);
     },
 
     goBack() {
