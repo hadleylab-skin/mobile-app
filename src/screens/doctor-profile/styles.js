@@ -47,12 +47,6 @@ export default StyleSheet.create({
         lineHeight: 20,
         color: 'rgba(255,255,255,0.5)',
     },
-    infoMessage: {
-        height: 50,
-        paddingTop: 5,
-        paddingLeft: 20,
-        paddingRight: 20,
-    },
     activityIndicator: {
         position: 'absolute',
         top: 300,
@@ -60,5 +54,37 @@ export default StyleSheet.create({
         right: 0,
         justifyContent: 'center',
         zIndex: 1,
+    },
+    topBorder: {
+        borderTopColor: '#D1D1D6',
+        borderTopWidth: 0.5,
+    },
+    border: {
+        position: 'absolute',
+        left: 15,
+        right: 0,
+        top: 0,
+        height: 0.5,
+        backgroundColor: '#DADADA',
+    },
+    fieldContainer: {
+        flexDirection: 'row',
+        padding: 15,
+        paddingRight: 30,
+        position: 'relative',
+    },
+    fieldTitle: {
+        fontSize: 17,
+        lineHeight: 20,
+    },
+    exclamation: {
+        position: 'absolute',
+        right: 15,
+        alignSelf: 'center',
+    },
+    exclamationText: {
+        color: 'red',
+        fontSize: 30,
+        fontWeight: 'bold',
     },
 });

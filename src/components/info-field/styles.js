@@ -4,8 +4,9 @@ export default StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         borderBottomColor: '#D1D1D6',
+        flexWrap: 'nowrap',
         padding: 15,
         position: 'relative',
     },
