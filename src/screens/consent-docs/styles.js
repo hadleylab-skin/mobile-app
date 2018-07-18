@@ -31,6 +31,6 @@ export default StyleSheet.create({
         paddingBottom: 20,
         fontSize: 18,
         alignSelf: 'center',
-        flexWrap: "wrap",
+        flexWrap: 'wrap',
     },
 });
