@@ -138,7 +138,7 @@ export const PatientEmail = schema(model)(createReactClass({
 
         if (doctor && doctor.status === 'Failure' &&
             _.first(doctor.error.data) === 'email_used_by_the_patient') {
-            return this.renderMessage('Email is used by the existing patient');
+            return this.renderMessage('The email is already used by your patient');
         }
 
         // Doctor is not founded --> can create new
@@ -146,7 +146,7 @@ export const PatientEmail = schema(model)(createReactClass({
             _.isEmpty(doctor.data)) {
             return (
                 <View>
-                    {!study ? this.renderMessage('Select study to continue') : null}
+                    {!study ? this.renderMessage('Select a study to continue') : null}
                     <View style={s.buttonWrapper}>
                         <Button
                             title="Continue"
@@ -163,7 +163,7 @@ export const PatientEmail = schema(model)(createReactClass({
             && doctor.data.isParticipant) {
             return (
                 <View>
-                    {!study ? this.renderMessage('Select study to continue') : null}
+                    {!study ? this.renderMessage('Select a study to continue') : null}
                     <View style={s.buttonWrapper}>
                         <Button
                             title="Invite to study"
@@ -247,7 +247,7 @@ export const PatientEmail = schema(model)(createReactClass({
                         </View>
                         {emailCursor.get()
                             ? this.renderButton()
-                            : this.renderMessage('Enter an email to invite patient to study')}
+                            : this.renderMessage('Enter an email to invite a patient to a study')}
                     </Form>
                 </View>
                 <View style={s.footer}>
