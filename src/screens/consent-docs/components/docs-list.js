@@ -7,14 +7,13 @@ import {
     ScrollView,
 } from 'react-native';
 import OpenFile from 'react-native-doc-viewer';
-import schema from 'libs/state';
 import { InfoField } from 'components';
 import s from '../styles';
 
 
 export const ConsentDocsList = createReactClass({
     propTypes: {
-        consentDocs: PropTypes.object.array, // eslint-disable-line
+        consentDocs: PropTypes.array, // eslint-disable-line
     },
 
     render() {

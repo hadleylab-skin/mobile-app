@@ -35,6 +35,7 @@ import { getInvitesService,
          declineInviteForDoctorService,
          getInvitationsForDoctorService,
        } from './invites';
+import { getDefaultConsentDocsService } from './consents';
 
 
 export default {
@@ -70,4 +71,5 @@ export default {
     sendInviteToDoctorService,
     approveInviteForDoctorService,
     declineInviteForDoctorService,
+    getDefaultConsentDocsService,
 };

@@ -63,6 +63,7 @@ const model = {
         mrn: '',
         doctorKeys: {},
         consentDocsScreen: {},
+        agreementScreen: {},
     },
 };
 
@@ -216,6 +217,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                 this.props.navigator.push(
                     getAgreementRoute({
                         navigator: this.props.navigator,
+                        tree: this.props.tree.agreementScreen,
                         onAgree: () => this.props.navigator.push(
                             getSignatureRoute({
                                 navigator: this.props.navigator,
