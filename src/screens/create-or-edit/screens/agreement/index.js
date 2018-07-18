@@ -36,6 +36,9 @@ const AgreementScreen = schema(model)(createReactClass({
 
     render() {
         const result = this.props.tree.getConsentsResult.get();
+        if (!result) {
+            return null;
+        }
 
         if (result.status === 'Loading') {
             return (
