@@ -6,6 +6,7 @@ import {
     View,
     SafeAreaView,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
 import { Input, Form } from 'components';
 import tv4 from 'tv4';
@@ -71,6 +72,7 @@ export const DiagnosisScreen = createReactClass({
 
         return (
             <SafeAreaView style={s.container}>
+                <StatusBar barStyle="dark-content" />
                 <View style={s.inner}>
                     <Form onSubmit={this.onSubmit} ref={(ref) => { this.form = ref; }}>
                         <Input

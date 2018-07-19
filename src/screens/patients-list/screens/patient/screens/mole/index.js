@@ -9,6 +9,7 @@ import {
     Dimensions,
     ScrollView,
     SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import schema from 'libs/state';
 import ImagePicker from 'react-native-image-picker';
@@ -131,9 +132,8 @@ export const Mole = schema({})(createReactClass({
         const currentImage = _.find(images, { data: { pk: currentImagePk } });
 
         return (
-            <SafeAreaView
-                style={s.safeWrapper}
-            >
+            <SafeAreaView style={s.safeWrapper}>
+                <StatusBar barStyle="dark-content" />
                 <Updater
                     service={async () => await this.context.services.getMoleService(
                         patientPk,

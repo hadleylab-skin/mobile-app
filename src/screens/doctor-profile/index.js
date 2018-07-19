@@ -359,14 +359,17 @@ export const DoctorProfile = schema(model)(createReactClass({
                         />
                     : null}
                     {!_.isEmpty(hasRegisteredParticipants) ?
-                        <InfoField
-                            title={
-                                <Text>
-                                    {studyApprovalRequireAction ? <Text style={{ color: 'red' }}>! </Text> : null}
-                                    <Text>Patients to approve</Text>
-                                </Text>}
-                            onPress={this.openPatientsToApproveList}
-                        />
+                        <TouchableOpacity onPress={this.openPatientsToApproveList} activeOpacity={0.5}>
+                            <View style={s.fieldContainer}>
+                                <View style={s.border} />
+                                <Text style={s.fieldTitle}>
+                                    Patients to approve
+                                </Text>
+                                <View style={s.exclamation}>
+                                    <Text style={s.exclamationText}>!</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
                     : null}
                     <InfoField
                         title="Log out"
