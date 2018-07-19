@@ -11,10 +11,10 @@ import {
     StatusBar,
     Dimensions,
     ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native';
 import { onScroll } from 'components/updater';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { InfoField } from 'components';
 import schema from 'libs/state';
 import s from './styles';
 
@@ -145,11 +145,22 @@ export const PatientsToApproveList = schema(model)(createReactClass({
 
     renderPatient(patient) {
         return (
-            <InfoField
-                title={`${patient.patient.firstName} ${patient.patient.lastName} (${patient.email})`}
+            <TouchableOpacity
+                activeOpacity={0.5}
                 onPress={() => this.patientClicked(patient)}
-                hasNoBorder={false}
-            />
+            >
+                <View style={s.item}>
+                    <View style={s.border} />
+                    <View style={s.inner}>
+                        <Text style={s.name}>
+                            {`${patient.patient.firstName} ${patient.patient.lastName}`}
+                        </Text>
+                        <Text style={s.text}>
+                            {`${patient.email}`}
+                        </Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
         );
     },
 
