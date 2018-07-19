@@ -137,7 +137,7 @@ export const PatientsToApproveList = schema(model)(createReactClass({
                     onPress: () => this.declinePatient(patient),
                 },
                 {
-                    text: 'Close',
+                    text: 'Cancel',
                 },
             ]
         );
