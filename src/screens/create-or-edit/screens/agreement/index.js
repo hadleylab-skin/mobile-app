@@ -8,6 +8,8 @@ import {
     TouchableOpacity,
     WebView,
     ActivityIndicator,
+    NativeEventEmitter,
+    NativeModules,
 } from 'react-native';
 import schema from 'libs/state';
 import backIcon from 'components/icons/back/back.png';
@@ -22,6 +24,9 @@ const model = (props, context) => ({
 });
 
 
+const eventEmitter = new NativeEventEmitter(NativeModules.RNReactNativeDocViewer);
+
+
 const AgreementScreen = schema(model)(createReactClass({
     propTypes: {
         navigator: PropTypes.object.isRequired, // eslint-disable-line
@@ -32,6 +37,16 @@ const AgreementScreen = schema(model)(createReactClass({
         services: PropTypes.shape({
             getDefaultConsentDocsService: PropTypes.func.isRequired,
         }),
+    },
+
+    componentDidMount() {
+        eventEmitter.addListener('RNDownloaderProgress', () => null);
+        eventEmitter.addListener('DoneButtonEvent', () => null);
+    },
+
+    componentWillUnmount() {
+        eventEmitter.removeAllListeners('RNDownloaderProgress');
+        eventEmitter.removeAllListeners('DoneButtonEvent');
     },
 
     render() {
