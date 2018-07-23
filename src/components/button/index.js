@@ -75,8 +75,8 @@ export const Button = createReactClass({
                 <CommonButton
                     {...this.props}
                     stylesButton={s.greenButton}
-                    stylesText={s.rectText}
-                    underlayColor={'rgba(63,195,0,0.5)'}
+                    stylesText={s.greenText}
+                    underlayColor={'rgba(0,179,60,0.5)'}
                 />
             );
         }

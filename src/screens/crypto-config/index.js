@@ -10,10 +10,11 @@ import {
     Alert,
     Linking,
     StatusBar,
+    SafeAreaView,
 } from 'react-native';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
-import { Button } from 'components';
+import { Button, InfoField } from 'components';
 import { getKeyPairStatus, createNewKeyPair,
          getKeyPair, encryptAES, isInSharedMode,
 } from 'services/keypair';
@@ -120,21 +121,23 @@ export const CryptoConfiguration = schema(model)(createReactClass({
         if (status === 'Failure') {
             if (isInSharedMode()) {
                 return (
-                    <View style={s.container}>
-                        <Text style={s.group}>
-                            The app is running is the shared mode.
-                            In this mode your private key is loaging from the server.
-                            However you don't export your private key yet.
-                        </Text>
-                        <Button
-                            title="How to export private key"
-                            onPress={() => Linking.openURL('https://skin.hadleylab.com/web_ui/#/how-to-share-private-key')}
-                        />
-                        <Button
-                            title="Log out"
-                            onPress={resetState}
-                        />
-
+                    <View>
+                        <View style={s.content}>
+                            <Text style={s.text}>
+                                The app is running is the shared mode.
+                                In this mode your private key is loaging from the server.
+                                However you don't export your private key yet.
+                            </Text>
+                        </View>
+                        <View style={s.button}>
+                            <Button
+                                title="How to export private key"
+                                onPress={() => Linking.openURL('https://skin.hadleylab.com/web_ui/#/how-to-share-private-key')}
+                            />
+                        </View>
+                        <View style={s.button}>
+                            <Button title="Log out" onPress={resetState} />
+                        </View>
                     </View>
                 );
             }
@@ -143,46 +146,52 @@ export const CryptoConfiguration = schema(model)(createReactClass({
             data = data || {};
             if (!data.publicKey && !data.privateKey && !doctor.publicKey) {
                 return (
-                    <View style={s.container}>
-                        <Text style={s.group}>
-                            Since this is your first time using the app,
-                            we must generate a RSA security key tied to an Apple account.
-                            By default the key will be stored in your iCloud keychain
-                            to provide access from all your devices.
-                        </Text>
-                        <Button
-                            title="Generate key-pair"
-                            onPress={this.regenerateRSAKeypair}
-                        />
+                    <View>
+                        <View style={s.content}>
+                            <Text style={s.text}>
+                                Since this is your first time using the app,
+                                we must generate a RSA security key tied to an Apple account.
+                                By default the key will be stored in your iCloud keychain
+                                to provide access from all your devices.
+                            </Text>
+                        </View>
+                        <View style={s.button}>
+                            <Button
+                                title="Generate key-pair"
+                                onPress={this.regenerateRSAKeypair}
+                            />
+                        </View>
                     </View>
                 );
             }
             return (
-                <View style={s.container}>
-                    <Text style={[s.title, s.group]}>Key pair Error</Text>
-                    <Text style={s.group}>
-                        Public key from your device
-                        doesn't much public key
-                        you have created
-                        when you login first time.
-                    </Text>
-                    <Text style={s.group}>
-                        Probably you are using one device for multiple accounts,
-                        the app doesn't support it yet.
-                    </Text>
-                    <View
-                        style={s.group}
-                    >
+                <View>
+                    <View style={s.content}>
+                        <Text style={[s.title]}>Key pair Error</Text>
+                        <Text style={s.text}>
+                            Public key from your device
+                            doesn't much public key
+                            you have created
+                            when you login first time.
+                        </Text>
+                        <Text style={s.text}>
+                            Probably you are using one device for multiple accounts,
+                            the app doesn't support it yet.
+                        </Text>
+                    </View>
+                    <View style={s.button}>
                         <Button
                             title="Log out"
                             onPress={resetState}
                         />
                     </View>
-
-                    <Button
-                        title="Reset keys"
-                        onPress={this.resetKeys}
-                    />
+                    <View style={s.button}>
+                        <Button
+                            title="Reset keys"
+                            style={s.button}
+                            onPress={this.resetKeys}
+                        />
+                    </View>
                 </View>
             );
         }
@@ -191,27 +200,34 @@ export const CryptoConfiguration = schema(model)(createReactClass({
 
     renderExport() {
         const exported = this.props.keyPairStatusCursor.keyPairStatus.get('exported');
+
         return (
-            <View style={s.container}>
-                <Text>Key is {exported ? '' : 'not'} exported for the web app</Text>
-                <Switch
-                    onValueChange={this.exportSettingsChange}
-                    value={exported}
+            <View style={s.fields}>
+                <InfoField
+                    title="Export key for the web app"
+                    hasNoBorder
+                    controls={
+                        <Switch
+                            onValueChange={this.exportSettingsChange}
+                            value={exported}
+                        />
+                    }
                 />
             </View>
-
         );
     },
 
     render() {
         return (
-            <ScrollView style={{ margin: 50 }}>
-                <StatusBar barStyle="dark-content" />
-                <Text style={s.mainTitle}>
-                    Cryptography Configuration
-                </Text>
-                {this.renderCryptographyInfo()}
-            </ScrollView>
+            <SafeAreaView style={s.container}>
+                <ScrollView automaticallyAdjustContentInsets={false}>
+                    <StatusBar barStyle="dark-content" />
+                    <Text style={s.mainTitle}>
+                        Cryptography Configuration
+                    </Text>
+                    {this.renderCryptographyInfo()}
+                </ScrollView>
+            </SafeAreaView>
         );
     },
 }));

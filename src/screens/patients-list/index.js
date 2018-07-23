@@ -157,8 +157,7 @@ const PatientsListScreen = schema({})(createReactClass({
                 : null}
                 {isListEmpty ?
                     <View style={s.emptyList}>
-                        <Text style={s.title}>You don’t have any patients
-                            yet.</Text>
+                        <Text style={s.title}>You don’t have any patients yet.</Text>
                         <View style={s.button}>
                             <Button
                                 title="+ Add a new patient"
@@ -272,4 +271,3 @@ export const PatientsList = createReactClass({
         );
     },
 });
-

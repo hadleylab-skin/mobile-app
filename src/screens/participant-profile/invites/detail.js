@@ -6,6 +6,8 @@ import createReactClass from 'create-react-class';
 import {
     View,
     Alert,
+    SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import schema from 'libs/state';
 import { encryptRSA, decryptRSA } from 'services/keypair';
@@ -14,7 +16,7 @@ import { getSignatureRoute } from 'screens/signature';
 import { getAgreementRoute } from 'screens/create-or-edit/screens/agreement';
 import { getConsentDocsScreenRoute } from 'screens/consent-docs';
 
-import ss from './styles';
+import s from './styles';
 
 const model = {
     invites: {},
@@ -110,61 +112,66 @@ export const InviteDetailScreen = schema(model)(createReactClass({
         const doctor = invite.doctor;
 
         return (
-            <View style={ss.container}>
-                <InfoField
-                    title={'Doctor'}
-                    text={`${doctor.firstName} ${doctor.lastName}`}
-                />
-                <InfoField
-                    title={'Study'}
-                    text={invite.study.title}
-                />
-                <View style={ss.buttons}>
-                    <Button
-                        type="green"
-                        title="Approve"
-                        style={ss.button}
-                        onPress={() => {
-                            if (_.isEmpty(invite.study.consentDocs)) {
-                                this.context.mainNavigator.push(
-                                    getAgreementRoute({
-                                        navigator: this.context.mainNavigator,
-                                        tree: this.props.tree.agreementScreen,
-                                        onAgree: () => this.context.mainNavigator.push(
-                                            getSignatureRoute({
-                                                navigator: this.context.mainNavigator,
-                                                onSave: this.onSign,
-                                            })),
-                                    })
-                                );
-                            } else {
-                                this.context.mainNavigator.push(
-                                    getConsentDocsScreenRoute({
-                                        study: invite.study,
-                                        tree: this.props.tree,
-                                        onSign: this.onSign,
-                                    }, this.context)
-                                );
-                            }
-                        }}
+            <SafeAreaView style={s.containerWithBg}>
+                <StatusBar barStyle="dark-content" />
+                <View style={s.content}>
+                    <InfoField
+                        title="Doctor"
+                        text={`${doctor.firstName} ${doctor.lastName}`}
+                        hasNoBorder
                     />
-                    <Button
-                        type="rect"
-                        title="Decline"
-                        style={ss.button}
-                        onPress={() => {
-                            Alert.alert(
-                                'Are you sure?',
-                                'Are you sure you want to decline the invitation?',
-                                [
-                                    { text: 'Cancel' },
-                                    { text: 'Yes', onPress: this.declineInvite },
-                                ]
-                            );
-                        }}
+                    <InfoField
+                        title="Study"
+                        text={invite.study.title}
                     />
                 </View>
-            </View>
+                <View style={s.buttons}>
+                    <View style={s.buttonLeft}>
+                        <Button
+                            type="green"
+                            title="Approve"
+                            onPress={() => {
+                                if (_.isEmpty(invite.study.consentDocs)) {
+                                    this.context.mainNavigator.push(
+                                        getAgreementRoute({
+                                            navigator: this.context.mainNavigator,
+                                            tree: this.props.tree.agreementScreen,
+                                            onAgree: () => this.context.mainNavigator.push(
+                                                getSignatureRoute({
+                                                    navigator: this.context.mainNavigator,
+                                                    onSave: this.onSign,
+                                                })),
+                                        })
+                                    );
+                                } else {
+                                    this.context.mainNavigator.push(
+                                        getConsentDocsScreenRoute({
+                                            study: invite.study,
+                                            tree: this.props.tree,
+                                            onSign: this.onSign,
+                                        }, this.context)
+                                    );
+                                }
+                            }}
+                        />
+                    </View>
+                    <View style={s.buttonRight}>
+                        <Button
+                            title="Decline"
+                            onPress={() => {
+                                Alert.alert(
+                                    'Are you sure?',
+                                    'Are you sure you want to decline the invitation?',
+                                    [
+                                        { text: 'Cancel' },
+                                        { text: 'Yes', onPress: this.declineInvite },
+                                    ]
+                                );
+                            }}
+                        />
+                    </View>
+                </View>
+            </SafeAreaView>
         );
     },
 }));

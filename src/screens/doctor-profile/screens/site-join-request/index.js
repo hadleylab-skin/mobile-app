@@ -10,6 +10,7 @@ import {
     Alert,
     PickerIOS,
     StatusBar,
+    SafeAreaView,
 } from 'react-native';
 import schema from 'libs/state';
 import { Button } from 'components';
@@ -81,39 +82,35 @@ const SiteJoinRequest = schema({})(createReactClass({
         }
 
         return (
-            <View style={s.container}>
+            <SafeAreaView style={s.container}>
                 <StatusBar barStyle="dark-content" />
-                <Text style={s.title}>Create site join request</Text>
-                <PickerIOS
-                    style={s.container}
-                    selectedValue={siteCursor.get()}
-                    onValueChange={(value) => siteCursor.set(value)}
-                >
-                    {_.map(pickerOptions, ({ pk, title }) => (
-                        <PickerIOS.Item
-                            key={pk}
-                            value={pk}
-                            label={title}
-                        />
-                    ))}
-                </PickerIOS>
-                <View style={s.container}>
-                    {
-                            isLoading
-                        ?
-                            <ActivityIndicator />
-                        :
-                            <View
-                                style={s.button}
-                            >
-                                <Button
-                                    title="Send join request"
-                                    onPress={this.onAddNewRequest}
-                                />
-                            </View>
-                    }
+                <View style={s.content}>
+                    <PickerIOS
+                        selectedValue={siteCursor.get()}
+                        onValueChange={(value) => siteCursor.set(value)}
+                    >
+                        {_.map(pickerOptions, ({ pk, title }) => (
+                            <PickerIOS.Item
+                                key={pk}
+                                value={pk}
+                                label={title}
+                            />
+                        ))}
+                    </PickerIOS>
                 </View>
-            </View>
+                {isLoading ?
+                    <ActivityIndicator />
+                :
+                    <View
+                        style={s.button}
+                    >
+                        <Button
+                            title="Send join request"
+                            onPress={this.onAddNewRequest}
+                        />
+                    </View>
+                }
+            </SafeAreaView>
         );
     },
 }));
