@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
@@ -9,6 +10,7 @@ import {
     TouchableOpacity,
     Dimensions,
 } from 'react-native';
+import { setTutorialPassed } from 'services/async-storage';
 
 import { TutorialPage } from './page';
 
@@ -43,6 +45,28 @@ const pagesContent = {
             text: 'Export the private key on your profile page if you need to use the web version of the system.',
         },
     ],
+    participant: [
+        {
+            image: require('./images/first.png'),
+            header: 'Welcome to Skin!',
+            text: 'Collect & Analyze your skin images with experts.',
+        },
+        {
+            image: require('./images/patient2.png'),
+            header: 'Join studies',
+            text: 'Accept an invitation and sign a consent form to join.',
+        },
+        {
+            image: require('./images/patient3.png'),
+            header: 'Manage your profile',
+            text: 'Keep your personal information up-to-date.',
+        },
+        {
+            image: require('./images/patient4.png'),
+            header: 'Collect skin images',
+            text: 'Select a body part on the patient 3D model and take a photo of your skin.',
+        },
+    ],
 };
 
 
@@ -51,6 +75,7 @@ export const TutorialScreen = createReactClass({
 
     propTypes: {
         type: PropTypes.string.isRequired,
+        tutorialPassedCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     getInitialState() {
@@ -73,6 +98,11 @@ export const TutorialScreen = createReactClass({
         if (this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
         }
+    },
+
+    gotItClicked() {
+        setTutorialPassed();
+        this.props.tutorialPassedCursor.set('data', true);
     },
 
     render() {
@@ -115,6 +145,7 @@ export const TutorialScreen = createReactClass({
                     <TouchableOpacity
                         activeOpacity={0.5}
                         style={[s.bottomButton, s.bottomButtonLast]}
+                        onPress={() => this.gotItClicked()}
                     >
                         <Text
                             style={[s.bottomButtonText, s.bottomButtonTextLast]}

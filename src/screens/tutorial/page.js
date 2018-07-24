@@ -14,7 +14,7 @@ export const TutorialPage = createReactClass({
     displayName: 'TutorialPage',
 
     propTypes: {
-        // image: PropTypes,
+        image: PropTypes.number.isRequired,
         header: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
     },

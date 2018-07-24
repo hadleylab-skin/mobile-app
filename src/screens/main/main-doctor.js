@@ -14,6 +14,8 @@ import { DoctorProfile } from 'screens/doctor-profile';
 import { CameraMenu } from 'screens/camera-menu';
 import { TutorialScreen } from 'screens/tutorial';
 
+import { getTutorialPassedFlag } from 'services/async-storage';
+
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
 import patientsIcon from './images/patients.png';
@@ -23,6 +25,7 @@ const model = (props, context) => ({
     tree: {
         studies: context.services.getStudiesService,
         studyInvitations: context.services.getInvitationsForDoctorService,
+        tutorialPassed: getTutorialPassedFlag,
     },
 });
 
@@ -51,6 +54,20 @@ export default schema(model)(createReactClass({
     },
 
     render() {
+        const tutorialPassed = this.props.tree.tutorialPassed.get();
+        if (tutorialPassed.status === 'Loading') {
+            return null;
+        }
+
+        if (tutorialPassed.data === null) {
+            return (
+                <TutorialScreen
+                    type={'doctor'}
+                    tutorialPassedCursor={this.props.tree.tutorialPassed}
+                />
+            );
+        }
+
         const currentTabCursor = this.props.tree.currentTab;
         const patientsCursor = this.props.tree.patients;
         const showModalCursor = this.props.tree.showModal;
@@ -68,12 +85,6 @@ export default schema(model)(createReactClass({
         const studyApprovalRequireAction = _.find(
                 this.props.tree.studyInvitations.get('data'),
                 (invite) => invite.participant && invite.status === 'new');
-
-        return (
-            <TutorialScreen
-                type={'doctor'}
-            />
-        );
 
         return (
             <View
