@@ -13,33 +13,32 @@ import {
 import { TutorialPage } from './page';
 
 import s from './styles';
-import first from './images/first.svg';
 
 
 const pagesContent = {
     doctor: [
         {
-            image: first,
+            image: require('./images/first.png'),
             header: 'Welcome to Skin!',
             text: 'Collect & Analyze patient data.',
         },
         {
-            image: first,
+            image: require('./images/doc2.png'),
             header: 'Take part in studies',
             text: 'Navigate over available studies on your profile page.',
         },
         {
-            image: first,
+            image: require('./images/doc3.png'),
             header: 'Manage patients',
             text: 'Create new patients and invite them to studies.',
         },
         {
-            image: first,
+            image: require('./images/doc4.png'),
             header: 'Collect skin images',
             text: 'Select a body part on the patient 3D model and take a photo of a skin.',
         },
         {
-            image: first,
+            image: require('./images/doc5.png'),
             header: 'Advanced features',
             text: 'Export the private key on your profile page if you need to use the web version of the system.',
         },

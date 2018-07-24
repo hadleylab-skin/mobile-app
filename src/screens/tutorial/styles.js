@@ -68,10 +68,13 @@ export default StyleSheet.create({
     },
     text: {
         fontSize: 16,
+        lineHeight: 24,
         color: '#000',
         textAlign: 'center',
     },
     image: {
+        width: windowWidth - 100,
+        height: windowWidth - 100,
         marginTop: 25,
         marginBottom: 25,
     },

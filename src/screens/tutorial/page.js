@@ -4,9 +4,8 @@ import createReactClass from 'create-react-class';
 import {
     View,
     Text,
-    Dimensions,
+    Image,
 } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 
 import s from './styles';
 
@@ -22,16 +21,13 @@ export const TutorialPage = createReactClass({
 
     render() {
         const { header, text, image } = this.props;
-        const windowWidth = Dimensions.get('window').width;
 
         return (
             <View style={s.pageContainer}>
-                <SvgUri
-                    width={windowWidth - 50}
-                    height={windowWidth - 50}
+                <Image
                     source={image}
+                    style={s.image}
                 />
-                <Image style={s.image} source={image} />
 
                 <Text style={s.header}>
                     {header}
