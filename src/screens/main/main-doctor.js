@@ -12,6 +12,7 @@ import schema from 'libs/state';
 import { PatientsList } from 'screens/patients-list';
 import { DoctorProfile } from 'screens/doctor-profile';
 import { CameraMenu } from 'screens/camera-menu';
+import { TutorialScreen } from 'screens/tutorial';
 
 import cameraIcon from './images/camera.png';
 import profileIcon from './images/profile.png';
@@ -67,6 +68,12 @@ export default schema(model)(createReactClass({
         const studyApprovalRequireAction = _.find(
                 this.props.tree.studyInvitations.get('data'),
                 (invite) => invite.participant && invite.status === 'new');
+
+        return (
+            <TutorialScreen
+                type={'doctor'}
+            />
+        );
 
         return (
             <View
