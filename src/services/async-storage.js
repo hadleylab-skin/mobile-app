@@ -40,9 +40,14 @@ export async function hasSavedStudy() {
 }
 
 
-export const getTutorialPassedFlag = buildAsyncStorageService(KEY_TUTORIAL);
+export function getTutorialPassedFlag(cursor, doctorPk) {
+    const key = `${KEY_TUTORIAL}_${doctorPk}`;
+
+    const _service = buildAsyncStorageService(key);
+    return _service(cursor);
+}
 
 
-export async function setTutorialPassed() {
-    await AsyncStorage.setItem(KEY_TUTORIAL, '1');
+export async function setTutorialPassed(doctorPk) {
+    await AsyncStorage.setItem(`${KEY_TUTORIAL}_${doctorPk}`, '1');
 }

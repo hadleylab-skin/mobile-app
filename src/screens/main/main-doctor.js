@@ -25,7 +25,7 @@ const model = (props, context) => ({
     tree: {
         studies: context.services.getStudiesService,
         studyInvitations: context.services.getInvitationsForDoctorService,
-        tutorialPassed: getTutorialPassedFlag,
+        tutorialPassed: (cursor) => getTutorialPassedFlag(cursor, context.cursors.doctor.get('pk')),
     },
 });
 

@@ -43,7 +43,7 @@ const model = (props, context) => ({
 
         studies: {},
         invites: context.services.getInvitesService,
-        tutorialPassed: getTutorialPassedFlag,
+        tutorialPassed: (cursor) => getTutorialPassedFlag(cursor, context.cursors.doctor.get('pk')),
     },
 });
 

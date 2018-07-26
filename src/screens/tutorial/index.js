@@ -78,6 +78,12 @@ export const TutorialScreen = createReactClass({
         tutorialPassedCursor: BaobabPropTypes.cursor.isRequired,
     },
 
+    contextTypes: {
+        cursors: PropTypes.shape({
+            doctor: BaobabPropTypes.cursor.isRequired,
+        }),
+    },
+
     getInitialState() {
         return {
             currentPage: 0,
@@ -101,7 +107,7 @@ export const TutorialScreen = createReactClass({
     },
 
     gotItClicked() {
-        setTutorialPassed();
+        setTutorialPassed(this.context.cursors.doctor.get('pk'));
         this.props.tutorialPassedCursor.set('data', true);
     },
 
