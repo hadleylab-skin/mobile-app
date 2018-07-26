@@ -18,6 +18,7 @@ export function buildAsyncStorageService(name, dehydrate = _.identity) {
 
 
 const KEY = '@MelanomaApp:selectedStudyPk';
+const KEY_TUTORIAL = '@MelanomaApp:tutorialPassed';
 
 
 export const getSavedCurrentStudyService = buildAsyncStorageService(
@@ -36,4 +37,17 @@ export async function saveCurrentStudy(studyPk) {
 
 export async function hasSavedStudy() {
     return _.includes(await AsyncStorage.getAllKeys(), KEY);
+}
+
+
+export function getTutorialPassedFlag(cursor, doctorPk) {
+    const key = `${KEY_TUTORIAL}_${doctorPk}`;
+
+    const _service = buildAsyncStorageService(key);
+    return _service(cursor);
+}
+
+
+export async function setTutorialPassed(doctorPk) {
+    await AsyncStorage.setItem(`${KEY_TUTORIAL}_${doctorPk}`, '1');
 }

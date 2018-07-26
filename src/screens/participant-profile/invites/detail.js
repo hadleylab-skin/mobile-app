@@ -35,6 +35,7 @@ export const InviteDetailScreen = schema(model)(createReactClass({
         mainNavigator: PropTypes.object.isRequired, // eslint-disable-line
         cursors: PropTypes.shape({
             currentStudyPk: BaobabPropTypes.cursor.isRequired,
+            doctor: BaobabPropTypes.cursor.isRequired,
         }),
         services: PropTypes.shape({
             declineInviteService: PropTypes.func.isRequired,
@@ -80,6 +81,12 @@ export const InviteDetailScreen = schema(model)(createReactClass({
             const invites = _.filter(
                 this.props.tree.invites.data.get(),
                 (item) => item.pk !== invite.pk);
+
+            // don't forget to add key of new doctor to my keys and to patient's doctors
+            const { cursors } = this.context;
+            const currentPatientPk = cursors.currentPatientPk.get();
+            cursors.patients.select('data', currentPatientPk, 'data', 'doctors').push(inviteDoctor.pk);
+            cursors.doctor.myDoctorsPublicKeys.set(`${inviteDoctor.pk}`, inviteDoctor.publicKey);
 
             this.props.tree.invites.data.set(invites);
             this.props.studiesCursor.data.push(invite.study);
