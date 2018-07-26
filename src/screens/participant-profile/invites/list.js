@@ -4,14 +4,18 @@ import PropTypes from 'prop-types';
 import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
-    View,
     ScrollView,
+    SafeAreaView,
+    StatusBar,
+    View,
+    TouchableOpacity,
+    Text,
+    Alert,
 } from 'react-native';
 import schema from 'libs/state';
-import { InfoField } from 'components';
 import { getInviteDetailScreenRoute } from './detail';
 
-import s from '../styles';
+import s from './styles';
 
 
 export const InvitesScreen = schema({})(createReactClass({
@@ -28,27 +32,37 @@ export const InvitesScreen = schema({})(createReactClass({
         const { invites } = this.props;
 
         return (
-            <View style={s.container}>
-                <ScrollView style={s.inner}>
+            <SafeAreaView style={s.container}>
+                <StatusBar barStyle="dark-content" />
+                <ScrollView automaticallyAdjustContentInsets={false}>
                     {_.map(invites, (invite) => (
-                        <InfoField
+                        <TouchableOpacity
                             key={invite.pk}
-                            title={`doctor: ${invite.doctor.firstName} ${invite.doctor.lastName}
-study: ${invite.study.title}`}
-                            text={'>'}
-                            onPress={() =>
-                                this.context.mainNavigator.push(
-                                    getInviteDetailScreenRoute({
-                                        invite,
-                                        studiesCursor: this.props.studiesCursor,
-                                        tree: this.props.tree,
-                                    }, this.context)
-                                )
-                            }
-                        />
+                            activeOpacity={0.5}
+                            onPress={() => this.context.mainNavigator.push(
+                                getInviteDetailScreenRoute({
+                                    invite,
+                                    studiesCursor: this.props.studiesCursor,
+                                    tree: this.props.tree,
+                                },
+                                this.context)
+                            )}
+                        >
+                            <View style={s.invite}>
+                                <View style={s.border} />
+                                <View style={s.inner}>
+                                    <Text style={s.name}>
+                                        {`doctor: ${invite.doctor.firstName} ${invite.doctor.lastName}`}
+                                    </Text>
+                                    <Text style={s.text}>
+                                        {`study: ${invite.study.title}`}
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
                     ))}
                 </ScrollView>
-            </View>
+            </SafeAreaView>
         );
     },
 }));

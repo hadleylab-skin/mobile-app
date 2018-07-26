@@ -4,9 +4,11 @@ import BaobabPropTypes from 'baobab-prop-types';
 import createReactClass from 'create-react-class';
 import {
     View,
+    Text,
     NativeEventEmitter,
     NativeModules,
     ProgressViewIOS,
+    TouchableOpacity,
 } from 'react-native';
 import { Button } from 'components';
 import { getSignatureRoute } from 'screens/signature';
@@ -71,19 +73,25 @@ export const ConsentDocsScreen = createReactClass({
                     consentDocs={study.consentDocs}
                 />
                 <View style={s.buttons}>
-                    <Button
-                        type="green"
-                        title="Accept"
+                    <TouchableOpacity
+                        activeOpacity={0.5}
                         style={s.button}
-                        onPress={() => {
-                            this.context.mainNavigator.push(
-                                getSignatureRoute({
-                                    navigator: this.props.navigator,
-                                    onSave: this.props.onSign,
-                                })
-                            );
-                        }}
-                    />
+                        onPress={() => this.props.navigator.pop()}
+                    >
+                        <Text style={s.buttonText}>Disagree</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={[s.button, s.buttonRight]}
+                        onPress={() => this.context.mainNavigator.push(
+                            getSignatureRoute({
+                                navigator: this.props.navigator,
+                                onSave: this.props.onSign,
+                            })
+                        )}
+                    >
+                        <Text style={s.buttonText}>Agree</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );

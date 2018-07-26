@@ -10,12 +10,15 @@ import {
     ActivityIndicator,
     Alert,
     TouchableHighlight,
+    TouchableOpacity,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import schema from 'libs/state';
 import { resetState } from 'libs/tree';
 import defaultAvatarImage from 'components/icons/avatar/avatar.png';
-import { InfoField, Switch, Title, Updater, Picker } from 'components';
+import {
+    InfoField, Switch, Title, Updater, Picker,
+} from 'components';
 import { getCryptoConfigurationRoute } from 'screens/crypto-config';
 import { isInSharedMode } from 'services/keypair';
 import { saveCurrentStudy } from 'services/async-storage';
@@ -99,32 +102,37 @@ export const DoctorProfile = schema(model)(createReactClass({
                 doctorPk: this.props.doctorCursor.get('data', 'pk'),
                 siteJoinRequestCursor: this.props.siteJoinRequestCursor,
                 afterRequestSended: this.afterSiteJoinRequestSended,
-            }));
+            })
+        );
     },
 
     async updateScreenData() {
         const { services } = this.context;
 
         let result = await services.getDoctorService(
-            this.props.doctorCursor);
+            this.props.doctorCursor
+        );
         if (result.status !== 'Succeed') {
             return result;
         }
 
         result = await services.getStudiesService(
-            this.props.studiesCursor);
+            this.props.studiesCursor
+        );
         if (result.status !== 'Succeed') {
             return result;
         }
 
         result = await services.getSiteJoinRequestsService(
-            this.props.siteJoinRequestCursor);
+            this.props.siteJoinRequestCursor
+        );
         if (result.status !== 'Succeed') {
             return result;
         }
 
         return await services.getInvitationsForDoctorService(
-            this.props.studyInvitationsCursor);
+            this.props.studyInvitationsCursor
+        );
     },
 
     async onUnitsOfLengthChange(unit) {
@@ -142,14 +150,16 @@ export const DoctorProfile = schema(model)(createReactClass({
 
     async afterSiteJoinRequestSended() {
         await this.context.services.getSiteJoinRequestsService(
-            this.props.siteJoinRequestCursor);
+            this.props.siteJoinRequestCursor
+        );
     },
 
     async sharePatients() {
         const { cursors, services } = this.context;
         const requestPk = _.get(
             _.values(this.props.siteJoinRequestCursor.data.get()),
-            [0, 'data', 'pk']);
+            [0, 'data', 'pk']
+        );
 
         if (typeof requestPk === 'undefined') {
             Alert.alert('Error', 'There is no requests to confirm');
@@ -194,55 +204,52 @@ export const DoctorProfile = schema(model)(createReactClass({
             });
     },
 
-    renderSiteJoinRequest() {
+    checkIfDataLoading() {
+        const doctorStatus = this.props.doctorCursor.get('status');
         const { data, status } = this.props.siteJoinRequestCursor.get();
         const remoteRequest = _.get(_.values(data), 0);
 
-        if (status === 'Loading' || _.get(remoteRequest, 'status') === 'Loading') {
-            return (
-                <ActivityIndicator style={s.infoMessage} />
-            );
+        if (doctorStatus === 'Loading' || status === 'Loading'
+            || _.get(remoteRequest, 'status') === 'Loading') {
+            return true;
         }
+
+        return false;
+    },
+
+    renderSiteJoinRequest() {
+        const { data } = this.props.siteJoinRequestCursor.get();
+        const remoteRequest = _.get(_.values(data), 0);
 
         if (remoteRequest) {
             const request = remoteRequest.data;
+
             switch (request.state) {
             case 0:
                 return (
-                    <Text
-                        style={s.infoMessage}
-                    >
-                        {`You request to join ${request.siteTitle} is pending coordinator's approval`}
-                    </Text>
+                    <InfoField title={`You request to join ${request.siteTitle} is pending coordinator's approval`} />
                 );
             case 1:
                 return (
-                    <Text
-                        style={s.infoMessage}
-                    >
-                        {`You request to join ${request.siteTitle} was rejected`}
-                    </Text>
+                    <InfoField title={`You request to join ${request.siteTitle} was rejected`} />
                 );
             case 2:
                 return (
-                    <InfoField
-                        title={
-                            <Text>
-                                <Text style={{ color: 'red' }}>! </Text>
+                    <TouchableOpacity onPress={this.sharePatients} activeOpacity={0.5}>
+                        <View style={s.fieldContainer}>
+                            <View style={s.border} />
+                            <Text style={s.fieldTitle}>
                                 {`Share patients data with ${request.siteTitle} site`}
-                                <Text style={{ color: 'red' }}> !</Text>
                             </Text>
-                        }
-                        onPress={this.sharePatients}
-                    />
+                            <View style={s.exclamation}>
+                                <Text style={s.exclamationText}>!</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 );
             case 4:
                 return (
-                    <Text
-                        style={s.infoMessage}
-                    >
-                        {`Patient data is being shared with ${request.siteTitle} site`}
-                    </Text>
+                    <InfoField title={`Patient data is being shared with ${request.siteTitle} site`} />
                 );
 
             default:
@@ -259,8 +266,10 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     render() {
-        const { firstName, lastName, photo, degree, department } = this.props.doctorCursor.get('data');
-        const status = this.props.doctorCursor.get('status');
+        const {
+            firstName, lastName, photo, degree, department,
+        } = this.props.doctorCursor.get('data');
+        const isDataLoading = this.checkIfDataLoading();
         const studies = this.props.studiesCursor.get();
         const studyOptions = _.flatten(
             [
@@ -275,8 +284,9 @@ export const DoctorProfile = schema(model)(createReactClass({
         const studyInvitations = this.props.studyInvitationsCursor.get('data');
         const hasRegisteredParticipants = _.filter(studyInvitations, (invitation) => invitation.participant);
         const studyApprovalRequireAction = _.find(
-                studyInvitations,
-                (invite) => invite.participant && invite.status === 'new');
+            studyInvitations,
+            (invite) => invite.participant && invite.status === 'new'
+        );
 
         return (
             <Updater
@@ -285,7 +295,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                 color="#ACB5BE"
                 ref={(ref) => { this.scrollView = ref; }}
             >
-                { status === 'Loading' ?
+                {isDataLoading ?
                     <View style={s.activityIndicator}>
                         <ActivityIndicator
                             animating
@@ -316,10 +326,10 @@ export const DoctorProfile = schema(model)(createReactClass({
                         </View>
                     : null}
                 </View>
-                <Title text={'SETTINGS'} />
+                <Title text="SETTINGS" />
                 <View style={s.fields}>
                     <InfoField
-                        title={'Units of length'}
+                        title="Units of length"
                         hasNoBorder
                         controls={
                             <Switch
@@ -341,9 +351,7 @@ export const DoctorProfile = schema(model)(createReactClass({
                         title="Study"
                         onPress={() => this.scrollView.scrollTo({ x: 0, y: 320, animated: true })}
                     />
-                    <View style={s.content}>
-                        {this.renderSiteJoinRequest()}
-                    </View>
+                    {this.renderSiteJoinRequest()}
                     {!isInSharedMode() ?
                         <InfoField
                             title="Cryptography configuration"
@@ -351,14 +359,17 @@ export const DoctorProfile = schema(model)(createReactClass({
                         />
                     : null}
                     {!_.isEmpty(hasRegisteredParticipants) ?
-                        <InfoField
-                            title={
-                                <Text>
-                                    {studyApprovalRequireAction ? <Text style={{ color: 'red' }}>! </Text> : null}
-                                    <Text>Patients to approve</Text>
-                                </Text>}
-                            onPress={this.openPatientsToApproveList}
-                        />
+                        <TouchableOpacity onPress={this.openPatientsToApproveList} activeOpacity={0.5}>
+                            <View style={s.fieldContainer}>
+                                <View style={s.border} />
+                                <Text style={s.fieldTitle}>
+                                    Patients to approve
+                                </Text>
+                                <View style={s.exclamation}>
+                                    <Text style={s.exclamationText}>!</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
                     : null}
                     <InfoField
                         title="Log out"

@@ -314,8 +314,8 @@ export const ParticipantProfile = schema(model)(createReactClass({
                     <View style={s.fields}>
                         {showInvitesFeild ?
                             <InfoField
-                                title={`${invites.length} pending invites`}
-                                text={'>'}
+                                title="Pending invites"
+                                text={`${invites.length}`}
                                 hasNoBorder
                                 onPress={() => {
                                     if (invites.length === 1) {

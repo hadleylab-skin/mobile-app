@@ -39,13 +39,19 @@ export default StyleSheet.create({
         borderColor: '#fc3159',
     },
     greenButton: {
-        height: 56,
-        backgroundColor: '#3fc300',
-        borderColor: '#3fc300',
+        height: 44,
+        borderWidth: 1,
+        borderColor: '#00b33c',
+        borderRadius: 5,
+    },
+    greenText: {
+        fontSize: 15,
+        color: '#009933',
     },
     rectText: {
         fontSize: 16,
         color: '#fff',
         fontWeight: '500',
     },
+
 });

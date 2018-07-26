@@ -19,8 +19,13 @@ import { isStudyConsentExpired } from 'libs/misc';
 import { ParticipantProfile } from 'screens/participant-profile';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { CreateOrEditPatient } from 'screens/create-or-edit';
+import { TutorialScreen } from 'screens/tutorial';
 
-import { hasSavedStudy, saveCurrentStudy } from 'services/async-storage';
+import {
+    hasSavedStudy,
+    saveCurrentStudy,
+    getTutorialPassedFlag,
+} from 'services/async-storage';
 
 import ParticipantDecryptionError from './participant-decryption-error';
 
@@ -38,6 +43,7 @@ const model = (props, context) => ({
 
         studies: {},
         invites: context.services.getInvitesService,
+        tutorialPassed: (cursor) => getTutorialPassedFlag(cursor, context.cursors.doctor.get('pk')),
     },
 });
 
@@ -225,6 +231,20 @@ export default schema(model)(createReactClass({
     },
 
     render() {
+        const tutorialPassed = this.props.tree.tutorialPassed.get();
+        if (tutorialPassed.status === 'Loading') {
+            return null;
+        }
+
+        if (tutorialPassed.data === null) {
+            return (
+                <TutorialScreen
+                    type={'participant'}
+                    tutorialPassedCursor={this.props.tree.tutorialPassed}
+                />
+            );
+        }
+
         const patients = this.context.cursors.patients.get();
         const invites = this.props.tree.invites.get();
 
