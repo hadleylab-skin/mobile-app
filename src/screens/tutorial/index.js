@@ -37,7 +37,7 @@ const pagesContent = {
         {
             image: require('./images/doc4.png'),
             header: 'Collect skin images',
-            text: 'Select a body part on the patient 3D model and take a photo of a skin.',
+            text: 'Select a body part on the patient 3D model and take a photo of a skin lesion.',
         },
         {
             image: require('./images/doc5.png'),
