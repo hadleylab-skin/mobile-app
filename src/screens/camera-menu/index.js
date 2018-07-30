@@ -14,12 +14,14 @@ import {
 import schema from 'libs/state';
 import { getAnatomicalSiteWidgetRoute } from 'screens/anatomical-site-widget';
 import { getCreateOrEditPatientRoute } from 'screens/create-or-edit';
+import { patientEmailRoute } from 'screens/patient-email';
 import s from './styles';
 
 export const CameraMenu = schema({})(createReactClass({
     propTypes: {
         visibleCursor: BaobabPropTypes.cursor.isRequired,
         patientsList: PropTypes.object, // eslint-disable-line
+        studiesCursor: BaobabPropTypes.cursor.isRequired,
     },
 
     contextTypes: {
@@ -86,29 +88,45 @@ export const CameraMenu = schema({})(createReactClass({
     },
 
     goToNewPatientScreen() {
-        const { cursors, services, mainNavigator } = this.context;
+        const { services, mainNavigator } = this.context;
+        const studies = this.props.studiesCursor.get('data');
 
         this.popPatientsList();
-        mainNavigator.push(
-            getCreateOrEditPatientRoute({
-                tree: this.props.tree.select('patients', 'newPatient'),
-                title: 'New Patient',
-                service: services.createPatientService,
-                onActionComplete: async ({ pk }) => {
-                    cursors.currentPatientPk.set(pk);
-                    mainNavigator.push(
-                        getAnatomicalSiteWidgetRoute({
-                            tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
-                            onAddingComplete: this.onAddingComplete,
-                            onBackPress: () => mainNavigator.popToTop(),
-                        }, this.context)
-                    );
 
-                    await services.patientsService(cursors.patients,
-                        cursors.filter.get(), cursors.currentStudyPk.get('data'));
-                },
+        if (!_.isEmpty(studies)) {
+            this.context.mainNavigator.push(
+                patientEmailRoute({
+                    tree: this.props.tree.select('patientEmail'),
+                    onPatientAdded: this.onPatientAdded,
+                    studies,
+                }, this.context)
+            );
+        } else {
+            mainNavigator.push(
+                getCreateOrEditPatientRoute({
+                    tree: this.props.tree.select('patients', 'newPatient'),
+                    title: 'New Patient',
+                    service: services.createPatientService,
+                    onActionComplete: this.onPatientAdded,
+                }, this.context)
+            );
+        }
+    },
+
+    async onPatientAdded({ pk }) {
+        const { cursors, services, mainNavigator } = this.context;
+
+        cursors.currentPatientPk.set(pk);
+        mainNavigator.push(
+            getAnatomicalSiteWidgetRoute({
+                tree: cursors.patientsMoles.select('data', pk, 'widgetData'),
+                onAddingComplete: this.onAddingComplete,
+                onBackPress: () => mainNavigator.popToTop(),
             }, this.context)
         );
+
+        await services.patientsService(cursors.patients,
+            cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
     gotToPatientScreen() {

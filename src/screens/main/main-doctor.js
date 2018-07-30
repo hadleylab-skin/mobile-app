@@ -138,6 +138,7 @@ export default schema(model)(createReactClass({
                 </TabBarIOS>
                 <CameraMenu
                     tree={this.props.tree}
+                    studiesCursor={this.props.tree.studies}
                     visibleCursor={showModalCursor}
                     patientsList={this.patientsList}
                 />
