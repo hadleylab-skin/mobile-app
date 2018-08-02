@@ -167,16 +167,15 @@ export const CryptoConfiguration = schema(model)(createReactClass({
             return (
                 <View>
                     <View style={s.content}>
-                        <Text style={[s.title]}>Key pair Error</Text>
+                        <Text style={[s.title]}>Key Pair Error</Text>
                         <Text style={s.text}>
-                            Public key from your device
-                            doesn't much public key
-                            you have created
-                            when you login first time.
+                            The public key on your device
+                            does not match the key created
+                            during initial user registration.
                         </Text>
                         <Text style={s.text}>
-                            Probably you are using one device for multiple accounts,
-                            the app doesn't support it yet.
+                            This can occur if multiple accounts are being used on one device.
+                            The app does not currently support this feature.
                         </Text>
                     </View>
                     <View style={s.button}>

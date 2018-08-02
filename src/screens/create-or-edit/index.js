@@ -328,7 +328,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                             </View>
                             <View style={s.name}>
                                 <Input
-                                    label={'First Name'}
+                                    label={'First Name *'}
                                     cursor={firstNameCursor}
                                     returnKeyType="next"
                                     inputWrapperStyle={s.hasBottomBorder}
@@ -340,7 +340,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                                     onFocus={() => this.scrollView.scrollTo({ x: 0, y: 0, animated: true })}
                                 />
                                 <Input
-                                    label={'Last Name'}
+                                    label={'Last Name *'}
                                     cursor={lastNameCursor}
                                     inputStyle={s.input}
                                     errorWrapperStyle={s.error}
