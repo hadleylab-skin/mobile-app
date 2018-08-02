@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import schema from 'libs/state';
 import ImagePicker from 'react-native-image-picker';
-import Permissions from 'react-native-permissions';
 import { Updater } from 'components';
 import Gallery from './components/gallery';
 import Prediction from './components/prediction';
@@ -189,10 +188,6 @@ export function getMoleRoute(props) {
     }
 
     function launchAddPhoto(launchFunction) {
-        Permissions.check('photo').then(response => {
-            console.log(response);
-        });
-
         launchFunction({},
         (response) => {
             if (response.uri) {
