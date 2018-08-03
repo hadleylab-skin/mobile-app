@@ -4272,6 +4272,10 @@ react-native-keyboard-aware-scroll-view@0.5.0:
     prop-types "^15.6.0"
     react-native-iphone-x-helper "^1.0.1"
 
+react-native-permissions@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-1.1.1.tgz#4876004681ff8556454613d85249b01baff9b35b"
+
 react-native-rsa-native@1.0.10:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/react-native-rsa-native/-/react-native-rsa-native-1.0.10.tgz#680db8500e138a96608031088ed761b38016a792"

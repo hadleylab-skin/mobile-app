@@ -4,6 +4,7 @@ import BaobabPropTypes from 'baobab-prop-types';
 import { Alert } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { Button } from 'components';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 
 export function ScanMrnButton({ cursor, setupData }, { services }) {
     async function onResponse(response) {
@@ -22,9 +23,15 @@ export function ScanMrnButton({ cursor, setupData }, { services }) {
         }
     }
 
+    async function onScanPress() {
+        await checkAndAskDeniedPhotoPermissions(['camera']);
+
+        ImagePicker.launchCamera({}, onResponse);
+    }
+
     return (
         <Button
-            onPress={() => ImagePicker.launchCamera({}, onResponse)}
+            onPress={onScanPress}
             title="Scan MRN label"
         />
     );

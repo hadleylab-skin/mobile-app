@@ -13,6 +13,7 @@ import { BodyView3D, Button } from 'components';
 import ImagePicker from 'react-native-image-picker';
 import BaobabPropTypes from 'baobab-prop-types';
 import schema from 'libs/state';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 import DistantPhotos from './components/distant-photos';
 import s from './styles';
 
@@ -105,14 +106,16 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
         const { isParticipant } = this.context.cursors.doctor.get();
 
         if (isParticipant) {
-            this.launchAddPhoto(ImagePicker.showImagePicker);
+            this.launchAddPhoto(ImagePicker.showImagePicker, ['camera', 'photo']);
         } else {
-            this.launchAddPhoto(ImagePicker.launchCamera);
+            this.launchAddPhoto(ImagePicker.launchCamera, ['camera']);
         }
     },
 
-    launchAddPhoto(launchFunction) {
+    async launchAddPhoto(launchFunction, permissions) {
         const selectedMole = this.props.tree.get('selectedMole', 'data');
+
+        await checkAndAskDeniedPhotoPermissions(permissions);
 
         launchFunction({}, (response) => {
             if (response.uri) {
