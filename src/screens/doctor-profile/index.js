@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import schema from 'libs/state';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 import { resetState } from 'libs/tree';
 import defaultAvatarImage from 'components/icons/avatar/avatar.png';
 import {
@@ -193,7 +194,11 @@ export const DoctorProfile = schema(model)(createReactClass({
             cursors.filter.get(), cursors.currentStudyPk.get('data'));
     },
 
-    changePhoto() {
+    async changePhoto() {
+        if (await checkAndAskDeniedPhotoPermissions(['camera', 'photo'])) {
+            return;
+        }
+
         ImagePicker.showImagePicker({},
             async (response) => {
                 if (response.uri) {

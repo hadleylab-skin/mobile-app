@@ -12,6 +12,7 @@ import {
     ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 import { getDistantPhotoRoute } from './screens/distant-photo';
 import s from './styles';
 
@@ -47,13 +48,17 @@ const DistantPhotos = createReactClass({
         const { isParticipant } = this.context.cursors.doctor.get();
 
         if (isParticipant) {
-            this.launchAddPhoto(ImagePicker.showImagePicker);
+            this.launchAddPhoto(ImagePicker.showImagePicker, ['camera', 'photo']);
         } else {
-            this.launchAddPhoto(ImagePicker.launchCamera);
+            this.launchAddPhoto(ImagePicker.launchCamera, ['camera']);
         }
     },
 
-    launchAddPhoto(launchFunction) {
+    async launchAddPhoto(launchFunction, permissions) {
+        if (await checkAndAskDeniedPhotoPermissions(permissions)) {
+            return;
+        }
+
         launchFunction({}, (response) => {
             if (response.uri) {
                 this.onAddDistantPhoto(response.uri);

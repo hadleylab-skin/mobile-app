@@ -12,6 +12,7 @@ import {
     StatusBar,
 } from 'react-native';
 import schema from 'libs/state';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 import ImagePicker from 'react-native-image-picker';
 import { Updater } from 'components';
 import Gallery from './components/gallery';
@@ -180,14 +181,18 @@ export function getMoleRoute(props) {
         let isConsentValid = await checkConsent();
         if (isConsentValid) {
             if (isParticipant) {
-                launchAddPhoto(ImagePicker.showImagePicker);
+                await launchAddPhoto(ImagePicker.showImagePicker, ['camera', 'photo']);
             } else {
-                launchAddPhoto(ImagePicker.launchCamera);
+                await launchAddPhoto(ImagePicker.launchCamera, ['camera']);
             }
         }
     }
 
-    function launchAddPhoto(launchFunction) {
+    async function launchAddPhoto(launchFunction, permissions) {
+        if (await checkAndAskDeniedPhotoPermissions(permissions)) {
+            return;
+        }
+
         launchFunction({},
         (response) => {
             if (response.uri) {
