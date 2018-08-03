@@ -1,7 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
+import Permissions from 'react-native-permissions';
 
 
 export const UserPropType = PropTypes.shape({
@@ -56,4 +58,29 @@ export function isStudyConsentExpired(studies, currentStudyPk, patientPk) {
     }
 
     return false;
+}
+
+
+export async function checkAndAskDeniedPhotoPermissions(permissions) {
+    const result = await Permissions.checkMultiple(permissions);
+    const allDisabled = _.every(_.values(result), (value) => value === 'denied');
+    const accessTo = permissions.join(' and ').replace('photo', 'photos');
+    if (allDisabled) {
+        Alert.alert(
+            `Skin can't access to your ${accessTo}?`,
+            `You denied access to the ${accessTo}, it can be changed in settings`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Open Settings',
+                    onPress: Permissions.openSettings,
+                },
+            ],
+        );
+    }
+
+    return allDisabled;
 }

@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import schema from 'libs/state';
+import { checkAndAskDeniedPhotoPermissions } from 'libs/misc';
 import tv4 from 'tv4';
 import {
     ScanMrnButton, Button, Title, Form, Input,
@@ -263,6 +264,18 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
         this.setState({ offsetY });
     },
 
+    async replaceAvatarPressed(photoCursor) {
+        if (await checkAndAskDeniedPhotoPermissions(['camera', 'photo'])) {
+            return;
+        }
+
+        ImagePicker.showImagePicker({}, (response) => {
+            if (response.uri) {
+                photoCursor.select('thumbnail').set(response.uri);
+            }
+        });
+    },
+
     render() {
         const { offsetY } = this.state;
         const formCursor = this.props.tree.form;
@@ -309,11 +322,7 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
                         <View style={s.generalInfo}>
                             <View style={s.photoWrapper}>
                                 <TouchableWithoutFeedback
-                                    onPress={() => ImagePicker.showImagePicker({}, (response) => {
-                                        if (response.uri) {
-                                            photoCursor.select('thumbnail').set(response.uri);
-                                        }
-                                    })}
+                                    onPress={() => this.replaceAvatarPressed(photoCursor)}
                                 >
                                     <View style={{ alignItems: 'center' }}>
                                         <Image
