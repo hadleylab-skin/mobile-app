@@ -67,7 +67,7 @@ export async function checkAndAskDeniedPhotoPermissions(permissions) {
     const accessTo = permissions.join(' and ').replace('photo', 'photos');
     if (allDisabled) {
         Alert.alert(
-            `Skin can't access your ${accessTo}?`,
+            `Skin can't access to your ${accessTo}?`,
             `You denied access to the ${accessTo}, it can be changed in settings`,
             [
                 {
