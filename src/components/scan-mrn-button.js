@@ -24,7 +24,9 @@ export function ScanMrnButton({ cursor, setupData }, { services }) {
     }
 
     async function onScanPress() {
-        await checkAndAskDeniedPhotoPermissions(['camera']);
+        if (await checkAndAskDeniedPhotoPermissions(['camera'])) {
+            return;
+        }
 
         ImagePicker.launchCamera({}, onResponse);
     }

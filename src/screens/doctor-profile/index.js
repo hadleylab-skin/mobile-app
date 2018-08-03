@@ -195,7 +195,9 @@ export const DoctorProfile = schema(model)(createReactClass({
     },
 
     async changePhoto() {
-        await checkAndAskDeniedPhotoPermissions(['camera', 'photo']);
+        if (await checkAndAskDeniedPhotoPermissions(['camera', 'photo'])) {
+            return;
+        }
 
         ImagePicker.showImagePicker({},
             async (response) => {

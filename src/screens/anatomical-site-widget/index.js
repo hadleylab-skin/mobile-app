@@ -115,7 +115,9 @@ export const AnatomicalSiteWidget = schema(model)(createReactClass({
     async launchAddPhoto(launchFunction, permissions) {
         const selectedMole = this.props.tree.get('selectedMole', 'data');
 
-        await checkAndAskDeniedPhotoPermissions(permissions);
+        if (await checkAndAskDeniedPhotoPermissions(permissions)) {
+            return;
+        }
 
         launchFunction({}, (response) => {
             if (response.uri) {

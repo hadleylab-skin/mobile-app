@@ -55,7 +55,9 @@ const DistantPhotos = createReactClass({
     },
 
     async launchAddPhoto(launchFunction, permissions) {
-        await checkAndAskDeniedPhotoPermissions(permissions);
+        if (await checkAndAskDeniedPhotoPermissions(permissions)) {
+            return;
+        }
 
         launchFunction({}, (response) => {
             if (response.uri) {

@@ -265,7 +265,9 @@ export const CreateOrEditPatient = schema(model)(createReactClass({
     },
 
     async replaceAvatarPressed(photoCursor) {
-        await checkAndAskDeniedPhotoPermissions(['camera', 'photo']);
+        if (await checkAndAskDeniedPhotoPermissions(['camera', 'photo'])) {
+            return;
+        }
 
         ImagePicker.showImagePicker({}, (response) => {
             if (response.uri) {
